@@ -1,10 +1,12 @@
+from __future__ import print_function, division
+
 _check_type = lambda a, t: isinstance(a, t)
 
 __all__ = [
 'OneDimensionalArray'
 ]
 
-class Array:
+class Array(object):
     """
     Abstract class for arrays in pydatastructs.
     """
@@ -46,6 +48,7 @@ class OneDimensionalArray(Array):
     Examples
     ========
     """
+    __slots__ = ['_size', '_data']
 
     def __new__(cls, *args, **kwargs):
         if not args or len(args) not in (1, 2):
