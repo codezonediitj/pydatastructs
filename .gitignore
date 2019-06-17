@@ -1,1 +1,5 @@
 *.swp
+*.pyc
+__pycache__/
+*.pyo
+.vscode/
