@@ -11,7 +11,7 @@ We are a group of people passionate about data structures and algorithms. We eye
 How are we different?
 ---------------------
 
-There are many pre-exisiting packages available in the open source world. However, we plan to implement those data structures which are used by both sports programmers as well as the developers. Currently, to the best of our knowledge, no such dedicated attempt has been made. In fact, we will keep each data strucutres independent from other for easy code reusability.
+There are many pre-exisiting packages available in the open source world for the said task. However, we plan to implement those data structures which are used by both sports programmers as well as the developers. Currently, to the best of our knowledge, no such dedicated attempt has been made. In fact, we will keep each data strucutres independent from other for easy code reusability.
 
 How to contribute?
 ------------------
