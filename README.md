@@ -24,10 +24,11 @@ Follow the steps given below,
 4. Execute, `git remote add origin_user https://github.com/<your-github-username>/pydatastructs/`
 5. Execute, `git checkout -b <your-new-branch-for-working>`.
 6. Make changes to the code.
-7. Execute, `git add .`.
-8. Execute, `git commit -m "your-commit-message"`.
-9. Execute, `git push origin_user <your-current-branch>`.
-10. Make a PR.
+7. Add your name and email to the AUTHORS.
+8. Execute, `git add .`.
+9. Execute, `git commit -m "your-commit-message"`.
+10. Execute, `git push origin_user <your-current-branch>`.
+11. Make a PR.
 
 That's it, 10 easy steps for your first contribution. For future contributionsm just follow steps 5 to 10. Make sure that before starting work, always checkout to master and pull the recent changes using the remote `origin` and the start following steps 5 to 10.
 
