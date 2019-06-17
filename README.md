@@ -1,7 +1,7 @@
 PyDataStructs
 =============
 
-[![Build Status](https://travis-ci.org/codezonediitj/pydatastructs.png?branch=master)](https://travis-ci.org/codezonediitj/pydatastructs) [![Join the chat at https://gitter.im/codezonediitj/pydatastructs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dwyl/?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![Build Status](https://travis-ci.org/codezonediitj/pydatastructs.png?branch=master)](https://travis-ci.org/codezonediitj/pydatastructs) [![Join the chat at https://gitter.im/codezonediitj/pydatastructs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codezoned2017/Lobby) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codezonediitj/pydatastructs/pulls)
 
 Who are we?
 -----------
