@@ -1,24 +1,27 @@
 from __future__ import print_function, division
 
-_check_type = lambda a, t: isinstance(a, t)
-
 __all__ = [
 'OneDimensionalArray'
 ]
 
+_check_type = lambda a, t: isinstance(a, t)
+NoneType = type(None)
+
 class Array(object):
-    """
+    '''
     Abstract class for arrays in pydatastructs.
-    """
+    '''
     pass
 
 class OneDimensionalArray(Array):
-    """
+    '''
     Represents one dimensional arrays.
 
     Parameters
     ==========
 
+    dtype: type
+        A valid object type.
     size: int
         The number of elements in the array.
     elements: list/tuple
@@ -37,31 +40,38 @@ class OneDimensionalArray(Array):
         match with the size.
         More than three parameters are passed as arguments.
         Types of arguments is not as mentioned in the docstring.
-    TypeError
-        When all the elements are not of same type.
 
     Note
     ====
 
-    At least one parameter should be passed as an argument.
+    At least one parameter should be passed as an argument along
+    with the dtype.
 
     Examples
     ========
-    """
-    __slots__ = ['_size', '_data']
 
-    def __new__(cls, *args, **kwargs):
-        if not args or len(args) not in (1, 2):
+    >>> from pydatastructs import OneDimensionalArray as ODA
+    >>> arr = ODA(int, 5)
+    >>> arr.fill(6)
+    >>> arr[0]
+    6
+    >>> arr[0] = 7.2
+    >>> arr[0]
+    7
+    '''
+    def __new__(cls, dtype=NoneType, *args, **kwargs):
+        if dtype == NoneType or len(args) not in (1, 2):
             raise ValueError("1D array cannot be created due to incorrect"
                                 " information.")
         obj = object.__new__(cls)
+        obj._dtype = dtype
         if len(args) == 2:
             if _check_type(args[0], (list, tuple)) and \
                 _check_type(args[1], int):
-                size, data = args[1], args[0]
+                size, data = args[1], [dtype(arg) for arg in args[0]]
             elif _check_type(args[1], (list, tuple)) and \
                 _check_type(args[0], int):
-                size, data = args[0], args[1]
+                size, data = args[0], [dtype(arg) for arg in args[1]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -76,9 +86,23 @@ class OneDimensionalArray(Array):
                 init = kwargs.get('init', None)
                 obj._data = [init for i in range(args[0])]
             elif _check_type(args[0], (list, tuple)):
-                obj._size, obj._data = len(args[0]), args[0]
+                obj._size, obj._data = len(args[0]), \
+                                        [dtype(arg) for arg in args[0]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
 
         return obj
+
+    def __getitem__(self, i):
+        if i >= self._size or i < 0:
+            raise IndexError("Index out of range.")
+        return self._data.__getitem__(i)
+
+    def __setitem__(self, idx, elem):
+        self._data[idx] = self._dtype(elem)
+
+    def fill(self, elem):
+        elem = self._dtype(elem)
+        for i in range(self._size):
+            self._data[i] = elem
