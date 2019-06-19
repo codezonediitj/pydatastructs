@@ -58,6 +58,11 @@ class OneDimensionalArray(Array):
     >>> arr[0] = 7.2
     >>> arr[0]
     7
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Array_data_structure#One-dimensional_arrays
     '''
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype == NoneType or len(args) not in (1, 2):
