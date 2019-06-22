@@ -6,6 +6,10 @@ __all__ = [
     'Stack'
 ]
 
+_clean = lambda x: x\
+    .replace("<class '", '', 1)\
+    .replace("<type '", '', 1)\
+    .replace("'>", '', 1)
 _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)
 
@@ -61,12 +65,7 @@ class Stack(object):
                 raise TypeError(
                     "All types in type_restriction list should be provided in string format"
                 )
-            self.type_restriction.append(
-                types.\
-                    lstrip("<class '").\
-                    lstrip("<type '").\
-                    rstrip("'>")
-            )
+            self.type_restriction.append(_clean(types))
 
     def push(self, element):
         """Method to push new elements in stack
@@ -86,8 +85,7 @@ class Stack(object):
         if len(self.stack) >= self.max_size:
             raise ValueError("Stack overflow")
         if not len(self.type_restriction) == 0:
-            element_type = str(type(element)).lstrip("<class '").lstrip("<type '").rstrip("'>")
-            if element_type not in self.type_restriction:
+            if _clean(str(type(element))) not in self.type_restriction:
                 raise TypeError(
                     "Provided element of type {} if not allowed in stack.".format(
                         type(element)
