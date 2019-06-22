@@ -1,26 +1,35 @@
-"""stack.py file containning defination of 'Stack' datastructure"""
 
 from __future__ import print_function, division
 from copy import deepcopy as dc
 
-from ..utils.type_utils import _check_type
+__all__ = [
+    'Stack'
+]
 
-__all__ = ["Stack"]
-
+_check_type = lambda a, t: isinstance(a, t)
+NoneType = type(None)
 
 class Stack(object):
     """Class defination for 'Stack' datatype
     
-    Args:
-        max_size (int): Maximum size of stack allowed
-        type_restriction (): List of types(as strings) for element which can be inserted into Stack, provide empty list for no restrictions.
+    Parameters
+    ----------
+    max_size : int, optional
+        Maximum size of stack allowed
+    type_restriction : list, optional
+        List of types(as strings) for element which can be inserted into Stack, provide empty list for no restrictions.
 
-    Raises:
-        TypeError: max_size argument should of type 'int'.
-        TypeError: type_restriction argument takes 'list' type only.
-        TypeError: All types in type_restriction list should be provided in string format
+    Raises
+    ------
+    TypeError
+        max_size argument should of type 'int'.
+    TypeError
+        type_restriction argument takes 'list' type only.
+    TypeError
+        All types in type_restriction list should be provided in string format
 
-    Example:
+    Example
+    -------
     >>> from pydatastructs import Stack
     >>> my_stack = Stack()
     >>> my_stack.push(1)
@@ -34,7 +43,6 @@ class Stack(object):
     def __init__(
         self, max_size=10 ** 15, type_restriction=list()
     ):  # TODO: Update magic number
-        """Instantiate method"""
         if not _check_type(max_size, int):
             raise TypeError(
                 "max_size argument takes 'int' type not {}".format(type(max_size))
@@ -61,12 +69,18 @@ class Stack(object):
     def push(self, element):
         """Method to push new elements in stack
         
-        Args:
-            element (): Element to push in stack
+        Parameters
+        ----------
+        element :
+            Element to push in stack
             
-        Raises:
-            ValueError: If stack is full.
-            TypeError: If 'element' type does match list of types in type restriction"""
+        Raises
+        ------
+        ValueError
+            If stack is full.
+        TypeError
+            If 'element' type does match list of types in type restriction
+        """
         if len(self.stack) >= self.max_size:
             raise ValueError("Stack overflow")
         if not len(self.type_restriction) == 0:
@@ -79,10 +93,13 @@ class Stack(object):
         self.stack.append(element)
 
     def pop(self):
-        """pop Method for Stack
+        """
+        pop Method for Stack
         
-        Returns:
-            () : Topmost element of Stack"""
+        Returns
+        -------
+            Topmost element of Stack
+        """
         if len(self.stack) == 0:
             raise ValueError("Stack Undeflow")
         element = dc(self.stack[-1])
@@ -90,9 +107,13 @@ class Stack(object):
         return element
 
     def __len__(self):
-        """Provides length of Stack"""
+        """
+        Provides length of Stack
+        """
         return len(self.stack)
 
     def __str__(self):
-        """__str__ Method"""
-        return "<Stack length:{}>".format(len(self.stack))
+        """
+        Used for printing
+        """
+        return "<Stack length:{}>".format(str(self.stack))
