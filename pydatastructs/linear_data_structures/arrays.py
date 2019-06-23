@@ -1,11 +1,9 @@
 from __future__ import print_function, division
+from pydatastructs.utils.misc_util import _check_type, NoneType
 
 __all__ = [
 'OneDimensionalArray'
 ]
-
-_check_type = lambda a, t: isinstance(a, t)
-NoneType = type(None)
 
 class Array(object):
     '''

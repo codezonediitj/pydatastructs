@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import Node
 from collections import deque as Queue
-from pydatastructs.linear_data_structures.arrays import _check_type
+from pydatastructs.utils.misc_util import _check_type
 
 __all__ = [
     'OneDimensionalSegmentTree'
