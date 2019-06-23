@@ -25,6 +25,8 @@ class OneDimensionalSegmentTree(object):
     >>> segt.build()
     >>> segt.tree[0].key
     [False, 2, 3, False]
+    >>> len(segt.query(4))
+    1
 
     Note
     ====
@@ -68,14 +70,16 @@ class OneDimensionalSegmentTree(object):
         """
         if i1 == None or i2 == None:
             return False
-        if i2.key[1] < i1.key[2] or i1.key[1] < i2.key[2]:
-            return True
-        c1, c2 = False, False
-        if i2.key[1] == i1.key[2]:
-            c1 = i2.key[0] and i1.key[3]
-        if i1.key[1] == i2.key[2]:
-            c2 = i1.key[0] and i2.key[3]
-        return c1 or c2
+        if i1.key[2] < i2.key[1] or i2.key[2] < i1.key[1]:
+            return False
+        c1, c2 = None, None
+        if i1.key[2] == i2.key[1]:
+            c1 = (i1.key[3] and i2.key[0])
+        if i2.key[2] == i1.key[1]:
+            c2 = (i2.key[3] and i1.key[0])
+        if c1 == False and c2 == False:
+            return False
+        return True
 
     def _contains(self, i1, i2):
         """
@@ -87,11 +91,32 @@ class OneDimensionalSegmentTree(object):
         if i1.key[1] < i2.key[1] and i1.key[2] > i2.key[2]:
             return True
         if i1.key[1] == i2.key[1] and i1.key[2] > i2.key[2]:
-            return i1.key[0] and i2.key[0]
+            return (i1.key[0] or not i2.key[0])
         if i1.key[1] < i2.key[1] and i1.key[2] == i2.key[2]:
-            return i1.key[3] and i2.key[3]
+            return i1.key[3] or not i2.key[3]
         if i1.key[1] == i2.key[1] and i1.key[2] == i2.key[2]:
-            return i1.key[3] and i2.key[3] and i1.key[0] and i2.key[0]
+            return not ((not i1.key[3] and i2.key[3]) or (not i1.key[0] and i2.key[0]))
+        return False
+
+    def _iterate(self, calls, I, idx):
+        """
+        Helper function for filling the calls
+        stack. Used for imitating the stack based
+        approach used in recursion.
+        """
+        if self.tree[idx].right == None:
+            rc = None
+        else:
+            rc = self.tree[self.tree[idx].right]
+        if self.tree[idx].left == None:
+            lc = None
+        else:
+            lc = self.tree[self.tree[idx].left]
+        if self._intersect(I, rc):
+            calls.append(self.tree[idx].right)
+        if self._intersect(I, lc):
+            calls.append(self.tree[idx].left)
+        return calls
 
     def build(self):
         """
@@ -145,24 +170,48 @@ class OneDimensionalSegmentTree(object):
                     if self.tree[idx].data == None:
                         self.tree[idx].data = []
                     self.tree[idx].data.append(I)
-                    break
-                if self.tree[idx].right == None:
-                    rc = None
-                else:
-                    rc = self.tree[self.tree[idx].right]
-                if self.tree[idx].left == None:
-                    lc = None
-                else:
-                    lc = self.tree[self.tree[idx].left]
-                if self._intersect(I, rc):
-                    calls.append(self.tree[idx].right)
-                if self._intersect(I, lc):
-                    calls.append(self.tree[idx].left)
+                    continue
+                calls = self._iterate(calls, I, idx)
         self.cache = True
 
     def query(self, qx, init_node=None):
-        pass
+        """
+        Queries the segment tree.
 
+        Parameters
+        ==========
+
+        qx: int/float
+            The query point
+        init_node: int
+            The index of the node from which the query process
+            is to be started.
+
+        Returns
+        =======
+
+        intervals: set
+            The set of the intervals which contain the query
+            point.
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/Segment_tree
+        """
+        if not self.cache:
+            self.build()
+        if init_node == None:
+            init_node = self.root_idx
+        qn = Node([True, qx, qx, True], None)
+        intervals = []
+        calls = [init_node]
+        while calls:
+            idx = calls.pop()
+            if _check_type(self.tree[idx].data, list):
+                intervals.extend(self.tree[idx].data)
+            calls = self._iterate(calls, qn, idx)
+        return set(intervals)
 
     def __str__(self):
         """
