@@ -1,7 +1,4 @@
-
-import unittest
-
-from pydatastructs.linear_data_structures import Stack
+from pydatastructs.miscellaneous_data_structures import Stack
 
 class TestStack(unittest.TestCase):
     """Stack Tests"""
