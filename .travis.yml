@@ -7,4 +7,3 @@ install:
 script:
         - python -m unittest discover pydatastructs
         - pytest --doctest-modules
-        - pytest
