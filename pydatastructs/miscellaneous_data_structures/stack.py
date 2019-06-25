@@ -49,6 +49,11 @@ class Stack(object):
     '[1, 2, 3, None, None]'
     >>> s.pop()
     3
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
     """
 
     def __new__(cls, implementation='array', **kwargs):
