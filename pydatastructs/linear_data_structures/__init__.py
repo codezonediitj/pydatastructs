@@ -2,7 +2,6 @@ __all__ = []
 
 from . import (
     arrays,
-    stack
 )
 
 from .arrays import (

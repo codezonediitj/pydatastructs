@@ -16,26 +16,39 @@ class Stack(object):
     Parameters
     ==========
 
-    max_size : int
-        Maximum size of stack allowed
-
-    Raises
-    ======
-
-    TypeError
-        max_size argument should of type 'int'.
+    implementation : str
+        Implementation to be used for stack.
+        By default, 'array'
+        Currently only supports 'array'
+        implementation.
+    maxsize : int
+        The maximum size of the stack.
+        For array implementation.
+    top : int
+        The top element of the stack.
+        For array implementation.
+    items : OneDimensionalArray
+        Optional, by default, None
+        The inital items in the stack.
+        For array implementation.
+    dtype : A valid python type
+        Optional, by default int if item
+        is None, otherwise takes the data
+        type of OneDimensionalArray
+        For array implementation.
 
     Example
     =======
 
     >>> from pydatastructs import Stack
-    >>> my_stack = Stack()
-    >>> my_stack.push(1)
-    >>> my_stack.push(2)
-    >>> my_stack.pop()
-    2
-    >>> str(my_stack)
-    <Stack length:[1]>
+    >>> s = Stack(maxsize=5, top=0)
+    >>> s.push(1)
+    >>> s.push(2)
+    >>> s.push(3)
+    >>> str(s)
+    '[1, 2, 3, None, None]'
+    >>> s.pop()
+    3
     """
 
     def __new__(cls, implementation='array', **kwargs):
@@ -46,11 +59,7 @@ class Stack(object):
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
         raise NotImplementedError(
-                "LinkedListStack hasn't been implemented yet.")
-
-    def initialize(self, *args, **kwargs):
-        raise NotImplementedError(
-                "This is an abstract method.")
+                "%s hasn't been implemented yet."%(implementation))
 
     def push(self, *args, **kwargs):
         raise NotImplementedError(
@@ -62,7 +71,7 @@ class Stack(object):
 
 class ArrayStack(Stack):
 
-    def __new__(maxsize=None, top=None, items=None, dtype=int):
+    def __new__(cls, maxsize=None, top=0, items=None, dtype=int):
         if not _check_type(maxsize, int):
             raise ValueError("maxsize is missing.")
         if not _check_type(top, int):
@@ -74,3 +83,27 @@ class ArrayStack(Stack):
         if items._size > maxsize:
             raise ValueError("Overflow, size of items %s is greater "
                             "than maxsize, %s"%(items._size, maxsize))
+        obj = object.__new__(cls)
+        obj.maxsize, obj.top, obj.items, obj.dtype = \
+            maxsize, top, items, items._dtype
+        return obj
+
+    def push(self, x):
+        if self.top == self.maxsize:
+            raise ValueError("Stack is full.")
+        self.items[self.top] = self.dtype(x)
+        self.top += 1
+
+    def pop(self):
+        if self.top == 0:
+            raise ValueError("Stack is already empty.")
+        self.top -= 1
+        r = self.items[self.top]
+        self.items[self.top] = None
+        return r
+
+    def __str__(self):
+        """
+        Used for printing.
+        """
+        return str(self.items._data)

@@ -1,54 +1,22 @@
 from pydatastructs.miscellaneous_data_structures import Stack
+from pydatastructs.linear_data_structures import OneDimensionalArray
+from pydatastructs.utils.raises_util import raises
 
-class TestStack(unittest.TestCase):
-    """Stack Tests"""
-    def setUp(self):
-        """Set Up"""
-        self.s = Stack(max_size=5, type_restriction=['int', 'str'])
+def test_Stack():
 
-    def test_length(self):
-        """"""
-        self.s.push('2')
-        self.s.push('A')
-        self.assertEqual(len(self.s), 2)
-        self.s.pop()
-        self.assertEqual(len(self.s), 1)
-
-    def test_error_init(self):
-        """Testing Errors in init"""
-        with self.assertRaises(TypeError):
-            stack_temp = Stack(type_restriction='int')
-        with self.assertRaises(TypeError):
-            stack_temp = Stack(type_restriction=[int])
-        with self.assertRaises(TypeError):
-            stack_temp = Stack(max_size='10')
-
-    def test_push_pop(self):
-        """Testing consecutive push and pop"""
-        self.s.push(2)
-        self.s.push(1)
-        self.assertEqual(self.s.pop(), 1)
-        self.assertEqual(self.s.pop(), 2)
-
-    def test_stack_overflow(self):
-        """Testing Stack overflow condition"""
-        self.s.push(2)
-        self.s.push(1)
-        self.s.push(3)
-        self.s.push(4)
-        self.s.push(5)
-        with self.assertRaises(ValueError):
-            self.s.push(6)
-
-    def test_stack_underflow(self):
-        """Testing Stack underflow condition"""
-        self.s.push(2)
-        self.s.push(1)
-        self.assertEqual(self.s.pop(), 1)
-        self.assertEqual(self.s.pop(), 2)
-        with self.assertRaises(ValueError):
-            self.s.pop()
-
-    def tearDown(self):
-        """Tear Down"""
-        del self.s
+    s = Stack(maxsize=3, top=0)
+    s.push(1)
+    s.push(2)
+    s.push(3)
+    assert s.top == 3
+    assert str(s) == '[1, 2, 3]'
+    raises(ValueError, lambda: s.push(4))
+    assert s.pop() == 3
+    assert s.pop() == 2
+    assert s.pop() == 1
+    assert s.top == 0
+    raises(ValueError, lambda: s.pop())
+    raises(ValueError, lambda: Stack())
+    raises(ValueError, lambda: Stack(maxsize=5, top=0, items=[1, 2, 3]))
+    raises(ValueError, lambda: Stack(maxsize=5, top=0,
+                        items=OneDimensionalArray(6)))

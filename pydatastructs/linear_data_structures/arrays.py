@@ -105,7 +105,10 @@ class OneDimensionalArray(Array):
         return self._data.__getitem__(i)
 
     def __setitem__(self, idx, elem):
-        self._data[idx] = self._dtype(elem)
+        if elem is None:
+            self._data[idx] = None
+        else:
+            self._data[idx] = self._dtype(elem)
 
     def fill(self, elem):
         elem = self._dtype(elem)
