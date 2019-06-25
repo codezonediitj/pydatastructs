@@ -1,6 +1,9 @@
 __all__ = []
 
-from . import arrays
+from . import (
+    arrays,
+)
+
 from .arrays import (
     OneDimensionalArray,
 )
