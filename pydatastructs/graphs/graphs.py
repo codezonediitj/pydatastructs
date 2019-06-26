@@ -127,7 +127,7 @@ class AdjacencyList(Graph):
         =======
 
         list
-            If vertex with key x is in the graph
+            If vertex with key x is in the graph.
         None
             In all other cases.
         """
