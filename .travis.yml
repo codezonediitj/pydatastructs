@@ -1,9 +1,12 @@
+sudo: false
+
 language: python
+
 python:
         - "2.7"
         - "3.5"
 install:
         - pip install -r requirements.txt
+
 script:
-        - python -m unittest discover pydatastructs
-        - pytest --doctest-modules
+        - python -m pytest --doctest-modules --cov=./ --cov-report=xml
