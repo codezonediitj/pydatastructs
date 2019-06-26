@@ -6,6 +6,7 @@ python:
         - "3.5"
 install:
         - pip install -r requirements.txt
+        - pip3 install -r requirements.txt
 script:
         - python -m pytest --doctest-modules
         - python3 -m pytest --doctest-modules --cov=./

@@ -11,5 +11,5 @@ coverage:
 
 comment:
   layout: "diff"
-  behavior: default
+  behavior: new
   require_changes: false
