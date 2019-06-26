@@ -24,8 +24,11 @@ def test_BinarySearchTree():
     assert b.search(10) == None
     assert b.delete(3) == True
     assert b.search(3) == None
+    assert b.delete(13) == None
     assert str(b) == \
     ("[(1, 8, 8, 7), (3, 4, 4, 4), (None, 10, 10, 7), (None, 1, 1, None), "
     "(None, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (None, 14, 14, None), "
     "(None, 13, 13, None)]")
+    bc = BST(1, 1)
+    assert bc.insert(1, 2) == None
     raises(ValueError, lambda: BST(root_data=6))

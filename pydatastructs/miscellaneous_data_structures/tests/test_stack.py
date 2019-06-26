@@ -17,6 +17,9 @@ def test_Stack():
     assert s.top == 0
     raises(ValueError, lambda: s.pop())
     raises(ValueError, lambda: Stack())
+    raises(TypeError, lambda: Stack(maxsize=8, top=3.5))
     raises(ValueError, lambda: Stack(maxsize=5, top=0, items=[1, 2, 3]))
     raises(ValueError, lambda: Stack(maxsize=5, top=0,
-                        items=OneDimensionalArray(6)))
+                        items=OneDimensionalArray(int, 6)))
+    raises(NotImplementedError, lambda: Stack(implementation='',
+                                    maxsize=5, top=0))
