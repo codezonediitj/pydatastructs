@@ -1,9 +1,5 @@
 [run]
 parallel = True
-branch = True
 source = pydatastructs
 omit =
     */tests/*
-
-[report]
-show_missing = True
