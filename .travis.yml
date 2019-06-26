@@ -10,3 +10,6 @@ install:
 
 script:
         - python -m pytest --doctest-modules --cov=./ --cov-report=xml
+
+after_success:
+        - codecov
