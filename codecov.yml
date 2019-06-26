@@ -10,6 +10,6 @@ coverage:
   precision: 3
 
 comment:
-  layout: "diff"
+  layout: "diff, files"
   behavior: default
   require_changes: false
