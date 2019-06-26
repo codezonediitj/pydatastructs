@@ -4,7 +4,6 @@ branch = True
 source = pydatastructs
 omit =
     */tests/*
-data_file = $TRAVIS_BUILD_DIR/.coverage
 
 [report]
 show_missing = True
