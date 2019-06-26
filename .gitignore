@@ -5,3 +5,4 @@ __pycache__/
 .vscode/
 .pytest_cache/
 pre_commit.ps1
+.coverage
