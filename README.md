@@ -30,6 +30,17 @@ Follow the steps given below,
 10. Execute, `git push origin_user <your-current-branch>`.
 11. Make a PR.
 
-That's it, 10 easy steps for your first contribution. For future contributionsm just follow steps 5 to 10. Make sure that before starting work, always checkout to master and pull the recent changes using the remote `origin` and the start following steps 5 to 10.
+That's it, 10 easy steps for your first contribution. For future contributionsm just follow steps 5 to 10. Make sure that before starting work, always checkout to master and pull the recent changes using the remote `origin` and then start following steps 5 to 10.
 
 See you soon with your first PR.
+
+Guidelines
+----------
+
+Please follow the rules and guidelines given below,
+
+1. Follow the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html).
+2. If you are planning to contribute a new data structure then first raise an issue for discussing the API, rather than directly making a PR.
+3. For the first-time contributors we recommend not to take complex data strucutre, rather start with `linear data structures` or `abstract data types`.
+
+Keep contributing!!
