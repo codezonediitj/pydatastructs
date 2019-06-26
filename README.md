@@ -43,4 +43,4 @@ Please follow the rules and guidelines given below,
 2. If you are planning to contribute a new data structure then first raise an issue for discussing the API, rather than directly making a PR.
 3. For the first-time contributors we recommend not to take complex data strucutre, rather start with `linear data structures` or `abstract data types`.
 
-Keep contributing!!
+Keep contributing!!!
