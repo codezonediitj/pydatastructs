@@ -4,3 +4,4 @@ __pycache__/
 *.pyo
 .vscode/
 .pytest_cache/
+pre_commit.ps1

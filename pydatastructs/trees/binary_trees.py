@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-from pydatastructs.utils.misc_util import Node
+from pydatastructs.utils import Node
 
 __all__ = [
     'Node',

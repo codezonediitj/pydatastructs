@@ -1,0 +1,15 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 0%
+        threshold: 100%
+
+    patch: false
+
+  precision: 3
+
+comment:
+  layout: "diff, files"
+  behavior: default
+  require_changes: false

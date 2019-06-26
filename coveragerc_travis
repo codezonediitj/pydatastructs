@@ -1,0 +1,5 @@
+[run]
+parallel = True
+source = pydatastructs
+omit =
+    */tests/*

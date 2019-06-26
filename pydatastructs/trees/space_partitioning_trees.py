@@ -1,4 +1,4 @@
-from pydatastructs.trees.binary_trees import Node
+from pydatastructs.utils import Node
 from collections import deque as Queue
 from pydatastructs.utils.misc_util import _check_type
 
