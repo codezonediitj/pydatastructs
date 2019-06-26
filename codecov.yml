@@ -11,5 +11,5 @@ coverage:
 
 comment:
   layout: "diff, files, reach"
-  behavior: new
+  behavior: default
   require_changes: false
