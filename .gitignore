@@ -6,3 +6,5 @@ __pycache__/
 .pytest_cache/
 pre_commit.ps1
 .coverage
+# for developement purposes
+pds_debug.py

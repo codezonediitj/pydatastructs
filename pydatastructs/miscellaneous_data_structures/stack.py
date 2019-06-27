@@ -60,7 +60,7 @@ class Stack(object):
         if implementation == 'array':
             return ArrayStack(
                 kwargs.get('maxsize', None),
-                kwargs.get('top', None),
+                kwargs.get('top', 0),
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
         raise NotImplementedError(
@@ -73,6 +73,14 @@ class Stack(object):
     def pop(self, *args, **kwargs):
         raise NotImplementedError(
               "This is an abstract method.")
+
+    @property
+    def is_empty(self):
+        return None
+
+    @property
+    def peek(self):
+        return None
 
 class ArrayStack(Stack):
 
@@ -106,6 +114,14 @@ class ArrayStack(Stack):
         r = self.items[self.top]
         self.items[self.top] = None
         return r
+
+    @property
+    def is_empty(self):
+        return self.top == 0
+
+    @property
+    def peek(self):
+        return self.items[self.top - 1]
 
     def __str__(self):
         """

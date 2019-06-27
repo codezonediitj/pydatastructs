@@ -1,10 +1,12 @@
 from __future__ import print_function, division
 from pydatastructs.utils import Node
+from pydatastructs.miscellaneous_data_structures import Stack
 
 __all__ = [
     'Node',
     'BinaryTree',
-    'BinarySearchTree'
+    'BinarySearchTree',
+    'BinaryTreeTraversal'
 ]
 
 class BinaryTree(object):
@@ -243,3 +245,89 @@ class BinarySearchTree(BinaryTree):
                     self.tree[parent].right = child
 
         return True
+
+class BinaryTreeTraversal(object):
+
+    __slots__ = ['tree']
+
+    def __new__(cls, tree):
+        if not isinstance(tree, BinaryTree):
+            raise TypeError("%s is not a binary tree"%(tree))
+        obj = object.__new__(cls)
+        obj.tree = tree
+        return obj
+
+    def _pre_order(self, node):
+        visit = []
+        if node == None:
+            return visit
+        tree, size = self.tree.tree, self.tree.size
+        s = Stack(maxsize=size)
+        s.push(node)
+        while not s.is_empty:
+            node = s.pop()
+            visit.append(tree[node])
+            if tree[node].right != None:
+                s.push(tree[node].right)
+            if tree[node].left != None:
+                s.push(tree[node].left)
+        return visit
+
+    def _in_order(self, node):
+        visit = []
+        tree, size = self.tree.tree, self.tree.size
+        s = Stack(maxsize=size)
+        while not s.is_empty or node != None:
+            if node != None:
+                s.push(node)
+                node = tree[node].left
+            else:
+                node = s.pop()
+                visit.append(tree[node])
+                node = tree[node].right
+        return visit
+
+    def _post_order(self, node):
+        visit = []
+        tree, size = self.tree.tree, self.tree.size
+        s = Stack(maxsize=size)
+        s.push(node)
+        last, cache = [None, None], 0
+        while not s.is_empty:
+            node = s.peek
+            l, r = tree[node].left, tree[node].right
+            cl, cr = l == None or l in last, r == None or r in last
+            if cl and cr:
+                s.pop()
+                visit.append(tree[node])
+                last[cache] = node
+                cache = 1 - cache
+                continue
+            if not cr:
+                s.push(r)
+            if not cl:
+                s.push(l)
+        # last_node_visited = None
+        # while (not s.is_empty) or node != None:
+        #     if node != None:
+        #         s.push(node)
+        #         node = tree[node].left
+        #     else:
+        #         peek_node = s.peek
+        #         if tree[peek_node].right != None and \
+        #             last_node_visited != tree[peek_node].right:
+        #             node = tree[peek_node].right
+        #         else:
+        #             visit.append(tree[peek_node])
+        #             last_node_visited = s.pop()
+        return visit
+
+    def depth_first_search(self, order='in_order', node=None):
+        if node == None:
+            node = self.tree.root_idx
+        if order not in ('in_order', 'post_order', 'pre_order', 'out_order'):
+            raise NotImplementedError(
+                "%s order is not implemented yet."
+                "We only support `in_order`, `post_order`, "
+                "`pre_order` and `out_order` traversals.")
+        return getattr(self, '_' + order)(node)
