@@ -1,10 +1,15 @@
 from __future__ import print_function, division
 from pydatastructs.utils import Node
+from pydatastructs.miscellaneous_data_structures import Stack
+from pydatastructs.linear_data_structures import OneDimensionalArray
+# TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
+from collections import deque as Queue
 
 __all__ = [
     'Node',
     'BinaryTree',
-    'BinarySearchTree'
+    'BinarySearchTree',
+    'BinaryTreeTraversal'
 ]
 
 class BinaryTree(object):
@@ -243,3 +248,194 @@ class BinarySearchTree(BinaryTree):
                     self.tree[parent].right = child
 
         return True
+
+class BinaryTreeTraversal(object):
+    """
+    Represents the traversals possible in
+    a binary tree.
+
+    Parameters
+    ==========
+
+    tree: BinaryTree
+        The binary tree for whose traversal
+        is to be done.
+
+    Traversals
+    ==========
+
+    - Depth First Search
+        In Order, Post Order, Pre Order Out Order
+
+    - Breadth First Search
+
+    Examples
+    ========
+
+    >>> from pydatastructs import BinarySearchTree as BST
+    >>> from pydatastructs import BinaryTreeTraversal as BTT
+    >>> b = BST(2, 2)
+    >>> b.insert(1, 1)
+    >>> b.insert(3, 3)
+    >>> trav = BTT(b)
+    >>> dfs = trav.depth_first_search()
+    >>> [str(n) for n in dfs]
+    ['(None, 1, 1, None)', '(1, 2, 2, 2)', '(None, 3, 3, None)']
+    >>> bfs = trav.breadth_first_search()
+    >>> [str(n) for n in bfs]
+    ['(1, 2, 2, 2)', '(None, 1, 1, None)', '(None, 3, 3, None)']
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Tree_traversal
+    """
+
+    __slots__ = ['tree']
+
+    def __new__(cls, tree):
+        if not isinstance(tree, BinaryTree):
+            raise TypeError("%s is not a binary tree"%(tree))
+        obj = object.__new__(cls)
+        obj.tree = tree
+        return obj
+
+    def _pre_order(self, node):
+        """
+        Utility method for computing pre-order
+        of a binary tree using iterative algorithm.
+        """
+        visit = []
+        if node == None:
+            return visit
+        tree, size = self.tree.tree, self.tree.size
+        s = Stack(maxsize=size)
+        s.push(node)
+        while not s.is_empty:
+            node = s.pop()
+            visit.append(tree[node])
+            if tree[node].right != None:
+                s.push(tree[node].right)
+            if tree[node].left != None:
+                s.push(tree[node].left)
+        return visit
+
+    def _in_order(self, node):
+        """
+        Utility method for computing in-order
+        of a binary tree using iterative algorithm.
+        """
+        visit = []
+        tree, size = self.tree.tree, self.tree.size
+        s = Stack(maxsize=size)
+        while not s.is_empty or node != None:
+            if node != None:
+                s.push(node)
+                node = tree[node].left
+            else:
+                node = s.pop()
+                visit.append(tree[node])
+                node = tree[node].right
+        return visit
+
+    def _post_order(self, node):
+        """
+        Utility method for computing post-order
+        of a binary tree using iterative algorithm.
+        """
+        visit = []
+        tree, size = self.tree.tree, self.tree.size
+        s = Stack(maxsize=size)
+        s.push(node)
+        last = OneDimensionalArray(int, size)
+        last.fill(False)
+        while not s.is_empty:
+            node = s.peek
+            l, r = tree[node].left, tree[node].right
+            cl, cr = l == None or last[l], r == None or last[r]
+            if cl and cr:
+                s.pop()
+                visit.append(tree[node])
+                last[node] = True
+                continue
+            if not cr:
+                s.push(r)
+            if not cl:
+                s.push(l)
+        return visit
+
+    def _out_order(self, node):
+        """
+        Utility method for computing out-order
+        of a binary tree using iterative algorithm.
+        """
+        return reversed(self._in_order(node))
+
+    def depth_first_search(self, order='in_order', node=None):
+        """
+        Computes the depth first search traversal of the binary
+        trees.
+
+        Parameters
+        ==========
+
+        order : str
+            One of the strings, 'in_order', 'post_order',
+            'pre_order', 'out_order'.
+            By default, it is set to, 'in_order'.
+        node : int
+            The index of the node from where the traversal
+            is to be instantiated.
+
+        Returns
+        =======
+
+        list
+            Each element is of type 'Node'.
+        """
+        if node == None:
+            node = self.tree.root_idx
+        if order not in ('in_order', 'post_order', 'pre_order', 'out_order'):
+            raise NotImplementedError(
+                "%s order is not implemented yet."
+                "We only support `in_order`, `post_order`, "
+                "`pre_order` and `out_order` traversals.")
+        return getattr(self, '_' + order)(node)
+
+    def breadth_first_search(self, node=None, strategy='queue'):
+        # TODO: IMPLEMENT ITERATIVE DEEPENING-DEPTH FIRST SEARCH STRATEGY
+        """
+        Computes the breadth first search traversal of a binary tree.
+
+        Parameters
+        ==========
+
+        strategy : str
+            The strategy using which the computation has to happen.
+            By default, it is set 'queue'.
+        node : int
+            The index of the node from where the traversal has to be instantiated.
+            By default, set to, root index.
+
+        Returns
+        =======
+
+        list
+            Each element of the list is of type `Node`.
+        """
+        strategies = ('queue',)
+        if strategy not in strategies:
+            raise NotImplementedError(
+                "%s startegy is not implemented yet"%(strategy))
+        if node == None:
+            node = self.tree.root_idx
+        q, visit, tree = Queue(), [], self.tree.tree
+        q.append(node)
+        while len(q) > 0:
+            node = q.popleft()
+            visit.append(tree[node])
+            if tree[node].left != None:
+                q.append(tree[node].left)
+            if tree[node].right != None:
+                q.append(tree[node].right)
+        return visit
