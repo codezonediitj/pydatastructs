@@ -248,6 +248,43 @@ class BinarySearchTree(BinaryTree):
         return True
 
 class BinaryTreeTraversal(object):
+    """
+    Represents the traversals possible in
+    a binary tree.
+
+    Parameters
+    ==========
+
+    tree: BinaryTree
+        The binary tree for whose traversal
+        is to be done.
+
+    Traversals
+    ==========
+
+    - Depth First Search
+        In Order, Post Order, Pre Order Out Order
+
+    - Breadth First Search
+
+    Examples
+    ========
+
+    >>> from pydatastructs import BinarySearchTree as BST
+    >>> from pydatastructs import BinaryTreeTraversal as BTT
+    >>> b = BST(2, 2)
+    >>> b.insert(1, 1)
+    >>> b.insert(3, 3)
+    >>> trav = BTT(b)
+    >>> dfs = trav.depth_first_search()
+    >>> [str(n) for n in dfs]
+    ['(None, 1, 1, None)', '(1, 2, 2, 2)', '(None, 3, 3, None)']
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Tree_traversal
+    """
 
     __slots__ = ['tree']
 
@@ -259,6 +296,10 @@ class BinaryTreeTraversal(object):
         return obj
 
     def _pre_order(self, node):
+        """
+        Utility method for computing pre-order
+        of a binary tree using iterative algorithm.
+        """
         visit = []
         if node == None:
             return visit
@@ -275,6 +316,10 @@ class BinaryTreeTraversal(object):
         return visit
 
     def _in_order(self, node):
+        """
+        Utility method for computing in-order
+        of a binary tree using iterative algorithm.
+        """
         visit = []
         tree, size = self.tree.tree, self.tree.size
         s = Stack(maxsize=size)
@@ -289,6 +334,10 @@ class BinaryTreeTraversal(object):
         return visit
 
     def _post_order(self, node):
+        """
+        Utility method for computing post-order
+        of a binary tree using iterative algorithm.
+        """
         visit = []
         tree, size = self.tree.tree, self.tree.size
         s = Stack(maxsize=size)
@@ -311,9 +360,34 @@ class BinaryTreeTraversal(object):
         return visit
 
     def _out_order(self, node):
+        """
+        Utility method for computing out-order
+        of a binary tree using iterative algorithm.
+        """
         return reversed(self._in_order(node))
 
     def depth_first_search(self, order='in_order', node=None):
+        """
+        Computes the depth first search traversal of the binary
+        trees.
+
+        Parameters
+        ==========
+
+        order : str
+            One of the strings, 'in_order', 'post_order',
+            'pre_order', 'out_order'.
+            By default, it is set to, 'in_order'.
+        node : int
+            The index of the node from where the traversal
+            is to be instantiated.
+
+        Returns
+        =======
+
+        list
+            Each element is of type 'Node'.
+        """
         if node == None:
             node = self.tree.root_idx
         if order not in ('in_order', 'post_order', 'pre_order', 'out_order'):
