@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 from pydatastructs.utils import Node
 from pydatastructs.miscellaneous_data_structures import Stack
+from pydatastructs.linear_data_structures import OneDimensionalArray
 
 __all__ = [
     'Node',
@@ -292,35 +293,25 @@ class BinaryTreeTraversal(object):
         tree, size = self.tree.tree, self.tree.size
         s = Stack(maxsize=size)
         s.push(node)
-        last, cache = [None, None], 0
+        last = OneDimensionalArray(int, size)
+        last.fill(False)
         while not s.is_empty:
             node = s.peek
             l, r = tree[node].left, tree[node].right
-            cl, cr = l == None or l in last, r == None or r in last
+            cl, cr = l == None or last[l], r == None or last[r]
             if cl and cr:
                 s.pop()
                 visit.append(tree[node])
-                last[cache] = node
-                cache = 1 - cache
+                last[node] = True
                 continue
             if not cr:
                 s.push(r)
             if not cl:
                 s.push(l)
-        # last_node_visited = None
-        # while (not s.is_empty) or node != None:
-        #     if node != None:
-        #         s.push(node)
-        #         node = tree[node].left
-        #     else:
-        #         peek_node = s.peek
-        #         if tree[peek_node].right != None and \
-        #             last_node_visited != tree[peek_node].right:
-        #             node = tree[peek_node].right
-        #         else:
-        #             visit.append(tree[peek_node])
-        #             last_node_visited = s.pop()
         return visit
+
+    def _out_order(self, node):
+        return reversed(self._in_order(node))
 
     def depth_first_search(self, order='in_order', node=None):
         if node == None:

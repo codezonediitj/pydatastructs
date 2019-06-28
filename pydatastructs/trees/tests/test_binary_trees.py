@@ -52,8 +52,20 @@ def test_BinaryTreeTraversal():
     ["(1, 'F', 'F', 3)", "(2, 'B', 'B', 4)", "(None, 'A', 'A', None)",
      "(5, 'D', 'D', 6)", "(None, 'C', 'C', None)", "(None, 'E', 'E', None)",
      "(None, 'G', 'G', 7)", "(8, 'I', 'I', None)", "(None, 'H', 'H', None)"]
-    post = trav.depth_first_search()
-    assert [str(n) for n in post] == \
+    ino = trav.depth_first_search()
+    assert [str(n) for n in ino] == \
     ["(None, 'A', 'A', None)", "(2, 'B', 'B', 4)", "(None, 'C', 'C', None)",
      "(5, 'D', 'D', 6)", "(None, 'E', 'E', None)", "(1, 'F', 'F', 3)",
      "(None, 'G', 'G', 7)", "(None, 'H', 'H', None)", "(8, 'I', 'I', None)"]
+    out = trav.depth_first_search(order='out_order')
+    assert [str(n) for n in out] == \
+    ["(8, 'I', 'I', None)", "(None, 'H', 'H', None)", "(None, 'G', 'G', 7)",
+     "(1, 'F', 'F', 3)", "(None, 'E', 'E', None)", "(5, 'D', 'D', 6)",
+     "(None, 'C', 'C', None)", "(2, 'B', 'B', 4)", "(None, 'A', 'A', None)"]
+    post = trav.depth_first_search(order='post_order')
+    assert [str(n) for n in post] == \
+    ["(None, 'A', 'A', None)", "(None, 'C', 'C', None)",
+     "(None, 'E', 'E', None)", "(5, 'D', 'D', 6)", "(2, 'B', 'B', 4)",
+     "(None, 'H', 'H', None)", "(8, 'I', 'I', None)", "(None, 'G', 'G', 7)",
+     "(1, 'F', 'F', 3)"]
+    raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
