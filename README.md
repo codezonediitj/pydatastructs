@@ -37,7 +37,7 @@ See you soon with your first PR.
 Guidelines
 ----------
 
-We recommend you to introduce yourself on our [gitter channel](https://gitter.im/codezoned2017/Lobby). You can include the courses you have taken relevant to data strucutres and algorithms, some projects, prior experience, this will help us to allocate you issues with suitable difficulty.
+We recommend you to introduce yourself on our [gitter channel](https://gitter.im/codezoned2017/Lobby). You can include the courses you have taken relevant to data strucutres and algorithms, some projects, prior experience, in your introduction. This will help us to allocate you issues of suitable difficulty.
 
 Please follow the rules and guidelines given below,
 
