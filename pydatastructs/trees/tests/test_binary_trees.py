@@ -68,4 +68,11 @@ def test_BinaryTreeTraversal():
      "(None, 'E', 'E', None)", "(5, 'D', 'D', 6)", "(2, 'B', 'B', 4)",
      "(None, 'H', 'H', None)", "(8, 'I', 'I', None)", "(None, 'G', 'G', 7)",
      "(1, 'F', 'F', 3)"]
+    bfs = trav.breadth_first_search()
+    assert [str(n) for n in bfs] == \
+        ["(1, 'F', 'F', 3)", "(2, 'B', 'B', 4)", "(None, 'G', 'G', 7)",
+         "(None, 'A', 'A', None)", "(5, 'D', 'D', 6)", "(8, 'I', 'I', None)",
+         "(None, 'C', 'C', None)", "(None, 'E', 'E', None)",
+         "(None, 'H', 'H', None)"]
+    raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))

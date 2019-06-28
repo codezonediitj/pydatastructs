@@ -2,6 +2,8 @@ from __future__ import print_function, division
 from pydatastructs.utils import Node
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import OneDimensionalArray
+# TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
+from collections import deque as Queue
 
 __all__ = [
     'Node',
@@ -279,6 +281,9 @@ class BinaryTreeTraversal(object):
     >>> dfs = trav.depth_first_search()
     >>> [str(n) for n in dfs]
     ['(None, 1, 1, None)', '(1, 2, 2, 2)', '(None, 3, 3, None)']
+    >>> bfs = trav.breadth_first_search()
+    >>> [str(n) for n in bfs]
+    ['(1, 2, 2, 2)', '(None, 1, 1, None)', '(None, 3, 3, None)']
 
     References
     ==========
@@ -396,3 +401,41 @@ class BinaryTreeTraversal(object):
                 "We only support `in_order`, `post_order`, "
                 "`pre_order` and `out_order` traversals.")
         return getattr(self, '_' + order)(node)
+
+    def breadth_first_search(self, node=None, strategy='queue'):
+        # TODO: IMPLEMENT ITERATIVE DEEPENING-DEPTH FIRST SEARCH STRATEGY
+        """
+        Computes the breadth first search traversal of a binary tree.
+
+        Parameters
+        ==========
+
+        strategy : str
+            The strategy using which the computation has to happen.
+            By default, it is set 'queue'.
+        node : int
+            The index of the node from where the traversal has to be instantiated.
+            By default, set to, root index.
+
+        Returns
+        =======
+
+        list
+            Each element of the list is of type `Node`.
+        """
+        strategies = ('queue',)
+        if strategy not in strategies:
+            raise NotImplementedError(
+                "%s startegy is not implemented yet"%(strategy))
+        if node == None:
+            node = self.tree.root_idx
+        q, visit, tree = Queue(), [], self.tree.tree
+        q.append(node)
+        while len(q) > 0:
+            node = q.popleft()
+            visit.append(tree[node])
+            if tree[node].left != None:
+                q.append(tree[node].left)
+            if tree[node].right != None:
+                q.append(tree[node].right)
+        return visit
