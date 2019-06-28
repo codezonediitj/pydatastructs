@@ -37,10 +37,12 @@ See you soon with your first PR.
 Guidelines
 ----------
 
+We recommend you to introduce yourself on our [gitter channel](https://gitter.im/codezoned2017/Lobby). You can include the courses you have taken relevant to data strucutres and algorithms, some projects, prior experience, this will help us to allocate you issues with suitable difficulty.
+
 Please follow the rules and guidelines given below,
 
 1. Follow the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 2. If you are planning to contribute a new data structure then first raise an issue for discussing the API, rather than directly making a PR.
-3. For the first-time contributors we recommend not to take complex data strucutre, rather start with `linear data structures` or `abstract data types`.
+3. For the first-time contributors we recommend not to take complex data strucutre, rather start with `linear data structures` or `abstract data types`. You can also with issues labelled as `good_first_issues`.
 
 Keep contributing!!
