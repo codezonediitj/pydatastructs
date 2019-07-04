@@ -49,7 +49,7 @@ class NodeV2(Node):
 
     height: int
         Height of the node,
-        given as max(height of left child, height of right child).
+        given as max(height of left child, height of right child) + 1.
     parent: int
         The index of the parent node.
     """

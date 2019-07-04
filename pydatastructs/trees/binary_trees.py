@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-from pydatastructs.utils import Node
+from pydatastructs.utils import Node, NodeV2
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import OneDimensionalArray
 # TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
@@ -54,6 +54,86 @@ class BinaryTree(object):
                         if comp == None else comp
         return obj
 
+    def insert(self, key, data):
+        """
+        Inserts data by the passed key using iterative
+        algorithm.
+
+        Parameters
+        ==========
+
+        key
+            The key for comparison.
+        data
+            The data to be inserted.
+
+        Returns
+        =======
+
+        None
+        """
+        raise NotImplementedError("This is an abstract method.")
+
+    def delete(self, key):
+        """
+        Deletes the data with the passed key
+        using iterative algorithm.
+
+        Parameters
+        ==========
+
+        key
+            The key of the node which is
+            to be deleted.
+
+        Returns
+        =======
+
+        True
+            If the node is deleted successfully.
+        None
+            If the node to be deleted doesn't exists.
+
+        Note
+        ====
+
+        The node is deleted means that the connection to that
+        node are removed but the it is still in three. This
+        is being done to keep the complexity of deletion, O(logn).
+        """
+        raise NotImplementedError("This is an abstract method.")
+
+    def search(self, key, **kwargs):
+        """
+        Searches for the data in the binary search tree
+        using iterative algorithm.
+
+        Parameters
+        ==========
+
+        key
+            The key for searching.
+        parent: bool
+            If true then returns index of the
+            parent of the node with the passed
+            key.
+            By default, False
+
+        Returns
+        =======
+
+        int
+            If the node with the passed key is
+            in the tree.
+        tuple
+            The index of the searched node and
+            the index of the parent of that node.
+        None
+            In all other cases.
+        """
+        raise NotImplementedError("This is an abstract method.")
+
+
     def __str__(self):
         return str([(node.left, node.key, node.data, node.right)
                     for node in self.tree])
@@ -90,25 +170,13 @@ class BinarySearchTree(BinaryTree):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Binary_search_tree
+
+    See Also
+    ========
+
+    pydatastructs.trees.binary_tree.BinaryTree
     """
     def insert(self, key, data):
-        """
-        Inserts data by the passed key using iterative
-        algorithm.
-
-        Parameters
-        ==========
-
-        key
-            The key for comparison.
-        data
-            The data to be inserted.
-
-        Returns
-        =======
-
-        None
-        """
         walk = self.root_idx
         if self.tree[walk].key == None:
             self.tree[walk].key = key
@@ -135,33 +203,6 @@ class BinarySearchTree(BinaryTree):
                 walk = self.tree[walk].left
 
     def search(self, key, **kwargs):
-        """
-        Searches for the data in the binary search tree
-        using iterative algorithm.
-
-        Parameters
-        ==========
-
-        key
-            The key for searching.
-        parent: bool
-            If true then returns index of the
-            parent of the node with the passed
-            key.
-            By default, False
-
-        Returns
-        =======
-
-        int
-            If the node with the passed key is
-            in the tree.
-        tuple
-            The index of the searched node and
-            the index of the parent of that node.
-        None
-            In all other cases.
-        """
         ret_parent = kwargs.get('parent', False)
         parent = None
         walk = self.root_idx
@@ -178,32 +219,6 @@ class BinarySearchTree(BinaryTree):
         return (walk, parent) if ret_parent else walk
 
     def delete(self, key):
-        """
-        Deletes the data with the passed key
-        using iterative algorithm.
-
-        Parameters
-        ==========
-
-        key
-            The key of the node which is
-            to be deleted.
-
-        Returns
-        =======
-
-        True
-            If the node is deleted successfully.
-        None
-            If the node to be deleted doesn't exists.
-
-        Note
-        ====
-
-        The node is deleted means that the connection to that
-        node are removed but the it is still in three. This
-        is being done to keep the complexity of deletion, O(logn).
-        """
         (walk, parent) = self.search(key, parent=True)
         if walk == None:
             return None
@@ -248,6 +263,32 @@ class BinarySearchTree(BinaryTree):
                     self.tree[parent].right = child
 
         return True
+
+class AVLTree(BinarySearchTree):
+    """
+    Represents AVL trees.
+
+    References
+    ==========
+
+    .. [1] https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf
+
+    See Also
+    ========
+
+    pydatastructs.trees.binary_trees.BinaryTree
+    """
+    def __new__(cls, key=None, root_data=None, comp=None):
+        obj = super(cls, BinarySearchTree).__new__(cls, key, root_data, comp)
+        curr_node = obj.tree[obj.root_idx]
+        obj.tree[obj.root_idx] = NodeV2(curr_node.key, curr_node.data)
+        return obj
+
+    def insert(self, key, data):
+        pass
+
+    def delete(self, key):
+        pass
 
 class BinaryTreeTraversal(object):
     """
