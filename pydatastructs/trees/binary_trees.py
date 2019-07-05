@@ -1,12 +1,12 @@
 from __future__ import print_function, division
-from pydatastructs.utils import Node, NodeV2
+from pydatastructs.utils import Node
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import OneDimensionalArray
 # TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 
 __all__ = [
-    'Node',
+    'AVLTree',
     'BinaryTree',
     'BinarySearchTree',
     'BinaryTreeTraversal'
@@ -278,14 +278,78 @@ class AVLTree(BinarySearchTree):
 
     pydatastructs.trees.binary_trees.BinaryTree
     """
-    def __new__(cls, key=None, root_data=None, comp=None):
-        obj = super(cls, BinarySearchTree).__new__(cls, key, root_data, comp)
-        curr_node = obj.tree[obj.root_idx]
-        obj.tree[obj.root_idx] = NodeV2(curr_node.key, curr_node.data)
-        return obj
+    left_height = lambda self, node: self.tree[node.left].height \
+                                        if node.left != None else -1
+    right_height = lambda self, node: self.tree[node.right].height \
+                                        if node.right != None else -1
+    balance_factor = lambda self, node: self.left_height(node) - \
+                                        self.right_height(node)
+
+    def _right_rotate(self, j, k, y):
+        print(j, k, y)
+        self.tree[y].parent = j
+        self.tree[j].left = y
+        self.tree[j].parent = k
+        self.tree[k].right = j
+
+    def _left_rotate(self, j, k, y):
+        self.tree[k].parent = self.tree[j].parent
+        self.tree[y].parent = j
+        self.tree[j].right = y
+        self.tree[j].parent = k
+        self.tree[k].left = j
 
     def insert(self, key, data):
-        pass
+        walk = self.root_idx
+        if self.tree[walk].key == None:
+            self.tree[walk].key = key
+            self.tree[walk].data = data
+            return None
+        new_node, prev_node, flag = Node(key, data), 0, True
+        while flag:
+            if self.tree[walk].key == key:
+                self.tree[walk].data = data
+                flag = False
+            if not self.comparator(key, self.tree[walk].key):
+                if self.tree[walk].right == None:
+                    new_node.parent = prev_node
+                    self.tree.append(new_node)
+                    self.tree[walk].right = self.size
+                    self.size += 1
+                    flag = False
+                prev_node = walk = self.tree[walk].right
+            else:
+                if self.tree[walk].left == None:
+                    new_node.parent = prev_node
+                    self.tree.append(new_node)
+                    self.tree[walk].left = self.size
+                    self.size += 1
+                    flag = False
+                prev_node = walk = self.tree[walk].left
+
+        print([str(n) for n in self.tree])
+        walk = self.tree[self.size-1].parent
+        path = Queue()
+        path.append(self.size-1), path.append(walk)
+        while self.tree[walk].parent != None:
+            # print([str(n) for n in self.tree])
+            self.tree[walk].height = max(self.left_height(self.tree[walk]),
+                                        self.right_height(self.tree[walk])) + 1
+            last = path.popleft()
+            last2last = path.popleft()
+            if self.balance_factor(self.tree[walk]) in (2, -2):
+                l = self.tree[walk].left
+                if l != None and l == last and self.tree[l].left == last2last:
+                    self._right_rotate(walk, last, last2last)
+                r = self.tree[walk].right
+                if r != None and r == last and self.tree[r].right == last2last:
+                    self._left_rotate(walk, last, last2last)
+                if l != None and l == last and self.tree[l].right == last2last:
+                    self._right_rotate(walk, last, last2last)
+                if r != None and r == last and self.tree[r].left == last2last:
+                    self._left_rotate(walk, last, last2last)
+            path.append(walk), path.append(last)
+            walk = self.tree[walk].parent
 
     def delete(self, key):
         pass
