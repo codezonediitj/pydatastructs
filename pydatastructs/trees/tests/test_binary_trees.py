@@ -1,5 +1,5 @@
 from pydatastructs.trees.binary_trees import (
-    BinarySearchTree, BinaryTreeTraversal)
+    BinarySearchTree, BinaryTreeTraversal, AVLTree)
 from pydatastructs.utils.raises_util import raises
 
 def test_BinarySearchTree():
@@ -76,3 +76,21 @@ def test_BinaryTreeTraversal():
          "(None, 'H', 'H', None)"]
     raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
+
+def test_AVLTree():
+    a = AVLTree('M', 'M')
+    a.insert('N', 'N')
+    a.insert('O', 'O')
+    a.insert('L', 'L')
+    a.insert('K', 'K')
+    a.insert('Q', 'Q')
+    a.insert('P', 'P')
+    a.insert('H', 'H')
+    a.insert('I', 'I')
+    a.insert('A', 'A')
+    assert str(a) == ("[(None, 'M', 'M', None), (8, 'N', 'N', 6), "
+                      "(None, 'O', 'O', None), (4, 'L', 'L', 0), "
+                      "(None, 'K', 'K', None), (None, 'Q', 'Q', None), "
+                      "(2, 'P', 'P', 5), (9, 'H', 'H', None), "
+                      "(7, 'I', 'I', 3), (None, 'A', 'A', None)]")
+    assert [a.balance_factor(n) for n in a.tree] == [0, 1, 0, 0, 0, 0, 0, 1, 0, 0]

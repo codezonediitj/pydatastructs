@@ -272,6 +272,7 @@ class AVLTree(BinarySearchTree):
     ==========
 
     .. [1] https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf
+    .. [2] https://en.wikipedia.org/wiki/AVL_tree
 
     See Also
     ========
@@ -285,19 +286,99 @@ class AVLTree(BinarySearchTree):
     balance_factor = lambda self, node: self.left_height(node) - \
                                         self.right_height(node)
 
-    def _right_rotate(self, j, k, y):
-        print(j, k, y)
-        self.tree[y].parent = j
+    def _right_rotate(self, j, k):
+        y = self.tree[k].right
+        if y != None:
+            self.tree[y].parent = j
         self.tree[j].left = y
+        self.tree[k].parent = self.tree[j].parent
+        if self.tree[k].parent != None:
+            self.tree[self.tree[k].parent].left = k
         self.tree[j].parent = k
         self.tree[k].right = j
+        self.tree[j].height = max(self.left_height(self.tree[j]),
+                                  self.right_height(self.tree[j])) + 1
+        self.tree[k].height = max(self.left_height(self.tree[k]),
+                                    self.right_height(self.tree[k])) + 1
+        kp = self.tree[k].parent
+        if kp != None:
+            self.tree[kp].height = max(self.left_height(self.tree[kp]),
+                                        self.right_height(self.tree[kp])) + 1
+        else:
+            self.root_idx = k
 
-    def _left_rotate(self, j, k, y):
-        self.tree[k].parent = self.tree[j].parent
-        self.tree[y].parent = j
+    def _left_right_rotate(self, j, k):
+        i = self.tree[k].right
+        v, w = self.tree[i].left, self.tree[i].right
+        self.tree[k].right, self.tree[j].left = v, w
+        if v != None:
+            self.tree[v].parent = k
+        if w != None:
+            self.tree[w].parent = j
+        self.tree[i].left, self.tree[i].right, self.tree[i].parent = \
+            k, j, self.tree[j].parent
+        self.tree[k].parent, self.tree[j].parent = i, i
+        self.tree[j].height = max(self.left_height(self.tree[j]),
+                                  self.right_height(self.tree[j])) + 1
+        self.tree[k].height = max(self.left_height(self.tree[k]),
+                                    self.right_height(self.tree[k])) + 1
+        ip = self.tree[i].parent
+        if ip != None:
+            if self.tree[ip].left == j:
+                self.tree[ip].left = i
+            else:
+                self.tree[ip].right = i
+            self.tree[ip].height = max(self.left_height(self.tree[ip]),
+                                        self.right_height(self.tree[ip])) + 1
+        else:
+            self.root_idx = i
+
+    def _right_left_rotate(self, j, k):
+        i = self.tree[k].left
+        v, w = self.tree[i].left, self.tree[i].right
+        self.tree[k].left, self.tree[j].right = w, v
+        if v != None:
+            self.tree[v].parent = j
+        if w != None:
+            self.tree[w].parent = k
+        self.tree[i].right, self.tree[i].left, self.tree[i].parent = \
+            k, j, self.tree[j].parent
+        self.tree[k].parent, self.tree[j].parent = i, i
+        self.tree[j].height = max(self.left_height(self.tree[j]),
+                                  self.right_height(self.tree[j])) + 1
+        self.tree[k].height = max(self.left_height(self.tree[k]),
+                                    self.right_height(self.tree[k])) + 1
+        ip = self.tree[i].parent
+        if ip != None:
+            if self.tree[ip].left == j:
+                self.tree[ip].left = i
+            else:
+                self.tree[ip].right = i
+            self.tree[ip].height = max(self.left_height(self.tree[ip]),
+                                        self.right_height(self.tree[ip])) + 1
+        else:
+            self.root_idx = i
+
+    def _left_rotate(self, j, k):
+        y = self.tree[k].left
+        if y != None:
+            self.tree[y].parent = j
         self.tree[j].right = y
+        self.tree[k].parent = self.tree[j].parent
+        if self.tree[k].parent != None:
+            self.tree[self.tree[k].parent].right = k
         self.tree[j].parent = k
         self.tree[k].left = j
+        self.tree[j].height = max(self.left_height(self.tree[j]),
+                                  self.right_height(self.tree[j])) + 1
+        self.tree[k].height = max(self.left_height(self.tree[k]),
+                                    self.right_height(self.tree[k])) + 1
+        kp = self.tree[k].parent
+        if kp != None:
+            self.tree[kp].height = max(self.left_height(self.tree[kp]),
+                                        self.right_height(self.tree[kp])) + 1
+        else:
+            self.root_idx = k
 
     def insert(self, key, data):
         walk = self.root_idx
@@ -327,12 +408,10 @@ class AVLTree(BinarySearchTree):
                     flag = False
                 prev_node = walk = self.tree[walk].left
 
-        print([str(n) for n in self.tree])
         walk = self.tree[self.size-1].parent
         path = Queue()
         path.append(self.size-1), path.append(walk)
-        while self.tree[walk].parent != None:
-            # print([str(n) for n in self.tree])
+        while walk != None:
             self.tree[walk].height = max(self.left_height(self.tree[walk]),
                                         self.right_height(self.tree[walk])) + 1
             last = path.popleft()
@@ -340,14 +419,14 @@ class AVLTree(BinarySearchTree):
             if self.balance_factor(self.tree[walk]) in (2, -2):
                 l = self.tree[walk].left
                 if l != None and l == last and self.tree[l].left == last2last:
-                    self._right_rotate(walk, last, last2last)
+                    self._right_rotate(walk, last)
                 r = self.tree[walk].right
                 if r != None and r == last and self.tree[r].right == last2last:
-                    self._left_rotate(walk, last, last2last)
+                    self._left_rotate(walk, last)
                 if l != None and l == last and self.tree[l].right == last2last:
-                    self._right_rotate(walk, last, last2last)
+                    self._left_right_rotate(walk, last)
                 if r != None and r == last and self.tree[r].left == last2last:
-                    self._left_rotate(walk, last, last2last)
+                    self._right_left_rotate(walk, last)
             path.append(walk), path.append(last)
             walk = self.tree[walk].parent
 
