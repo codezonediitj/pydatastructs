@@ -32,6 +32,19 @@ def test_BinarySearchTree():
     "(None, 13, 13, None)]")
     bc = BST(1, 1)
     assert bc.insert(1, 2) == None
+    b = BST(-8, 8)
+    b.insert(-3, 3)
+    b.insert(-10, 10)
+    b.insert(-1, 1)
+    b.insert(-6, 6)
+    b.insert(-4, 4)
+    b.insert(-7, 7)
+    b.insert(-14, 14)
+    b.insert(-13, 13)
+    assert b.delete(-13) == True
+    assert b.delete(-10) == True
+    assert b.delete(-3) == True
+    assert b.delete(-13) == None
     raises(ValueError, lambda: BST(root_data=6))
 
 def test_BinaryTreeTraversal():
@@ -76,6 +89,7 @@ def test_BinaryTreeTraversal():
          "(None, 'H', 'H', None)"]
     raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
+    raises(TypeError, lambda: BTT(1))
 
 def test_AVLTree():
     a = AVLTree('M', 'M')
@@ -94,3 +108,22 @@ def test_AVLTree():
                       "(2, 'P', 'P', 5), (9, 'H', 'H', None), "
                       "(7, 'I', 'I', 3), (None, 'A', 'A', None)]")
     assert [a.balance_factor(n) for n in a.tree] == [0, 1, 0, 0, 0, 0, 0, 1, 0, 0]
+    a1 = AVLTree(1, 1)
+    a1.insert(2, 2)
+    a1.insert(3, 3)
+    a1.insert(4, 4)
+    a1.insert(5, 5)
+    assert str(a1) == ("[(None, 1, 1, None), (0, 2, 2, 3), (None, 3, 3, None), "
+                      "(2, 4, 4, 4), (None, 5, 5, None)]")
+    a3 = AVLTree(-1, 1)
+    a3.insert(-2, 2)
+    a3.insert(-3, 3)
+    a3.insert(-4, 4)
+    a3.insert(-5, 5)
+    assert str(a3) == ("[(None, -1, 1, None), (3, -2, 2, 0), "
+                       "(None, -3, 3, None), (4, -4, 4, 2), "
+                       "(None, -5, 5, None)]")
+    a2 = AVLTree()
+    a2.insert(1, 1)
+    a2.insert(1, 1)
+    assert str(a2) == "[(None, 1, 1, None)]"

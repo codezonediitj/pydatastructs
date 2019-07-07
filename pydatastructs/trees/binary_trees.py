@@ -312,8 +312,10 @@ class AVLTree(BinarySearchTree):
         v, w = self.tree[i].left, self.tree[i].right
         self.tree[k].right, self.tree[j].left = v, w
         if v != None:
+            print("Hey")
             self.tree[v].parent = k
         if w != None:
+            print("Hey")
             self.tree[w].parent = j
         self.tree[i].left, self.tree[i].right, self.tree[i].parent = \
             k, j, self.tree[j].parent
@@ -327,10 +329,12 @@ class AVLTree(BinarySearchTree):
             if self.tree[ip].left == j:
                 self.tree[ip].left = i
             else:
+                print("Hey")
                 self.tree[ip].right = i
             self.tree[ip].height = max(self.left_height(self.tree[ip]),
                                         self.right_height(self.tree[ip])) + 1
         else:
+            print("Hey")
             self.root_idx = i
 
     def _right_left_rotate(self, j, k):
@@ -391,22 +395,23 @@ class AVLTree(BinarySearchTree):
             if self.tree[walk].key == key:
                 self.tree[walk].data = data
                 flag = False
-            if not self.comparator(key, self.tree[walk].key):
-                if self.tree[walk].right == None:
-                    new_node.parent = prev_node
-                    self.tree.append(new_node)
-                    self.tree[walk].right = self.size
-                    self.size += 1
-                    flag = False
-                prev_node = walk = self.tree[walk].right
             else:
-                if self.tree[walk].left == None:
-                    new_node.parent = prev_node
-                    self.tree.append(new_node)
-                    self.tree[walk].left = self.size
-                    self.size += 1
-                    flag = False
-                prev_node = walk = self.tree[walk].left
+                if not self.comparator(key, self.tree[walk].key):
+                    if self.tree[walk].right == None:
+                        new_node.parent = prev_node
+                        self.tree.append(new_node)
+                        self.tree[walk].right = self.size
+                        self.size += 1
+                        flag = False
+                    prev_node = walk = self.tree[walk].right
+                else:
+                    if self.tree[walk].left == None:
+                        new_node.parent = prev_node
+                        self.tree.append(new_node)
+                        self.tree[walk].left = self.size
+                        self.size += 1
+                        flag = False
+                    prev_node = walk = self.tree[walk].left
 
         walk = self.tree[self.size-1].parent
         path = Queue()
@@ -490,8 +495,6 @@ class BinaryTreeTraversal(object):
         of a binary tree using iterative algorithm.
         """
         visit = []
-        if node == None:
-            return visit
         tree, size = self.tree.tree, self.tree.size
         s = Stack(maxsize=size)
         s.push(node)
