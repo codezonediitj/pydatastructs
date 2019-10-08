@@ -312,10 +312,8 @@ class AVLTree(BinarySearchTree):
         v, w = self.tree[i].left, self.tree[i].right
         self.tree[k].right, self.tree[j].left = v, w
         if v != None:
-            print("Hey")
             self.tree[v].parent = k
         if w != None:
-            print("Hey")
             self.tree[w].parent = j
         self.tree[i].left, self.tree[i].right, self.tree[i].parent = \
             k, j, self.tree[j].parent
@@ -329,12 +327,10 @@ class AVLTree(BinarySearchTree):
             if self.tree[ip].left == j:
                 self.tree[ip].left = i
             else:
-                print("Hey")
                 self.tree[ip].right = i
             self.tree[ip].height = max(self.left_height(self.tree[ip]),
                                         self.right_height(self.tree[ip])) + 1
         else:
-            print("Hey")
             self.root_idx = i
 
     def _right_left_rotate(self, j, k):

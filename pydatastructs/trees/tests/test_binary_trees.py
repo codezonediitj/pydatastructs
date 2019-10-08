@@ -1,6 +1,7 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree)
 from pydatastructs.utils.raises_util import raises
+from pydatastructs.utils.misc_util import Node
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
@@ -127,3 +128,31 @@ def test_AVLTree():
     a2.insert(1, 1)
     a2.insert(1, 1)
     assert str(a2) == "[(None, 1, 1, None)]"
+    a3 = AVLTree()
+    a3.tree = []
+    for i in range(7):
+        a3.tree.append(Node(i, i))
+    a3.tree[0].left = 1
+    a3.tree[0].right = 6
+    a3.tree[1].left = 5
+    a3.tree[1].right = 2
+    a3.tree[2].left = 3
+    a3.tree[2].right = 4
+    a3._left_right_rotate(0, 1)
+    assert str(a3) == ("[(4, 0, 0, 6), (5, 1, 1, 3), (1, 2, 2, 0), "
+                       "(None, 3, 3, None), (None, 4, 4, None), "
+                       "(None, 5, 5, None), (None, 6, 6, None)]")
+    a4 = AVLTree()
+    a4.tree = []
+    for i in range(7):
+        a4.tree.append(Node(i, i))
+    a4.tree[0].left = 1
+    a4.tree[0].right = 2
+    a4.tree[2].left = 3
+    a4.tree[2].right = 4
+    a4.tree[3].left = 5
+    a4.tree[3].right = 6
+    a4._right_left_rotate(0, 2)
+    assert str(a4) == ("[(1, 0, 0, 5), (None, 1, 1, None), (6, 2, 2, 4), "
+                      "(0, 3, 3, 2), (None, 4, 4, None), (None, 5, 5, None), "
+                      "(None, 6, 6, None)]")
