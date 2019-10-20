@@ -5,7 +5,7 @@ __pycache__/
 .vscode/
 .pytest_cache/
 pre_commit.ps1
-.coverage
 htmlcov
+*coverage*
 # for developement purposes
 pds_debug.py

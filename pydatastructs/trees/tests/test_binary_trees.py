@@ -1,6 +1,7 @@
 from pydatastructs.trees.binary_trees import (
-    BinarySearchTree, BinaryTreeTraversal)
+    BinarySearchTree, BinaryTreeTraversal, AVLTree)
 from pydatastructs.utils.raises_util import raises
+from pydatastructs.utils.misc_util import Node
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
@@ -32,6 +33,19 @@ def test_BinarySearchTree():
     "(None, 13, 13, None)]")
     bc = BST(1, 1)
     assert bc.insert(1, 2) == None
+    b = BST(-8, 8)
+    b.insert(-3, 3)
+    b.insert(-10, 10)
+    b.insert(-1, 1)
+    b.insert(-6, 6)
+    b.insert(-4, 4)
+    b.insert(-7, 7)
+    b.insert(-14, 14)
+    b.insert(-13, 13)
+    assert b.delete(-13) == True
+    assert b.delete(-10) == True
+    assert b.delete(-3) == True
+    assert b.delete(-13) == None
     raises(ValueError, lambda: BST(root_data=6))
 
 def test_BinaryTreeTraversal():
@@ -76,3 +90,122 @@ def test_BinaryTreeTraversal():
          "(None, 'H', 'H', None)"]
     raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
+    raises(TypeError, lambda: BTT(1))
+
+def test_AVLTree():
+    a = AVLTree('M', 'M')
+    a.insert('N', 'N')
+    a.insert('O', 'O')
+    a.insert('L', 'L')
+    a.insert('K', 'K')
+    a.insert('Q', 'Q')
+    a.insert('P', 'P')
+    a.insert('H', 'H')
+    a.insert('I', 'I')
+    a.insert('A', 'A')
+    assert str(a) == ("[(None, 'M', 'M', None), (8, 'N', 'N', 6), "
+                      "(None, 'O', 'O', None), (4, 'L', 'L', 0), "
+                      "(None, 'K', 'K', None), (None, 'Q', 'Q', None), "
+                      "(2, 'P', 'P', 5), (9, 'H', 'H', None), "
+                      "(7, 'I', 'I', 3), (None, 'A', 'A', None)]")
+    assert [a.balance_factor(n) for n in a.tree] == [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
+    a1 = AVLTree(1, 1)
+    a1.insert(2, 2)
+    a1.insert(3, 3)
+    a1.insert(4, 4)
+    a1.insert(5, 5)
+    assert str(a1) == ("[(None, 1, 1, None), (0, 2, 2, 3), (None, 3, 3, None), "
+                      "(2, 4, 4, 4), (None, 5, 5, None)]")
+    a3 = AVLTree(-1, 1)
+    a3.insert(-2, 2)
+    a3.insert(-3, 3)
+    a3.insert(-4, 4)
+    a3.insert(-5, 5)
+    assert str(a3) == ("[(None, -1, 1, None), (3, -2, 2, 0), "
+                       "(None, -3, 3, None), (4, -4, 4, 2), "
+                       "(None, -5, 5, None)]")
+    a2 = AVLTree()
+    a2.insert(1, 1)
+    a2.insert(1, 1)
+    assert str(a2) == "[(None, 1, 1, None)]"
+    a3 = AVLTree()
+    a3.tree = []
+    for i in range(7):
+        a3.tree.append(Node(i, i))
+    a3.tree[0].left = 1
+    a3.tree[0].right = 6
+    a3.tree[1].left = 5
+    a3.tree[1].right = 2
+    a3.tree[2].left = 3
+    a3.tree[2].right = 4
+    a3._left_right_rotate(0, 1)
+    assert str(a3) == ("[(4, 0, 0, 6), (5, 1, 1, 3), (1, 2, 2, 0), "
+                       "(None, 3, 3, None), (None, 4, 4, None), "
+                       "(None, 5, 5, None), (None, 6, 6, None)]")
+    a4 = AVLTree()
+    a4.tree = []
+    for i in range(7):
+        a4.tree.append(Node(i, i))
+    a4.tree[0].left = 1
+    a4.tree[0].right = 2
+    a4.tree[2].left = 3
+    a4.tree[2].right = 4
+    a4.tree[3].left = 5
+    a4.tree[3].right = 6
+    a4._right_left_rotate(0, 2)
+    assert str(a4) == ("[(1, 0, 0, 5), (None, 1, 1, None), (6, 2, 2, 4), "
+                      "(0, 3, 3, 2), (None, 4, 4, None), (None, 5, 5, None), "
+                      "(None, 6, 6, None)]")
+
+    a5 = AVLTree()
+    a5.tree = [
+        Node(10, 10),
+        Node(5, 5),
+        Node(17, 17),
+        Node(2, 2),
+        Node(9, 9),
+        Node(12, 12),
+        Node(20, 20),
+        Node(3, 3),
+        Node(11, 11),
+        Node(15, 15),
+        Node(18, 18),
+        Node(30, 30),
+        Node(13, 13),
+        Node(33, 33)
+    ]
+
+    a5.tree[0].left, a5.tree[0].right, a5.tree[0].parent, a5.tree[0].height = \
+        1, 2, None, 4
+    a5.tree[1].left, a5.tree[1].right, a5.tree[1].parent, a5.tree[1].height = \
+        3, 4, 0, 2
+    a5.tree[2].left, a5.tree[2].right, a5.tree[2].parent, a5.tree[2].height = \
+        5, 6, 0, 3
+    a5.tree[3].left, a5.tree[3].right, a5.tree[3].parent, a5.tree[3].height = \
+        None, 7, 1, 1
+    a5.tree[4].left, a5.tree[4].right, a5.tree[4].parent, a5.tree[4].height = \
+        None, None, 1, 0
+    a5.tree[5].left, a5.tree[5].right, a5.tree[5].parent, a5.tree[5].height = \
+        8, 9, 2, 2
+    a5.tree[6].left, a5.tree[6].right, a5.tree[6].parent, a5.tree[6].height = \
+        10, 11, 2, 2
+    a5.tree[7].left, a5.tree[7].right, a5.tree[7].parent, a5.tree[7].height = \
+        None, None, 3, 0
+    a5.tree[8].left, a5.tree[8].right, a5.tree[8].parent, a5.tree[8].height = \
+        None, None, 5, 0
+    a5.tree[9].left, a5.tree[9].right, a5.tree[9].parent, a5.tree[9].height = \
+        12, None, 5, 1
+    a5.tree[10].left, a5.tree[10].right, a5.tree[10].parent, a5.tree[10].height = \
+        None, None, 6, 0
+    a5.tree[11].left, a5.tree[11].right, a5.tree[11].parent, a5.tree[11].height = \
+        None, 13, 6, 1
+    a5.tree[12].left, a5.tree[12].right, a5.tree[12].parent, a5.tree[12].height = \
+        None, None, 9, 0
+    a5.tree[13].left, a5.tree[13].right, a5.tree[13].parent, a5.tree[13].height = \
+        None, None, 11, 0
+    a5.delete(9)
+    assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), (0, 17, 17, 6), "
+                      "(None, 2, 2, None), (None, 9, 9, None), (8, 12, 12, 9), "
+                      "(10, 20, 20, 11), (3, 3, 3, 1), (None, 11, 11, None), "
+                      "(12, 15, 15, None), (None, 18, 18, None), (None, 30, 30, 13), "
+                      "(None, 13, 13, None), (None, 33, 33, None)]")

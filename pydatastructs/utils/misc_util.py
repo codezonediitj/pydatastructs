@@ -24,12 +24,13 @@ class Node(object):
         Optional, index of the right child node.
     """
 
-    __slots__ = ['key', 'data', 'left', 'right', 'is_root']
+    __slots__ = ['key', 'data', 'left', 'right', 'is_root',
+                 'height', 'parent']
 
     def __new__(cls, key, data):
         obj = object.__new__(cls)
         obj.data, obj.key = data, key
-        obj.left, obj.right = None, None
+        obj.left, obj.right, obj.parent, obj.height = None, None, None, 0
         obj.is_root = False
         return obj
 
