@@ -74,7 +74,7 @@ class BinaryTree(object):
         """
         raise NotImplementedError("This is an abstract method.")
 
-    def delete(self, key):
+    def delete(self, key, **kwargs):
         """
         Deletes the data with the passed key
         using iterative algorithm.
@@ -85,6 +85,12 @@ class BinaryTree(object):
         key
             The key of the node which is
             to be deleted.
+        balancing_info: bool
+            Optional, by default, False
+            The information needed for updating
+            the tree is returned if this parameter
+            is set to True. It is not meant for
+            user facing APIs.
 
         Returns
         =======
@@ -218,8 +224,9 @@ class BinarySearchTree(BinaryTree):
                 walk = self.tree[walk].right
         return (walk, parent) if ret_parent else walk
 
-    def delete(self, key):
+    def delete(self, key, **kwargs):
         (walk, parent) = self.search(key, parent=True)
+        a = None
         if walk == None:
             return None
         if self.tree[walk].left == None and \
@@ -232,6 +239,7 @@ class BinarySearchTree(BinaryTree):
                     self.tree[parent].left = None
                 else:
                     self.tree[parent].right = None
+                a = parent
 
         elif self.tree[walk].left != None and \
             self.tree[walk].right != None:
@@ -243,6 +251,9 @@ class BinarySearchTree(BinaryTree):
             self.tree[walk].data = self.tree[twalk].data
             self.tree[walk].key = self.tree[twalk].key
             self.tree[par].left = self.tree[twalk].right
+            if self.tree[twalk].right != None:
+                self.tree[self.tree[twalk].right].parent = twalk
+            a = par
 
         else:
             if self.tree[walk].left != None:
@@ -261,7 +272,11 @@ class BinarySearchTree(BinaryTree):
                     self.tree[parent].left = child
                 else:
                     self.tree[parent].right = child
+                self.tree[child].parent = parent
+                a = parent
 
+        if kwargs.get("balancing_info", False) is not False:
+            return a
         return True
 
 class AVLTree(BinarySearchTree):
@@ -273,6 +288,7 @@ class AVLTree(BinarySearchTree):
 
     .. [1] https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf
     .. [2] https://en.wikipedia.org/wiki/AVL_tree
+    .. [3] http://faculty.cs.niu.edu/~freedman/340/340notes/340avl2.htm
 
     See Also
     ========
@@ -283,8 +299,8 @@ class AVLTree(BinarySearchTree):
                                         if node.left != None else -1
     right_height = lambda self, node: self.tree[node.right].height \
                                         if node.right != None else -1
-    balance_factor = lambda self, node: self.left_height(node) - \
-                                        self.right_height(node)
+    balance_factor = lambda self, node: self.right_height(node) - \
+                                        self.left_height(node)
 
     def _right_rotate(self, j, k):
         y = self.tree[k].right
@@ -380,6 +396,29 @@ class AVLTree(BinarySearchTree):
         else:
             self.root_idx = k
 
+    def _balance_insertion(self, curr, last):
+        walk = last
+        path = Queue()
+        path.append(curr), path.append(last)
+        while walk != None:
+            self.tree[walk].height = max(self.left_height(self.tree[walk]),
+                                        self.right_height(self.tree[walk])) + 1
+            last = path.popleft()
+            last2last = path.popleft()
+            if self.balance_factor(self.tree[walk]) not in (1, 0, -1):
+                l = self.tree[walk].left
+                if l != None and l == last and self.tree[l].left == last2last:
+                    self._right_rotate(walk, last)
+                r = self.tree[walk].right
+                if r != None and r == last and self.tree[r].right == last2last:
+                    self._left_rotate(walk, last)
+                if l != None and l == last and self.tree[l].right == last2last:
+                    self._left_right_rotate(walk, last)
+                if r != None and r == last and self.tree[r].left == last2last:
+                    self._right_left_rotate(walk, last)
+            path.append(walk), path.append(last)
+            walk = self.tree[walk].parent
+
     def insert(self, key, data):
         walk = self.root_idx
         if self.tree[walk].key == None:
@@ -409,30 +448,31 @@ class AVLTree(BinarySearchTree):
                         flag = False
                     prev_node = walk = self.tree[walk].left
 
-        walk = self.tree[self.size-1].parent
-        path = Queue()
-        path.append(self.size-1), path.append(walk)
+        self._balance_insertion(self.size - 1, self.tree[self.size-1].parent)
+
+    def _balance_deletion(self, start_idx, key):
+        walk = start_idx
         while walk != None:
-            self.tree[walk].height = max(self.left_height(self.tree[walk]),
-                                        self.right_height(self.tree[walk])) + 1
-            last = path.popleft()
-            last2last = path.popleft()
-            if self.balance_factor(self.tree[walk]) in (2, -2):
-                l = self.tree[walk].left
-                if l != None and l == last and self.tree[l].left == last2last:
-                    self._right_rotate(walk, last)
-                r = self.tree[walk].right
-                if r != None and r == last and self.tree[r].right == last2last:
-                    self._left_rotate(walk, last)
-                if l != None and l == last and self.tree[l].right == last2last:
-                    self._left_right_rotate(walk, last)
-                if r != None and r == last and self.tree[r].left == last2last:
-                    self._right_left_rotate(walk, last)
-            path.append(walk), path.append(last)
+            if self.balance_factor(self.tree[walk]) not in (1, 0, -1):
+                if self.balance_factor(self.tree[walk]) < 0:
+                    b = self.tree[walk].left
+                    if self.balance_factor(self.tree[b]) <= 0:
+                        self._right_rotate(walk, b)
+                    else:
+                        self._left_right_rotate(walk, b)
+                else:
+                    b = self.tree[walk].right
+                    if self.balance_factor(self.tree[b]) >= 0:
+                        self._left_rotate(walk, b)
+                    else:
+                        self._right_left_rotate(walk, b)
             walk = self.tree[walk].parent
 
-    def delete(self, key):
-        pass
+
+    def delete(self, key, **kwargs):
+        a = super(AVLTree, self).delete(key, balancing_info=True)
+        self._balance_deletion(a, key)
+        return True
 
 class BinaryTreeTraversal(object):
     """

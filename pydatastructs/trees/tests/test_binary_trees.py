@@ -108,7 +108,7 @@ def test_AVLTree():
                       "(None, 'K', 'K', None), (None, 'Q', 'Q', None), "
                       "(2, 'P', 'P', 5), (9, 'H', 'H', None), "
                       "(7, 'I', 'I', 3), (None, 'A', 'A', None)]")
-    assert [a.balance_factor(n) for n in a.tree] == [0, 1, 0, 0, 0, 0, 0, 1, 0, 0]
+    assert [a.balance_factor(n) for n in a.tree] == [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
     a1 = AVLTree(1, 1)
     a1.insert(2, 2)
     a1.insert(3, 3)
@@ -156,3 +156,56 @@ def test_AVLTree():
     assert str(a4) == ("[(1, 0, 0, 5), (None, 1, 1, None), (6, 2, 2, 4), "
                       "(0, 3, 3, 2), (None, 4, 4, None), (None, 5, 5, None), "
                       "(None, 6, 6, None)]")
+
+    a5 = AVLTree()
+    a5.tree = [
+        Node(10, 10),
+        Node(5, 5),
+        Node(17, 17),
+        Node(2, 2),
+        Node(9, 9),
+        Node(12, 12),
+        Node(20, 20),
+        Node(3, 3),
+        Node(11, 11),
+        Node(15, 15),
+        Node(18, 18),
+        Node(30, 30),
+        Node(13, 13),
+        Node(33, 33)
+    ]
+
+    a5.tree[0].left, a5.tree[0].right, a5.tree[0].parent, a5.tree[0].height = \
+        1, 2, None, 4
+    a5.tree[1].left, a5.tree[1].right, a5.tree[1].parent, a5.tree[1].height = \
+        3, 4, 0, 2
+    a5.tree[2].left, a5.tree[2].right, a5.tree[2].parent, a5.tree[2].height = \
+        5, 6, 0, 3
+    a5.tree[3].left, a5.tree[3].right, a5.tree[3].parent, a5.tree[3].height = \
+        None, 7, 1, 1
+    a5.tree[4].left, a5.tree[4].right, a5.tree[4].parent, a5.tree[4].height = \
+        None, None, 1, 0
+    a5.tree[5].left, a5.tree[5].right, a5.tree[5].parent, a5.tree[5].height = \
+        8, 9, 2, 2
+    a5.tree[6].left, a5.tree[6].right, a5.tree[6].parent, a5.tree[6].height = \
+        10, 11, 2, 2
+    a5.tree[7].left, a5.tree[7].right, a5.tree[7].parent, a5.tree[7].height = \
+        None, None, 3, 0
+    a5.tree[8].left, a5.tree[8].right, a5.tree[8].parent, a5.tree[8].height = \
+        None, None, 5, 0
+    a5.tree[9].left, a5.tree[9].right, a5.tree[9].parent, a5.tree[9].height = \
+        12, None, 5, 1
+    a5.tree[10].left, a5.tree[10].right, a5.tree[10].parent, a5.tree[10].height = \
+        None, None, 6, 0
+    a5.tree[11].left, a5.tree[11].right, a5.tree[11].parent, a5.tree[11].height = \
+        None, 13, 6, 1
+    a5.tree[12].left, a5.tree[12].right, a5.tree[12].parent, a5.tree[12].height = \
+        None, None, 9, 0
+    a5.tree[13].left, a5.tree[13].right, a5.tree[13].parent, a5.tree[13].height = \
+        None, None, 11, 0
+    a5.delete(9)
+    assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), (0, 17, 17, 6), "
+                      "(None, 2, 2, None), (None, 9, 9, None), (8, 12, 12, 9), "
+                      "(10, 20, 20, 11), (3, 3, 3, 1), (None, 11, 11, None), "
+                      "(12, 15, 15, None), (None, 18, 18, None), (None, 30, 30, 13), "
+                      "(None, 13, 13, None), (None, 33, 33, None)]")
