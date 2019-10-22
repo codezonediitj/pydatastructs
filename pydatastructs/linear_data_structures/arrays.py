@@ -2,7 +2,8 @@ from __future__ import print_function, division
 from pydatastructs.utils.misc_util import _check_type, NoneType
 
 __all__ = [
-'OneDimensionalArray'
+'OneDimensionalArray',
+'DynamicOneDimensionalArray'
 ]
 
 class Array(object):
@@ -112,3 +113,57 @@ class OneDimensionalArray(Array):
         elem = self._dtype(elem)
         for i in range(self._size):
             self._data[i] = elem
+
+ODA = OneDimensionalArray
+
+class DynamicArray(Array):
+    """
+    Abstract class for dynamic arrays.
+    """
+    pass
+
+class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
+    """
+    """
+
+    def __new__(cls, dtype=NoneType, *args, **kwargs):
+        obj = super().__new__(cls, dtype, *args, **kwargs)
+        obj._load_factor = kwargs.get('load_factor', 0.25)
+        obj._num = 0 if obj._size == 0 or obj[0] == None else obj._size
+        obj._last_pos_filled = obj._num - 1
+        return obj
+
+    def _modify(self):
+        if self._num/self._size < self._load_factor:
+            arr_new = ODA(self._dtype, 2*self._num + 1)
+            j = 0
+            for i in range(self._last_pos_filled + 1):
+                if self[i] != None:
+                    arr_new[j] = self[i]
+                    j += 1
+            self._last_pos_filled = j - 1
+            self._data = arr_new._data
+            self._size = arr_new._size
+
+    def append(self, el):
+        if self._last_pos_filled + 1 == self._size:
+            arr_new = ODA(self._dtype, 2*self._size + 1)
+            for i in range(self._last_pos_filled + 1):
+                arr_new[i] = self[i]
+            arr_new[self._last_pos_filled + 1] = el
+            self._last_pos_filled += 1
+            self._size = arr_new._size
+            self._num += 1
+            self._data = arr_new._data
+        else:
+            self[self._last_pos_filled + 1] = el
+            self._last_pos_filled += 1
+            self._num += 1
+        self._modify()
+
+    def delete(self, idx):
+        if idx <= self._last_pos_filled and idx >= 0 and \
+            self[idx] != None:
+            self[idx] = None
+            self._num -= 1
+            self._modify()
