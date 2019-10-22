@@ -1,5 +1,6 @@
 from pydatastructs.trees.binary_trees import (
-    BinarySearchTree, BinaryTreeTraversal, AVLTree)
+    BinarySearchTree, BinaryTreeTraversal, AVLTree,
+    ArrayForTrees)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import Node
 
@@ -108,7 +109,8 @@ def test_AVLTree():
                       "(None, 'K', 'K', None), (None, 'Q', 'Q', None), "
                       "(2, 'P', 'P', 5), (9, 'H', 'H', None), "
                       "(7, 'I', 'I', 3), (None, 'A', 'A', None)]")
-    assert [a.balance_factor(n) for n in a.tree] == [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
+    assert [a.balance_factor(n) for n in a.tree if n is not None] == \
+        [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
     a1 = AVLTree(1, 1)
     a1.insert(2, 2)
     a1.insert(3, 3)
@@ -129,7 +131,7 @@ def test_AVLTree():
     a2.insert(1, 1)
     assert str(a2) == "[(None, 1, 1, None)]"
     a3 = AVLTree()
-    a3.tree = []
+    a3.tree = ArrayForTrees(Node, 0)
     for i in range(7):
         a3.tree.append(Node(i, i))
     a3.tree[0].left = 1
@@ -143,7 +145,7 @@ def test_AVLTree():
                        "(None, 3, 3, None), (None, 4, 4, None), "
                        "(None, 5, 5, None), (None, 6, 6, None)]")
     a4 = AVLTree()
-    a4.tree = []
+    a4.tree = ArrayForTrees(Node, 0)
     for i in range(7):
         a4.tree.append(Node(i, i))
     a4.tree[0].left = 1
@@ -158,7 +160,7 @@ def test_AVLTree():
                       "(None, 6, 6, None)]")
 
     a5 = AVLTree()
-    a5.tree = [
+    a5.tree = ArrayForTrees(Node, [
         Node(10, 10),
         Node(5, 5),
         Node(17, 17),
@@ -173,7 +175,7 @@ def test_AVLTree():
         Node(30, 30),
         Node(13, 13),
         Node(33, 33)
-    ]
+    ])
 
     a5.tree[0].left, a5.tree[0].right, a5.tree[0].parent, a5.tree[0].height = \
         1, 2, None, 4

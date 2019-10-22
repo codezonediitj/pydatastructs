@@ -72,10 +72,16 @@ class OneDimensionalArray(Array):
         if len(args) == 2:
             if _check_type(args[0], (list, tuple)) and \
                 _check_type(args[1], int):
-                size, data = args[1], [dtype(arg) for arg in args[0]]
+                for i in range(len(args[0])):
+                    if dtype != type(args[0][i]):
+                        args[0][i] = dtype(args[0][i])
+                size, data = args[1], [arg for arg in args[0]]
             elif _check_type(args[1], (list, tuple)) and \
                 _check_type(args[0], int):
-                size, data = args[0], [dtype(arg) for arg in args[1]]
+                for i in range(len(args[1])):
+                    if dtype != type(args[1][i]):
+                        args[1][i] = dtype(args[1][i])
+                size, data = args[0], [arg for arg in args[1]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -90,8 +96,11 @@ class OneDimensionalArray(Array):
                 init = kwargs.get('init', None)
                 obj._data = [init for i in range(args[0])]
             elif _check_type(args[0], (list, tuple)):
+                for i in range(len(args[0])):
+                    if dtype != type(args[0][i]):
+                        args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
-                                        [dtype(arg) for arg in args[0]]
+                                        [arg for arg in args[0]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -107,7 +116,9 @@ class OneDimensionalArray(Array):
         if elem is None:
             self._data[idx] = None
         else:
-            self._data[idx] = self._dtype(elem)
+            if type(elem) != self._dtype:
+                elem = self._dtype(elem)
+            self._data[idx] = elem
 
     def fill(self, elem):
         elem = self._dtype(elem)

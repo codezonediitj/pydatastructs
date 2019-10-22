@@ -1,7 +1,8 @@
 from __future__ import print_function, division
 from pydatastructs.utils import Node
 from pydatastructs.miscellaneous_data_structures import Stack
-from pydatastructs.linear_data_structures import OneDimensionalArray
+from pydatastructs.linear_data_structures import (
+    OneDimensionalArray, DynamicOneDimensionalArray)
 # TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 
@@ -11,6 +12,34 @@ __all__ = [
     'BinarySearchTree',
     'BinaryTreeTraversal'
 ]
+
+class ArrayForTrees(DynamicOneDimensionalArray):
+    """
+    Utility dynamic array for storing nodes of a tree.
+
+    See Also
+    ========
+
+    pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
+    """
+    def _modify(self):
+        if self._num/self._size < self._load_factor:
+            new_indices = dict()
+            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
+            j = 0
+            for i in range(self._last_pos_filled + 1):
+                if self[i] != None:
+                    arr_new[j] = self[i]
+                    new_indices[self[i].key] = j
+                    j += 1
+            for i in range(j):
+                if arr_new[i].left != None:
+                    arr_new[i].left = new_indices[self[arr_new[i].left].key]
+                if arr_new[i].right != None:
+                    arr_new[i].right = new_indices[self[arr_new[i].right].key]
+            self._last_pos_filled = j - 1
+            self._data = arr_new._data
+            self._size = arr_new._size
 
 class BinaryTree(object):
     """
@@ -49,7 +78,7 @@ class BinaryTree(object):
         root = Node(key, root_data)
         root.is_root = True
         obj.root_idx = 0
-        obj.tree, obj.size = [root], 1
+        obj.tree, obj.size = ArrayForTrees(Node, [root]), 1
         obj.comparator = lambda key1, key2: key1 < key2 \
                         if comp == None else comp
         return obj
@@ -141,9 +170,12 @@ class BinaryTree(object):
 
 
     def __str__(self):
-        return str([(node.left, node.key, node.data, node.right)
-                    for node in self.tree])
-
+        to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
+        for i in range(self.tree._last_pos_filled + 1):
+            if self.tree[i] != None:
+                node = self.tree[i]
+                to_be_printed[i] = (node.left, node.key, node.data, node.right)
+        return str(to_be_printed)
 
 class BinarySearchTree(BinaryTree):
     """
@@ -183,30 +215,33 @@ class BinarySearchTree(BinaryTree):
     pydatastructs.trees.binary_tree.BinaryTree
     """
     def insert(self, key, data):
+        res = self.search(key)
+        if res != None:
+            self.tree[res].data = data
+            return None
         walk = self.root_idx
         if self.tree[walk].key == None:
             self.tree[walk].key = key
             self.tree[walk].data = data
             return None
-        new_node = Node(key, data)
-        while True:
-            if self.tree[walk].key == key:
-                self.tree[walk].data = data
-                return None
+        new_node, prev_node, flag = Node(key, data), 0, True
+        while flag:
             if not self.comparator(key, self.tree[walk].key):
                 if self.tree[walk].right == None:
+                    new_node.parent = prev_node
                     self.tree.append(new_node)
                     self.tree[walk].right = self.size
                     self.size += 1
-                    return None
-                walk = self.tree[walk].right
+                    flag = False
+                prev_node = walk = self.tree[walk].right
             else:
                 if self.tree[walk].left == None:
+                    new_node.parent = prev_node
                     self.tree.append(new_node)
                     self.tree[walk].left = self.size
                     self.size += 1
-                    return None
-                walk = self.tree[walk].left
+                    flag = False
+                prev_node = walk = self.tree[walk].left
 
     def search(self, key, **kwargs):
         ret_parent = kwargs.get('parent', False)
@@ -420,34 +455,7 @@ class AVLTree(BinarySearchTree):
             walk = self.tree[walk].parent
 
     def insert(self, key, data):
-        walk = self.root_idx
-        if self.tree[walk].key == None:
-            self.tree[walk].key = key
-            self.tree[walk].data = data
-            return None
-        new_node, prev_node, flag = Node(key, data), 0, True
-        while flag:
-            if self.tree[walk].key == key:
-                self.tree[walk].data = data
-                flag = False
-            else:
-                if not self.comparator(key, self.tree[walk].key):
-                    if self.tree[walk].right == None:
-                        new_node.parent = prev_node
-                        self.tree.append(new_node)
-                        self.tree[walk].right = self.size
-                        self.size += 1
-                        flag = False
-                    prev_node = walk = self.tree[walk].right
-                else:
-                    if self.tree[walk].left == None:
-                        new_node.parent = prev_node
-                        self.tree.append(new_node)
-                        self.tree[walk].left = self.size
-                        self.size += 1
-                        flag = False
-                    prev_node = walk = self.tree[walk].left
-
+        super(AVLTree, self).insert(key, data)
         self._balance_insertion(self.size - 1, self.tree[self.size-1].parent)
 
     def _balance_deletion(self, start_idx, key):
