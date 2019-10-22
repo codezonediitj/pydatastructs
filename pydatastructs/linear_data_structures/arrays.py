@@ -124,18 +124,84 @@ class DynamicArray(Array):
 
 class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     """
+    Represents dynamic one dimensional arrays.
+
+    Parameters
+    ==========
+
+    dtype: type
+        A valid object type.
+    size: int
+        The number of elements in the array.
+    elements: list/tuple
+        The elements in the array, all should
+        be of same type.
+    init: a python type
+        The inital value with which the element has
+        to be initialized. By default none, used only
+        when the data is not given.
+    load_factor: float, by default 0.25
+        The number below which if the ratio, Num(T)/Size(T)
+        falls then the array is contracted such that at
+        most only half the positions are filled.
+
+    Raises
+    ======
+
+    ValueError
+        When the number of elements in the list do not
+        match with the size.
+        More than three parameters are passed as arguments.
+        Types of arguments is not as mentioned in the docstring.
+        The load factor is not of floating point type.
+
+    Note
+    ====
+
+    At least one parameter should be passed as an argument along
+    with the dtype.
+    Num(T) means the number of positions which are not None in the
+    array.
+    Size(T) means the maximum number of elements that the array can hold.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import DynamicOneDimensionalArray as DODA
+    >>> arr = DODA(int, 0)
+    >>> arr.append(1)
+    >>> arr.append(2)
+    >>> arr[0]
+    1
+    >>> arr.delete(0)
+    >>> arr[0]
+    >>> arr[1]
+    2
+    >>> arr.append(3)
+    >>> arr.append(4)
+    >>> [arr[i] for i in range(arr.size)]
+    [None, 2, 3, 4, None, None, None]
+
+    References
+    ==========
+
+    .. [1] http://www.cs.nthu.edu.tw/~wkhon/algo09/lectures/lecture16.pdf
     """
 
     __slots__ = ['_load_factor', '_num', '_last_pos_filled', '_size']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         obj = super().__new__(cls, dtype, *args, **kwargs)
-        obj._load_factor = kwargs.get('load_factor', 0.25)
+        obj._load_factor = float(kwargs.get('load_factor', 0.25))
         obj._num = 0 if obj._size == 0 or obj[0] == None else obj._size
         obj._last_pos_filled = obj._num - 1
         return obj
 
     def _modify(self):
+        """
+        Contracts the array if Num(T)/Size(T) falls
+        below load factor.
+        """
         if self._num/self._size < self._load_factor:
             arr_new = ODA(self._dtype, 2*self._num + 1)
             j = 0
@@ -169,3 +235,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self[idx] = None
             self._num -= 1
             self._modify()
+
+    @property
+    def size(self):
+        return self._size
