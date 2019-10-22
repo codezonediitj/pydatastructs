@@ -126,6 +126,8 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     """
     """
 
+    __slots__ = ['_load_factor', '_num', '_last_pos_filled', '_size']
+
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         obj = super().__new__(cls, dtype, *args, **kwargs)
         obj._load_factor = kwargs.get('load_factor', 0.25)

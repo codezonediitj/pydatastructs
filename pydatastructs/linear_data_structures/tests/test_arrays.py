@@ -1,4 +1,5 @@
-from pydatastructs.linear_data_structures import OneDimensionalArray
+from pydatastructs.linear_data_structures import (
+    OneDimensionalArray, DynamicOneDimensionalArray)
 from pydatastructs.utils.raises_util import raises
 
 
@@ -17,3 +18,20 @@ def test_OneDimensionalArray():
     raises(TypeError, lambda: ODA(int, 5.0))
     raises(TypeError, lambda: ODA(int, set([1, 2, 3])))
     raises(ValueError, lambda: ODA(int, 3, [1]))
+
+def test_DynamicOneDimensionalArray():
+    DODA = DynamicOneDimensionalArray
+    A = DODA(int, 0)
+    A.append(1)
+    A.append(2)
+    A.append(3)
+    A.append(4)
+    A.delete(0)
+    A.delete(0)
+    A.delete(15)
+    A.delete(-1)
+    A.delete(1)
+    A.delete(2)
+    assert A._data == [4, None, None]
+    A.fill(4)
+    assert A._data == [4, 4, 4]
