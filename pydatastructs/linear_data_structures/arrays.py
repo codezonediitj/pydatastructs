@@ -63,6 +63,9 @@ class OneDimensionalArray(Array):
 
     .. [1] https://en.wikipedia.org/wiki/Array_data_structure#One-dimensional_arrays
     '''
+    
+    __slots__ = ['_size', '_data']
+    
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype == NoneType or len(args) not in (1, 2):
             raise ValueError("1D array cannot be created due to incorrect"
