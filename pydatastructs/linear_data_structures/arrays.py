@@ -250,3 +250,34 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     @property
     def size(self):
         return self._size
+
+class ArrayForTrees(DynamicOneDimensionalArray):
+    """
+    Utility dynamic array for storing nodes of a tree.
+
+    See Also
+    ========
+
+    pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
+    """
+    def _modify(self):
+        if self._num/self._size < self._load_factor:
+            new_indices = dict()
+            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
+            j = 0
+            for i in range(self._last_pos_filled + 1):
+                if self[i] != None:
+                    arr_new[j] = self[i]
+                    new_indices[self[i].key] = j
+                    j += 1
+            for i in range(j):
+                if arr_new[i].left != None:
+                    arr_new[i].left = new_indices[self[arr_new[i].left].key]
+                if arr_new[i].right != None:
+                    arr_new[i].right = new_indices[self[arr_new[i].right].key]
+                if arr_new[i].parent != None:
+                    arr_new[i].parent = new_indices[self[arr_new[i].parent].key]
+            self._last_pos_filled = j - 1
+            self._data = arr_new._data
+            self._size = arr_new._size
+            return new_indices

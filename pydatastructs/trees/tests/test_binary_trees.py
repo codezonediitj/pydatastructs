@@ -29,9 +29,13 @@ def test_BinarySearchTree():
     assert b.search(3) == None
     assert b.delete(13) == None
     assert str(b) == \
-    ("[(1, 8, 8, 7), (3, 4, 4, 4), (None, 10, 10, 7), (None, 1, 1, None), "
-    "(None, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (None, 14, 14, None), "
-    "(None, 13, 13, None)]")
+    ("[(1, 8, 8, 7), (3, 4, 4, 4), '', (None, 1, 1, None), "
+    "(None, 6, 6, 6), '', (None, 7, 7, None), (None, 14, 14, None), '']")
+    b.delete(7)
+    b.delete(6)
+    b.delete(1)
+    b.delete(4)
+    assert str(b) == "[(None, 8, 8, 2), '', (None, 14, 14, None)]"
     bc = BST(1, 1)
     assert bc.insert(1, 2) == None
     b = BST(-8, 8)
@@ -207,7 +211,7 @@ def test_AVLTree():
         None, None, 11, 0
     a5.delete(9)
     assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), (0, 17, 17, 6), "
-                      "(None, 2, 2, None), (None, 9, 9, None), (8, 12, 12, 9), "
+                      "(None, 2, 2, None), '', (8, 12, 12, 9), "
                       "(10, 20, 20, 11), (3, 3, 3, 1), (None, 11, 11, None), "
                       "(12, 15, 15, None), (None, 18, 18, None), (None, 30, 30, 13), "
                       "(None, 13, 13, None), (None, 33, 33, None)]")

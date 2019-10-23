@@ -3,6 +3,7 @@ from pydatastructs.utils import Node
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
+from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 # TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 
@@ -12,34 +13,6 @@ __all__ = [
     'BinarySearchTree',
     'BinaryTreeTraversal'
 ]
-
-class ArrayForTrees(DynamicOneDimensionalArray):
-    """
-    Utility dynamic array for storing nodes of a tree.
-
-    See Also
-    ========
-
-    pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
-    """
-    def _modify(self):
-        if self._num/self._size < self._load_factor:
-            new_indices = dict()
-            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
-            j = 0
-            for i in range(self._last_pos_filled + 1):
-                if self[i] != None:
-                    arr_new[j] = self[i]
-                    new_indices[self[i].key] = j
-                    j += 1
-            for i in range(j):
-                if arr_new[i].left != None:
-                    arr_new[i].left = new_indices[self[arr_new[i].left].key]
-                if arr_new[i].right != None:
-                    arr_new[i].right = new_indices[self[arr_new[i].right].key]
-            self._last_pos_filled = j - 1
-            self._data = arr_new._data
-            self._size = arr_new._size
 
 class BinaryTree(object):
     """
@@ -274,7 +247,12 @@ class BinarySearchTree(BinaryTree):
                     self.tree[parent].left = None
                 else:
                     self.tree[parent].right = None
-                a = parent
+                par_key = self.tree[parent].key
+                new_indices = self.tree.delete(walk)
+                if new_indices!= None:
+                    a = new_indices[par_key]
+                else:
+                    a = parent
 
         elif self.tree[walk].left != None and \
             self.tree[walk].right != None:
@@ -287,8 +265,14 @@ class BinarySearchTree(BinaryTree):
             self.tree[walk].key = self.tree[twalk].key
             self.tree[par].left = self.tree[twalk].right
             if self.tree[twalk].right != None:
-                self.tree[self.tree[twalk].right].parent = twalk
-            a = par
+                self.tree[self.tree[twalk].right].parent = par
+            if twalk != None:
+                par_key = self.tree[par].key
+                new_indices = self.tree.delete(twalk)
+                if new_indices != None:
+                    a = new_indices[par_key]
+                else:
+                    a = par
 
         else:
             if self.tree[walk].left != None:
@@ -300,15 +284,22 @@ class BinarySearchTree(BinaryTree):
                 self.tree[self.root_idx].right = self.tree[child].right
                 self.tree[self.root_idx].data = self.tree[child].data
                 self.tree[self.root_idx].key = self.tree[child].key
-                self.tree[child].left = None
-                self.tree[child].right = None
+                self.tree[self.root_idx].parent = None
+                self.tree.delete(child)
             else:
                 if self.tree[parent].left == walk:
                     self.tree[parent].left = child
                 else:
                     self.tree[parent].right = child
-                self.tree[child].parent = parent
-                a = parent
+                par_key = self.tree[parent].key
+                new_indices = self.tree.delete(walk)
+                if new_indices != None:
+                    parent = new_indices[par_key]
+                    self.tree[child].parent = new_indices[par_key]
+                    a = new_indices[par_key]
+                else:
+                    self.tree[child].parent = parent
+                    a = parent
 
         if kwargs.get("balancing_info", False) is not False:
             return a
