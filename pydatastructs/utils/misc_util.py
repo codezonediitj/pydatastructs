@@ -25,12 +25,13 @@ class Node(object):
     """
 
     __slots__ = ['key', 'data', 'left', 'right', 'is_root',
-                 'height', 'parent']
+                 'height', 'parent', 'size']
 
     def __new__(cls, key, data):
         obj = object.__new__(cls)
         obj.data, obj.key = data, key
-        obj.left, obj.right, obj.parent, obj.height = None, None, None, 0
+        obj.left, obj.right, obj.parent, obj.height, obj.size = \
+            None, None, None, 0, 1
         obj.is_root = False
         return obj
 

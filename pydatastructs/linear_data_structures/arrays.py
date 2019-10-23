@@ -245,7 +245,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self[idx] != None:
             self[idx] = None
             self._num -= 1
-            self._modify()
+            return self._modify()
 
     @property
     def size(self):
@@ -281,3 +281,4 @@ class ArrayForTrees(DynamicOneDimensionalArray):
             self._data = arr_new._data
             self._size = arr_new._size
             return new_indices
+        return None

@@ -34,6 +34,9 @@ class BinaryTree(object):
         for comparison of keys. Should return a
         bool value. By default it implements less
         than operator.
+    is_order_statistic: bool
+        Set it to True, if you want to use the
+        order statistic features of the tree.
 
     References
     ==========
@@ -41,9 +44,11 @@ class BinaryTree(object):
     .. [1] https://en.wikipedia.org/wiki/Binary_tree
     """
 
-    __slots__ = ['root_idx', 'comparator', 'tree', 'size']
+    __slots__ = ['root_idx', 'comparator', 'tree', 'size',
+                 'is_order_statistic']
 
-    def __new__(cls, key=None, root_data=None, comp=None):
+    def __new__(cls, key=None, root_data=None, comp=None,
+                is_order_statistic=False):
         obj = object.__new__(cls)
         if key == None and root_data != None:
             raise ValueError('Key required.')
@@ -54,6 +59,7 @@ class BinaryTree(object):
         obj.tree, obj.size = ArrayForTrees(Node, [root]), 1
         obj.comparator = lambda key1, key2: key1 < key2 \
                         if comp == None else comp
+        obj.is_order_statistic = is_order_statistic
         return obj
 
     def insert(self, key, data):
@@ -187,6 +193,20 @@ class BinarySearchTree(BinaryTree):
 
     pydatastructs.trees.binary_tree.BinaryTree
     """
+    left_size = lambda self, node: self.tree[node.left].size \
+                                        if node.left != None else 0
+    right_size = lambda self, node: self.tree[node.right].size \
+                                        if node.right != None else 0
+
+    def _update_size(self, start_idx):
+        if self.is_order_statistic:
+            walk = start_idx
+            while walk != None:
+                self.tree[walk].size = (
+                    self.left_size(self.tree[walk]) +
+                    self.right_size(self.tree[walk]) + 1)
+                walk = self.tree[walk].parent
+
     def insert(self, key, data):
         res = self.search(key)
         if res != None:
@@ -215,6 +235,7 @@ class BinarySearchTree(BinaryTree):
                     self.size += 1
                     flag = False
                 prev_node = walk = self.tree[walk].left
+        self._update_size(walk)
 
     def search(self, key, **kwargs):
         ret_parent = kwargs.get('parent', False)
@@ -253,6 +274,7 @@ class BinarySearchTree(BinaryTree):
                     a = new_indices[par_key]
                 else:
                     a = parent
+            self._update_size(a)
 
         elif self.tree[walk].left != None and \
             self.tree[walk].right != None:
@@ -273,6 +295,7 @@ class BinarySearchTree(BinaryTree):
                     a = new_indices[par_key]
                 else:
                     a = par
+            self._update_size(a)
 
         else:
             if self.tree[walk].left != None:
@@ -300,10 +323,71 @@ class BinarySearchTree(BinaryTree):
                 else:
                     self.tree[child].parent = parent
                     a = parent
+                self._update_size(a)
 
         if kwargs.get("balancing_info", False) is not False:
             return a
         return True
+
+    def select(self, i):
+        """
+        Finds the i-th smallest node in the tree.
+
+        Parameters
+        ==========
+
+        i: int
+            A positive integer
+
+        Returns
+        =======
+
+        n: Node
+            The node with the i-th smallest key
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/Order_statistic_tree
+        """
+        if i <= 0:
+            raise ValueError("Expected a positive integer, got %d"%(i))
+        if i > self.tree._num:
+            raise ValueError("%d is greater than the size of the "
+                "tree which is, %d"%(i, self.tree._num))
+        walk = self.root_idx
+        while walk != None:
+            l = self.left_size(self.tree[walk])
+            if i == l:
+                return self.tree[walk]
+            left_walk = self.tree[walk].left
+            right_walk = self.tree[walk].right
+            if i < l:
+                if self.comparator(self.tree[left_walk].key,
+                                        self.tree[walk].key):
+                    walk = left_walk
+                else:
+                    walk = right_walk
+            else:
+                if self.comparator(self.tree[left_walk].key,
+                                    self.tree[walk].key):
+                    walk = right_walk
+                else:
+                    walk = left_walk
+                i -= (l + 1)
+
+    def rank(x):
+        """
+        Finds the rank of the given node, i.e.
+        its index in the sorted list of nodes
+        of the tree.
+
+        Parameter
+        =========
+
+        x: Node
+            The node whose rank is to be found out.
+        """
 
 class AVLTree(BinarySearchTree):
     """
@@ -348,6 +432,11 @@ class AVLTree(BinarySearchTree):
                                         self.right_height(self.tree[kp])) + 1
         else:
             self.root_idx = k
+        if self.is_order_statistic:
+            self.tree[j].size = (self.left_size(self.tree[j]) +
+                                 self.right_size(self.tree[j]) + 1)
+            self.tree[k].size = (self.left_size(self.tree[k]) +
+                                 self.right_size(self.tree[k]) + 1)
 
     def _left_right_rotate(self, j, k):
         i = self.tree[k].right
@@ -374,6 +463,13 @@ class AVLTree(BinarySearchTree):
                                         self.right_height(self.tree[ip])) + 1
         else:
             self.root_idx = i
+        if self.is_order_statistic:
+            self.tree[j].size = (self.left_size(self.tree[j]) +
+                                 self.right_size(self.tree[j]) + 1)
+            self.tree[k].size = (self.left_size(self.tree[k]) +
+                                 self.right_size(self.tree[k]) + 1)
+            self.tree[i].size = (self.left_size(self.tree[i]) +
+                                 self.right_size(self.tree[i]) + 1)
 
     def _right_left_rotate(self, j, k):
         i = self.tree[k].left
@@ -400,6 +496,13 @@ class AVLTree(BinarySearchTree):
                                         self.right_height(self.tree[ip])) + 1
         else:
             self.root_idx = i
+        if self.is_order_statistic:
+            self.tree[j].size = (self.left_size(self.tree[j]) +
+                                 self.right_size(self.tree[j]) + 1)
+            self.tree[k].size = (self.left_size(self.tree[k]) +
+                                 self.right_size(self.tree[k]) + 1)
+            self.tree[i].size = (self.left_size(self.tree[i]) +
+                                 self.right_size(self.tree[i]) + 1)
 
     def _left_rotate(self, j, k):
         y = self.tree[k].left
@@ -421,6 +524,11 @@ class AVLTree(BinarySearchTree):
                                         self.right_height(self.tree[kp])) + 1
         else:
             self.root_idx = k
+        if self.is_order_statistic:
+            self.tree[j].size = (self.left_size(self.tree[j]) +
+                                 self.right_size(self.tree[j]) + 1)
+            self.tree[k].size = (self.left_size(self.tree[k]) +
+                                 self.right_size(self.tree[k]) + 1)
 
     def _balance_insertion(self, curr, last):
         walk = last
