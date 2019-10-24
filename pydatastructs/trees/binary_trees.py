@@ -182,6 +182,7 @@ class BinarySearchTree(BinaryTree):
 
     pydatastructs.trees.binary_tree.BinaryTree
     """
+
     def insert(self, key, data):
         walk = self.root_idx
         if self.tree[walk].key == None:
