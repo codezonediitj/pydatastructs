@@ -84,8 +84,8 @@ class Stack(object):
 
 class ArrayStack(Stack):
 
-    __slots__ = ['maxsize', 'top', 'items']
-    
+    __slots__ = ['maxsize', 'top', 'items', 'dtype']
+
     def __new__(cls, maxsize=None, top=0, items=None, dtype=int):
         if not _check_type(maxsize, int):
             raise ValueError("maxsize is missing.")

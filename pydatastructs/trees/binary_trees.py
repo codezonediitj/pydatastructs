@@ -182,9 +182,7 @@ class BinarySearchTree(BinaryTree):
 
     pydatastructs.trees.binary_tree.BinaryTree
     """
-    
-    __slots__ = ['root_idx', 'comparator', 'tree', 'size']
-    
+
     def insert(self, key, data):
         walk = self.root_idx
         if self.tree[walk].key == None:
@@ -305,9 +303,6 @@ class AVLTree(BinarySearchTree):
     balance_factor = lambda self, node: self.right_height(node) - \
                                         self.left_height(node)
 
-    
-    __slots__ = ['root_idx', 'comparator', 'tree', 'size']
-    
     def _right_rotate(self, j, k):
         y = self.tree[k].right
         if y != None:
