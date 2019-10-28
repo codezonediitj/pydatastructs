@@ -209,12 +209,6 @@ def test_AVLTree():
         None, None, 9, 0
     a5.tree[13].left, a5.tree[13].right, a5.tree[13].parent, a5.tree[13].height = \
         None, None, 11, 0
-    a5.delete(9)
-    assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), (0, 17, 17, 6), "
-                      "(None, 2, 2, None), '', (8, 12, 12, 9), "
-                      "(10, 20, 20, 11), (3, 3, 3, 1), (None, 11, 11, None), "
-                      "(12, 15, 15, None), (None, 18, 18, None), (None, 30, 30, 13), "
-                      "(None, 13, 13, None), (None, 33, 33, None)]")
 
     # testing order statistics
     a5.tree[0].size = 14
@@ -239,3 +233,10 @@ def test_AVLTree():
     for i in range(14):
         output.append(a5.select(i + 1).key)
     assert output == expected_output
+
+    a5.delete(9)
+    assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), (0, 17, 17, 6), "
+                      "(None, 2, 2, None), '', (8, 12, 12, 9), "
+                      "(10, 20, 20, 11), (3, 3, 3, 1), (None, 11, 11, None), "
+                      "(12, 15, 15, None), (None, 18, 18, None), (None, 30, 30, 13), "
+                      "(None, 13, 13, None), (None, 33, 33, None)]")
