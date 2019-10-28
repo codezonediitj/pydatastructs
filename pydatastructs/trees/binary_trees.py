@@ -350,11 +350,12 @@ class BinarySearchTree(BinaryTree):
 
         .. [1] https://en.wikipedia.org/wiki/Order_statistic_tree
         """
-        if i <= 0:
-            raise ValueError("Expected a positive integer, got %d"%(i))
-        if i > self.tree._num:
+        i -= 1 # The algorithm is based on zero indexing
+        if i < 0:
+            raise ValueError("Expected a positive integer, got %d"%(i + 1))
+        if i >= self.tree._num:
             raise ValueError("%d is greater than the size of the "
-                "tree which is, %d"%(i, self.tree._num))
+                "tree which is, %d"%(i + 1, self.tree._num))
         walk = self.root_idx
         while walk != None:
             l = self.left_size(self.tree[walk])
@@ -362,15 +363,20 @@ class BinarySearchTree(BinaryTree):
                 return self.tree[walk]
             left_walk = self.tree[walk].left
             right_walk = self.tree[walk].right
+            if left_walk == None and right_walk == None:
+                raise IndexError("The traversal is terminated "
+                                 "due to no child nodes ahead.")
             if i < l:
-                if self.comparator(self.tree[left_walk].key,
-                                        self.tree[walk].key):
+                if left_walk != None and \
+                    self.comparator(self.tree[left_walk].key,
+                    self.tree[walk].key):
                     walk = left_walk
                 else:
                     walk = right_walk
             else:
-                if self.comparator(self.tree[left_walk].key,
-                                    self.tree[walk].key):
+                if right_walk != None and \
+                    not self.comparator(self.tree[right_walk].key,
+                    self.tree[walk].key):
                     walk = right_walk
                 else:
                     walk = left_walk
@@ -385,9 +391,19 @@ class BinarySearchTree(BinaryTree):
         Parameter
         =========
 
-        x: Node
-            The node whose rank is to be found out.
+        x: key
+            The key of the node whose rank is to be found out.
         """
+        walk = self.search(x)
+        if walk == None:
+            return None
+        r = self.left_size(self.tree[walk]) + 1
+        while self.tree[walk].key != self.tree[self.root_idx].key:
+            p = self.tree[walk].parent
+            if walk == self.tree[p].right:
+                r += left_size(self.tree[p]) + 1
+            walk = p
+        return r
 
 class AVLTree(BinarySearchTree):
     """

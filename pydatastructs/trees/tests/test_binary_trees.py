@@ -215,3 +215,27 @@ def test_AVLTree():
                       "(10, 20, 20, 11), (3, 3, 3, 1), (None, 11, 11, None), "
                       "(12, 15, 15, None), (None, 18, 18, None), (None, 30, 30, 13), "
                       "(None, 13, 13, None), (None, 33, 33, None)]")
+
+    # testing order statistics
+    a5.tree[0].size = 14
+    a5.tree[1].size = 4
+    a5.tree[2].size = 9
+    a5.tree[3].size = 2
+    a5.tree[4].size = 1
+    a5.tree[5].size = 4
+    a5.tree[6].size = 4
+    a5.tree[7].size = 1
+    a5.tree[8].size = 1
+    a5.tree[9].size = 2
+    a5.tree[10].size = 1
+    a5.tree[11].size = 2
+    a5.tree[12].size = 1
+    a5.tree[13].size = 1
+
+    raises(ValueError, lambda: a5.select(0))
+    raises(ValueError, lambda: a5.select(15))
+    output = []
+    expected_output = [2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 18, 20, 30, 33]
+    for i in range(14):
+        output.append(a5.select(i + 1).key)
+    assert output == expected_output
