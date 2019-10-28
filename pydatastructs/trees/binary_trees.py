@@ -193,6 +193,7 @@ class BinarySearchTree(BinaryTree):
 
     pydatastructs.trees.binary_tree.BinaryTree
     """
+<<<<<<< HEAD
     left_size = lambda self, node: self.tree[node.left].size \
                                         if node.left != None else 0
     right_size = lambda self, node: self.tree[node.right].size \
@@ -206,6 +207,8 @@ class BinarySearchTree(BinaryTree):
                     self.left_size(self.tree[walk]) +
                     self.right_size(self.tree[walk]) + 1)
                 walk = self.tree[walk].parent
+=======
+>>>>>>> master
 
     def insert(self, key, data):
         res = self.search(key)
