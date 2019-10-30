@@ -3,10 +3,13 @@ from pydatastructs.trees.binary_trees import (
     ArrayForTrees)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import Node
+from copy import deepcopy
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
     b = BST(8, 8)
+    b.delete(8)
+    b.insert(8, 8)
     b.insert(3, 3)
     b.insert(10, 10)
     b.insert(1, 1)
@@ -163,7 +166,7 @@ def test_AVLTree():
                       "(0, 3, 3, 2), (None, 4, 4, None), (None, 5, 5, None), "
                       "(None, 6, 6, None)]")
 
-    a5 = AVLTree()
+    a5 = AVLTree(is_order_statistic=True)
     a5.tree = ArrayForTrees(Node, [
         Node(10, 10),
         Node(5, 5),
@@ -228,15 +231,46 @@ def test_AVLTree():
 
     raises(ValueError, lambda: a5.select(0))
     raises(ValueError, lambda: a5.select(15))
-    output = []
-    expected_output = [2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 18, 20, 30, 33]
-    for i in range(14):
-        output.append(a5.select(i + 1).key)
-    assert output == expected_output
+    assert a5.rank(-1) == None
+    def test_select_rank(expected_output):
+        output = []
+        for i in range(len(expected_output)):
+            output.append(a5.select(i + 1).key)
+        assert output == expected_output
 
+        output = []
+        expected_ranks = [i + 1 for i in range(len(expected_output))]
+        for i in range(len(expected_output)):
+            output.append(a5.rank(expected_output[i]))
+        assert output == expected_ranks
+
+    test_select_rank([2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 18, 20, 30, 33])
     a5.delete(9)
-    assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), (0, 17, 17, 6), "
-                      "(None, 2, 2, None), '', (8, 12, 12, 9), "
-                      "(10, 20, 20, 11), (3, 3, 3, 1), (None, 11, 11, None), "
-                      "(12, 15, 15, None), (None, 18, 18, None), (None, 30, 30, 13), "
-                      "(None, 13, 13, None), (None, 33, 33, None)]")
+    a5.delete(13)
+    a5.delete(20)
+    assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), "
+                       "(0, 17, 17, 6), (None, 2, 2, None), '', "
+                       "(8, 12, 12, 9), (10, 30, 30, 13), (3, 3, 3, 1), "
+                       "(None, 11, 11, None), (None, 15, 15, None), "
+                       "(None, 18, 18, None), '', '', (None, 33, 33, None)]")
+    test_select_rank([2, 3, 5, 10, 11, 12, 15, 17, 18, 30, 33])
+    a5.delete(10)
+    a5.delete(17)
+    test_select_rank([2, 3, 5, 11, 12, 15, 18, 30, 33])
+    a5.delete(11)
+    a5.delete(30)
+    test_select_rank([2, 3, 5, 12, 15, 18, 33])
+    a5.delete(12)
+    test_select_rank([2, 3, 5, 15, 18, 33])
+    a5.delete(15)
+    test_select_rank([2, 3, 5, 18, 33])
+    a5.delete(18)
+    test_select_rank([2, 3, 5, 33])
+    a5.delete(33)
+    test_select_rank([2, 3, 5])
+    a5.delete(5)
+    test_select_rank([2, 3])
+    a5.delete(3)
+    test_select_rank([2])
+    a5.delete(2)
+    test_select_rank([])

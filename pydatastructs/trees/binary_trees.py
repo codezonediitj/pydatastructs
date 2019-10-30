@@ -268,33 +268,40 @@ class BinarySearchTree(BinaryTree):
                     self.tree[parent].left = None
                 else:
                     self.tree[parent].right = None
-                par_key = self.tree[parent].key
+                a = parent
+                par_key, root_key = (self.tree[parent].key,
+                                     self.tree[self.root_idx].key)
                 new_indices = self.tree.delete(walk)
-                if new_indices!= None:
+                if new_indices != None:
                     a = new_indices[par_key]
-                else:
-                    a = parent
+                    self.root_idx = new_indices[root_key]
             self._update_size(a)
 
         elif self.tree[walk].left != None and \
             self.tree[walk].right != None:
             twalk = self.tree[walk].right
             par = walk
+            flag = False
             while self.tree[twalk].left != None:
+                flag = True
                 par = twalk
                 twalk = self.tree[twalk].left
             self.tree[walk].data = self.tree[twalk].data
             self.tree[walk].key = self.tree[twalk].key
-            self.tree[par].left = self.tree[twalk].right
+            if flag:
+                self.tree[par].left = self.tree[twalk].right
+            else:
+                self.tree[par].right = self.tree[twalk].right
             if self.tree[twalk].right != None:
                 self.tree[self.tree[twalk].right].parent = par
             if twalk != None:
-                par_key = self.tree[par].key
+                a = par
+                par_key, root_key = (self.tree[par].key,
+                                     self.tree[self.root_idx].key)
                 new_indices = self.tree.delete(twalk)
                 if new_indices != None:
                     a = new_indices[par_key]
-                else:
-                    a = par
+                    self.root_idx = new_indices[root_key]
             self._update_size(a)
 
         else:
@@ -308,21 +315,25 @@ class BinarySearchTree(BinaryTree):
                 self.tree[self.root_idx].data = self.tree[child].data
                 self.tree[self.root_idx].key = self.tree[child].key
                 self.tree[self.root_idx].parent = None
-                self.tree.delete(child)
+                root_key = self.tree[self.root_idx].key
+                new_indices = self.tree.delete(child)
+                if new_indices != None:
+                    self.root_idx = new_indices[root_key]
             else:
                 if self.tree[parent].left == walk:
                     self.tree[parent].left = child
                 else:
                     self.tree[parent].right = child
-                par_key = self.tree[parent].key
+                self.tree[child].parent = parent
+                a = parent
+                par_key, root_key = (self.tree[parent].key,
+                                     self.tree[self.root_idx].key)
                 new_indices = self.tree.delete(walk)
                 if new_indices != None:
                     parent = new_indices[par_key]
                     self.tree[child].parent = new_indices[par_key]
                     a = new_indices[par_key]
-                else:
-                    self.tree[child].parent = parent
-                    a = parent
+                    self.root_idx = new_indices[root_key]
                 self._update_size(a)
 
         if kwargs.get("balancing_info", False) is not False:
@@ -382,7 +393,7 @@ class BinarySearchTree(BinaryTree):
                     walk = left_walk
                 i -= (l + 1)
 
-    def rank(x):
+    def rank(self, x):
         """
         Finds the rank of the given node, i.e.
         its index in the sorted list of nodes
@@ -401,7 +412,7 @@ class BinarySearchTree(BinaryTree):
         while self.tree[walk].key != self.tree[self.root_idx].key:
             p = self.tree[walk].parent
             if walk == self.tree[p].right:
-                r += left_size(self.tree[p]) + 1
+                r += self.left_size(self.tree[p]) + 1
             walk = p
         return r
 
@@ -440,19 +451,12 @@ class AVLTree(BinarySearchTree):
         self.tree[k].right = j
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
-        self.tree[k].height = max(self.left_height(self.tree[k]),
-                                    self.right_height(self.tree[k])) + 1
         kp = self.tree[k].parent
-        if kp != None:
-            self.tree[kp].height = max(self.left_height(self.tree[kp]),
-                                        self.right_height(self.tree[kp])) + 1
-        else:
+        if kp == None:
             self.root_idx = k
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
-            self.tree[k].size = (self.left_size(self.tree[k]) +
-                                 self.right_size(self.tree[k]) + 1)
 
     def _left_right_rotate(self, j, k):
         i = self.tree[k].right
@@ -475,8 +479,6 @@ class AVLTree(BinarySearchTree):
                 self.tree[ip].left = i
             else:
                 self.tree[ip].right = i
-            self.tree[ip].height = max(self.left_height(self.tree[ip]),
-                                        self.right_height(self.tree[ip])) + 1
         else:
             self.root_idx = i
         if self.is_order_statistic:
@@ -484,8 +486,6 @@ class AVLTree(BinarySearchTree):
                                  self.right_size(self.tree[j]) + 1)
             self.tree[k].size = (self.left_size(self.tree[k]) +
                                  self.right_size(self.tree[k]) + 1)
-            self.tree[i].size = (self.left_size(self.tree[i]) +
-                                 self.right_size(self.tree[i]) + 1)
 
     def _right_left_rotate(self, j, k):
         i = self.tree[k].left
@@ -508,8 +508,6 @@ class AVLTree(BinarySearchTree):
                 self.tree[ip].left = i
             else:
                 self.tree[ip].right = i
-            self.tree[ip].height = max(self.left_height(self.tree[ip]),
-                                        self.right_height(self.tree[ip])) + 1
         else:
             self.root_idx = i
         if self.is_order_statistic:
@@ -517,8 +515,6 @@ class AVLTree(BinarySearchTree):
                                  self.right_size(self.tree[j]) + 1)
             self.tree[k].size = (self.left_size(self.tree[k]) +
                                  self.right_size(self.tree[k]) + 1)
-            self.tree[i].size = (self.left_size(self.tree[i]) +
-                                 self.right_size(self.tree[i]) + 1)
 
     def _left_rotate(self, j, k):
         y = self.tree[k].left
@@ -535,16 +531,11 @@ class AVLTree(BinarySearchTree):
         self.tree[k].height = max(self.left_height(self.tree[k]),
                                     self.right_height(self.tree[k])) + 1
         kp = self.tree[k].parent
-        if kp != None:
-            self.tree[kp].height = max(self.left_height(self.tree[kp]),
-                                        self.right_height(self.tree[kp])) + 1
-        else:
+        if kp == None:
             self.root_idx = k
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
-            self.tree[k].size = (self.left_size(self.tree[k]) +
-                                 self.right_size(self.tree[k]) + 1)
 
     def _balance_insertion(self, curr, last):
         walk = last
@@ -553,6 +544,9 @@ class AVLTree(BinarySearchTree):
         while walk != None:
             self.tree[walk].height = max(self.left_height(self.tree[walk]),
                                         self.right_height(self.tree[walk])) + 1
+            if self.is_order_statistic:
+                self.tree[walk].size = (self.left_size(self.tree[walk]) +
+                                        self.right_size(self.tree[walk]) + 1)
             last = path.popleft()
             last2last = path.popleft()
             if self.balance_factor(self.tree[walk]) not in (1, 0, -1):
@@ -576,6 +570,11 @@ class AVLTree(BinarySearchTree):
     def _balance_deletion(self, start_idx, key):
         walk = start_idx
         while walk != None:
+            self.tree[walk].height = max(self.left_height(self.tree[walk]),
+                                        self.right_height(self.tree[walk])) + 1
+            if self.is_order_statistic:
+                self.tree[walk].size = (self.left_size(self.tree[walk]) +
+                                        self.right_size(self.tree[walk]) + 1)
             if self.balance_factor(self.tree[walk]) not in (1, 0, -1):
                 if self.balance_factor(self.tree[walk]) < 0:
                     b = self.tree[walk].left
