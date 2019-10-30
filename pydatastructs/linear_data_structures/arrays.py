@@ -23,7 +23,7 @@ class OneDimensionalArray(Array):
         A valid object type.
     size: int
         The number of elements in the array.
-    elements: list/tuple
+    elements: list
         The elements in the array, all should
         be of same type.
     init: a python type
@@ -73,13 +73,13 @@ class OneDimensionalArray(Array):
         obj = object.__new__(cls)
         obj._dtype = dtype
         if len(args) == 2:
-            if _check_type(args[0], (list, tuple)) and \
+            if _check_type(args[0], list) and \
                 _check_type(args[1], int):
                 for i in range(len(args[0])):
                     if dtype != type(args[0][i]):
                         args[0][i] = dtype(args[0][i])
                 size, data = args[1], [arg for arg in args[0]]
-            elif _check_type(args[1], (list, tuple)) and \
+            elif _check_type(args[1], list) and \
                 _check_type(args[0], int):
                 for i in range(len(args[1])):
                     if dtype != type(args[1][i]):
