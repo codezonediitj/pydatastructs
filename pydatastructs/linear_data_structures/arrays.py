@@ -23,7 +23,7 @@ class OneDimensionalArray(Array):
         A valid object type.
     size: int
         The number of elements in the array.
-    elements: list/tuple
+    elements: list
         The elements in the array, all should
         be of same type.
     init: a python type
@@ -73,12 +73,18 @@ class OneDimensionalArray(Array):
         obj = object.__new__(cls)
         obj._dtype = dtype
         if len(args) == 2:
-            if _check_type(args[0], (list, tuple)) and \
+            if _check_type(args[0], list) and \
                 _check_type(args[1], int):
-                size, data = args[1], [dtype(arg) for arg in args[0]]
-            elif _check_type(args[1], (list, tuple)) and \
+                for i in range(len(args[0])):
+                    if dtype != type(args[0][i]):
+                        args[0][i] = dtype(args[0][i])
+                size, data = args[1], [arg for arg in args[0]]
+            elif _check_type(args[1], list) and \
                 _check_type(args[0], int):
-                size, data = args[0], [dtype(arg) for arg in args[1]]
+                for i in range(len(args[1])):
+                    if dtype != type(args[1][i]):
+                        args[1][i] = dtype(args[1][i])
+                size, data = args[0], [arg for arg in args[1]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -93,8 +99,11 @@ class OneDimensionalArray(Array):
                 init = kwargs.get('init', None)
                 obj._data = [init for i in range(args[0])]
             elif _check_type(args[0], (list, tuple)):
+                for i in range(len(args[0])):
+                    if dtype != type(args[0][i]):
+                        args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
-                                        [dtype(arg) for arg in args[0]]
+                                        [arg for arg in args[0]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -110,7 +119,9 @@ class OneDimensionalArray(Array):
         if elem is None:
             self._data[idx] = None
         else:
-            self._data[idx] = self._dtype(elem)
+            if type(elem) != self._dtype:
+                elem = self._dtype(elem)
+            self._data[idx] = elem
 
     def fill(self, elem):
         elem = self._dtype(elem)
@@ -237,8 +248,40 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self[idx] != None:
             self[idx] = None
             self._num -= 1
-            self._modify()
+            return self._modify()
 
     @property
     def size(self):
         return self._size
+
+class ArrayForTrees(DynamicOneDimensionalArray):
+    """
+    Utility dynamic array for storing nodes of a tree.
+
+    See Also
+    ========
+
+    pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
+    """
+    def _modify(self):
+        if self._num/self._size < self._load_factor:
+            new_indices = dict()
+            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
+            j = 0
+            for i in range(self._last_pos_filled + 1):
+                if self[i] != None:
+                    arr_new[j] = self[i]
+                    new_indices[self[i].key] = j
+                    j += 1
+            for i in range(j):
+                if arr_new[i].left != None:
+                    arr_new[i].left = new_indices[self[arr_new[i].left].key]
+                if arr_new[i].right != None:
+                    arr_new[i].right = new_indices[self[arr_new[i].right].key]
+                if arr_new[i].parent != None:
+                    arr_new[i].parent = new_indices[self[arr_new[i].parent].key]
+            self._last_pos_filled = j - 1
+            self._data = arr_new._data
+            self._size = arr_new._size
+            return new_indices
+        return None
