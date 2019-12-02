@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-from pydatastructs.utils import Node
+from pydatastructs.utils import TreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
@@ -23,7 +23,7 @@ class BinaryTree(object):
 
     root_data
         Optional, the root node of the binary tree.
-        If not of type Node, it will consider
+        If not of type TreeNode, it will consider
         root as data and a new root node will
         be created.
     key
@@ -53,10 +53,10 @@ class BinaryTree(object):
         if key == None and root_data != None:
             raise ValueError('Key required.')
         key = None if root_data == None else key
-        root = Node(key, root_data)
+        root = TreeNode(key, root_data)
         root.is_root = True
         obj.root_idx = 0
-        obj.tree, obj.size = ArrayForTrees(Node, [root]), 1
+        obj.tree, obj.size = ArrayForTrees(TreeNode, [root]), 1
         obj.comparator = lambda key1, key2: key1 < key2 \
                         if comp == None else comp
         obj.is_order_statistic = is_order_statistic
@@ -217,7 +217,7 @@ class BinarySearchTree(BinaryTree):
             self.tree[walk].key = key
             self.tree[walk].data = data
             return None
-        new_node, prev_node, flag = Node(key, data), 0, True
+        new_node, prev_node, flag = TreeNode(key, data), 0, True
         while flag:
             if not self.comparator(key, self.tree[walk].key):
                 if self.tree[walk].right == None:
@@ -353,7 +353,7 @@ class BinarySearchTree(BinaryTree):
         Returns
         =======
 
-        n: Node
+        n: TreeNode
             The node with the i-th smallest key
 
         References
@@ -736,7 +736,7 @@ class BinaryTreeTraversal(object):
         =======
 
         list
-            Each element is of type 'Node'.
+            Each element is of type 'TreeNode'.
         """
         if node == None:
             node = self.tree.root_idx
@@ -766,7 +766,7 @@ class BinaryTreeTraversal(object):
         =======
 
         list
-            Each element of the list is of type `Node`.
+            Each element of the list is of type `TreeNode`.
         """
         strategies = ('queue',)
         if strategy not in strategies:

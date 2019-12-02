@@ -1,13 +1,13 @@
 from __future__ import print_function, division
 
 __all__ = [
-    'Node'
+    'TreeNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)
 
-class Node(object):
+class TreeNode(object):
     """
     Represents node in trees.
 

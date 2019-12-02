@@ -2,7 +2,7 @@ from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
     ArrayForTrees)
 from pydatastructs.utils.raises_util import raises
-from pydatastructs.utils.misc_util import Node
+from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
 
 def test_BinarySearchTree():
@@ -138,9 +138,9 @@ def test_AVLTree():
     a2.insert(1, 1)
     assert str(a2) == "[(None, 1, 1, None)]"
     a3 = AVLTree()
-    a3.tree = ArrayForTrees(Node, 0)
+    a3.tree = ArrayForTrees(TreeNode, 0)
     for i in range(7):
-        a3.tree.append(Node(i, i))
+        a3.tree.append(TreeNode(i, i))
     a3.tree[0].left = 1
     a3.tree[0].right = 6
     a3.tree[1].left = 5
@@ -152,9 +152,9 @@ def test_AVLTree():
                        "(None, 3, 3, None), (None, 4, 4, None), "
                        "(None, 5, 5, None), (None, 6, 6, None)]")
     a4 = AVLTree()
-    a4.tree = ArrayForTrees(Node, 0)
+    a4.tree = ArrayForTrees(TreeNode, 0)
     for i in range(7):
-        a4.tree.append(Node(i, i))
+        a4.tree.append(TreeNode(i, i))
     a4.tree[0].left = 1
     a4.tree[0].right = 2
     a4.tree[2].left = 3
@@ -167,21 +167,21 @@ def test_AVLTree():
                       "(None, 6, 6, None)]")
 
     a5 = AVLTree(is_order_statistic=True)
-    a5.tree = ArrayForTrees(Node, [
-        Node(10, 10),
-        Node(5, 5),
-        Node(17, 17),
-        Node(2, 2),
-        Node(9, 9),
-        Node(12, 12),
-        Node(20, 20),
-        Node(3, 3),
-        Node(11, 11),
-        Node(15, 15),
-        Node(18, 18),
-        Node(30, 30),
-        Node(13, 13),
-        Node(33, 33)
+    a5.tree = ArrayForTrees(TreeNode, [
+        TreeNode(10, 10),
+        TreeNode(5, 5),
+        TreeNode(17, 17),
+        TreeNode(2, 2),
+        TreeNode(9, 9),
+        TreeNode(12, 12),
+        TreeNode(20, 20),
+        TreeNode(3, 3),
+        TreeNode(11, 11),
+        TreeNode(15, 15),
+        TreeNode(18, 18),
+        TreeNode(30, 30),
+        TreeNode(13, 13),
+        TreeNode(33, 33)
     ])
 
     a5.tree[0].left, a5.tree[0].right, a5.tree[0].parent, a5.tree[0].height = \
