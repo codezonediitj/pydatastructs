@@ -1,4 +1,4 @@
-from pydatastructs.utils import Node
+from pydatastructs.utils import TreeNode
 # TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 from pydatastructs.linear_data_structures.arrays import _check_type
@@ -62,7 +62,7 @@ class OneDimensionalSegmentTree(object):
         Helper function for taking union of two
         intervals.
         """
-        return Node([i1.key[0], i1.key[1], i2.key[2], i2.key[3]], None)
+        return TreeNode([i1.key[0], i1.key[1], i2.key[2], i2.key[3]], None)
 
     def _intersect(self, i1, i2):
         """
@@ -132,14 +132,14 @@ class OneDimensionalSegmentTree(object):
         endpoints.sort()
 
         elem_int = Queue()
-        elem_int.append(Node([False, endpoints[0] - 1, endpoints[0], False], None))
+        elem_int.append(TreeNode([False, endpoints[0] - 1, endpoints[0], False], None))
         i = 0
         while i < len(endpoints) - 1:
-            elem_int.append(Node([True, endpoints[i], endpoints[i], True], None))
-            elem_int.append(Node([False, endpoints[i], endpoints[i+1], False], None))
+            elem_int.append(TreeNode([True, endpoints[i], endpoints[i], True], None))
+            elem_int.append(TreeNode([False, endpoints[i], endpoints[i+1], False], None))
             i += 1
-        elem_int.append(Node([True, endpoints[i], endpoints[i], True], None))
-        elem_int.append(Node([False, endpoints[i], endpoints[i] + 1, False], None))
+        elem_int.append(TreeNode([True, endpoints[i], endpoints[i], True], None))
+        elem_int.append(TreeNode([False, endpoints[i], endpoints[i] + 1, False], None))
 
         self.tree = []
         while len(elem_int) > 1:
@@ -163,7 +163,7 @@ class OneDimensionalSegmentTree(object):
         self.root_idx = -1
 
         for segment in self.segments:
-            I = Node([True, segment[0], segment[1], True], None)
+            I = TreeNode([True, segment[0], segment[1], True], None)
             calls = [self.root_idx]
             while calls:
                 idx = calls.pop()
@@ -204,7 +204,7 @@ class OneDimensionalSegmentTree(object):
             self.build()
         if init_node == None:
             init_node = self.root_idx
-        qn = Node([True, qx, qx, True], None)
+        qn = TreeNode([True, qx, qx, True], None)
         intervals = []
         calls = [init_node]
         while calls:
