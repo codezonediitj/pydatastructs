@@ -40,3 +40,30 @@ class TreeNode(object):
         Used for printing.
         """
         return str((self.left, self.key, self.data, self.right))
+
+
+class GraphNode(object):
+    """
+    Represents node in Graphs.
+
+    Parameters
+    ==========
+
+    data
+        Any valid data to be stored in the node.
+    key
+        Required for comparison operations.
+    """
+
+    __slots__ = ['key', 'data']
+
+    def __new__(cls, key, data):
+        obj = object.__new__(cls)
+        obj.data, obj.key = data, key
+        return obj
+
+    def __str__(self):
+        """
+        Used for printing.
+        """
+        return str((self.key, self.data))
