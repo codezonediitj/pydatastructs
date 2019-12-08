@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-from pydatastructs.utils import TreeNode
+from pydatastructs.utils import TreeNode, _check_type
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
@@ -11,7 +11,8 @@ __all__ = [
     'AVLTree',
     'BinaryTree',
     'BinarySearchTree',
-    'BinaryTreeTraversal'
+    'BinaryTreeTraversal',
+    'StaticKDTree'
 ]
 
 class BinaryTree(object):
@@ -595,6 +596,17 @@ class AVLTree(BinarySearchTree):
         a = super(AVLTree, self).delete(key, balancing_info=True)
         self._balance_deletion(a, key)
         return True
+
+class StaticKDTree:
+
+    def __new__(list_of_points, number_of_dimensions):
+        if _check_type
+        k = number_of_dimensions
+        tree = ArrayForTrees(TreeNode, 0)
+        for point in list_of_points:
+            tree.append(TreeNode(None, tuple(point)))
+
+
 
 class BinaryTreeTraversal(object):
     """

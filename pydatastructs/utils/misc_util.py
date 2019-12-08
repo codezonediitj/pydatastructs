@@ -1,7 +1,9 @@
 from __future__ import print_function, division
 
 __all__ = [
-    'TreeNode'
+    'TreeNode',
+    '_check_type',
+    'NoneType'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
