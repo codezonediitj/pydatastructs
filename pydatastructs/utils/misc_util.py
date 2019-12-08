@@ -57,9 +57,10 @@ class GraphNode(object):
 
     __slots__ = ['key', 'data']
 
-    def __new__(cls, key, data):
+    def __new__(cls, key, data, adj_list = []):
         obj = object.__new__(cls)
         obj.data, obj.key = data, key
+        obj.adj_list = adj_list
         return obj
 
     def __str__(self):
@@ -67,3 +68,15 @@ class GraphNode(object):
         Used for printing.
         """
         return str((self.key, self.data))
+
+    def add_adjacent_key(self, key):
+        """
+        key : key of adjacent node to be appended to the adj_list of the node
+        """
+        self.adj_list.append(key)
+        
+    def remove_adjacent_key(self, key):
+        """
+        key : key of adjacent node to be removed from the adj_list of the node
+        """
+        self.adj_list.remove(key)
