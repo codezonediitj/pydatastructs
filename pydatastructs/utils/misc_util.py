@@ -1,4 +1,5 @@
 from __future__ import print_function, division
+from pydatastructs import DynamicOneDimensionalArray as DODA
 
 __all__ = [
     'TreeNode'
@@ -57,10 +58,10 @@ class GraphNode(object):
 
     __slots__ = ['key', 'data']
 
-    def __new__(cls, key, data, adj_list = []):
+    def __new__(cls, key, data, adj_list = DODA(int,0)):
         obj = object.__new__(cls)
         obj.data, obj.key = data, key
-        obj.adj_list = adj_list
+        obj.adj_list = {'adjacent_nodes':adj_list}
         return obj
 
     def __str__(self):
@@ -73,10 +74,10 @@ class GraphNode(object):
         """
         key : key of adjacent node to be appended to the adj_list of the node
         """
-        self.adj_list.append(key)
+        self.adj_list['adjacent'].append(key)
         
     def remove_adjacent_key(self, key):
         """
         key : key of adjacent node to be removed from the adj_list of the node
         """
-        self.adj_list.remove(key)
+        self.adj_list['adjacent'].remove(key)
