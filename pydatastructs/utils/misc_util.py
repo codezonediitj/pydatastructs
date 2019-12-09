@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-from pydatastructs import DynamicOneDimensionalArray as DODA
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray as DODA
 
 __all__ = [
     'TreeNode'
