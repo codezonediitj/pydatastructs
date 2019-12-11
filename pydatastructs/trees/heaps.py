@@ -2,10 +2,13 @@ from pydatastructs.utils.misc_util import _check_type
 
 NoneType = type(None)
 
-__all__ = ['binaryHeap']
+__all__ = [
+        'BinaryHeap'
+]
 
-class binaryHeap():
-    """Respresentation of BinaryHeap data structure
+class BinaryHeap():
+    """
+    Respresentation of BinaryHeap data structure
 
     Parameters
     ==========
@@ -13,6 +16,7 @@ class binaryHeap():
     array : list
         Optional, by default 'None'
         List of initial elements in Heap
+        
     _type : str
         Type of Heap.
         Takes 'min' or 'max'
@@ -22,6 +26,7 @@ class binaryHeap():
     ==========
 
     .. [1] https://en.m.wikipedia.org/wiki/Binary_heap
+    
     """
     def __new__(cls, array=None, _type="min"):
         if _type=="min":
@@ -39,7 +44,7 @@ class binaryHeap():
         ==========
 
         new_key: float
-            A real number.
+            A real number to insert into the Heap.
         
         """
         raise NotImplementedError(
@@ -61,15 +66,15 @@ class binaryHeap():
     
     
         
-class MinHeap(binaryHeap):
+class MinHeap(BinaryHeap):
     """
     Represents MinHeap.
 
     Example
     =======
 
-    >>> from pydatastructs.trees.heaps import binaryHeap
-    >>> h = binaryHeap()
+    >>> from pydatastructs.trees.heaps import BinaryHeap
+    >>> h = BinaryHeap()
     >>> h.insert(1)
     >>> h.insert(5)
     >>> h.insert(7)
@@ -129,24 +134,27 @@ class MinHeap(binaryHeap):
 
     
     def extract(self):
-        element_to_be_extracted = self.array[0]
-        self.array[0] = self.array[self._last_pos_filled]
-        self.array[self._last_pos_filled] = float('inf')
-        self.__heapify(0)
-        self.array.pop(self._last_pos_filled)
-        self._last_pos_filled-=1
-        return element_to_be_extracted
+        if self._last_pos_filled == -1:
+            return "Nothing to extract!"
+        else:
+            element_to_be_extracted = self.array[0]
+            self.array[0] = self.array[self._last_pos_filled]
+            self.array[self._last_pos_filled] = float('inf')
+            self.__heapify(0)
+            self.array.pop(self._last_pos_filled)
+            self._last_pos_filled-=1
+            return element_to_be_extracted
 
 
-class MaxHeap(binaryHeap):
+class MaxHeap(BinaryHeap):
     """
     Represents MinHeap.
 
     Example
     =======
 
-    >>> from pydatastructs.trees.heaps import binaryHeap
-    >>> h = binaryHeap(_type='max')
+    >>> from pydatastructs.trees.heaps import BinaryHeap
+    >>> h = BinaryHeap(_type='max')
     >>> h.insert(1)
     >>> h.insert(5)
     >>> h.insert(7)
@@ -203,10 +211,13 @@ class MaxHeap(binaryHeap):
                 i = parent
                     
     def extract(self):
-        element_to_be_extracted = self.array[0]
-        self.array[0] = self.array[self._last_pos_filled]
-        self.array[self._last_pos_filled] = float('-inf')
-        self.__heapify(0)
-        self.array.pop(self._last_pos_filled)
-        self._last_pos_filled-=1
-        return element_to_be_extracted
+        if self._last_pos_filled == -1:
+            return "Nothing to extract!"
+        else:
+            element_to_be_extracted = self.array[0]
+            self.array[0] = self.array[self._last_pos_filled]
+            self.array[self._last_pos_filled] = float('-inf')
+            self.__heapify(0)
+            self.array.pop(self._last_pos_filled)
+            self._last_pos_filled-=1
+            return element_to_be_extracted

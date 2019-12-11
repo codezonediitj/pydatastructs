@@ -16,6 +16,6 @@ from .space_partitioning_trees import (
 __all__.extend(space_partitioning_trees.__all__)
 
 from .heaps import (
-    binaryHeap
+    BinaryHeap
 )
 __all__.extend(heaps.__all__)
