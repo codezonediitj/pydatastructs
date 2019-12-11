@@ -6,9 +6,9 @@ __all__ = [
         'BinaryHeap'
 ]
 
-class BinaryHeap():
+class BinaryHeap:
     """
-    Respresentation of BinaryHeap data structure
+    Represents Binary Heap.
 
     Parameters
     ==========

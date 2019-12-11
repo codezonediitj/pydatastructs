@@ -59,4 +59,3 @@ def test_maxheap():
     
 test_minheap()
 test_maxheap()
-     
