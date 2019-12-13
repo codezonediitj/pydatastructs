@@ -1,0 +1,18 @@
+diff --git a/README.md b/README.md
+index 11495ab..a187ee3 100644
+--- a/README.md
++++ b/README.md
+@@ -13,6 +13,13 @@ How are we different?
+ 
+ There are many pre-exisiting packages available in the open source world based on the above idea. However, they lack the implementation of complex data structures and this makes us different. If you have worked with C++ and Python then you know how hard it is to code bug free AVL trees :-).Well, after this project you will not have to worry about it. In fact, we will keep each data structure independent from each other for easy code reusability.
+ 
++Why we use Python?
++-----------------
++
++As we know Python is an interepreted language and hence is slow as compared to C++, the most
++popular language for sports programming. We still decided to use Python because the software
++development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time. However, keeping the need of the users in mind, we will shift to C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch, after a few releases with APIs available for all the languages.
++
+ How to contribute?
+ ------------------
+ 
