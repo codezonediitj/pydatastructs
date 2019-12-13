@@ -1,10 +1,15 @@
-from pydatastructs.utils.misc_util import _check_type
-
-NoneType = type(None)
+from pydatastructs.utils.misc_util import _check_type, NoneType, TreeNode
+from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 
 __all__ = [
-        'BinaryHeap'
+    'BinaryHeap'
 ]
+
+class Heap:
+    """
+    Abstract class for representing heaps.
+    """
+    pass
 
 class BinaryHeap:
     """
@@ -13,211 +18,141 @@ class BinaryHeap:
     Parameters
     ==========
 
-    array : list
-        Optional, by default 'None'
-        List of initial elements in Heap
-        
-    _type : str
-        Type of Heap.
-        Takes 'min' or 'max'
-        By default 'min'
-    
+    array : list, tuple
+        Optional, by default 'None'.
+        List/tuple of initial elements in Heap.
+
+    heap_property : str
+        The property of binary heap.
+        If the key stored in each node is
+        either greater than or equal to
+        the keys in the node's children
+        then pass 'max'.
+        If the key stored in each node is
+        either less than or equal to
+        the keys in the node's children
+        then pass 'min'.
+        By default, the heap property is
+        set to 'min'.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.trees.heaps import BinaryHeap
+    >>> min_heap = BinaryHeap(heap_property="min")
+    >>> min_heap.insert(1, 1)
+    >>> min_heap.insert(5, 5)
+    >>> min_heap.insert(7, 7)
+    >>> min_heap.extract()
+    1
+    >>> min_heap.insert(4, 4)
+    >>> min_heap.extract()
+    4
+
+    >>> max_heap = BinaryHeap(heap_property='max')
+    >>> max_heap.insert(1, 1)
+    >>> max_heap.insert(5, 5)
+    >>> max_heap.insert(7, 7)
+    >>> max_heap.extract()
+    7
+    >>> max_heap.insert(6, 6)
+    >>> max_heap.extract()
+    6
+
     References
     ==========
 
     .. [1] https://en.m.wikipedia.org/wiki/Binary_heap
-    
     """
-    def __new__(cls, array=None, _type="min"):
-        if _type=="min":
-            return MinHeap(array)
-        elif _type=="max":
-            return MaxHeap(array)
+    __slots__ = ['_comp', 'heap']
+
+    def __new__(cls, elements=None, heap_property="min"):
+        obj = object.__new__(cls)
+        if heap_property == "min":
+            obj._comp = lambda key_parent, key_child: key_parent <= key_child
+        elif heap_property == "max":
+            obj._comp = lambda key_parent, key_child: key_parent >= key_child
         else:
-            raise NotImplementedError("%s hasn't been implemented yet."%(_type))
-    
-    def insert(self, *args, **kwargs):
+            raise ValueError("%s is invalid heap property"%(heap_property))
+        if elements is None:
+            elements = []
+        obj.heap = ArrayForTrees(TreeNode, elements)
+        obj._build()
+        return obj
+
+    def _build(self):
+        for i in range(self.heap.size//2, -1, -1):
+            self._heapify(i)
+
+    def _heapify(self, i):
+        target = i
+        l = 2*i + 1
+        r = 2*i + 2
+
+        if l <= self.heap._last_pos_filled:
+            target = l if (not self._comp(self.heap[l].key, self.heap[target].key)) \
+                        else i
+        if r <= self.heap._last_pos_filled:
+            target = r if (not self._comp(self.heap[r].key, self.heap[target].key)) \
+                        else target
+
+        if target != i:
+            target_key, target_data = \
+                self.heap[target].key, self.heap[target].data
+            self.heap[target].key, self.heap[target].data = \
+                self.heap[i].key, self.heap[i].data
+            self.heap[i].key, self.heap[i].data = \
+                target_key, target_data
+            i = target
+            self._heapify(i)
+
+    def insert(self, key, data):
         """
-        Insert a new element to the Heap according to heap property.
+        Insert a new element to the heap according to heap property.
 
         Parameters
         ==========
 
-        new_key: float
-            A real number to insert into the Heap.
-        
+        key
+            The key for comparison.
+        data
+            The data to be inserted.
+
+        Returns
+        =======
+
+        None
         """
-        raise NotImplementedError(
-            "This is an abstract method.")
+        new_node = TreeNode(key, data)
+        self.heap.append(new_node)
+        self._last_pos_filled += 1
+        i = self._last_pos_filled
+
+        while True:
+            parent = (i-1)//2
+            if i == 0 or self.array[parent] < self.array[i]:
+                break
+            else:
+                self.array[parent], self.array[i] = self.array[i], self.array[parent]
+                i = parent
 
     def extract(self):
         """
         Extract root element of the Heap.
 
         Returns
-        ==========
-        
-        element_to_be_extracted : float
-            Min or Max of Heap according to type of Heap.
-        
+        =======
+
+        root_element : TreeNode
+            The TreeNode at the root of the heap.
         """
-        raise NotImplementedError(
-              "This is an abstract method.")    
-    
-    
-        
-class MinHeap(BinaryHeap):
-    """
-    Represents MinHeap.
-
-    Example
-    =======
-
-    >>> from pydatastructs.trees.heaps import BinaryHeap
-    >>> h = BinaryHeap()
-    >>> h.insert(1)
-    >>> h.insert(5)
-    >>> h.insert(7)
-    >>> h.extract()
-    1
-    >>> h.insert(4)
-    >>> h.extract()
-    4
-    
-    """
-    
-    
-    __slots__ = ['_last_pos_filled']
-    
-    def __new__(cls,array):
-        obj = object.__new__(cls)
-        if _check_type(array,NoneType):
-            obj.array = []
-        else:
-            obj.array=array
-        obj._last_pos_filled=len(obj.array)-1
-        obj.__build()
-        return obj
-    
-    def __heapify(self,i):
-        minimum=i
-        l=2*i+1
-        r=2*i+2
-        
-        if l<=self._last_pos_filled:
-            minimum = l if self.array[l]<self.array[minimum] else i
-        if r<=self._last_pos_filled:
-            minimum = r if self.array[r]<self.array[minimum] else minimum
-        
-        if minimum!=i:
-            self.array[minimum], self.array[i]=self.array[i], self.array[minimum]
-            i = minimum
-            self.__heapify(i)
-    
-    def __build(self):
-        for i in range(len(self.array)//2,-1,-1):
-            self.__heapify(i)        
-            
-    def insert(self,new_key):
-        self.array.append(new_key)
-        self._last_pos_filled+=1
-        i=self._last_pos_filled
-        
-        while(True):
-            parent = (i-1)//2
-            if i==0 or self.array[parent]<self.array[i]:
-                break
-            else:
-                self.array[parent], self.array[i] = self.array[i], self.array[parent]
-                i = parent
-                
-
-    
-    def extract(self):
         if self._last_pos_filled == -1:
             return "Nothing to extract!"
         else:
             element_to_be_extracted = self.array[0]
             self.array[0] = self.array[self._last_pos_filled]
             self.array[self._last_pos_filled] = float('inf')
-            self.__heapify(0)
-            self.array.pop(self._last_pos_filled)
-            self._last_pos_filled-=1
-            return element_to_be_extracted
-
-
-class MaxHeap(BinaryHeap):
-    """
-    Represents MinHeap.
-
-    Example
-    =======
-
-    >>> from pydatastructs.trees.heaps import BinaryHeap
-    >>> h = BinaryHeap(_type='max')
-    >>> h.insert(1)
-    >>> h.insert(5)
-    >>> h.insert(7)
-    >>> h.extract()
-    7
-    >>> h.insert(6)
-    >>> h.extract()
-    6
-    
-    """
-    
-    __slots__ = ['_last_pos_filled']
-    
-    def __new__(cls,array):
-        obj = object.__new__(cls)
-        if type(array) is type(None):
-            obj.array = []
-        else:
-            obj.array=array
-        obj._last_pos_filled=len(obj.array)-1
-        obj.__build()
-        return obj
-    
-    def __heapify(self,i):
-        maximum=i
-        l=2*i+1
-        r=2*i+2
-        
-        if l<=self._last_pos_filled:
-            maximum = l if self.array[l]>self.array[maximum] else i
-        if r<=self._last_pos_filled:
-            maximum = r if self.array[r]>self.array[maximum] else maximum
-        
-        if maximum!=i:
-            self.array[maximum], self.array[i]=self.array[i], self.array[maximum]
-            i = maximum
-            self.__heapify(i)
-    
-    def __build(self):
-        for i in range(len(self.array)//2,-1,-1):
-            self.__heapify(i)        
-            
-    def insert(self,new_key):
-        self.array.append(new_key)
-        self._last_pos_filled+=1
-        i=self._last_pos_filled
-        
-        while(True):
-            parent = (i-1)//2
-            if i==0 or self.array[parent]>=self.array[i]:
-                break
-            else:
-                self.array[parent], self.array[i] = self.array[i], self.array[parent]
-                i = parent
-                    
-    def extract(self):
-        if self._last_pos_filled == -1:
-            return "Nothing to extract!"
-        else:
-            element_to_be_extracted = self.array[0]
-            self.array[0] = self.array[self._last_pos_filled]
-            self.array[self._last_pos_filled] = float('-inf')
-            self.__heapify(0)
+            self._heapify(0)
             self.array.pop(self._last_pos_filled)
             self._last_pos_filled-=1
             return element_to_be_extracted
