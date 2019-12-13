@@ -1,7 +1,5 @@
-
-#how to declare maxsize as parameter? Furthermore,how to use a function (that is created in this class) in this class?
 from __future__ import print_function
-
+from __
 
 
 
@@ -32,31 +30,29 @@ class Queue():
 	6. Check whether queue is full or not.
 	 
 	'''
-	
     def __init__(self):
         self.elem = []
 
 	"""isEmpty()-check whether Queue is empty or not"""
     def isEmpty(self):
-        return self.elem == [] 
+        return self.elem == []
     """isFull()-check status of queue whether it is full or not"""
     def isFull(self):
     	if len(self.elem)<self.elem.max_size 
-    		return 0 
+    		return 0
     	else return 1;
 
 	"""append()-entering the first element of a queue"""
     def append(self, elem):
-    	if (isFull(self)!=0)
+    	if isFull(self)!=0
     		self.elem.insert(0,elem)
     	else raise Error("Variable storage failure")
 
 	"""popleft()-popping out the first element that has
  	entered the queue according to the FIFO concept"""
 	def popleft(self):
-        if isEmpty(self)
-        	 return "Queue empty"
-        else 
+        if self.elem.isFull(self)
+        	return self.elem.pop()
 
 
 	"""len()-returns length of a queue"""
