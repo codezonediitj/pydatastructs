@@ -23,11 +23,13 @@ def test_BinaryHeap():
     "(None, 3, 3, None), (None, 25, 25, None), "
     "(None, 1, 1, None), (None, 2, 2, None), (None, 7, 7, None)]")
 
-    expected_extracted_element = max_heap.heap[0]
-    assert max_heap.extract().key == expected_extracted_element.key
+    expected_extracted_element = max_heap.heap[0].key
+    assert max_heap.extract().key == expected_extracted_element
 
     expected_sorted_elements = [36, 25, 19, 17, 7, 3, 2, 1]
-    sorted_elements = [max_heap.extract() for _ in range(8)]
+    sorted_elements = []
+    for _ in range(8):
+        sorted_elements.append(max_heap.extract().key)
     assert expected_sorted_elements == sorted_elements
 
     elements = [
@@ -36,9 +38,9 @@ def test_BinaryHeap():
                 TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
             ]
     min_heap = BinaryHeap(elements = elements, heap_property="min")
-    expected_extracted_element = min_heap.heap[0]
-    assert min_heap.extract().key == expected_extracted_element.key
+    expected_extracted_element = min_heap.heap[0].key
+    assert min_heap.extract().key == expected_extracted_element
 
-    expected_sorted_elements = [2, 3, 7, 17, 19, 25, 36]
-    sorted_elements = [max_heap.extract() for _ in range(8)]
+    expected_sorted_elements = [2, 3, 7, 17, 19, 25, 36, 100]
+    sorted_elements = [min_heap.extract().key for _ in range(8)]
     assert expected_sorted_elements == sorted_elements
