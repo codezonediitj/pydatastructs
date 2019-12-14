@@ -1,12 +1,5 @@
-
-#how to declare maxsize as parameter? Furthermore,how to use a function (that is created in this class) in this class?
 from __future__ import print_function
-
-
-
-
-
-class Queue():
+class Queue:
 	'''
 	Creation of Queue Data Type in python with list prebuilt data type
 	------------------------------------------------------------------
@@ -30,36 +23,30 @@ class Queue():
 	4. popping elements on first arrival basis.
 	5. detecting length of Queue.
 	6. Check whether queue is full or not.
-	 
-	'''
+	 '''
 	
     def __init__(self):
-        self.elem = []
+        self.elements = []
 
-	"""isEmpty()-check whether Queue is empty or not"""
-    def isEmpty(self):
-        return self.elem == [] 
-    """isFull()-check status of queue whether it is full or not"""
+	def len(self):
+        return len(self.elements)
+    
+	def isEmpty(self):
+        return self.elements == []
+
     def isFull(self):
-    	if len(self.elem)<self.elem.max_size 
+    	if len(self.elements)<self.max_size 
     		return 0 
-    	else return 1;
+    	else return 1
 
-	"""append()-entering the first element of a queue"""
     def append(self, elem):
     	if (isFull(self)!=0)
-    		self.elem.insert(0,elem)
-    	else raise Error("Variable storage failure")
+    		self.elements.insert(0,elem)
+    	else raise Error("Unable to acess memory segment")
 
-	"""popleft()-popping out the first element that has
- 	entered the queue according to the FIFO concept"""
 	def popleft(self):
         if isEmpty(self)
         	 return "Queue empty"
-        else 
-
-
-	"""len()-returns length of a queue"""
-    def len(self):
-        return len(self.elem)
+        else self.elements.pop() 
+    
 
