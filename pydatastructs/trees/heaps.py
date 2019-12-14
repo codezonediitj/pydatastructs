@@ -18,7 +18,7 @@ class BinaryHeap:
     Parameters
     ==========
 
-    array : list, tuple
+    elements : list, tuple
         Optional, by default 'None'.
         List/tuple of initial elements in Heap.
 
@@ -64,10 +64,11 @@ class BinaryHeap:
 
     .. [1] https://en.m.wikipedia.org/wiki/Binary_heap
     """
-    __slots__ = ['_comp', 'heap']
+    __slots__ = ['_comp', 'heap', 'heap_property']
 
     def __new__(cls, elements=None, heap_property="min"):
         obj = object.__new__(cls)
+        obj.heap_property = heap_property
         if heap_property == "min":
             obj._comp = lambda key_parent, key_child: key_parent <= key_child
         elif heap_property == "max":
@@ -81,8 +82,20 @@ class BinaryHeap:
         return obj
 
     def _build(self):
+        for i in range(self.heap.size):
+            self.heap[i].left, self.heap[i].right = \
+                2*i + 1, 2*i + 2
         for i in range(self.heap.size//2, -1, -1):
             self._heapify(i)
+
+    def _swap(self, idx1, idx2):
+        print(self)
+        idx1_key, idx1_data = \
+            self.heap[idx1].key, self.heap[idx1].data
+        self.heap[idx1].key, self.heap[idx1].data = \
+            self.heap[idx2].key, self.heap[idx2].data
+        self.heap[idx2].key, self.heap[idx2].data = \
+            idx1_key, idx1_data
 
     def _heapify(self, i):
         target = i
@@ -90,19 +103,14 @@ class BinaryHeap:
         r = 2*i + 2
 
         if l <= self.heap._last_pos_filled:
-            target = l if (not self._comp(self.heap[l].key, self.heap[target].key)) \
+            target = l if self._comp(self.heap[l].key, self.heap[target].key) \
                         else i
         if r <= self.heap._last_pos_filled:
-            target = r if (not self._comp(self.heap[r].key, self.heap[target].key)) \
+            target = r if self._comp(self.heap[r].key, self.heap[target].key) \
                         else target
 
         if target != i:
-            target_key, target_data = \
-                self.heap[target].key, self.heap[target].data
-            self.heap[target].key, self.heap[target].data = \
-                self.heap[i].key, self.heap[i].data
-            self.heap[i].key, self.heap[i].data = \
-                target_key, target_data
+            self._swap(target, i)
             i = target
             self._heapify(i)
 
@@ -125,15 +133,15 @@ class BinaryHeap:
         """
         new_node = TreeNode(key, data)
         self.heap.append(new_node)
-        self._last_pos_filled += 1
-        i = self._last_pos_filled
+        i = self.heap._last_pos_filled
+        self.heap[i].left, self.heap[i].right = 2*i + 1, 2*i + 2
 
         while True:
-            parent = (i-1)//2
-            if i == 0 or self.array[parent] < self.array[i]:
+            parent = (i - 1)//2
+            if i == 0 or self._comp(self.heap[parent].key, self.heap[i].key):
                 break
             else:
-                self.array[parent], self.array[i] = self.array[i], self.array[parent]
+                self._swap(i, parent)
                 i = parent
 
     def extract(self):
@@ -144,15 +152,29 @@ class BinaryHeap:
         =======
 
         root_element : TreeNode
-            The TreeNode at the root of the heap.
+            The TreeNode at the root of the heap,
+            if the heap is not empty.
+        None
+            If the heap is empty.
         """
-        if self._last_pos_filled == -1:
-            return "Nothing to extract!"
+        if self.heap._last_pos_filled == -1:
+            return None
         else:
-            element_to_be_extracted = self.array[0]
-            self.array[0] = self.array[self._last_pos_filled]
-            self.array[self._last_pos_filled] = float('inf')
+            element_to_be_extracted = self.heap[0]
+            self._swap(0, self.heap._last_pos_filled)
+            self.heap[self.heap._last_pos_filled] = TreeNode(None,
+                                                    float('inf') if self.heap_property == 'min'
+                                                    else float('-inf'))
             self._heapify(0)
-            self.array.pop(self._last_pos_filled)
-            self._last_pos_filled-=1
+            self.heap.delete(self.heap._last_pos_filled)
             return element_to_be_extracted
+
+    def __str__(self):
+        to_be_printed = ['' for i in range(self.heap._last_pos_filled + 1)]
+        for i in range(self.heap._last_pos_filled + 1):
+            if self.heap[i] != None:
+                node = self.heap[i]
+                to_be_printed[i] = (node.left if node.left <= self.heap._last_pos_filled else None,
+                                    node.key, node.data,
+                                    node.right if node.right <= self.heap._last_pos_filled else None)
+        return str(to_be_printed)
