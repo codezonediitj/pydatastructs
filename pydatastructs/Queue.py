@@ -28,7 +28,7 @@ class Queue:
     def __new__(self):
         self.elements = []
 
-	def len(self):
+	def __len__(self):
         return len(self.elements)
     
     def append(self, elem):
