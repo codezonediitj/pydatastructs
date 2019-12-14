@@ -600,11 +600,73 @@ class AVLTree(BinarySearchTree):
 class StaticKDTree:
 
     def __new__(list_of_points, number_of_dimensions):
-        if _check_type
         k = number_of_dimensions
-        tree = ArrayForTrees(TreeNode, 0)
-        for point in list_of_points:
-            tree.append(TreeNode(None, tuple(point)))
+        tree = ArrayForTrees(TreeNode, list_of_points)
+        # to be written
+
+    def _select(self, tree, left, right, size):
+        if left == right:
+            return left
+        pivot_index = self._pivot(tree, left, right)
+        pivot_index = self._partition(tree, left, right, pivot_index, size)
+        if size == pivot_index + 1:
+            return pivot_index
+        elif size < pivot_index + 1:
+            right = pivot_index - 1
+        else:
+            left = pivot_index + 1
+
+    def _partition(self, tree, left, right, pivot_index, size):
+        pivot_value = tree[pivot_index]
+        tree[pivot_index], tree[right] = \
+            tree[right], tree[pivot_index]
+        store_index = left
+        for i in range(left, right):
+            if tree[i] < pivot_value:
+                tree[store_index], tree[i] = \
+                    tree[i], tree[store_index]
+                store_index += 1
+        store_index_eq = store_index
+        for i in range(store_index, right):
+            if tree[i] == pivot_value:
+                tree[store_index_eq], tree[i] = \
+                    tree[i], tree[store_index_eq]
+                store_index_eq += 1
+        tree[right], tree[store_index_eq] = \
+            tree[store_index_eq], tree[right]
+        if size < store_index + 1:
+            return store_index
+        if size <= store_index_eq + 1:
+            return size - 1
+        return store_index_eq
+
+    def _pivot(self, tree, left, right):
+        if right - left < 5:
+            return self._partition5(tree, left, right)
+        for i in range(left, right + 1, 5):
+            sub_right = i + 4
+            if sub_right > right:
+                sub_right = right
+            median5 = self._partition5(tree, i, sub_right)
+            tree[median5], tree[left + (i - left)//5] = \
+                tree[left + (i - left)//5], tree[median5]
+        mid = (right - left)//10 + left  + 1
+        return self._select(tree, left, left + (right - left)//5, mid)
+
+    def _partition5(self, tree, left, right):
+        i = left + 1
+        while i <= right:
+            j = i
+            while j > left and tree[j-1] > tree[j]:
+                tree[j-1], tree[j] = tree[j], tree[j-1]
+                j -= 1
+            i += 1
+        return (left + right)//2
+
+
+
+
+
 
 
 
