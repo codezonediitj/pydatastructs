@@ -25,28 +25,17 @@ class Queue:
 	6. Check whether queue is full or not.
 	 '''
 	
-    def __init__(self):
+    def __new__(self):
         self.elements = []
 
 	def len(self):
         return len(self.elements)
     
-	def isEmpty(self):
-        return self.elements == []
-
-    def isFull(self):
-    	if len(self.elements)<self.max_size 
-    		return 0 
-    	else return 1
-
     def append(self, elem):
-    	if (isFull(self)!=0)
-    		self.elements.insert(0,elem)
-    	else raise Error("Unable to acess memory segment")
+   		self.elements.insert(0,elem)
+  
 
 	def popleft(self):
-        if isEmpty(self)
-        	 return "Queue empty"
-        else self.elements.pop() 
+		self.elements.pop() 
     
 
