@@ -33,7 +33,7 @@ def test_BinarySearchTree():
     assert b.delete(13) == None
     assert str(b) == \
     ("[(1, 8, 8, 7), (3, 4, 4, 4), '', (None, 1, 1, None), "
-    "(None, 6, 6, 6), '', (None, 7, 7, None), (None, 14, 14, None), '']")
+    "(None, 6, 6, 6), '', (None, 7, 7, None), (None, 14, 14, None)]")
     b.delete(7)
     b.delete(6)
     b.delete(1)

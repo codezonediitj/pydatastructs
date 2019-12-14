@@ -248,6 +248,8 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self[idx] != None:
             self[idx] = None
             self._num -= 1
+            if self._last_pos_filled == idx:
+                self._last_pos_filled -= 1
             return self._modify()
 
     @property
