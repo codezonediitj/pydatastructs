@@ -6,6 +6,7 @@ from pydatastructs.linear_data_structures import (
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 # TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
+import random
 
 __all__ = [
     'AVLTree',
@@ -597,78 +598,65 @@ class AVLTree(BinarySearchTree):
         self._balance_deletion(a, key)
         return True
 
-class StaticKDTree:
+class StaticKDTree(BinaryTree):
 
-    def __new__(list_of_points, number_of_dimensions):
-        k = number_of_dimensions
-        tree = ArrayForTrees(TreeNode, list_of_points)
-        # to be written
+    __slots__ = ['number_of_dimensions', 'tree', 'root', 'size']
 
-    def _select(self, tree, left, right, size):
-        if left == right:
-            return left
-        pivot_index = self._pivot(tree, left, right)
-        pivot_index = self._partition(tree, left, right, pivot_index, size)
-        if size == pivot_index + 1:
-            return pivot_index
-        elif size < pivot_index + 1:
-            right = pivot_index - 1
+    def __new__(cls, list_of_points, _constant=5):
+        if (not _check_type(list_of_points, (list, tuple))) or \
+            len(list_of_points) == 0:
+            raise ValueError("Invalid list of points %s"%(list_of_points))
+        if len(list_of_points[0].data) == 0:
+            raise ValueError("Number of dimensions cannot be 0")
+        obj = object.__new__(cls)
+        obj.number_of_dimensions = len(list_of_points[0].data)
+        obj.tree = ArrayForTrees(TreeNode, [])
+        obj.size = len(list_of_points)
+        obj.root = 0
+        obj._build(list_of_points, _constant)
+        return obj
+
+    def _select_median(self, list_of_points, depth, _constant):
+        constant_list = []
+        if len(list_of_points) < _constant:
+            constant_list = list_of_points
         else:
-            left = pivot_index + 1
+            for _ in range(_constant):
+                idx = random.randint(0, len(list_of_points) - 1)
+                while list_of_points[idx] in constant_list:
+                    idx = random.randint(0, len(list_of_points) - 1)
+                constant_list.append(list_of_points[idx])
+        sorted_list = sorted(constant_list, key=lambda node: node.data[depth])
+        # print([str(x) for x in sorted_list])
+        return sorted_list[len(sorted_list)//2]
 
-    def _partition(self, tree, left, right, pivot_index, size):
-        pivot_value = tree[pivot_index]
-        tree[pivot_index], tree[right] = \
-            tree[right], tree[pivot_index]
-        store_index = left
-        for i in range(left, right):
-            if tree[i] < pivot_value:
-                tree[store_index], tree[i] = \
-                    tree[i], tree[store_index]
-                store_index += 1
-        store_index_eq = store_index
-        for i in range(store_index, right):
-            if tree[i] == pivot_value:
-                tree[store_index_eq], tree[i] = \
-                    tree[i], tree[store_index_eq]
-                store_index_eq += 1
-        tree[right], tree[store_index_eq] = \
-            tree[store_index_eq], tree[right]
-        if size < store_index + 1:
-            return store_index
-        if size <= store_index_eq + 1:
-            return size - 1
-        return store_index_eq
-
-    def _pivot(self, tree, left, right):
-        if right - left < 5:
-            return self._partition5(tree, left, right)
-        for i in range(left, right + 1, 5):
-            sub_right = i + 4
-            if sub_right > right:
-                sub_right = right
-            median5 = self._partition5(tree, i, sub_right)
-            tree[median5], tree[left + (i - left)//5] = \
-                tree[left + (i - left)//5], tree[median5]
-        mid = (right - left)//10 + left  + 1
-        return self._select(tree, left, left + (right - left)//5, mid)
-
-    def _partition5(self, tree, left, right):
-        i = left + 1
-        while i <= right:
-            j = i
-            while j > left and tree[j-1] > tree[j]:
-                tree[j-1], tree[j] = tree[j], tree[j-1]
-                j -= 1
-            i += 1
-        return (left + right)//2
-
-
-
-
-
-
-
+    def _build(self, list_of_points, _constant):
+        recursion_queue = Queue()
+        recursion_queue.append(list_of_points)
+        k = 0
+        while len(recursion_queue) != 0:
+            top_list = recursion_queue.popleft()
+            median = self._select_median(top_list, k, _constant)
+            median.left, median.right = None, None
+            self.tree.append(median)
+            if len(top_list) > 1:
+                left_list, right_list = [], []
+                for node in top_list:
+                    if node.data[k] < median.data[k]:
+                        left_list.append(node)
+                    elif node.data[k] > median.data[k]:
+                        right_list.append(node)
+                    elif node.data[k] == median.data[k] and \
+                        node.data != median.data:
+                        left_list.append(node)
+                print(median, [str(x) for x in left_list], [str(x) for x in right_list])
+                if len(left_list) > 0:
+                    median.left = self.tree._last_pos_filled + 1
+                    recursion_queue.append(left_list)
+                if len(right_list) > 0:
+                    median.right = self.tree._last_pos_filled + 2
+                    recursion_queue.append(right_list)
+            k = (k + 1)%self.number_of_dimensions
 
 class BinaryTreeTraversal(object):
     """

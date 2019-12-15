@@ -6,7 +6,8 @@ from . import (
 )
 
 from .binary_trees import (
-    TreeNode, BinaryTree, BinarySearchTree, BinaryTreeTraversal, AVLTree
+    TreeNode, BinaryTree, BinarySearchTree, BinaryTreeTraversal, AVLTree,
+    StaticKDTree
 )
 __all__.extend(binary_trees.__all__)
 
