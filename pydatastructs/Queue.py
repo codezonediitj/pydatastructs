@@ -25,17 +25,15 @@ class Queue:
 	6. Check whether queue is full or not.
 	 '''
 	
-    def __new__(self):
-        self.elements = []
+def __new__(self):
+	self.elements = []
 
-	def __len__(self):
-        return len(self.elements)
+def __len__(self):
+    return len(self.elements)
     
-    def append(self, elem):
-   		self.elements.insert(0,elem)
-  
-
-	def popleft(self):
-		self.elements.pop() 
+def append(self, elem):
+   	self.elements.insert(0,elem)
+def popleft(self):
+	self.elements.pop() 
     
 
