@@ -154,7 +154,7 @@ class DoublyLinkedList:
     References
     ==========
     
-    https://www.geeksforgeeks.org/doubly-linked-list/
+    https://en.wikipedia.org/wiki/Linked_list
 
     '''
     __slots__ = ['head','tail','length']
