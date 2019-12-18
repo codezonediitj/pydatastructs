@@ -1,5 +1,8 @@
 from __future__ import print_function, division
 from pydatastructs.utils.misc_util import _check_type, NoneType
+from pydatastructs.utils import ( 
+    Node
+)
 
 __author__ = 'rohansingh9001'
 
@@ -8,54 +11,14 @@ __all__ = [
     'LinkedList'
 ]
 
-# A linked list node 
-class Node: 
-
+class LinkedList(object):
     '''
-    Node class for Linked List and Doubly Linked List [ Intended for internal use and not to be imported]
-
-    Parameters
-    ==========
-    
-    For Doubly Linked List use Default constructor(__init__):
-
-        data: type
-            A valid object type.
-            Should be convertible to string using str() method to use print() method on instance
-
-    For Single Linked List use Alternative constructor(singleLink):
-        data: type
-            A valid object type
-            Should be convertible to string using str() method to use print() method on instance
-    
-    Note
-    ====
-
-    classmethod singleLink has been used for Node class for Single linked list due to non existence of a 
-    previous link between the nodes.
+    Abstract class for Linked List in pydatastructs.
     '''
-
-    __slots__ = ['data', 'next', 'prev']
-    
-    # Constructor to create a new node 
-    def __init__(self, data): 
-        self.data = data 
-        self.next = NoneType
-        self.prev = NoneType
-    #Alternative constructor for Single Linked List
-    @classmethod
-    def singleLink(obj, data):
-        obj.data = data
-        obj.next = NoneType
-        return obj
-    
-    def __str__(self):
-        return str(self.data)
-
-'''------------------------Doubly Linked List Class---------------------------'''
+    pass
 
 # Class to create a Doubly Linked List 
-class DoublyLinkedList: 
+class DoublyLinkedList(LinkedList): 
     
 
     '''
@@ -66,90 +29,26 @@ class DoublyLinkedList:
     
     None
 
-    Methods
-    =======
-
-    1) appendleft: 
-        takes parameters - data
-            data: type 
-                A valid object type
-                Should be convertible to string using str() method to use print() method on instance.
-        action - Pushes a new node at the start i.e. left of the DLL.
-
-    2) appendright: 
-        takes parameters - data
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to use print() method on instance.
-        action - Appends a new node at the end i.e. the right of the DLL.
-    
-    3) insertAfter:
-        takes parameters - prevNode, data
-            prevNode: Node type 
-                An object of Node class 
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to use print() method in instance.
-        action - Inserts a new node after the prevNode.
-
-    4) insertBefore:
-        takes parameters - nextNode, data
-            prevNode: Node type
-                An object of Node class
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to use print() method in instance.
-        action - Inserts a new node before the newNode.
-
-    5) insertAt:
-        takes parameters - index, data
-            index: int type
-                An integer i such that 0<= i <= length, where length refers to the length of the List.
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to use print() method in instance.
-        action - Inserts a new node at the input index.
-
-    6) popleft: 
-        takes parameters - None
-        action - Removes the Node from the left i.e. start of the DLL and returns the data from the Node.
-
-    7) popright:
-        takes parameters - None
-        action - Removes the Node from the right i.e. end of the DLL and returns the data from the Node.
-
-    8) pop:
-        takes parameters - index
-            index: int type
-                An integer i such that 0<= i <= length, where length refers to the length of the List.
-        action - Removes the Node at the index of the DLL and returns the data from the Node.
-    
-    9) __getitem__:
-        takes parameters - index
-            index: int type
-                An integer i such that 0<= i <= length, where length refers to the length of the List.
-        action - Returns the data of the Node at index.
-            
-    10) __setitem__:
-        takes parameters - index, data
-            index: int type
-                An integer i such that 0<= i <= length, where length refers to the length of the List.
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to use print() method in instance.
-        action - Sets the data of the Node at the index to the input data.
-
-    11) __str__:
-        takes parameters - None
-        action - Prints the DLL in a list from from the start to the end.
-    
-    12) __len__:
-        takes parameters - None
-        action - Returns the length of the DLL.
-
-    13) isEmpty:
-        takes parameters - None
-        action - Return a bool value to check if the DLL is empty or not.
+    Examples
+    ========
+    >>> from pydatastructs import DoublyLinkedLIst as DLL
+    >>> dll = DLL()
+    >>> dll.append(6)
+    >>> arr[0]
+    6
+    >>> dll.head
+    6
+    >>> dll.append(5)
+    >>> dll.appendleft(2)
+    >>> print(dll)
+    [2,6,5]
+    >>> dll[0] = 7.2
+    >>> dll[0]
+    7.2
+    >>> dll.pop(1)
+    6
+    >>> print(dll)
+    [2,5]
 
     References
     ==========
@@ -165,6 +64,15 @@ class DoublyLinkedList:
         self.length = 0
 
     def appendleft(self,data):
+        '''
+        appendleft: 
+        takes parameters - data
+            data: type 
+                A valid object type
+                Should be convertible to string using str() method to 
+                use print() method on instance.
+        action - Pushes a new node at the start i.e. left of the DLL.
+        '''
         self.length += 1
         newNode = Node(data)
         if self.head is not NoneType:
@@ -177,7 +85,16 @@ class DoublyLinkedList:
         if newNode.prev == NoneType:
             self.head = newNode
     
-    def appendright(self, data):
+    def append(self, data):
+        '''
+        append: 
+        takes parameters - data
+            data: type
+                A valid object type.
+                Should be convertible to string using str() method to 
+                use print() method on instance.
+        action - Appends a new node at the end i.e. the right of the DLL.
+        '''
         self.length += 1
         newNode = Node(data)
         if self.tail is not NoneType:
@@ -191,6 +108,17 @@ class DoublyLinkedList:
             self.head = newNode
 
     def insertAfter(self, prevNode, data):
+        '''
+        insertAfter:
+        takes parameters - prevNode, data
+            prevNode: Node type 
+                An object of Node class 
+            data: type
+                A valid object type.
+                Should be convertible to string using str() method to
+                use print() method in instance.
+        action - Inserts a new node after the prevNode.
+        '''
         self.length += 1
         newNode = Node(data)
         newNode.next = prevNode.next
@@ -203,6 +131,17 @@ class DoublyLinkedList:
             self.head = newNode
     
     def insertBefore(self, nextNode, data):
+        '''
+        insertBefore:
+        takes parameters - nextNode, data
+            prevNode: Node type
+                An object of Node class
+            data: type
+                A valid object type.
+                Should be convertible to string using str() method to 
+                use print() method in instance.
+        action - Inserts a new node before the newNode.
+        '''
         self.length += 1
         newNode = Node(data)
         newNode.prev = nextNode.prev
@@ -215,6 +154,18 @@ class DoublyLinkedList:
             self.head = newNode
     
     def insertAt(self, index, data):
+        '''
+        insertAt:
+        takes parameters - index, data
+            index: int type
+                An integer i such that 0<= i <= length, where length 
+                refers to the length of the List.
+            data: type
+                A valid object type.
+                Should be convertible to string using str() method to
+                use print() method in instance.
+        action - Inserts a new node at the input index.
+        '''
         if index > self.length or index < 0 or not (_check_type(index, int)):
             raise ValueError('Index input out of range/Index is expected to be an Integer.')
         else:
@@ -241,6 +192,12 @@ class DoublyLinkedList:
                     self.head = newNode
     
     def popleft(self):
+        '''
+        popleft: 
+        takes parameters - None
+        action - Removes the Node from the left i.e. start of the DLL
+         and returns the data from the Node.
+        '''
         self.length -= 1
         oldHead = self.head
         oldHead.next.prev = NoneType
@@ -248,6 +205,12 @@ class DoublyLinkedList:
         return oldHead.data 
 
     def popright(self):
+        '''
+        popright:
+        takes parameters - None
+        action - Removes the Node from the right i.e. end of the DLL 
+        and returns the data from the Node.
+        '''
         self.length -= 1
         oldTail = self.tail
         oldTail.prev.next = NoneType
@@ -255,6 +218,15 @@ class DoublyLinkedList:
         return oldTail.data
 
     def pop(self, index=0):
+        '''
+        pop:
+        takes parameters - index
+            index: int type
+                An integer i such that 0<= i <= length, where length
+                 refers to the length of the List.
+        action - Removes the Node at the index of the DLL and returns
+         the data from the Node.
+        '''
         if index > self.length or index < 0 or not (_check_type(index, int)):
             raise ValueError('Index input out of range/Index is expected to be an Integer.') 
         else:  
@@ -274,6 +246,14 @@ class DoublyLinkedList:
                 return currentNode.data
 
     def __getitem__(self, index): 
+        '''
+        __getitem__:
+        takes parameters - index
+            index: int type
+                An integer i such that 0<= i <= length, where length 
+                refers to the length of the List.
+        action - Returns the data of the Node at index.
+        '''
         if index > self.length or index < 0 or not (_check_type(index, int)):
             raise ValueError('Index input out of range/Index is expected to be an Integer.')
         else:     
@@ -285,6 +265,18 @@ class DoublyLinkedList:
             return currentNode.data
 
     def __setitem__(self, index, data):
+        '''
+        __setitem__:
+        takes parameters - index, data
+            index: int type
+                An integer i such that 0<= i <= length, where length 
+                refers to the length of the List.
+            data: type
+                A valid object type.
+                Should be convertible to string using str() method to use 
+                print() method in instance.
+        action - Sets the data of the Node at the index to the input data.
+        '''
         if index > self.length or index < 0 or not (_check_type(index, int)):
             raise ValueError('Index input out of range/Index is expected to be an Integer.')
         else:  
@@ -295,8 +287,12 @@ class DoublyLinkedList:
                 counter += 1
             currentNode.data = data
 
-    
     def __str__(self):
+        '''
+        __str__:
+        takes parameters - None
+        action - Prints the DLL in a list from from the start to the end.
+        '''
         elements = []
         currentNode = self.head
         while currentNode is not NoneType:
@@ -305,7 +301,30 @@ class DoublyLinkedList:
         return str(elements)
 
     def __len__(self):
+        '''
+        __len__:
+        takes parameters - None
+        action - Returns the length of the DLL.
+        '''
         return self.length
 
     def isEmpty(self):
+        '''
+        isEmpty:
+        takes parameters - None
+        action - Return a bool value to check if the DLL is empty or not.
+        '''
         return self.length == 0
+
+if __name__ == '__main__':
+    dll = DoublyLinkedList()
+    dll.append(6)
+    arr[0]
+    dll.head
+    dll.append(5)
+    dll.appendleft(2)
+    print(dll)
+    dll[0] = 7.2
+    dll[0]
+    dll.pop(1)
+    print(dll)
