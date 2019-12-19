@@ -98,21 +98,24 @@ class BinaryHeap:
             idx1_key, idx1_data
 
     def _heapify(self, i):
-        target = i
-        l = 2*i + 1
-        r = 2*i + 2
+        while True:
+            target = i
+            l = 2*i + 1
+            r = 2*i + 2
 
-        if l <= self._last_pos_filled:
-            target = l if self._comp(self.heap[l].key, self.heap[target].key) \
+            if l <= self._last_pos_filled:
+                target = l if self._comp(self.heap[l].key, self.heap[target].key) \
                         else i
-        if r <= self._last_pos_filled:
-            target = r if self._comp(self.heap[r].key, self.heap[target].key) \
+            if r <= self._last_pos_filled:
+                target = r if self._comp(self.heap[r].key, self.heap[target].key) \
                         else target
 
-        if target != i:
-            self._swap(target, i)
-            i = target
-            self._heapify(i)
+            if target != i:
+                self._swap(target, i)
+                i = target
+            else:
+                break
+
 
     def insert(self, key, data):
         """
