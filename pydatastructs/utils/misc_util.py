@@ -1,4 +1,5 @@
 from __future__ import print_function, division
+from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
 
 __all__ = [
     'TreeNode',
@@ -8,7 +9,13 @@ __all__ = [
 _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)
 
-class TreeNode(object):
+class Node(object):
+    """
+    Abstract class representing a node.
+    """
+    pass
+
+class TreeNode(Node):
     """
     Represents node in trees.
 
@@ -42,7 +49,52 @@ class TreeNode(object):
         """
         return str((self.left, self.key, self.data, self.right))
 
-class LinkedListNode(object):
+class BinomialTreeNode(TreeNode):
+    """
+    Represents node in binomial trees.
+
+    Parameters
+    ==========
+
+    data
+        Any valid data to be stored in the node.
+    key
+        Required for comparison operations.
+
+    Note
+    ====
+
+    The following are the data members of the class:
+
+    parent: BinomialTreeNode
+        A reference to the BinomialTreeNode object
+        which is a prent of this.
+    children: DynamicOneDimensionalArray
+        An array of references to BinomialTreeNode objects
+        which are children this node.
+    is_root: bool, by default, False
+        If the current node is a root of the tree then
+        set it to True otherwise False.
+    """
+    __slots__ = ['parent', 'key', 'children', 'data', 'is_root']
+
+    def __new__(cls, key, data):
+        obj = object.__new__(cls)
+        obj.data, obj.key = data, key
+        obj.children, obj.parent, obj.is_root = (
+        DynamicOneDimensionalArray(BinomialTreeNode, 0),
+        None,
+        False
+        )
+        return obj
+
+    def __str__(self):
+        """
+        For printing the key and data.
+        """
+        return str((self.key, self.data))
+
+class LinkedListNode(Node):
     """
     Represents node in linked lists.
 
@@ -52,9 +104,6 @@ class LinkedListNode(object):
     data
         Any valid data to be stored in the node.
     """
-
-    # __slots__ = ['data']
-
     def __new__(cls, data=None, links=['next'], addrs=[None]):
         obj = object.__new__(cls)
         obj.data = data
