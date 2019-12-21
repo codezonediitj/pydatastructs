@@ -1,8 +1,8 @@
 from __future__ import print_function, division
 
 __all__ = [
-    'TreeNode'
-    'Node'
+    'TreeNode',
+    'LinkedListNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -42,47 +42,26 @@ class TreeNode(object):
         """
         return str((self.left, self.key, self.data, self.right))
 
-
-# A linked list node 
-class Node: 
-
-    '''
-    Node class for Linked List and Doubly Linked List [ Intended for internal use and not to be imported]
+class LinkedListNode(object):
+    """
+    Represents node in linked lists.
 
     Parameters
     ==========
-    
-    For Doubly Linked List use Default constructor(__init__):
 
-        data: type
-            A valid object type.
-            Should be convertible to string using str() method to use print() method on instance
+    data
+        Any valid data to be stored in the node.
+    """
 
-    For Single Linked List use Alternative constructor(singleLink):
-        data: type
-            A valid object type
-            Should be convertible to string using str() method to use print() method on instance
-    
-    Note
-    ====
+    # __slots__ = ['data']
 
-    classmethod singleLink has been used for Node class for Single linked list due to non existence of a 
-    previous link between the nodes.
-    '''
-
-    __slots__ = ['data', 'next', 'prev']
-    
-    # Constructor to create a new node 
-    def __new__(self, data): 
-        self.data = data 
-        self.next = NoneType
-        self.prev = NoneType
-    #Alternative constructor for Single Linked List
-    @classmethod
-    def singleLink(obj, data):
+    def __new__(cls, data=None, links=['next'], addrs=[None]):
+        obj = object.__new__(cls)
         obj.data = data
-        obj.next = NoneType
+        for link, addr in zip(links, addrs):
+            obj.__setattr__(link, addr)
+        obj.__slots__ = ['data'] + links
         return obj
-    
+
     def __str__(self):
         return str(self.data)

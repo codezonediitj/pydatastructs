@@ -9,8 +9,9 @@ from .arrays import (
     OneDimensionalArray,
     DynamicOneDimensionalArray
 )
+__all__.extend(arrays.__all__)
 
 from .linked_lists import (
     DoublyLinkedList
 )
-__all__.extend(arrays.__all__)
+__all__.extend(linked_lists.__all__)

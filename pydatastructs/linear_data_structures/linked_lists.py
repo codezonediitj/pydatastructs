@@ -1,330 +1,284 @@
 from __future__ import print_function, division
-from pydatastructs.utils.misc_util import _check_type, NoneType
-from pydatastructs.utils import ( 
-    Node
-)
-
-__author__ = 'rohansingh9001'
+from pydatastructs.utils.misc_util import _check_type, LinkedListNode
 
 __all__ = [
-    'DoublyLinkedList',
-    'LinkedList'
+    'DoublyLinkedList'
 ]
 
 class LinkedList(object):
-    '''
-    Abstract class for Linked List in pydatastructs.
-    '''
-    pass
+    """
+    Abstract class for Linked List.
+    """
+    __slots__ = ['head', 'size']
 
-# Class to create a Doubly Linked List 
-class DoublyLinkedList(LinkedList): 
-    
+    def __len__(self):
+        return self.size
 
-    '''
-    A Doubly Linked List Class (abb. DLL)
-    
-    Parameters
-    ==========
-    
-    None
+    @property
+    def is_empty(self):
+        return self.size == 0
+
+    def __str__(self):
+        """
+        For printing the linked list.
+        """
+        elements = []
+        current_node = self.head
+        while current_node is not None:
+            elements.append(current_node.data)
+            current_node = current_node.next
+        return str(elements)
+
+class DoublyLinkedList(LinkedList):
+    """
+    Represents Doubly Linked List
 
     Examples
     ========
-    >>> from pydatastructs import DoublyLinkedLIst as DLL
-    >>> dll = DLL()
+
+    >>> from pydatastructs import DoublyLinkedList
+    >>> dll = DoublyLinkedList()
     >>> dll.append(6)
-    >>> arr[0]
+    >>> dll[0].data
     6
-    >>> dll.head
+    >>> dll.head.data
     6
     >>> dll.append(5)
-    >>> dll.appendleft(2)
+    >>> dll.append_left(2)
     >>> print(dll)
-    [2,6,5]
-    >>> dll[0] = 7.2
-    >>> dll[0]
-    7.2
-    >>> dll.pop(1)
+    [2, 6, 5]
+    >>> dll[0].data = 7.2
+    >>> dll.extract(1).data
     6
     >>> print(dll)
-    [2,5]
+    [7.2, 5]
 
     References
     ==========
-    
-    https://www.geeksforgeeks.org/doubly-linked-list/
 
-    '''
-    __slots__ = ['head','tail','length']
+    .. [1] https://en.wikipedia.org/wiki/Doubly_linked_list
 
-    def __init__(self):
-        self.head = NoneType
-        self.tail = NoneType
-        self.length = 0
+    """
+    __slots__ = ['head', 'tail', 'size']
 
-    def appendleft(self,data):
-        '''
-        appendleft: 
-        takes parameters - data
-            data: type 
-                A valid object type
-                Should be convertible to string using str() method to 
-                use print() method on instance.
-        action - Pushes a new node at the start i.e. left of the DLL.
-        '''
-        self.length += 1
-        newNode = Node(data)
-        if self.head is not NoneType:
-            self.head.prev = newNode
-            newNode.next = self.head
-        self.head = newNode
+    def __new__(cls):
+        obj = object.__new__(cls)
+        obj.head = None
+        obj.tail = None
+        obj.size = 0
+        return obj
 
-        if newNode.next == NoneType:
-            self.tail = newNode
-        if newNode.prev == NoneType:
-            self.head = newNode
-    
+    def append_left(self, data):
+        """
+        Pushes a new node at the start i.e.,
+        the left of the list.
+
+        Parameters
+        ==========
+
+        data
+            Any valid data to be stored in the node.
+        """
+        self.insert_at(0, data)
+
     def append(self, data):
-        '''
-        append: 
-        takes parameters - data
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to 
-                use print() method on instance.
-        action - Appends a new node at the end i.e. the right of the DLL.
-        '''
-        self.length += 1
-        newNode = Node(data)
-        if self.tail is not NoneType:
-            self.tail.next = newNode
-            newNode.prev = self.tail
-        self.tail = newNode
+        """
+        Appends a new node at the end of the list.
 
-        if newNode.next == NoneType:
-            self.tail = newNode
-        if newNode.prev == NoneType:
-            self.head = newNode
+        Parameters
+        ==========
 
-    def insertAfter(self, prevNode, data):
-        '''
-        insertAfter:
-        takes parameters - prevNode, data
-            prevNode: Node type 
-                An object of Node class 
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to
-                use print() method in instance.
-        action - Inserts a new node after the prevNode.
-        '''
-        self.length += 1
-        newNode = Node(data)
-        newNode.next = prevNode.next
-        prevNode.next = newNode
-        newNode.prev = prevNode
-        
-        if newNode.next == NoneType:
-            self.tail = newNode
-        if newNode.prev == NoneType:
-            self.head = newNode
-    
-    def insertBefore(self, nextNode, data):
-        '''
-        insertBefore:
-        takes parameters - nextNode, data
-            prevNode: Node type
-                An object of Node class
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to 
-                use print() method in instance.
-        action - Inserts a new node before the newNode.
-        '''
-        self.length += 1
-        newNode = Node(data)
-        newNode.prev = nextNode.prev
-        nextNode.prev = newNode
-        newNode.next = nextNode
-        
-        if newNode.next == NoneType:
-            self.tail = newNode
-        if newNode.prev == NoneType:
-            self.head = newNode
-    
-    def insertAt(self, index, data):
-        '''
-        insertAt:
-        takes parameters - index, data
-            index: int type
-                An integer i such that 0<= i <= length, where length 
-                refers to the length of the List.
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to
-                use print() method in instance.
-        action - Inserts a new node at the input index.
-        '''
-        if index > self.length or index < 0 or not (_check_type(index, int)):
-            raise ValueError('Index input out of range/Index is expected to be an Integer.')
+        data
+            Any valid data to be stored in the node.
+        """
+        self.insert_at(self.size, data)
+
+    def insert_after(self, prev_node, data):
+        """
+        Inserts a new node after the prev_node.
+
+        Parameters
+        ==========
+
+        prev_node: LinkedListNode
+            The node after which the
+            new node is to be inserted.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        self.size += 1
+        new_node = LinkedListNode(data,
+                                 links=['next', 'prev'],
+                                 addrs=[None, None])
+        new_node.next = prev_node.next
+        prev_node.next = new_node
+        new_node.prev = prev_node
+
+        if new_node.next is None:
+            self.tail = new_node
+
+    def insert_before(self, next_node, data):
+        """
+        Inserts a new node before the new_node.
+
+        Parameters
+        ==========
+
+        next_node: LinkedListNode
+            The node before which the
+            new node is to be inserted.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        self.size += 1
+        new_node = LinkedListNode(data,
+                                 links=['next', 'prev'],
+                                 addrs=[None, None])
+        new_node.prev = next_node.prev
+        next_node.prev = new_node
+        new_node.next = next_node
+
+        if new_node.prev is None:
+            self.head = new_node
+
+    def insert_at(self, index, data):
+        """
+        Inserts a new node at the input index.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        if self.size == 0 and (index in (0, -1)):
+            index = 0
+
+        if index < 0:
+            index = self.size + index
+
+        if index > self.size:
+            raise IndexError('%d index is out of range.'%(index))
+
+        self.size += 1
+        new_node = LinkedListNode(data,
+                                    links=['next', 'prev'],
+                                    addrs=[None, None])
+        if self.size == 1:
+            self.head, self.tail = \
+                new_node, new_node
         else:
-            if index == 0:
-                self.appendleft(data)
-            elif index == self.length:
-                self.appendright(data)
-            else:  
-                self.length += 1
-                newNode = Node(data)
-                counter = 0
-                currentNode = self.head
-                while counter != index:
-                    currentNode = currentNode.next
-                    counter += 1
-                currentNode.prev.next = newNode
-                newNode.prev = currentNode.prev
-                currentNode.prev = newNode
-                newNode.next = currentNode
-                    
-                if newNode.next == NoneType:
-                    self.tail = newNode
-                if newNode.prev == NoneType:
-                    self.head = newNode
-    
-    def popleft(self):
-        '''
-        popleft: 
-        takes parameters - None
-        action - Removes the Node from the left i.e. start of the DLL
-         and returns the data from the Node.
-        '''
-        self.length -= 1
-        oldHead = self.head
-        oldHead.next.prev = NoneType
-        self.head = oldHead.next
-        return oldHead.data 
-
-    def popright(self):
-        '''
-        popright:
-        takes parameters - None
-        action - Removes the Node from the right i.e. end of the DLL 
-        and returns the data from the Node.
-        '''
-        self.length -= 1
-        oldTail = self.tail
-        oldTail.prev.next = NoneType
-        self.tail = oldTail.prev
-        return oldTail.data
-
-    def pop(self, index=0):
-        '''
-        pop:
-        takes parameters - index
-            index: int type
-                An integer i such that 0<= i <= length, where length
-                 refers to the length of the List.
-        action - Removes the Node at the index of the DLL and returns
-         the data from the Node.
-        '''
-        if index > self.length or index < 0 or not (_check_type(index, int)):
-            raise ValueError('Index input out of range/Index is expected to be an Integer.') 
-        else:  
-            if index == 0:
-                self.popleft()
-            elif index == self.length:
-                self.popright()
-            else:
-                self.length -= 1
-                counter = 0
-                currentNode = self.head
-                while counter != index:
-                    currentNode = currentNode.next
-                    counter += 1
-                currentNode.prev.next = currentNode.next
-                currentNode.next.prev = currentNode.prev
-                return currentNode.data
-
-    def __getitem__(self, index): 
-        '''
-        __getitem__:
-        takes parameters - index
-            index: int type
-                An integer i such that 0<= i <= length, where length 
-                refers to the length of the List.
-        action - Returns the data of the Node at index.
-        '''
-        if index > self.length or index < 0 or not (_check_type(index, int)):
-            raise ValueError('Index input out of range/Index is expected to be an Integer.')
-        else:     
             counter = 0
-            currentNode = self.head      
+            current_node = self.head
+            prev_node = None
             while counter != index:
-                currentNode = currentNode.next
+                prev_node = current_node
+                current_node = current_node.next
                 counter += 1
-            return currentNode.data
+            new_node.prev = prev_node
+            new_node.next = current_node
+            if prev_node is not None:
+                prev_node.next = new_node
+            if current_node is not None:
+                current_node.prev = new_node
+            if new_node.next is None:
+                self.tail = new_node
+            if new_node.prev is None:
+                self.head = new_node
 
-    def __setitem__(self, index, data):
-        '''
-        __setitem__:
-        takes parameters - index, data
-            index: int type
-                An integer i such that 0<= i <= length, where length 
-                refers to the length of the List.
-            data: type
-                A valid object type.
-                Should be convertible to string using str() method to use 
-                print() method in instance.
-        action - Sets the data of the Node at the index to the input data.
-        '''
-        if index > self.length or index < 0 or not (_check_type(index, int)):
-            raise ValueError('Index input out of range/Index is expected to be an Integer.')
-        else:  
-            counter = 0
-            currentNode = self.head    
-            while counter != index:
-                currentNode = currentNode.next
-                counter += 1
-            currentNode.data = data
+    def pop_left(self):
+        """
+        Extracts the Node from the left
+        i.e. start of the list.
 
-    def __str__(self):
-        '''
-        __str__:
-        takes parameters - None
-        action - Prints the DLL in a list from from the start to the end.
-        '''
-        elements = []
-        currentNode = self.head
-        while currentNode is not NoneType:
-            elements.append(currentNode.data)
-            currentNode = currentNode.next
-        return str(elements)
+        Returns
+        =======
 
-    def __len__(self):
-        '''
-        __len__:
-        takes parameters - None
-        action - Returns the length of the DLL.
-        '''
-        return self.length
+        old_head: LinkedListNode
+            The leftmost element of linked
+            list.
+        """
+        self.extract(0)
 
-    def isEmpty(self):
-        '''
-        isEmpty:
-        takes parameters - None
-        action - Return a bool value to check if the DLL is empty or not.
-        '''
-        return self.length == 0
+    def pop_right(self):
+        """
+        Extracts the node from the right
+        of the linked list.
 
-if __name__ == '__main__':
-    dll = DoublyLinkedList()
-    dll.append(6)
-    arr[0]
-    dll.head
-    dll.append(5)
-    dll.appendleft(2)
-    print(dll)
-    dll[0] = 7.2
-    dll[0]
-    dll.pop(1)
-    print(dll)
+        Returns
+        =======
+
+        old_tail: LinkedListNode
+            The leftmost element of linked
+            list.
+        """
+        self.extract(-1)
+
+    def extract(self, index):
+        """
+        Extracts the node at the index of the list.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        Returns
+        =======
+
+        current_node: LinkedListNode
+            The node at index i.
+        """
+        if self.is_empty:
+            raise ValueError("The list is empty.")
+
+        if index < 0:
+            index = self.size + index
+
+        if index >= self.size:
+            raise IndexError('%d is out of range.'%(index))
+
+        self.size -= 1
+        counter = 0
+        current_node = self.head
+        prev_node = None
+        while counter != index:
+            prev_node = current_node
+            current_node = current_node.next
+            counter += 1
+        if prev_node is not None:
+            prev_node.next = current_node.next
+        if current_node.next is not None:
+            current_node.next.prev = prev_node
+        if index == 0:
+            self.head = current_node.next
+        if index == self.size:
+            self.tail = current_node.prev
+        return current_node
+
+    def __getitem__(self, index):
+        """
+        Returns
+        =======
+
+        current_node: LinkedListNode
+            The node at given index.
+        """
+        if index < 0:
+            index = self.size + index
+
+        if index >= self.size:
+            raise IndexError('%d index is out of range.'%(index))
+
+        counter = 0
+        current_node = self.head
+        while counter != index:
+            current_node = current_node.next
+            counter += 1
+        return current_node
