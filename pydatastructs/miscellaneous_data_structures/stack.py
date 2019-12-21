@@ -1,5 +1,4 @@
 
-from __future__ import print_function, division
 from pydatastructs.linear_data_structures import OneDimensionalArray
 from copy import deepcopy as dc
 
