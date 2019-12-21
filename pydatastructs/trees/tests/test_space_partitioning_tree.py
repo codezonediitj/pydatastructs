@@ -17,4 +17,4 @@ def test_OneDimensionalSegmentTree():
     assert segt.cache == True
     assert len(segt.query(-1)) == 0
     assert len(segt.query(2.8)) == 2
-    raises(ValueError, lambda: ODST([(1, 2, 3)]))
+    assert raises(ValueError, lambda: ODST([(1, 2, 3)]))

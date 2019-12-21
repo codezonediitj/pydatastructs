@@ -14,3 +14,4 @@ def raises(exception, code):
     """
     with pytest.raises(exception):
         code()
+    return True

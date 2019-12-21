@@ -11,14 +11,14 @@ def test_OneDimensionalArray():
     assert ODA(int, [1.0, 2, 3, 4, 5], 5)
     assert ODA(int, 5)
     assert ODA(int, [1.0, 2, 3])
-    raises(IndexError, lambda: A[7])
-    raises(IndexError, lambda: A[-1])
-    raises(ValueError, lambda: ODA())
-    raises(ValueError, lambda: ODA(int, 1, 2, 3))
-    raises(TypeError, lambda: ODA(int, 5.0, set([1, 2, 3])))
-    raises(TypeError, lambda: ODA(int, 5.0))
-    raises(TypeError, lambda: ODA(int, set([1, 2, 3])))
-    raises(ValueError, lambda: ODA(int, 3, [1]))
+    assert raises(IndexError, lambda: A[7])
+    assert raises(IndexError, lambda: A[-1])
+    assert raises(ValueError, lambda: ODA())
+    assert raises(ValueError, lambda: ODA(int, 1, 2, 3))
+    assert raises(TypeError, lambda: ODA(int, 5.0, set([1, 2, 3])))
+    assert raises(TypeError, lambda: ODA(int, 5.0))
+    assert raises(TypeError, lambda: ODA(int, set([1, 2, 3])))
+    assert raises(ValueError, lambda: ODA(int, 3, [1]))
 
 def test_DynamicOneDimensionalArray():
     DODA = DynamicOneDimensionalArray
