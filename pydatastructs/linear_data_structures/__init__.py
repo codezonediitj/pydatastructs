@@ -2,6 +2,7 @@ __all__ = []
 
 from . import (
     arrays,
+    linked_lists
 )
 
 from .arrays import (
@@ -9,3 +10,8 @@ from .arrays import (
     DynamicOneDimensionalArray
 )
 __all__.extend(arrays.__all__)
+
+from .linked_lists import (
+    DoublyLinkedList
+)
+__all__.extend(linked_lists.__all__)
