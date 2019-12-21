@@ -96,9 +96,9 @@ def test_BinaryTreeTraversal():
          "(None, 'A', 'A', None)", "(5, 'D', 'D', 6)", "(8, 'I', 'I', None)",
          "(None, 'C', 'C', None)", "(None, 'E', 'E', None)",
          "(None, 'H', 'H', None)"]
-    raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
-    raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
-    raises(TypeError, lambda: BTT(1))
+    assert raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
+    assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
+    assert raises(TypeError, lambda: BTT(1))
 
 def test_AVLTree():
     a = AVLTree('M', 'M')
@@ -229,8 +229,8 @@ def test_AVLTree():
     a5.tree[12].size = 1
     a5.tree[13].size = 1
 
-    raises(ValueError, lambda: a5.select(0))
-    raises(ValueError, lambda: a5.select(15))
+    assert raises(ValueError, lambda: a5.select(0))
+    assert raises(ValueError, lambda: a5.select(15))
     assert a5.rank(-1) == None
     def test_select_rank(expected_output):
         output = []
