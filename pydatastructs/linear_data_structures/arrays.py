@@ -111,7 +111,7 @@ class OneDimensionalArray(Array):
         return obj
 
     def __getitem__(self, i):
-        if i >= self._size or i < 0:
+        if i >= self._size:
             raise IndexError("Index out of range.")
         return self._data.__getitem__(i)
 

@@ -18,6 +18,8 @@ class BinomialTree(object):
             raise ValueError("%s i.e., order should be of "
                              "type int."%(order))
         obj = object.__new__(cls)
+        if root is not None:
+            root.is_root = True
         obj.root = root
         obj.order = order
         return obj
@@ -29,6 +31,9 @@ class BinomialTree(object):
         if self.order != other_tree.order:
             raise ValueError("Orders of both the trees should be same.")
         self.root.children.append(other_tree.root)
+        other_tree.root.parent = self.root
+        other_tree.root.is_root = False
+        self.order += other_tree.order
 
     @property
     def is_empty(self):

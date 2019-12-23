@@ -89,6 +89,10 @@ class BinomialTreeNode(TreeNode):
         )
         return obj
 
+    def add_children(self, *children):
+        for child in children:
+            self.children.append(child)
+
     def __str__(self):
         """
         For printing the key and data.

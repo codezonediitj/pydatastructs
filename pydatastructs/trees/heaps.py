@@ -197,7 +197,7 @@ class BinomialHeap(Heap):
                 for i in range(root_list.size)):
                     raise TypeError("The root_list should contain "
                                     "references to objects of BinomialTree.")
-        obj = object.__new__(cls)
+        obj = Heap.__new__(cls)
         obj.root_list = DynamicOneDimensionalArray(BinomialTree, root_list)
         return obj
 
@@ -212,9 +212,42 @@ class BinomialHeap(Heap):
             ret_value = tree1
         else:
             tree2.add_sub_tree(tree1)
-            tree2 =
+            ret_value = tree2
+        return ret_value
+
+    def _merge_heap_last_new_tree(self, new_root_list, new_tree):
+        if new_root_list[-1].order == new_tree.order:
+            new_root_list[-1] = self.merge_tree(new_root_list[-1], new_tree)
+        else:
+            new_root_list.append(new_tree)
 
     def merge(self, other_heap):
         if not _check_type(other_heap, BinomialHeap):
             raise TypeError("Other heap is not of type BinomialHeap.")
-
+        new_root_list = DynamicOneDimensionalArray(BinomialTree, 0)
+        i, j = 0, 0
+        while ((i <= self.root_list._last_pos_filled) and
+               (j <= other_heap.root_list._last_pos_filled)):
+            new_tree = None
+            if self.root_list[i].order == other_heap.root_list[j].order:
+                new_tree = self.merge_tree(self.root_list[i],
+                                           other_heap.root_list[j])
+                i += 1
+                j += 1
+            else:
+                if self.root_list[i].order < other_heap.root_list[j].order:
+                    new_tree = self.root_list[i]
+                    i += 1
+                else:
+                    new_tree = other_heap.root_list[j]
+                    j += 1
+            self._merge_heap_last_new_tree(new_root_list, new_tree)
+        while i <= self.root_list._last_pos_filled:
+            new_tree = self.root_list[i]
+            self._merge_heap_last_new_tree(new_root_list, new_tree)
+            i += 1
+        while j <= other_heap.root_list._last_pos_filled:
+            new_tree = other_heap.root_list[j]
+            self._merge_heap_last_new_tree(new_root_list, new_tree)
+            j += 1
+        self.root_list = new_root_list
