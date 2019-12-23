@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 from pydatastructs.utils import TreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
