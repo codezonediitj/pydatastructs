@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
 
 __all__ = [

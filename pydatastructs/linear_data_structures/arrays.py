@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 from pydatastructs.utils.misc_util import _check_type, NoneType
 
 __all__ = [
