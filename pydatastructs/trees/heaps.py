@@ -1,17 +1,20 @@
 from pydatastructs.utils.misc_util import _check_type, NoneType, TreeNode
-from pydatastructs.linear_data_structures.arrays import ArrayForTrees
+from pydatastructs.linear_data_structures.arrays import (ArrayForTrees,
+     DynamicOneDimensionalArray)
+from pydatastructs.miscellaneous_data_structures.binomial_trees import BinomialTree
 
 __all__ = [
-    'BinaryHeap'
+    'BinaryHeap',
+    'BinomialHeap'
 ]
 
-class Heap:
+class Heap(object):
     """
     Abstract class for representing heaps.
     """
     pass
 
-class BinaryHeap:
+class BinaryHeap(Heap):
     """
     Represents Binary Heap.
 
@@ -181,3 +184,36 @@ class BinaryHeap:
                                 node.key, node.data,
                                 node.right if node.right <= self._last_pos_filled else None)
         return str(to_be_printed)
+
+
+class BinomialHeap(Heap):
+    """
+    """
+    __slots__ = ['root_list']
+
+    def __new__(cls, root_list=None):
+        if (root_list is not None) and \
+            not all((_check_type(root_list[i], BinomialTree))
+                for i in range(root_list.size)):
+                    raise TypeError("The root_list should contain "
+                                    "references to objects of BinomialTree.")
+        obj = object.__new__(cls)
+        obj.root_list = DynamicOneDimensionalArray(BinomialTree, root_list)
+        return obj
+
+    def merge_tree(self, tree1, tree2):
+        if (not _check_type(tree1, BinomialTree)) or \
+            (not _check_type(tree2, BinomialTree)):
+            raise TypeError("Both the trees should be of type "
+                            "BinomalTree.")
+        ret_value = None
+        if tree1.root.key <= tree2.root.key:
+            tree1.add_sub_tree(tree2)
+            ret_value = tree1
+        else:
+            tree2.add_sub_tree(tree1)
+
+    def merge(self, other_heap):
+        if not _check_type(other_heap, BinomialHeap):
+            raise TypeError("Other heap is not of type BinomialHeap.")
+

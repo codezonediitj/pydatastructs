@@ -3,7 +3,8 @@ from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArr
 
 __all__ = [
     'TreeNode',
-    'LinkedListNode'
+    'LinkedListNode',
+    'BinomialTreeNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
