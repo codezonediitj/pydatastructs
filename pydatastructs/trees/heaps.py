@@ -212,6 +212,7 @@ class BinomialHeap(Heap):
             ret_value = tree1
         else:
             tree2.add_sub_tree(tree1)
+            tree2 =
 
     def merge(self, other_heap):
         if not _check_type(other_heap, BinomialHeap):
