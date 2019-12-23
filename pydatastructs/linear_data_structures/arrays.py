@@ -69,7 +69,7 @@ class OneDimensionalArray(Array):
         if dtype == NoneType or len(args) not in (1, 2):
             raise ValueError("1D array cannot be created due to incorrect"
                                 " information.")
-        obj = object.__new__(cls)
+        obj = Array.__new__(cls)
         obj._dtype = dtype
         if len(args) == 2:
             if _check_type(args[0], list) and \
@@ -204,7 +204,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     __slots__ = ['_load_factor', '_num', '_last_pos_filled', '_size']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
-        obj = super().__new__(cls, dtype, *args, **kwargs)
+        obj = Array().__new__(cls, dtype, *args, **kwargs)
         obj._load_factor = float(kwargs.get('load_factor', 0.25))
         obj._num = 0 if obj._size == 0 or obj[0] == None else obj._size
         obj._last_pos_filled = obj._num - 1
