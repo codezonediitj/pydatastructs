@@ -1,5 +1,3 @@
-from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
-
 __all__ = [
     'TreeNode',
     'LinkedListNode',
@@ -79,6 +77,7 @@ class BinomialTreeNode(TreeNode):
     __slots__ = ['parent', 'key', 'children', 'data', 'is_root']
 
     def __new__(cls, key, data):
+        from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
         obj = object.__new__(cls)
         obj.data, obj.key = data, key
         obj.children, obj.parent, obj.is_root = (

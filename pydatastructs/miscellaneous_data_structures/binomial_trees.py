@@ -33,7 +33,7 @@ class BinomialTree(object):
         self.root.children.append(other_tree.root)
         other_tree.root.parent = self.root
         other_tree.root.is_root = False
-        self.order += other_tree.order
+        self.order += 1
 
     @property
     def is_empty(self):

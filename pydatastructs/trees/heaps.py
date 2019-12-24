@@ -193,8 +193,8 @@ class BinomialHeap(Heap):
 
     def __new__(cls, root_list=None):
         if (root_list is not None) and \
-            not all((_check_type(root_list[i], BinomialTree))
-                for i in range(root_list.size)):
+            not all((_check_type(root, BinomialTree))
+                for root in root_list):
                     raise TypeError("The root_list should contain "
                                     "references to objects of BinomialTree.")
         obj = Heap.__new__(cls)
@@ -216,8 +216,9 @@ class BinomialHeap(Heap):
         return ret_value
 
     def _merge_heap_last_new_tree(self, new_root_list, new_tree):
-        if new_root_list[-1].order == new_tree.order:
-            new_root_list[-1] = self.merge_tree(new_root_list[-1], new_tree)
+        pos = new_root_list._last_pos_filled
+        if (new_root_list.size != 0) and new_root_list[pos].order == new_tree.order:
+            new_root_list[pos] = self.merge_tree(new_root_list[pos], new_tree)
         else:
             new_root_list.append(new_tree)
 
@@ -242,6 +243,7 @@ class BinomialHeap(Heap):
                     new_tree = other_heap.root_list[j]
                     j += 1
             self._merge_heap_last_new_tree(new_root_list, new_tree)
+
         while i <= self.root_list._last_pos_filled:
             new_tree = self.root_list[i]
             self._merge_heap_last_new_tree(new_root_list, new_tree)
