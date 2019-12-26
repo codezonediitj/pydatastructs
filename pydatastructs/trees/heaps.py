@@ -11,7 +11,7 @@ class Heap:
     """
     pass
 
-class BinaryHeap:
+class BinaryHeap(Heap):
     """
     Represents Binary Heap.
 
@@ -67,7 +67,7 @@ class BinaryHeap:
     __slots__ = ['_comp', 'heap', 'heap_property', '_last_pos_filled']
 
     def __new__(cls, elements=None, heap_property="min"):
-        obj = object.__new__(cls)
+        obj = Heap.__new__(cls)
         obj.heap_property = heap_property
         if heap_property == "min":
             obj._comp = lambda key_parent, key_child: key_parent <= key_child
