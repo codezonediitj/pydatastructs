@@ -66,7 +66,7 @@ class OneDimensionalArray(Array):
     __slots__ = ['_size', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
-        if dtype == NoneType or len(args) not in (1, 2):
+        if dtype is NoneType or len(args) not in (1, 2):
             raise ValueError("1D array cannot be created due to incorrect"
                                 " information.")
         obj = object.__new__(cls)
@@ -206,7 +206,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         obj = super().__new__(cls, dtype, *args, **kwargs)
         obj._load_factor = float(kwargs.get('load_factor', 0.25))
-        obj._num = 0 if obj._size == 0 or obj[0] == None else obj._size
+        obj._num = 0 if obj._size == 0 or obj[0] is None else obj._size
         obj._last_pos_filled = obj._num - 1
         return obj
 
@@ -219,7 +219,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             arr_new = ODA(self._dtype, 2*self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
-                if self[i] != None:
+                if self[i] is not None:
                     arr_new[j] = self[i]
                     j += 1
             self._last_pos_filled = j - 1
@@ -244,7 +244,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
 
     def delete(self, idx):
         if idx <= self._last_pos_filled and idx >= 0 and \
-            self[idx] != None:
+            self[idx] is not None:
             self[idx] = None
             self._num -= 1
             if self._last_pos_filled == idx:
@@ -270,16 +270,16 @@ class ArrayForTrees(DynamicOneDimensionalArray):
             arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
-                if self[i] != None:
+                if self[i] is not None:
                     arr_new[j] = self[i]
                     new_indices[self[i].key] = j
                     j += 1
             for i in range(j):
-                if arr_new[i].left != None:
+                if arr_new[i].left is not None:
                     arr_new[i].left = new_indices[self[arr_new[i].left].key]
-                if arr_new[i].right != None:
+                if arr_new[i].right is not None:
                     arr_new[i].right = new_indices[self[arr_new[i].right].key]
-                if arr_new[i].parent != None:
+                if arr_new[i].parent is not None:
                     arr_new[i].parent = new_indices[self[arr_new[i].parent].key]
             self._last_pos_filled = j - 1
             self._data = arr_new._data

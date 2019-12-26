@@ -89,7 +89,7 @@ class ArrayStack(Stack):
             raise ValueError("maxsize is missing.")
         if not _check_type(top, int):
             raise TypeError("top is not of type int.")
-        if items == None:
+        if items is None:
             items = OneDimensionalArray(dtype, maxsize)
         if not _check_type(items, OneDimensionalArray):
             raise ValueError("items is not of type, OneDimensionalArray")
