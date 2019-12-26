@@ -13,7 +13,7 @@ class TreeNode(object):
     Represents node in trees.
 
     Parameters
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     data
         Any valid data to be stored in the node.
@@ -47,7 +47,7 @@ class LinkedListNode(object):
     Represents node in linked lists.
 
     Parameters
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     data
         Any valid data to be stored in the node.

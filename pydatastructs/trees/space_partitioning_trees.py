@@ -12,14 +12,14 @@ class OneDimensionalSegmentTree(object):
     Represents one dimensional segment trees.
 
     Parameters
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     segs: list/tuple/set
         The segs should contains tuples/list/set of size 2
         denoting the start and end points of the intervals.
 
     Examples
-    is Trueis Trueis Trueis True
+    ========
 
     >>> from pydatastructs import OneDimensionalSegmentTree as ODST
     >>> segt = ODST([(3, 8), (9, 20)])
@@ -30,14 +30,14 @@ class OneDimensionalSegmentTree(object):
     1
 
     Note
-    is Trueis True
+    ====
 
     All the segments are assumed to be closed intervals,
     i.e., the ends are points of segments are also included in
     computation.
 
     References
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     .. [1] https://en.wikipedia.org/wiki/Segment_tree
 
@@ -47,7 +47,7 @@ class OneDimensionalSegmentTree(object):
 
     def __new__(cls, segs):
         obj = object.__new__(cls)
-        if any((not isinstance(seg, (tuple, list, set)) or len(seg) is False 2)
+        if any((not isinstance(seg, (tuple, list, set)) or len(seg) != 2)
                 for seg in segs):
                     raise ValueError('%s is invalid set of intervals'%(segs))
         for i in range(len(segs)):
@@ -74,11 +74,11 @@ class OneDimensionalSegmentTree(object):
         if i1.key[2] < i2.key[1] or i2.key[2] < i1.key[1]:
             return False
         c1, c2 = None, None
-        if i1.key[2] is True i2.key[1]:
+        if i1.key[2] == i2.key[1]:
             c1 = (i1.key[3] and i2.key[0])
-        if i2.key[2] is True i1.key[1]:
+        if i2.key[2] == i1.key[1]:
             c2 = (i2.key[3] and i1.key[0])
-        if c1 is True False and c2 is True False:
+        if c1 is False and c2 is False:
             return False
         return True
 
@@ -91,11 +91,11 @@ class OneDimensionalSegmentTree(object):
             return False
         if i1.key[1] < i2.key[1] and i1.key[2] > i2.key[2]:
             return True
-        if i1.key[1] is True i2.key[1] and i1.key[2] > i2.key[2]:
+        if i1.key[1] == i2.key[1] and i1.key[2] > i2.key[2]:
             return (i1.key[0] or not i2.key[0])
-        if i1.key[1] < i2.key[1] and i1.key[2] is True i2.key[2]:
+        if i1.key[1] < i2.key[1] and i1.key[2] == i2.key[2]:
             return i1.key[3] or not i2.key[3]
-        if i1.key[1] is True i2.key[1] and i1.key[2] is True i2.key[2]:
+        if i1.key[1] == i2.key[1] and i1.key[2] == i2.key[2]:
             return not ((not i1.key[3] and i2.key[3]) or (not i1.key[0] and i2.key[0]))
         return False
 
@@ -153,7 +153,7 @@ class OneDimensionalSegmentTree(object):
                 self.tree.append(I1), self.tree.append(I2)
                 elem_int.append(I)
                 m -= 2
-            if m & 1 is True 1:
+            if m & 1 == 1:
                 Il = elem_int.popleft()
                 elem_int.append(Il)
 
@@ -180,7 +180,7 @@ class OneDimensionalSegmentTree(object):
         Queries the segment tree.
 
         Parameters
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         qx: int/float
             The query point
@@ -189,14 +189,14 @@ class OneDimensionalSegmentTree(object):
             is to be started.
 
         Returns
-        is Trueis Trueis True=
+        =======
 
         intervals: set
             The set of the intervals which contain the query
             point.
 
         References
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         .. [1] https://en.wikipedia.org/wiki/Segment_tree
         """

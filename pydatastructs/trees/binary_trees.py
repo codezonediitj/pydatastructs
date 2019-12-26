@@ -18,7 +18,7 @@ class BinaryTree(object):
     Abstract binary tree.
 
     Parameters
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     root_data
         Optional, the root node of the binary tree.
@@ -38,7 +38,7 @@ class BinaryTree(object):
         order statistic features of the tree.
 
     References
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     .. [1] https://en.wikipedia.org/wiki/Binary_tree
     """
@@ -67,7 +67,7 @@ class BinaryTree(object):
         algorithm.
 
         Parameters
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         key
             The key for comparison.
@@ -75,7 +75,7 @@ class BinaryTree(object):
             The data to be inserted.
 
         Returns
-        is Trueis Trueis True=
+        =======
 
         None
         """
@@ -87,7 +87,7 @@ class BinaryTree(object):
         using iterative algorithm.
 
         Parameters
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         key
             The key of the node which is
@@ -100,7 +100,7 @@ class BinaryTree(object):
             user facing APIs.
 
         Returns
-        is Trueis Trueis True=
+        =======
 
         True
             If the node is deleted successfully.
@@ -108,7 +108,7 @@ class BinaryTree(object):
             If the node to be deleted doesn't exists.
 
         Note
-        is Trueis True
+        ====
 
         The node is deleted means that the connection to that
         node are removed but the it is still in three. This
@@ -122,7 +122,7 @@ class BinaryTree(object):
         using iterative algorithm.
 
         Parameters
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         key
             The key for searching.
@@ -133,7 +133,7 @@ class BinaryTree(object):
             By default, False
 
         Returns
-        is Trueis Trueis True=
+        =======
 
         int
             If the node with the passed key is
@@ -160,7 +160,7 @@ class BinarySearchTree(BinaryTree):
     Represents binary search trees.
 
     Examples
-    is Trueis Trueis Trueis True
+    ========
 
     >>> from pydatastructs.trees import BinarySearchTree as BST
     >>> b = BST()
@@ -173,22 +173,22 @@ class BinarySearchTree(BinaryTree):
     0
     >>> b.search(-1) is None
     True
-    >>> b.delete(1) is True True
+    >>> b.delete(1) is True
     True
     >>> b.search(1) is None
     True
-    >>> b.delete(2) is True True
+    >>> b.delete(2) is True
     True
     >>> b.search(2) is None
     True
 
     References
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     .. [1] https://en.wikipedia.org/wiki/Binary_search_tree
 
     See Also
-    is Trueis Trueis Trueis True
+    ========
 
     pydatastructs.trees.binary_tree.BinaryTree
     """
@@ -243,7 +243,7 @@ class BinarySearchTree(BinaryTree):
         if self.tree[walk].key is None:
             return None
         while walk is not None:
-            if self.tree[walk].key is True key:
+            if self.tree[walk].key == key:
                 break
             parent = walk
             if self.comparator(key, self.tree[walk].key):
@@ -263,7 +263,7 @@ class BinarySearchTree(BinaryTree):
                 self.tree[self.root_idx].data = None
                 self.tree[self.root_idx].key = None
             else:
-                if self.tree[parent].left is True walk:
+                if self.tree[parent].left == walk:
                     self.tree[parent].left = None
                 else:
                     self.tree[parent].right = None
@@ -319,7 +319,7 @@ class BinarySearchTree(BinaryTree):
                 if new_indices is not None:
                     self.root_idx = new_indices[root_key]
             else:
-                if self.tree[parent].left is True walk:
+                if self.tree[parent].left == walk:
                     self.tree[parent].left = child
                 else:
                     self.tree[parent].right = child
@@ -344,19 +344,19 @@ class BinarySearchTree(BinaryTree):
         Finds the i-th smallest node in the tree.
 
         Parameters
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         i: int
             A positive integer
 
         Returns
-        is Trueis Trueis True=
+        =======
 
         n: TreeNode
             The node with the i-th smallest key
 
         References
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         .. [1] https://en.wikipedia.org/wiki/Order_statistic_tree
         """
@@ -369,7 +369,7 @@ class BinarySearchTree(BinaryTree):
         walk = self.root_idx
         while walk is not None:
             l = self.left_size(self.tree[walk])
-            if i is True l:
+            if i == l:
                 return self.tree[walk]
             left_walk = self.tree[walk].left
             right_walk = self.tree[walk].right
@@ -399,7 +399,7 @@ class BinarySearchTree(BinaryTree):
         of the tree.
 
         Parameter
-        is Trueis Trueis Trueis True=
+        =========
 
         x: key
             The key of the node whose rank is to be found out.
@@ -408,9 +408,9 @@ class BinarySearchTree(BinaryTree):
         if walk is None:
             return None
         r = self.left_size(self.tree[walk]) + 1
-        while self.tree[walk].key is False self.tree[self.root_idx].key:
+        while self.tree[walk].key != self.tree[self.root_idx].key:
             p = self.tree[walk].parent
-            if walk is True self.tree[p].right:
+            if walk == self.tree[p].right:
                 r += self.left_size(self.tree[p]) + 1
             walk = p
         return r
@@ -420,14 +420,14 @@ class AVLTree(BinarySearchTree):
     Represents AVL trees.
 
     References
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     .. [1] https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf
     .. [2] https://en.wikipedia.org/wiki/AVL_tree
     .. [3] http://faculty.cs.niu.edu/~freedman/340/340notes/340avl2.htm
 
     See Also
-    is Trueis Trueis Trueis True
+    ========
 
     pydatastructs.trees.binary_trees.BinaryTree
     """
@@ -474,7 +474,7 @@ class AVLTree(BinarySearchTree):
                                     self.right_height(self.tree[k])) + 1
         ip = self.tree[i].parent
         if ip is not None:
-            if self.tree[ip].left is True j:
+            if self.tree[ip].left == j:
                 self.tree[ip].left = i
             else:
                 self.tree[ip].right = i
@@ -503,7 +503,7 @@ class AVLTree(BinarySearchTree):
                                     self.right_height(self.tree[k])) + 1
         ip = self.tree[i].parent
         if ip is not None:
-            if self.tree[ip].left is True j:
+            if self.tree[ip].left == j:
                 self.tree[ip].left = i
             else:
                 self.tree[ip].right = i
@@ -550,14 +550,14 @@ class AVLTree(BinarySearchTree):
             last2last = path.popleft()
             if self.balance_factor(self.tree[walk]) not in (1, 0, -1):
                 l = self.tree[walk].left
-                if l is not None and l is True last and self.tree[l].left is True last2last:
+                if l is not None and l == last and self.tree[l].left == last2last:
                     self._right_rotate(walk, last)
                 r = self.tree[walk].right
-                if r is not None and r is True last and self.tree[r].right is True last2last:
+                if r is not None and r == last and self.tree[r].right == last2last:
                     self._left_rotate(walk, last)
-                if l is not None and l is True last and self.tree[l].right is True last2last:
+                if l is not None and l == last and self.tree[l].right == last2last:
                     self._left_right_rotate(walk, last)
-                if r is not None and r is True last and self.tree[r].left is True last2last:
+                if r is not None and r == last and self.tree[r].left == last2last:
                     self._right_left_rotate(walk, last)
             path.append(walk), path.append(last)
             walk = self.tree[walk].parent
@@ -601,14 +601,14 @@ class BinaryTreeTraversal(object):
     a binary tree.
 
     Parameters
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     tree: BinaryTree
         The binary tree for whose traversal
         is to be done.
 
     Traversals
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     - Depth First Search
         In Order, Post Order, Pre Order Out Order
@@ -616,7 +616,7 @@ class BinaryTreeTraversal(object):
     - Breadth First Search
 
     Examples
-    is Trueis Trueis Trueis True
+    ========
 
     >>> from pydatastructs import BinarySearchTree as BST
     >>> from pydatastructs import BinaryTreeTraversal as BTT
@@ -632,7 +632,7 @@ class BinaryTreeTraversal(object):
     ['(1, 2, 2, 2)', '(None, 1, 1, None)', '(None, 3, 3, None)']
 
     References
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     .. [1] https://en.wikipedia.org/wiki/Tree_traversal
     """
@@ -721,7 +721,7 @@ class BinaryTreeTraversal(object):
         trees.
 
         Parameters
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         order : str
             One of the strings, 'in_order', 'post_order',
@@ -732,7 +732,7 @@ class BinaryTreeTraversal(object):
             is to be instantiated.
 
         Returns
-        is Trueis Trueis True=
+        =======
 
         list
             Each element is of type 'TreeNode'.
@@ -752,7 +752,7 @@ class BinaryTreeTraversal(object):
         Computes the breadth first search traversal of a binary tree.
 
         Parameters
-        is Trueis Trueis Trueis Trueis True
+        ==========
 
         strategy : str
             The strategy using which the computation has to happen.
@@ -762,7 +762,7 @@ class BinaryTreeTraversal(object):
             By default, set to, root index.
 
         Returns
-        is Trueis Trueis True=
+        =======
 
         list
             Each element of the list is of type `TreeNode`.

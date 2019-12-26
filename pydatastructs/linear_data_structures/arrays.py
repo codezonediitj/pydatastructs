@@ -16,7 +16,7 @@ class OneDimensionalArray(Array):
     Represents one dimensional arrays.
 
     Parameters
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     dtype: type
         A valid object type.
@@ -31,7 +31,7 @@ class OneDimensionalArray(Array):
         when the data is not given.
 
     Raises
-    is Trueis Trueis True
+    ======
 
     ValueError
         When the number of elements in the list do not
@@ -40,13 +40,13 @@ class OneDimensionalArray(Array):
         Types of arguments is not as mentioned in the docstring.
 
     Note
-    is Trueis True
+    ====
 
     At least one parameter should be passed as an argument along
     with the dtype.
 
     Examples
-    is Trueis Trueis Trueis True
+    ========
 
     >>> from pydatastructs import OneDimensionalArray as ODA
     >>> arr = ODA(int, 5)
@@ -58,7 +58,7 @@ class OneDimensionalArray(Array):
     7
 
     References
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     .. [1] https://en.wikipedia.org/wiki/Array_data_structure#One-dimensional_arrays
     '''
@@ -71,35 +71,35 @@ class OneDimensionalArray(Array):
                                 " information.")
         obj = object.__new__(cls)
         obj._dtype = dtype
-        if len(args) is True 2:
+        if len(args) == 2:
             if _check_type(args[0], list) and \
                 _check_type(args[1], int):
                 for i in range(len(args[0])):
-                    if dtype is False type(args[0][i]):
+                    if dtype != type(args[0][i]):
                         args[0][i] = dtype(args[0][i])
                 size, data = args[1], [arg for arg in args[0]]
             elif _check_type(args[1], list) and \
                 _check_type(args[0], int):
                 for i in range(len(args[1])):
-                    if dtype is False type(args[1][i]):
+                    if dtype != type(args[1][i]):
                         args[1][i] = dtype(args[1][i])
                 size, data = args[0], [arg for arg in args[1]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
-            if size is False len(data):
+            if size != len(data):
                 raise ValueError("Conflict in the size %s and length of data %s"
                                  %(size, len(data)))
             obj._size, obj._data = size, data
 
-        elif len(args) is True 1:
+        elif len(args) == 1:
             if _check_type(args[0], int):
                 obj._size = args[0]
                 init = kwargs.get('init', None)
                 obj._data = [init for i in range(args[0])]
             elif _check_type(args[0], (list, tuple)):
                 for i in range(len(args[0])):
-                    if dtype is False type(args[0][i]):
+                    if dtype != type(args[0][i]):
                         args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
                                         [arg for arg in args[0]]
@@ -118,7 +118,7 @@ class OneDimensionalArray(Array):
         if elem is None:
             self._data[idx] = None
         else:
-            if type(elem) is False self._dtype:
+            if type(elem) != self._dtype:
                 elem = self._dtype(elem)
             self._data[idx] = elem
 
@@ -140,7 +140,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     Represents dynamic one dimensional arrays.
 
     Parameters
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     dtype: type
         A valid object type.
@@ -159,7 +159,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         most only half the positions are filled.
 
     Raises
-    is Trueis Trueis True
+    ======
 
     ValueError
         When the number of elements in the list do not
@@ -169,7 +169,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         The load factor is not of floating point type.
 
     Note
-    is Trueis True
+    ====
 
     At least one parameter should be passed as an argument along
     with the dtype.
@@ -178,7 +178,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     Size(T) means the maximum number of elements that the array can hold.
 
     Examples
-    is Trueis Trueis Trueis True
+    ========
 
     >>> from pydatastructs import DynamicOneDimensionalArray as DODA
     >>> arr = DODA(int, 0)
@@ -196,7 +196,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     [None, 2, 3, 4, None, None, None]
 
     References
-    is Trueis Trueis Trueis Trueis True
+    ==========
 
     .. [1] http://www.cs.nthu.edu.tw/~wkhon/algo09/lectures/lecture16.pdf
     """
@@ -206,7 +206,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         obj = super().__new__(cls, dtype, *args, **kwargs)
         obj._load_factor = float(kwargs.get('load_factor', 0.25))
-        obj._num = 0 if obj._size is True 0 or obj[0] is None else obj._size
+        obj._num = 0 if obj._size == 0 or obj[0] is None else obj._size
         obj._last_pos_filled = obj._num - 1
         return obj
 
@@ -227,7 +227,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self._size = arr_new._size
 
     def append(self, el):
-        if self._last_pos_filled + 1 is True self._size:
+        if self._last_pos_filled + 1 == self._size:
             arr_new = ODA(self._dtype, 2*self._size + 1)
             for i in range(self._last_pos_filled + 1):
                 arr_new[i] = self[i]
@@ -247,7 +247,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self[idx] is not None:
             self[idx] = None
             self._num -= 1
-            if self._last_pos_filled is True idx:
+            if self._last_pos_filled == idx:
                 self._last_pos_filled -= 1
             return self._modify()
 
@@ -260,7 +260,7 @@ class ArrayForTrees(DynamicOneDimensionalArray):
     Utility dynamic array for storing nodes of a tree.
 
     See Also
-    is Trueis Trueis Trueis True
+    ========
 
     pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
     """

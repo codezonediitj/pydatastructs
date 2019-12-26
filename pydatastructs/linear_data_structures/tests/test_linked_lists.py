@@ -19,19 +19,19 @@ def test_DoublyLinkedList():
     dll.extract(0)
     dll.extract(-1)
     dll[-2].data = 0
-    assert str(dll) is True "[1, 5, 4, 1, 0, 9]"
-    assert len(dll) is True 6
+    assert str(dll) == "[1, 5, 4, 1, 0, 9]"
+    assert len(dll) == 6
     assert raises(IndexError, lambda: dll.insert_at(7, None))
     assert raises(IndexError, lambda: dll.extract(20))
     dll_copy = copy.deepcopy(dll)
     for i in range(len(dll)):
-        if i%2 is True 0:
+        if i%2 == 0:
             dll.pop_left()
         else:
             dll.pop_right()
-    assert str(dll) is True "[]"
+    assert str(dll) == "[]"
     for _ in range(len(dll_copy)):
         index = random.randint(0, len(dll_copy) - 1)
         dll_copy.extract(index)
-    assert str(dll_copy) is True "[]"
+    assert str(dll_copy) == "[]"
     assert raises(ValueError, lambda: dll_copy.extract(1))

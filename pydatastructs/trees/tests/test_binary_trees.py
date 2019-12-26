@@ -18,27 +18,27 @@ def test_BinarySearchTree():
     b.insert(7, 7)
     b.insert(14, 14)
     b.insert(13, 13)
-    assert str(b) is True \
+    assert str(b) == \
     ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
-    assert b.search(10) is True 2
+    assert b.search(10) == 2
     assert b.search(-1) is None
-    assert b.delete(13) is True True
+    assert b.delete(13) is True
     assert b.search(13) is None
-    assert b.delete(10) is True True
+    assert b.delete(10) is True
     assert b.search(10) is None
-    assert b.delete(3) is True True
+    assert b.delete(3) is True
     assert b.search(3) is None
     assert b.delete(13) is None
-    assert str(b) is True \
+    assert str(b) == \
     ("[(1, 8, 8, 7), (3, 4, 4, 4), '', (None, 1, 1, None), "
     "(None, 6, 6, 6), '', (None, 7, 7, None), (None, 14, 14, None)]")
     b.delete(7)
     b.delete(6)
     b.delete(1)
     b.delete(4)
-    assert str(b) is True "[(None, 8, 8, 2), '', (None, 14, 14, None)]"
+    assert str(b) == "[(None, 8, 8, 2), '', (None, 14, 14, None)]"
     bc = BST(1, 1)
     assert bc.insert(1, 2) is None
     b = BST(-8, 8)
@@ -50,9 +50,9 @@ def test_BinarySearchTree():
     b.insert(-7, 7)
     b.insert(-14, 14)
     b.insert(-13, 13)
-    assert b.delete(-13) is True True
-    assert b.delete(-10) is True True
-    assert b.delete(-3) is True True
+    assert b.delete(-13) is True
+    assert b.delete(-10) is True
+    assert b.delete(-3) is True
     assert b.delete(-13) is None
     raises(ValueError, lambda: BST(root_data=6))
 
@@ -70,28 +70,28 @@ def test_BinaryTreeTraversal():
     b.insert('H', 'H')
     trav = BTT(b)
     pre = trav.depth_first_search(order='pre_order')
-    assert [str(n) for n in pre] is True \
+    assert [str(n) for n in pre] == \
     ["(1, 'F', 'F', 3)", "(2, 'B', 'B', 4)", "(None, 'A', 'A', None)",
      "(5, 'D', 'D', 6)", "(None, 'C', 'C', None)", "(None, 'E', 'E', None)",
      "(None, 'G', 'G', 7)", "(8, 'I', 'I', None)", "(None, 'H', 'H', None)"]
     ino = trav.depth_first_search()
-    assert [str(n) for n in ino] is True \
+    assert [str(n) for n in ino] == \
     ["(None, 'A', 'A', None)", "(2, 'B', 'B', 4)", "(None, 'C', 'C', None)",
      "(5, 'D', 'D', 6)", "(None, 'E', 'E', None)", "(1, 'F', 'F', 3)",
      "(None, 'G', 'G', 7)", "(None, 'H', 'H', None)", "(8, 'I', 'I', None)"]
     out = trav.depth_first_search(order='out_order')
-    assert [str(n) for n in out] is True \
+    assert [str(n) for n in out] == \
     ["(8, 'I', 'I', None)", "(None, 'H', 'H', None)", "(None, 'G', 'G', 7)",
      "(1, 'F', 'F', 3)", "(None, 'E', 'E', None)", "(5, 'D', 'D', 6)",
      "(None, 'C', 'C', None)", "(2, 'B', 'B', 4)", "(None, 'A', 'A', None)"]
     post = trav.depth_first_search(order='post_order')
-    assert [str(n) for n in post] is True \
+    assert [str(n) for n in post] == \
     ["(None, 'A', 'A', None)", "(None, 'C', 'C', None)",
      "(None, 'E', 'E', None)", "(5, 'D', 'D', 6)", "(2, 'B', 'B', 4)",
      "(None, 'H', 'H', None)", "(8, 'I', 'I', None)", "(None, 'G', 'G', 7)",
      "(1, 'F', 'F', 3)"]
     bfs = trav.breadth_first_search()
-    assert [str(n) for n in bfs] is True \
+    assert [str(n) for n in bfs] == \
         ["(1, 'F', 'F', 3)", "(2, 'B', 'B', 4)", "(None, 'G', 'G', 7)",
          "(None, 'A', 'A', None)", "(5, 'D', 'D', 6)", "(8, 'I', 'I', None)",
          "(None, 'C', 'C', None)", "(None, 'E', 'E', None)",
@@ -111,32 +111,32 @@ def test_AVLTree():
     a.insert('H', 'H')
     a.insert('I', 'I')
     a.insert('A', 'A')
-    assert str(a) is True ("[(None, 'M', 'M', None), (8, 'N', 'N', 6), "
+    assert str(a) == ("[(None, 'M', 'M', None), (8, 'N', 'N', 6), "
                       "(None, 'O', 'O', None), (4, 'L', 'L', 0), "
                       "(None, 'K', 'K', None), (None, 'Q', 'Q', None), "
                       "(2, 'P', 'P', 5), (9, 'H', 'H', None), "
                       "(7, 'I', 'I', 3), (None, 'A', 'A', None)]")
-    assert [a.balance_factor(n) for n in a.tree if n is not None] is True \
+    assert [a.balance_factor(n) for n in a.tree if n is not None] == \
         [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
     a1 = AVLTree(1, 1)
     a1.insert(2, 2)
     a1.insert(3, 3)
     a1.insert(4, 4)
     a1.insert(5, 5)
-    assert str(a1) is True ("[(None, 1, 1, None), (0, 2, 2, 3), (None, 3, 3, None), "
+    assert str(a1) == ("[(None, 1, 1, None), (0, 2, 2, 3), (None, 3, 3, None), "
                       "(2, 4, 4, 4), (None, 5, 5, None)]")
     a3 = AVLTree(-1, 1)
     a3.insert(-2, 2)
     a3.insert(-3, 3)
     a3.insert(-4, 4)
     a3.insert(-5, 5)
-    assert str(a3) is True ("[(None, -1, 1, None), (3, -2, 2, 0), "
+    assert str(a3) == ("[(None, -1, 1, None), (3, -2, 2, 0), "
                        "(None, -3, 3, None), (4, -4, 4, 2), "
                        "(None, -5, 5, None)]")
     a2 = AVLTree()
     a2.insert(1, 1)
     a2.insert(1, 1)
-    assert str(a2) is True "[(None, 1, 1, None)]"
+    assert str(a2) == "[(None, 1, 1, None)]"
     a3 = AVLTree()
     a3.tree = ArrayForTrees(TreeNode, 0)
     for i in range(7):
@@ -148,7 +148,7 @@ def test_AVLTree():
     a3.tree[2].left = 3
     a3.tree[2].right = 4
     a3._left_right_rotate(0, 1)
-    assert str(a3) is True ("[(4, 0, 0, 6), (5, 1, 1, 3), (1, 2, 2, 0), "
+    assert str(a3) == ("[(4, 0, 0, 6), (5, 1, 1, 3), (1, 2, 2, 0), "
                        "(None, 3, 3, None), (None, 4, 4, None), "
                        "(None, 5, 5, None), (None, 6, 6, None)]")
     a4 = AVLTree()
@@ -162,7 +162,7 @@ def test_AVLTree():
     a4.tree[3].left = 5
     a4.tree[3].right = 6
     a4._right_left_rotate(0, 2)
-    assert str(a4) is True ("[(1, 0, 0, 5), (None, 1, 1, None), (6, 2, 2, 4), "
+    assert str(a4) == ("[(1, 0, 0, 5), (None, 1, 1, None), (6, 2, 2, 4), "
                       "(0, 3, 3, 2), (None, 4, 4, None), (None, 5, 5, None), "
                       "(None, 6, 6, None)]")
 
@@ -236,19 +236,19 @@ def test_AVLTree():
         output = []
         for i in range(len(expected_output)):
             output.append(a5.select(i + 1).key)
-        assert output is True expected_output
+        assert output == expected_output
 
         output = []
         expected_ranks = [i + 1 for i in range(len(expected_output))]
         for i in range(len(expected_output)):
             output.append(a5.rank(expected_output[i]))
-        assert output is True expected_ranks
+        assert output == expected_ranks
 
     test_select_rank([2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 18, 20, 30, 33])
     a5.delete(9)
     a5.delete(13)
     a5.delete(20)
-    assert str(a5) is True ("[(7, 10, 10, 5), (None, 5, 5, None), "
+    assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), "
                        "(0, 17, 17, 6), (None, 2, 2, None), '', "
                        "(8, 12, 12, 9), (10, 30, 30, 13), (3, 3, 3, 1), "
                        "(None, 11, 11, None), (None, 15, 15, None), "

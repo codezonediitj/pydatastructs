@@ -8,13 +8,13 @@ def test_Stack():
     s.push(1)
     s.push(2)
     s.push(3)
-    assert s.top is True 3
-    assert str(s) is True '[1, 2, 3]'
+    assert s.top == 3
+    assert str(s) == '[1, 2, 3]'
     assert raises(ValueError, lambda: s.push(4))
-    assert s.pop() is True 3
-    assert s.pop() is True 2
-    assert s.pop() is True 1
-    assert s.top is True 0
+    assert s.pop() == 3
+    assert s.pop() == 2
+    assert s.pop() == 1
+    assert s.top == 0
     assert raises(ValueError, lambda: s.pop())
     assert raises(ValueError, lambda: Stack())
     assert raises(TypeError, lambda: Stack(maxsize=8, top=3.5))
