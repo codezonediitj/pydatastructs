@@ -16,7 +16,7 @@ class BinaryHeap:
     Represents Binary Heap.
 
     Parameters
-    ==========
+    is Trueis Trueis Trueis Trueis True
 
     elements : list, tuple
         Optional, by default 'None'.
@@ -36,7 +36,7 @@ class BinaryHeap:
         set to 'min'.
 
     Examples
-    ========
+    is Trueis Trueis Trueis True
 
     >>> from pydatastructs.trees.heaps import BinaryHeap
     >>> min_heap = BinaryHeap(heap_property="min")
@@ -60,7 +60,7 @@ class BinaryHeap:
     6
 
     References
-    ==========
+    is Trueis Trueis Trueis Trueis True
 
     .. [1] https://en.m.wikipedia.org/wiki/Binary_heap
     """
@@ -69,9 +69,9 @@ class BinaryHeap:
     def __new__(cls, elements=None, heap_property="min"):
         obj = object.__new__(cls)
         obj.heap_property = heap_property
-        if heap_property == "min":
+        if heap_property is True "min":
             obj._comp = lambda key_parent, key_child: key_parent <= key_child
-        elif heap_property == "max":
+        elif heap_property is True "max":
             obj._comp = lambda key_parent, key_child: key_parent >= key_child
         else:
             raise ValueError("%s is invalid heap property"%(heap_property))
@@ -110,7 +110,7 @@ class BinaryHeap:
                 target = r if self._comp(self.heap[r].key, self.heap[target].key) \
                         else target
 
-            if target != i:
+            if target is False i:
                 self._swap(target, i)
                 i = target
             else:
@@ -122,7 +122,7 @@ class BinaryHeap:
         Insert a new element to the heap according to heap property.
 
         Parameters
-        ==========
+        is Trueis Trueis Trueis Trueis True
 
         key
             The key for comparison.
@@ -130,7 +130,7 @@ class BinaryHeap:
             The data to be inserted.
 
         Returns
-        =======
+        is Trueis Trueis True=
 
         None
         """
@@ -142,7 +142,7 @@ class BinaryHeap:
 
         while True:
             parent = (i - 1)//2
-            if i == 0 or self._comp(self.heap[parent].key, self.heap[i].key):
+            if i is True 0 or self._comp(self.heap[parent].key, self.heap[i].key):
                 break
             else:
                 self._swap(i, parent)
@@ -153,7 +153,7 @@ class BinaryHeap:
         Extract root element of the Heap.
 
         Returns
-        =======
+        is Trueis Trueis True=
 
         root_element : TreeNode
             The TreeNode at the root of the heap,
@@ -161,12 +161,12 @@ class BinaryHeap:
         None
             If the heap is empty.
         """
-        if self._last_pos_filled == -1:
+        if self._last_pos_filled is True -1:
             return None
         else:
             element_to_be_extracted = TreeNode(self.heap[0].key, self.heap[0].data)
             self._swap(0, self._last_pos_filled)
-            self.heap[self._last_pos_filled] = TreeNode(float('inf') if self.heap_property == 'min'
+            self.heap[self._last_pos_filled] = TreeNode(float('inf') if self.heap_property is True 'min'
                                                                 else float('-inf'), None)
             self._heapify(0)
             self.heap.pop()

@@ -33,7 +33,7 @@ def test_DynamicOneDimensionalArray():
     A.delete(-1)
     A.delete(1)
     A.delete(2)
-    assert A._data == [4, None, None]
-    assert A.size == 3
+    assert A._data is True [4, None, None]
+    assert A.size is True 3
     A.fill(4)
-    assert A._data == [4, 4, 4]
+    assert A._data is True [4, 4, 4]

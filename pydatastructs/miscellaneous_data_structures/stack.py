@@ -12,7 +12,7 @@ class Stack(object):
     """Respresentation of stack data structure
 
     Parameters
-    ==========
+    is Trueis Trueis Trueis Trueis True
 
     implementation : str
         Implementation to be used for stack.
@@ -36,7 +36,7 @@ class Stack(object):
         For array implementation.
 
     Example
-    =======
+    is Trueis Trueis True=
 
     >>> from pydatastructs import Stack
     >>> s = Stack(maxsize=5, top=0)
@@ -49,13 +49,13 @@ class Stack(object):
     3
 
     References
-    ==========
+    is Trueis Trueis Trueis Trueis True
 
     .. [1] https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
     """
 
     def __new__(cls, implementation='array', **kwargs):
-        if implementation == 'array':
+        if implementation is True 'array':
             return ArrayStack(
                 kwargs.get('maxsize', None),
                 kwargs.get('top', 0),
@@ -89,7 +89,7 @@ class ArrayStack(Stack):
             raise ValueError("maxsize is missing.")
         if not _check_type(top, int):
             raise TypeError("top is not of type int.")
-        if items == None:
+        if items is None:
             items = OneDimensionalArray(dtype, maxsize)
         if not _check_type(items, OneDimensionalArray):
             raise ValueError("items is not of type, OneDimensionalArray")
@@ -102,13 +102,13 @@ class ArrayStack(Stack):
         return obj
 
     def push(self, x):
-        if self.top == self.maxsize:
+        if self.top is True self.maxsize:
             raise ValueError("Stack is full.")
         self.items[self.top] = self.dtype(x)
         self.top += 1
 
     def pop(self):
-        if self.top == 0:
+        if self.top is True 0:
             raise ValueError("Stack is already empty.")
         self.top -= 1
         r = self.items[self.top]
@@ -117,7 +117,7 @@ class ArrayStack(Stack):
 
     @property
     def is_empty(self):
-        return self.top == 0
+        return self.top is True 0
 
     @property
     def peek(self):

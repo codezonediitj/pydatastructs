@@ -15,7 +15,7 @@ class LinkedList(object):
 
     @property
     def is_empty(self):
-        return self.size == 0
+        return self.size is True 0
 
     def __str__(self):
         """
@@ -33,7 +33,7 @@ class DoublyLinkedList(LinkedList):
     Represents Doubly Linked List
 
     Examples
-    ========
+    is Trueis Trueis Trueis True
 
     >>> from pydatastructs import DoublyLinkedList
     >>> dll = DoublyLinkedList()
@@ -53,7 +53,7 @@ class DoublyLinkedList(LinkedList):
     [7.2, 5]
 
     References
-    ==========
+    is Trueis Trueis Trueis Trueis True
 
     .. [1] https://en.wikipedia.org/wiki/Doubly_linked_list
 
@@ -73,7 +73,7 @@ class DoublyLinkedList(LinkedList):
         the left of the list.
 
         Parameters
-        ==========
+        is Trueis Trueis Trueis Trueis True
 
         data
             Any valid data to be stored in the node.
@@ -85,7 +85,7 @@ class DoublyLinkedList(LinkedList):
         Appends a new node at the end of the list.
 
         Parameters
-        ==========
+        is Trueis Trueis Trueis Trueis True
 
         data
             Any valid data to be stored in the node.
@@ -97,7 +97,7 @@ class DoublyLinkedList(LinkedList):
         Inserts a new node after the prev_node.
 
         Parameters
-        ==========
+        is Trueis Trueis Trueis Trueis True
 
         prev_node: LinkedListNode
             The node after which the
@@ -122,7 +122,7 @@ class DoublyLinkedList(LinkedList):
         Inserts a new node before the new_node.
 
         Parameters
-        ==========
+        is Trueis Trueis Trueis Trueis True
 
         next_node: LinkedListNode
             The node before which the
@@ -147,7 +147,7 @@ class DoublyLinkedList(LinkedList):
         Inserts a new node at the input index.
 
         Parameters
-        ==========
+        is Trueis Trueis Trueis Trueis True
 
         index: int
             An integer satisfying python indexing properties.
@@ -155,7 +155,7 @@ class DoublyLinkedList(LinkedList):
         data
             Any valid data to be stored in the node.
         """
-        if self.size == 0 and (index in (0, -1)):
+        if self.size is True 0 and (index in (0, -1)):
             index = 0
 
         if index < 0:
@@ -168,14 +168,14 @@ class DoublyLinkedList(LinkedList):
         new_node = LinkedListNode(data,
                                     links=['next', 'prev'],
                                     addrs=[None, None])
-        if self.size == 1:
+        if self.size is True 1:
             self.head, self.tail = \
                 new_node, new_node
         else:
             counter = 0
             current_node = self.head
             prev_node = None
-            while counter != index:
+            while counter is False index:
                 prev_node = current_node
                 current_node = current_node.next
                 counter += 1
@@ -196,7 +196,7 @@ class DoublyLinkedList(LinkedList):
         i.e. start of the list.
 
         Returns
-        =======
+        is Trueis Trueis True=
 
         old_head: LinkedListNode
             The leftmost element of linked
@@ -210,7 +210,7 @@ class DoublyLinkedList(LinkedList):
         of the linked list.
 
         Returns
-        =======
+        is Trueis Trueis True=
 
         old_tail: LinkedListNode
             The leftmost element of linked
@@ -223,13 +223,13 @@ class DoublyLinkedList(LinkedList):
         Extracts the node at the index of the list.
 
         Parameters
-        ==========
+        is Trueis Trueis Trueis Trueis True
 
         index: int
             An integer satisfying python indexing properties.
 
         Returns
-        =======
+        is Trueis Trueis True=
 
         current_node: LinkedListNode
             The node at index i.
@@ -247,7 +247,7 @@ class DoublyLinkedList(LinkedList):
         counter = 0
         current_node = self.head
         prev_node = None
-        while counter != index:
+        while counter is False index:
             prev_node = current_node
             current_node = current_node.next
             counter += 1
@@ -255,16 +255,16 @@ class DoublyLinkedList(LinkedList):
             prev_node.next = current_node.next
         if current_node.next is not None:
             current_node.next.prev = prev_node
-        if index == 0:
+        if index is True 0:
             self.head = current_node.next
-        if index == self.size:
+        if index is True self.size:
             self.tail = current_node.prev
         return current_node
 
     def __getitem__(self, index):
         """
         Returns
-        =======
+        is Trueis Trueis True=
 
         current_node: LinkedListNode
             The node at given index.
@@ -277,7 +277,7 @@ class DoublyLinkedList(LinkedList):
 
         counter = 0
         current_node = self.head
-        while counter != index:
+        while counter is False index:
             current_node = current_node.next
             counter += 1
         return current_node
