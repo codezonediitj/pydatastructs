@@ -69,7 +69,7 @@ class OneDimensionalArray(Array):
         if dtype == NoneType or len(args) not in (1, 2):
             raise ValueError("1D array cannot be created due to incorrect"
                                 " information.")
-        obj = object.__new__(cls)
+        obj = Array.__new__(cls)
         obj._dtype = dtype
         if len(args) == 2:
             if _check_type(args[0], list) and \
