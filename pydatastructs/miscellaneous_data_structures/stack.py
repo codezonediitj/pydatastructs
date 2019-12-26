@@ -96,7 +96,7 @@ class ArrayStack(Stack):
         if items._size > maxsize:
             raise ValueError("Overflow, size of items %s is greater "
                             "than maxsize, %s"%(items._size, maxsize))
-        obj = Stack.__new__(cls)
+        obj = object.__new__(cls)
         obj.maxsize, obj.top, obj.items, obj.dtype = \
             maxsize, top, items, items._dtype
         return obj
