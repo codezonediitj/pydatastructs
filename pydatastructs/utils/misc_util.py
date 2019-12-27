@@ -90,6 +90,7 @@ class BinomialTreeNode(TreeNode):
     def add_children(self, *children):
         for child in children:
             self.children.append(child)
+            child.parent = self
 
     def __str__(self):
         """

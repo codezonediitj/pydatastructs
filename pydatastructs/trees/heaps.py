@@ -229,6 +229,10 @@ class BinomialHeap(Heap):
         while ((i <= self.root_list._last_pos_filled) and
                (j <= other_heap.root_list._last_pos_filled)):
             new_tree = None
+            while self.root_list[i] is None:
+                i += 1
+            while other_heap.root_list[j] is None:
+                j += 1
             if self.root_list[i].order == other_heap.root_list[j].order:
                 new_tree = self.merge_tree(self.root_list[i],
                                            other_heap.root_list[j])
@@ -258,3 +262,50 @@ class BinomialHeap(Heap):
         new_tree = BinomialTree(root=new_node, order=0)
         new_heap = BinomialHeap(root_list=[new_tree])
         self.merge(new_heap)
+
+    def find_minimum(self, **kwargs):
+        if self.is_empty:
+            raise ValueError("Binomial heap is empty.")
+        min_node = None
+        idx, min_idx = 0, None
+        for tree in self.root_list:
+            if ((min_node is None) or
+                (tree is not None and tree.root is not None and
+                 min_node.key > tree.root.key)):
+                min_node = tree.root
+                min_idx = idx
+            idx += 1
+        if kwargs.get('get_index', None) is not None:
+            return min_node, min_idx
+        return min_node
+
+    def delete_minimum(self):
+        min_node, min_idx = self.find_minimum(get_index=True)
+        child_root_list = []
+        for k, child in enumerate(min_node.children):
+            if child is not None:
+                child_root_list.append(BinomialTree(root=child, order=k))
+        self.root_list.delete(min_idx)
+        child_heap = BinomialHeap(root_list=child_root_list)
+        self.merge(child_heap)
+
+    @property
+    def is_empty(self):
+        return self.root_list._last_pos_filled == -1
+
+    def decrease_key(self, node, new_key):
+        if node.key <= new_key:
+            raise ValueError("The new key "
+            "should be less than current node's key.")
+        node.key = new_key
+        while ((not node.is_root) and
+               (node.parent.key > node.key)):
+            node.parent.key, node.key = \
+                node.key, node.parent.key
+            node.parent.data, node.data = \
+                node.data, node.parent.data
+            node = node.parent
+
+    def delete(self, node):
+        self.decrease_key(node, self.find_minimum().key - 1)
+        self.delete_minimum()

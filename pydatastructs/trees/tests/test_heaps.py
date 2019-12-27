@@ -92,29 +92,40 @@ def test_BinomialHeap():
 
     heap1 = BinomialHeap(root_list=[tree11, tree12, tree13])
     heap2 = BinomialHeap(root_list=[tree21])
-    expected_bfs_order = [[0, 1, 2, 3], [6, 7, 8, 9, 10, 11, 12, 13]]
+
     def bfs(heap):
         bfs_trav = []
         for i in range(heap.root_list._last_pos_filled + 1):
             layer = []
             bfs_q = Queue()
             bfs_q.append(heap.root_list[i].root)
-            j = 0
             while len(bfs_q) != 0:
                 curr_node = bfs_q.popleft()
-                layer.append(curr_node.key)
-                j += 1
-                for _i in range(curr_node.children._last_pos_filled + 1):
-                    bfs_q.append(curr_node.children[_i])
-            bfs_trav.append(layer)
+                if curr_node is not None:
+                    layer.append(curr_node.key)
+                    for _i in range(curr_node.children._last_pos_filled + 1):
+                        bfs_q.append(curr_node.children[_i])
+            if layer != []:
+                bfs_trav.append(layer)
         return bfs_trav
 
     heap1.merge(heap2)
-    expected_bfs_trav = [[1, 3, 9, 11], [6, 14, 2, 7, 4, 8, 12, 10, 5, 21]]
-    bfs(heap1) == expected_bfs_order
+    expected_bfs_trav = [[1, 3, 9, 11], [2, 7, 4, 8, 12, 10, 5, 21]]
+    assert bfs(heap1) == expected_bfs_trav
+
+    # Testing Binomial.find_minimum
+    assert heap1.find_minimum().key == 1
+
+    # Testing Binomial.delete_minimum
+    heap1.delete_minimum()
+    assert bfs(heap1) == [[3], [9, 11], [2, 7, 4, 8, 12, 10, 5, 21]]
+    assert raises(ValueError, lambda: heap1.decrease_key(nodes[3], 15))
+    heap1.decrease_key(nodes[3], 0)
+    assert bfs(heap1) == [[3], [0, 9], [2, 7, 4, 8, 12, 10, 5, 21]]
 
     # Testing BinomialHeap.insert
     heap = BinomialHeap()
+    assert raises(ValueError, lambda: heap.find_minimum())
     heap.insert(1, 1)
     heap.insert(3, 3)
     heap.insert(6, 6)
