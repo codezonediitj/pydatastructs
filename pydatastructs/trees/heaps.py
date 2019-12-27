@@ -1,4 +1,4 @@
-from pydatastructs.utils.misc_util import _check_type, NoneType, TreeNode
+from pydatastructs.utils.misc_util import _check_type, NoneType, TreeNode, BinomialTreeNode
 from pydatastructs.linear_data_structures.arrays import (ArrayForTrees,
      DynamicOneDimensionalArray)
 from pydatastructs.miscellaneous_data_structures.binomial_trees import BinomialTree
@@ -191,9 +191,8 @@ class BinomialHeap(Heap):
     """
     __slots__ = ['root_list']
 
-    def __new__(cls, root_list=None):
-        if (root_list is not None) and \
-            not all((_check_type(root, BinomialTree))
+    def __new__(cls, root_list=[]):
+        if not all((_check_type(root, BinomialTree))
                 for root in root_list):
                     raise TypeError("The root_list should contain "
                                     "references to objects of BinomialTree.")
@@ -253,3 +252,9 @@ class BinomialHeap(Heap):
             self._merge_heap_last_new_tree(new_root_list, new_tree)
             j += 1
         self.root_list = new_root_list
+
+    def insert(self, key, data):
+        new_node = BinomialTreeNode(key, data)
+        new_tree = BinomialTree(root=new_node, order=0)
+        new_heap = BinomialHeap(root_list=[new_tree])
+        self.merge(new_heap)
