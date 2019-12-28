@@ -1,5 +1,4 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
-from pydatastructs.linear_data_structures import OneDimensionalArray
 from copy import deepcopy as dc
 
 __all__ = [
@@ -48,7 +47,7 @@ class Stack(object):
     '[1, 2, 3, None, None]'
     >>> s.pop()
     3
-
+	0
     References
     ==========
 
@@ -58,8 +57,6 @@ class Stack(object):
     def __new__(cls, implementation='array', **kwargs):
         if implementation == 'array':
             return ArrayStack(
-                kwargs.get('maxsize', None),
-                kwargs.get('top', 0),
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
         raise NotImplementedError(
@@ -82,35 +79,34 @@ class Stack(object):
         return None
 
 class ArrayStack(Stack):
-    __slots__ = ['size', 'items', 'dtype']
 
-    def __new__(cls, size=None, items=None, dtype=int):
-        if not _check_type(size, int):
-            raise ValueError("size is missing.")
+    __slots__ = ['items', 'dtype']
+
+    def __new__(cls, items=None, dtype=int):
         if items is None:
-            items = DynamicOneDimensionalArray(dtype, size)
+            items = DynamicOneDimensionalArray(dtype)
         if not _check_type(items, DynamicOneDimensionalArray):
-            raise ValueError("items is not of type, OneDimensionalArray")
+            raise ValueError("items is not of type, DynamicOneDimensionalArray")
         obj = object.__new__(cls)
-        obj.size, obj.items, obj.dtype = \
-            size, items, items._dtype
+        obj.items, obj.dtype = \
+            items, items._dtype
         return obj
 
     def push(self, x):
-        self.items.append(dtype.x)
+        self.items.append(x)
 
     def pop(self):
-        top_element = copy.deepcopy(self.items[self._last_pos_filled])
-        self.items.delete(self._last_pos_filled)
+        top_element = dc(self.items[self.items._last_pos_filled])
+        self.items.delete(self.items._last_pos_filled)
         return top_element
 
     @property
     def is_empty(self):
-        return self._last_pos_filled == 0
+        return self.items._last_pos_filled is None
 
     @property
     def peek(self):
-        return self.items[self._last_pos_filled-1]
+        return self.items[self.items._last_pos_filled]
 
     def __str__(self):
         """
