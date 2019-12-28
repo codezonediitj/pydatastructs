@@ -1,3 +1,4 @@
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
 from pydatastructs.linear_data_structures import OneDimensionalArray
 from copy import deepcopy as dc
 
@@ -81,47 +82,35 @@ class Stack(object):
         return None
 
 class ArrayStack(Stack):
+    __slots__ = ['size', 'items', 'dtype']
 
-    __slots__ = ['maxsize', 'top', 'items', 'dtype']
-
-    def __new__(cls, maxsize=None, top=0, items=None, dtype=int):
-        if not _check_type(maxsize, int):
-            raise ValueError("maxsize is missing.")
-        if not _check_type(top, int):
-            raise TypeError("top is not of type int.")
+    def __new__(cls, size=None, items=None, dtype=int):
+        if not _check_type(size, int):
+            raise ValueError("size is missing.")
         if items is None:
-            items = OneDimensionalArray(dtype, maxsize)
-        if not _check_type(items, OneDimensionalArray):
+            items = DynamicOneDimensionalArray(dtype, size)
+        if not _check_type(items, DynamicOneDimensionalArray):
             raise ValueError("items is not of type, OneDimensionalArray")
-        if items._size > maxsize:
-            raise ValueError("Overflow, size of items %s is greater "
-                            "than maxsize, %s"%(items._size, maxsize))
         obj = object.__new__(cls)
-        obj.maxsize, obj.top, obj.items, obj.dtype = \
-            maxsize, top, items, items._dtype
+        obj.size, obj.items, obj.dtype = \
+            size, items, items._dtype
         return obj
 
     def push(self, x):
-        if self.top == self.maxsize:
-            raise ValueError("Stack is full.")
-        self.items[self.top] = self.dtype(x)
-        self.top += 1
+        self.items.append(dtype.x)
 
     def pop(self):
-        if self.top == 0:
-            raise ValueError("Stack is already empty.")
-        self.top -= 1
-        r = self.items[self.top]
-        self.items[self.top] = None
-        return r
+        top_element = copy.deepcopy(self.items[self._last_pos_filled])
+        self.items.delete(self._last_pos_filled)
+        return top_element
 
     @property
     def is_empty(self):
-        return self.top == 0
+        return self._last_pos_filled == 0
 
     @property
     def peek(self):
-        return self.items[self.top - 1]
+        return self.items[self._last_pos_filled-1]
 
     def __str__(self):
         """
