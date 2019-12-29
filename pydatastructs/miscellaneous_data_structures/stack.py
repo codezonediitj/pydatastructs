@@ -84,7 +84,7 @@ class ArrayStack(Stack):
 
     def __new__(cls, items=None, dtype=int):
         if items is None:
-            items = DynamicOneDimensionalArray(dtype)
+            items = DynamicOneDimensionalArray(dtype, 0)
         if not _check_type(items, DynamicOneDimensionalArray):
             raise ValueError("items is not of type, DynamicOneDimensionalArray")
         obj = object.__new__(cls)
@@ -96,13 +96,16 @@ class ArrayStack(Stack):
         self.items.append(x)
 
     def pop(self):
-        top_element = dc(self.items[self.items._last_pos_filled])
-        self.items.delete(self.items._last_pos_filled)
-        return top_element
+        if(self.items._last_pos_filled==-1):
+         raise ValueError("stack is empty") 
+        else:
+         top_element = dc(self.items[self.items._last_pos_filled])
+         self.items.delete(self.items._last_pos_filled)
+         return top_element
 
     @property
     def is_empty(self):
-        return self.items._last_pos_filled is None
+        return self.items._last_pos_filled == -1 
 
     @property
     def peek(self):
