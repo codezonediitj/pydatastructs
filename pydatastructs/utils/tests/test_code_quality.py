@@ -41,7 +41,7 @@ def test_final_new_lines():
                 assert False, "%s contains multiple new lines at the end."%(file_path)
         file.close()
 
-def test_characters_per_line():
+def test_comparison_True_False_None():
     py_files = _list_files()
     for file_path in py_files:
         if file_path.find("test_code_quality.py") == -1:
