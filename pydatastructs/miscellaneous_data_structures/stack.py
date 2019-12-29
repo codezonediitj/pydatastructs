@@ -62,7 +62,7 @@ class Stack(object):
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
         raise NotImplementedError(
-                "%s hasn't been implemented yet."%(implementation))
+                "%s hasn't been implemented yet."%(implementation))    
 
     def push(self, *args, **kwargs):
         raise NotImplementedError(
