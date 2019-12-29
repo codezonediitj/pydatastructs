@@ -97,7 +97,7 @@ class ArrayStack(Stack):
 
     def pop(self):
         if(self.items._last_pos_filled==-1):
-         raise ValueError("stack is empty") 
+         raise ValueError("stack is empty")
         else:
          top_element = dc(self.items[self.items._last_pos_filled])
          self.items.delete(self.items._last_pos_filled)
@@ -105,7 +105,7 @@ class ArrayStack(Stack):
 
     @property
     def is_empty(self):
-        return self.items._last_pos_filled == -1 
+        return self.items._last_pos_filled == -1
 
     @property
     def peek(self):
