@@ -2,6 +2,8 @@
 *.pyc
 __pycache__/
 *.pyo
+*.vs
+.vs/
 .vscode/
 .pytest_cache/
 pre_commit.ps1
