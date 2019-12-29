@@ -41,6 +41,7 @@ class Stack(object):
     '[1, 2, 3]'
     >>> s.pop()
     3
+    
     References
     ==========
 
