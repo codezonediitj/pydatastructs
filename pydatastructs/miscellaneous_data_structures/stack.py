@@ -19,13 +19,7 @@ class Stack(object):
         By default, 'array'
         Currently only supports 'array'
         implementation.
-    maxsize : int
-        The maximum size of the stack.
-        For array implementation.
-    top : int
-        The top element of the stack.
-        For array implementation.
-    items : OneDimensionalArray
+    items : DynamicOneDimensionalArray
         Optional, by default, None
         The inital items in the stack.
         For array implementation.
@@ -39,12 +33,12 @@ class Stack(object):
     =======
 
     >>> from pydatastructs import Stack
-    >>> s = Stack(maxsize=5, top=0)
+    >>> s = Stack()
     >>> s.push(1)
     >>> s.push(2)
     >>> s.push(3)
     >>> str(s)
-    '[1, 2, 3, None, None]'
+    '[1, 2, 3]'
     >>> s.pop()
     3
 	0
