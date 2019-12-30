@@ -9,5 +9,4 @@ __pycache__/
 pre_commit.ps1
 htmlcov
 *coverage*
-# for developement purposes
-pds_debug.py
+*.egg-info/
