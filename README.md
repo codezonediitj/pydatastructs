@@ -1,7 +1,7 @@
 PyDataStructs
 =============
 
-[![Build Status](https://travis-ci.org/codezonediitj/pydatastructs.png?branch=master)](https://travis-ci.org/codezonediitj/pydatastructs) [![Join the chat at https://gitter.im/codezonediitj/pydatastructs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codezoned2017/Lobby) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codezonediitj/pydatastructs/pulls) [![codecov](https://codecov.io/gh/codezonediitj/pydatastructs/branch/master/graph/badge.svg)](https://codecov.io/gh/codezonediitj/pydatastructs)
+[![Build Status](https://travis-ci.org/codezonediitj/pydatastructs.png?branch=master)](https://travis-ci.org/codezonediitj/pydatastructs) [![Join the chat at https://gitter.im/codezonediitj/pydatastructs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codezoned2017/Lobby) [![Discuss at pydatastructs@googlegroups.com](https://img.shields.io/badge/discuss-pydatastructs%40googlegroups.com-blue.svg)](https://groups.google.com/forum/#!forum/pydatastructs) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codezonediitj/pydatastructs/pulls) [![codecov](https://codecov.io/gh/codezonediitj/pydatastructs/branch/master/graph/badge.svg)](https://codecov.io/gh/codezonediitj/pydatastructs)
 
 Who are we?
 -----------
@@ -12,6 +12,23 @@ How are we different?
 ---------------------
 
 There are many pre-exisiting packages available in the open source world based on the above idea. However, they lack the implementation of complex data structures and this makes us different. If you have worked with C++ and Python then you know how hard it is to code bug free AVL trees :-).Well, after this project you will not have to worry about it. In fact, we will keep each data structure independent from each other for easy code reusability.
+
+Installation
+------------
+
+You can install the library by running the following command,
+
+```python
+python3 setup.py install
+```
+
+For development purposes you can use the option `develop` as shown below,
+
+```python
+python3 setup.py develop
+```
+
+Make sure that your python version is above `3.5`.
 
 Why we use Python?
 -----------------
@@ -51,5 +68,13 @@ Please follow the rules and guidelines given below,
 1. Follow the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 2. If you are planning to contribute a new data structure then first raise an issue for discussing the API, rather than directly making a PR.
 3. For the first-time contributors we recommend not to take a complex data strucutre, rather start with `linear data structures` or `abstract data types`. You can also pick issues labelled as `good_first_issues`.
+
+The following parameters are to be followed to pass the code quality tests for your,
+Pull Requests,
+
+1. There should not be any trailing white spaces at any line of code.
+2. Each `.py` file should end with exactly one new line.
+3. Comparisons involving `True`, `False` and `None` should be done by
+reference(using `is`, `is not`) and not by value(`==`, `!=`).
 
 Keep contributing!!

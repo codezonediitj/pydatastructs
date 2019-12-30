@@ -61,7 +61,7 @@ class DoublyLinkedList(LinkedList):
     __slots__ = ['head', 'tail', 'size']
 
     def __new__(cls):
-        obj = object.__new__(cls)
+        obj = LinkedList.__new__(cls)
         obj.head = None
         obj.tail = None
         obj.size = 0

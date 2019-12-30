@@ -69,7 +69,7 @@ class OneDimensionalSegmentTree(object):
         Helper function for finding intersection of two
         intervals.
         """
-        if i1 == None or i2 == None:
+        if i1 is None or i2 is None:
             return False
         if i1.key[2] < i2.key[1] or i2.key[2] < i1.key[1]:
             return False
@@ -78,7 +78,7 @@ class OneDimensionalSegmentTree(object):
             c1 = (i1.key[3] and i2.key[0])
         if i2.key[2] == i1.key[1]:
             c2 = (i2.key[3] and i1.key[0])
-        if c1 == False and c2 == False:
+        if c1 is False and c2 is False:
             return False
         return True
 
@@ -87,7 +87,7 @@ class OneDimensionalSegmentTree(object):
         Helper function for checking if the first interval
         is contained in second interval.
         """
-        if i1 == None or i2 == None:
+        if i1 is None or i2 is None:
             return False
         if i1.key[1] < i2.key[1] and i1.key[2] > i2.key[2]:
             return True
@@ -105,11 +105,11 @@ class OneDimensionalSegmentTree(object):
         stack. Used for imitating the stack based
         approach used in recursion.
         """
-        if self.tree[idx].right == None:
+        if self.tree[idx].right is None:
             rc = None
         else:
             rc = self.tree[self.tree[idx].right]
-        if self.tree[idx].left == None:
+        if self.tree[idx].left is None:
             lc = None
         else:
             lc = self.tree[self.tree[idx].left]
@@ -168,7 +168,7 @@ class OneDimensionalSegmentTree(object):
             while calls:
                 idx = calls.pop()
                 if self._contains(I, self.tree[idx]):
-                    if self.tree[idx].data == None:
+                    if self.tree[idx].data is None:
                         self.tree[idx].data = []
                     self.tree[idx].data.append(I)
                     continue
@@ -202,7 +202,7 @@ class OneDimensionalSegmentTree(object):
         """
         if not self.cache:
             self.build()
-        if init_node == None:
+        if init_node is None:
             init_node = self.root_idx
         qn = TreeNode([True, qx, qx, True], None)
         intervals = []
@@ -222,7 +222,7 @@ class OneDimensionalSegmentTree(object):
             self.build()
         str_tree = []
         for seg in self.tree:
-            if seg.data == None:
+            if seg.data is None:
                 data = None
             else:
                 data = [str(sd) for sd in seg.data]

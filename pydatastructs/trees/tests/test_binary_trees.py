@@ -23,14 +23,14 @@ def test_BinarySearchTree():
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
     assert b.search(10) == 2
-    assert b.search(-1) == None
-    assert b.delete(13) == True
-    assert b.search(13) == None
-    assert b.delete(10) == True
-    assert b.search(10) == None
-    assert b.delete(3) == True
-    assert b.search(3) == None
-    assert b.delete(13) == None
+    assert b.search(-1) is None
+    assert b.delete(13) is True
+    assert b.search(13) is None
+    assert b.delete(10) is True
+    assert b.search(10) is None
+    assert b.delete(3) is True
+    assert b.search(3) is None
+    assert b.delete(13) is None
     assert str(b) == \
     ("[(1, 8, 8, 7), (3, 4, 4, 4), '', (None, 1, 1, None), "
     "(None, 6, 6, 6), '', (None, 7, 7, None), (None, 14, 14, None)]")
@@ -40,7 +40,7 @@ def test_BinarySearchTree():
     b.delete(4)
     assert str(b) == "[(None, 8, 8, 2), '', (None, 14, 14, None)]"
     bc = BST(1, 1)
-    assert bc.insert(1, 2) == None
+    assert bc.insert(1, 2) is None
     b = BST(-8, 8)
     b.insert(-3, 3)
     b.insert(-10, 10)
@@ -50,10 +50,10 @@ def test_BinarySearchTree():
     b.insert(-7, 7)
     b.insert(-14, 14)
     b.insert(-13, 13)
-    assert b.delete(-13) == True
-    assert b.delete(-10) == True
-    assert b.delete(-3) == True
-    assert b.delete(-13) == None
+    assert b.delete(-13) is True
+    assert b.delete(-10) is True
+    assert b.delete(-3) is True
+    assert b.delete(-13) is None
     raises(ValueError, lambda: BST(root_data=6))
 
 def test_BinaryTreeTraversal():
@@ -231,7 +231,7 @@ def test_AVLTree():
 
     assert raises(ValueError, lambda: a5.select(0))
     assert raises(ValueError, lambda: a5.select(15))
-    assert a5.rank(-1) == None
+    assert a5.rank(-1) is None
     def test_select_rank(expected_output):
         output = []
         for i in range(len(expected_output)):
