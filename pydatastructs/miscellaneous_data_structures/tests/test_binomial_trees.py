@@ -14,4 +14,4 @@ def test_BinomialTree():
     node.add_children(BinomialTreeNode(3, 3))
     bt2 = BinomialTree(node, 1)
     assert raises(ValueError, lambda: bt1.add_sub_tree(bt2))
-    assert bt1.is_empty == False
+    assert bt1.is_empty is False
