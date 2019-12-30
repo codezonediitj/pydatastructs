@@ -1,4 +1,4 @@
-from pydatastructs.linear_data_structures import OneDimensionalArray
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
 from copy import deepcopy as dc
 
 __all__ = [
@@ -19,13 +19,7 @@ class Stack(object):
         By default, 'array'
         Currently only supports 'array'
         implementation.
-    maxsize : int
-        The maximum size of the stack.
-        For array implementation.
-    top : int
-        The top element of the stack.
-        For array implementation.
-    items : OneDimensionalArray
+    items : DynamicOneDimensionalArray
         Optional, by default, None
         The inital items in the stack.
         For array implementation.
@@ -39,12 +33,12 @@ class Stack(object):
     =======
 
     >>> from pydatastructs import Stack
-    >>> s = Stack(maxsize=5, top=0)
+    >>> s = Stack()
     >>> s.push(1)
     >>> s.push(2)
     >>> s.push(3)
     >>> str(s)
-    '[1, 2, 3, None, None]'
+    '[1, 2, 3]'
     >>> s.pop()
     3
 
@@ -57,8 +51,6 @@ class Stack(object):
     def __new__(cls, implementation='array', **kwargs):
         if implementation == 'array':
             return ArrayStack(
-                kwargs.get('maxsize', None),
-                kwargs.get('top', 0),
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
         raise NotImplementedError(
@@ -82,46 +74,36 @@ class Stack(object):
 
 class ArrayStack(Stack):
 
-    __slots__ = ['maxsize', 'top', 'items', 'dtype']
+    __slots__ = ['items', 'dtype']
 
-    def __new__(cls, maxsize=None, top=0, items=None, dtype=int):
-        if not _check_type(maxsize, int):
-            raise ValueError("maxsize is missing.")
-        if not _check_type(top, int):
-            raise TypeError("top is not of type int.")
+    def __new__(cls, items=None, dtype=int):
         if items is None:
-            items = OneDimensionalArray(dtype, maxsize)
-        if not _check_type(items, OneDimensionalArray):
-            raise ValueError("items is not of type, OneDimensionalArray")
-        if items._size > maxsize:
-            raise ValueError("Overflow, size of items %s is greater "
-                            "than maxsize, %s"%(items._size, maxsize))
+            items = DynamicOneDimensionalArray(dtype, 0)
+        else:
+            items = DynamicOneDimensionalArray(dtype, items)
         obj = object.__new__(cls)
-        obj.maxsize, obj.top, obj.items, obj.dtype = \
-            maxsize, top, items, items._dtype
+        obj.items, obj.dtype = \
+            items, items._dtype
         return obj
 
     def push(self, x):
-        if self.top == self.maxsize:
-            raise ValueError("Stack is full.")
-        self.items[self.top] = self.dtype(x)
-        self.top += 1
+        self.items.append(x)
 
     def pop(self):
-        if self.top == 0:
-            raise ValueError("Stack is already empty.")
-        self.top -= 1
-        r = self.items[self.top]
-        self.items[self.top] = None
-        return r
+        if self.is_empty:
+            raise ValueError("Stack is empty")
+
+        top_element = dc(self.items[self.items._last_pos_filled])
+        self.items.delete(self.items._last_pos_filled)
+        return top_element
 
     @property
     def is_empty(self):
-        return self.top == 0
+        return self.items._last_pos_filled == -1
 
     @property
     def peek(self):
-        return self.items[self.top - 1]
+        return self.items[self.items._last_pos_filled]
 
     def __str__(self):
         """
