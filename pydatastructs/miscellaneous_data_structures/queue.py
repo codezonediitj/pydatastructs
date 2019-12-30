@@ -1,4 +1,4 @@
-from pydatastructs.linear_data_structures import OneDimensionalArray
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
 
 __all__ = [
     'Queue'
@@ -14,9 +14,9 @@ class Queue(objects):
             return ArrayQueue(
                 kwargs.get('maxsize', None),
                 kwargs.get('front', -1),
-                kwargs.get('rear', -1),
                 kwargs.get('item', None),
-                kwargs.get('dtype', int))
+                kwargs.get('dtype', int),
+                kwargs.get('count', int))
         raise NotImplementedError("%s hasn't been implemented yet."%(implementation))
                
    def append(self, *args, **kwargs):
@@ -30,47 +30,37 @@ class Queue(objects):
         
    
 class ArrayQueue(Queue):
-    __slots__ = ['maxsize','front','rear','item','dtype']
-    def __new__(cls, maxsize = None, front = -1, rear = -1, item = None, dtype = int):
+    __slots__ = ['maxsize','front','item','dtype','count']
+    def __new__(clas, maxsize = None, front = -1, item = None, dtype = int, count=0):
         if not _check_type(maxsize, int):
             raise ValueError("maxsize is missing.")
         if not _check_type(front, int):
             raise TypeError("front is not of type int.")
-        if not _check_type(rear, int):
-            raise TypeError("rear is not of type int.")
         if item is None:
-            item= OneDimensionalArray(dtype, maxsize)
-        if not _check_type(item, OneDimensionalArray):
-            raise ValueError("item is not of OneDimensionalArray type")
-        if item._size > maxsize:
-            raise ValueError("Overflow, size of item %s is greater than maxsize, %s"%(items._size, maxsize))
+            item= DynamicOneDimensionalArray(dtype, maxsize)
+        if not _check_type(item, DynamicOneDimensionalArray):
+            raise ValueError("item is not of DynamicOneDimensionalArray type")
             
         obj = object.__new__(clas)
-        obj.maxsize, obj.front, obj.rear, obj.item, obj.dtype = maxsize, front, rear, item, items._dtype
+        obj.maxsize, obj.front, obj.item, obj.dtype, obj.count = maxsize, front, item, items._dtype, count
         return obj
         
     def append(self, x):
-        if self.rear == self.maxsize-1:
-            raise ValueError("Queue is full.")
-        else:
             if self.front == -1:
                 self.front=0
-            self.rear +=1
-            self.item[self.rear]= self.dtype(x)
+            self.item.apped[self.dtype(x)]
+            count+=1
 
     def popleft(self):
-        if (self.front == -1) and (self.front > self.rear):
+        if (self.front == -1):
             raise ValueError("Queue is empty.")
-        self.top -= 1
         r = self.item[self.front]
-        self.item[self.front] = None
+        self.item.delete[self.front]
         self.front += 1
         return r
         
     def __len__(self):
-        i=0
-        count=0
-        while(self.item[i] is not None):
-            i+=1
-            count+=1
-        return count
+        if self.front== -1:
+            return 0
+        else:
+            return (self.count- self.front)
