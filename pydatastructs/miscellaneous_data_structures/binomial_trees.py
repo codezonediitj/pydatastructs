@@ -6,6 +6,31 @@ __all__ = [
 
 class BinomialTree(object):
     """
+    Represents binomial trees
+
+    Parameters
+    ==========
+
+    root: BinomialTreeNode
+        The root of the binomial tree.
+        By default, None
+    order: int
+        The order of the binomial tree.
+        By default, None
+
+    Examples
+    ========
+
+    >>> from pydatastructs import BinomialTree, BinomialTreeNode
+    >>> root = BinomialTreeNode(1, 1)
+    >>> tree = BinomialTree(root, 0)
+    >>> tree.is_empty
+    False
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Binomial_heap
     """
     __slots__ = ['root', 'order']
 
@@ -25,6 +50,20 @@ class BinomialTree(object):
         return obj
 
     def add_sub_tree(self, other_tree):
+        """
+        Adds a sub tree to current tree.
+
+        Parameters
+        ==========
+
+        other_tree: BinomialTree
+
+        Raises
+        ======
+
+        ValueError: If order of the two trees
+                    are different.
+        """
         if not _check_type(other_tree, BinomialTree):
             raise TypeError("%s i.e., other_tree should be of "
                              "type BinomialTree"%(other_tree))

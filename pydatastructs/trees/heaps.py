@@ -188,6 +188,32 @@ class BinaryHeap(Heap):
 
 class BinomialHeap(Heap):
     """
+    Represents binomial heap.
+
+    Parameters
+    ==========
+
+    root_list: list/tuple
+        By default, []
+        The list of BinomialTree object references
+        in sorted order.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import BinomialHeap
+    >>> b = BinomialHeap()
+    >>> b.insert(1, 1)
+    >>> b.insert(2, 2)
+    >>> b.find_minimum().key
+    1
+    >>> b.find_minimum().children[0].key
+    2
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Binomial_heap
     """
     __slots__ = ['root_list']
 
@@ -201,6 +227,16 @@ class BinomialHeap(Heap):
         return obj
 
     def merge_tree(self, tree1, tree2):
+        """
+        Merges two BinomialTree objects.
+
+        Parameters
+        ==========
+
+        tree1: BinomialTree
+
+        tree2: BinomialTree
+        """
         if (not _check_type(tree1, BinomialTree)) or \
             (not _check_type(tree2, BinomialTree)):
             raise TypeError("Both the trees should be of type "
@@ -215,6 +251,9 @@ class BinomialHeap(Heap):
         return ret_value
 
     def _merge_heap_last_new_tree(self, new_root_list, new_tree):
+        """
+        Merges last tree node in root list with the incoming tree.
+        """
         pos = new_root_list._last_pos_filled
         if (new_root_list.size != 0) and new_root_list[pos].order == new_tree.order:
             new_root_list[pos] = self.merge_tree(new_root_list[pos], new_tree)
@@ -222,6 +261,14 @@ class BinomialHeap(Heap):
             new_root_list.append(new_tree)
 
     def merge(self, other_heap):
+        """
+        Merges current binomial heap with the given binomial heap.
+
+        Parameters
+        ==========
+
+        other_heap: BinomialHeap
+        """
         if not _check_type(other_heap, BinomialHeap):
             raise TypeError("Other heap is not of type BinomialHeap.")
         new_root_list = DynamicOneDimensionalArray(BinomialTree, 0)
@@ -258,12 +305,30 @@ class BinomialHeap(Heap):
         self.root_list = new_root_list
 
     def insert(self, key, data):
+        """
+        Inserts new node with the given key and data.
+
+        key
+            The key of the node which can be operated
+            upon by relational operators.
+
+        data
+            The data to be stored in the new node.
+        """
         new_node = BinomialTreeNode(key, data)
         new_tree = BinomialTree(root=new_node, order=0)
         new_heap = BinomialHeap(root_list=[new_tree])
         self.merge(new_heap)
 
     def find_minimum(self, **kwargs):
+        """
+        Finds the node with the minimum key.
+
+        Returns
+        =======
+
+        min_node: BinomialTreeNode
+        """
         if self.is_empty:
             raise ValueError("Binomial heap is empty.")
         min_node = None
@@ -280,6 +345,9 @@ class BinomialHeap(Heap):
         return min_node
 
     def delete_minimum(self):
+        """
+        Deletes the node with minimum key.
+        """
         min_node, min_idx = self.find_minimum(get_index=True)
         child_root_list = []
         for k, child in enumerate(min_node.children):
@@ -294,6 +362,18 @@ class BinomialHeap(Heap):
         return self.root_list._last_pos_filled == -1
 
     def decrease_key(self, node, new_key):
+        """
+        Decreases the key of the given node.
+
+        Parameters
+        ==========
+
+        node: BinomialTreeNode
+            The node whose key is to be reduced.
+        new_key
+            The new key of the given node,
+            should be less than the current key.
+        """
         if node.key <= new_key:
             raise ValueError("The new key "
             "should be less than current node's key.")
@@ -307,5 +387,14 @@ class BinomialHeap(Heap):
             node = node.parent
 
     def delete(self, node):
+        """
+        Deletes the given node.
+
+        Parameters
+        ==========
+
+        node: BinomialTreeNode
+            The node which is to be deleted.
+        """
         self.decrease_key(node, self.find_minimum().key - 1)
         self.delete_minimum()

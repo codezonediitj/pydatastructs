@@ -88,6 +88,9 @@ class BinomialTreeNode(TreeNode):
         return obj
 
     def add_children(self, *children):
+        """
+        Adds children of current node.
+        """
         for child in children:
             self.children.append(child)
             child.parent = self
