@@ -653,7 +653,7 @@ class BinaryTreeTraversal(object):
         """
         visit = []
         tree, size = self.tree.tree, self.tree.size
-        s = Stack(maxsize=size)
+        s = Stack()
         s.push(node)
         while not s.is_empty:
             node = s.pop()
@@ -671,7 +671,7 @@ class BinaryTreeTraversal(object):
         """
         visit = []
         tree, size = self.tree.tree, self.tree.size
-        s = Stack(maxsize=size)
+        s = Stack()
         while not s.is_empty or node is not None:
             if node is not None:
                 s.push(node)
@@ -689,7 +689,7 @@ class BinaryTreeTraversal(object):
         """
         visit = []
         tree, size = self.tree.tree, self.tree.size
-        s = Stack(maxsize=size)
+        s = Stack()
         s.push(node)
         last = OneDimensionalArray(int, size)
         last.fill(False)
