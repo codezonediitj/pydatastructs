@@ -1,11 +1,7 @@
 __all__ = []
 
 from . import (
-    stack,
-
-    queue,
-  
-    binomial_trees
+    queue
 
 )
 
