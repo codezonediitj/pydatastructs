@@ -2,8 +2,17 @@ __all__ = []
 
 from . import (
     stack,
+
     queue,
+  
+    binomial_trees
+
 )
+
+from .binomial_trees import (
+    BinomialTree
+)
+__all__.extend(binomial_trees.__all__)
 
 from .stack import (
     Stack,
