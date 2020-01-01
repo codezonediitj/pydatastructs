@@ -12,8 +12,9 @@ def _list_files():
                 py_files.append(os.path.join(dirpath, _file))
     return py_files
 
+py_files = _list_files()
+
 def test_trailing_white_spaces():
-    py_files = _list_files()
     for file_path in py_files:
         file = open(file_path, "r")
         line = file.readline()
@@ -26,7 +27,6 @@ def test_trailing_white_spaces():
         file.close()
 
 def test_final_new_lines():
-    py_files = _list_files()
     for file_path in py_files:
         file = open(file_path, "r")
         lines = []
@@ -42,7 +42,6 @@ def test_final_new_lines():
         file.close()
 
 def test_comparison_True_False_None():
-    py_files = _list_files()
     for file_path in py_files:
         if file_path.find("test_code_quality.py") == -1:
             file = open(file_path, "r")
@@ -59,3 +58,15 @@ def test_comparison_True_False_None():
                                 %(file_path, line)
                 line = file.readline()
             file.close()
+
+def test_presence_of_tabs():
+    for file_path in py_files:
+        file = open(file_path, "r")
+        line = file.readline()
+        while line != "":
+            line = file.readline()
+            if (line.find('\t') != -1):
+                assert False, "Tab present at %s in %s. " \
+                            "Configure your editor to use " \
+                            "white spaces."
+        file.close()

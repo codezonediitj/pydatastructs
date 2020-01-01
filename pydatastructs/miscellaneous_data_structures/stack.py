@@ -19,7 +19,7 @@ class Stack(object):
         By default, 'array'
         Currently only supports 'array'
         implementation.
-    items : DynamicOneDimensionalArray
+    items : list/tuple
         Optional, by default, None
         The inital items in the stack.
         For array implementation.
