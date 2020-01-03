@@ -1,7 +1,10 @@
 __all__ = [
     'TreeNode',
     'LinkedListNode',
-    'BinomialTreeNode'
+    'BinomialTreeNode',
+    'AdjacencyListGraphNode',
+    'AdjacencyMatrixGraphNode',
+    'GraphEdge'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -34,7 +37,7 @@ class TreeNode(Node):
                  'height', 'parent', 'size']
 
     def __new__(cls, key, data):
-        obj = object.__new__(cls)
+        obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.left, obj.right, obj.parent, obj.height, obj.size = \
             None, None, None, 0, 1
@@ -78,7 +81,7 @@ class BinomialTreeNode(TreeNode):
 
     def __new__(cls, key, data):
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
-        obj = object.__new__(cls)
+        obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.children, obj.parent, obj.is_root = (
         DynamicOneDimensionalArray(BinomialTreeNode, 0),
@@ -112,7 +115,7 @@ class LinkedListNode(Node):
         Any valid data to be stored in the node.
     """
     def __new__(cls, data=None, links=['next'], addrs=[None]):
-        obj = object.__new__(cls)
+        obj = Node.__new__(cls)
         obj.data = data
         for link, addr in zip(links, addrs):
             obj.__setattr__(link, addr)
@@ -121,3 +124,52 @@ class LinkedListNode(Node):
 
     def __str__(self):
         return str(self.data)
+
+class GraphNode(Node):
+
+    def __str__(self):
+        return str((self.name, self.data))
+
+class AdjacencyListGraphNode(GraphNode):
+
+    def __new__(cls, name, data, adjacency_list=None):
+        obj = GraphNode.__new__(cls)
+        obj.name, obj.data = name, data
+        if adjacency_list is not None:
+            for node in adjacency_list:
+                obj.__setattr__(node.name, node)
+        obj.adjacent = adjacency_list if adjacency_list is not None \
+                       else []
+        return obj
+
+    def add_adjacent_node(self, name, data):
+        if hasattr(self, name):
+            getattr(self, name).data = data
+        else:
+            new_node = AdjacencyListGraphNode(name, data)
+            self.__setattr__(new_node.name, new_node)
+
+    def remove_adjacent_node(self, name):
+        if not hasattr(self, name):
+            raise ValueError("%s is not adjacent to %s"%(name, self.name))
+        delattr(self, name)
+
+class AdjacencyMatrixGraphNode(GraphNode):
+
+    __slots__ = ['name', 'data']
+
+    def __new__(cls, name, data):
+        obj = GraphNode.__new__(cls)
+        obj.name, obj.data = name, data
+        return obj
+
+class GraphEdge(object):
+
+    def __new__(cls, node1, node2, value=None):
+        obj = object.__new__(cls)
+        obj.source, obj.target = node1, node2
+        obj.value = value
+        return obj
+
+    def __str__(self):
+        return str((self.source.name, self.target.name))
