@@ -138,8 +138,8 @@ class AdjacencyListGraphNode(GraphNode):
         if adjacency_list is not None:
             for node in adjacency_list:
                 obj.__setattr__(node.name, node)
-        obj.adjacent = adjacency_list if adjacency_list is not None \
-                       else []
+        obj.adjacent = set(adjacency_list) if adjacency_list is not None \
+                       else set()
         return obj
 
     def add_adjacent_node(self, name, data):
@@ -148,10 +148,12 @@ class AdjacencyListGraphNode(GraphNode):
         else:
             new_node = AdjacencyListGraphNode(name, data)
             self.__setattr__(new_node.name, new_node)
+            self.adjacent.add(new_node.name)
 
     def remove_adjacent_node(self, name):
         if not hasattr(self, name):
             raise ValueError("%s is not adjacent to %s"%(name, self.name))
+        self.adjacent.remove(name)
         delattr(self, name)
 
 class AdjacencyMatrixGraphNode(GraphNode):

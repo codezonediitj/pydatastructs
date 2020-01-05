@@ -5,16 +5,18 @@ __all__ = [
 
 class Graph(object):
 
-    def __new__(cls, implementation='adjacency_list'):
+    def __new__(cls, *args, **kwargs):
+        implementation = kwargs.get('implementation', 'adjacency_list')
         if implementation is 'adjacency_list':
             from pydatastructs.graphs.adjacency_list import AdjacencyList
-            return AdjacencyList()
+            return AdjacencyList(*args)
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
 
     def is_adjacent(self, node1, node2):
-        return hasattr(node1, node2.name)
+        node1 = self.__getattribute__(node1)
+        return hasattr(node1, node2)
 
     def neighbors(self, node):
         raise NotImplementedError(
@@ -35,15 +37,3 @@ class Graph(object):
     def remove_edge(self, source, target):
         raise NotImplementedError(
             "This is an abstract method.")
-
-    def get_vertex_value(self, node):
-        return node.data
-
-    def set_vertex_value(self, node, value):
-        node.data = value
-
-    def get_edge_value(self, edge):
-        return edge.value
-
-    def set_edge_value(self, edge, value):
-        edge.value = value

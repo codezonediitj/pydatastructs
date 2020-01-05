@@ -15,21 +15,30 @@ class AdjacencyList(Graph):
         return obj
 
     def neighbors(self, node):
-        return [node.name for name in node.adjacent]
+        node = self.__getattribute__(node)
+        return [self.__getattribute__(name) for name in node.adjacent]
 
     def add_vertex(self, node):
+        self.vertices.add(node.name)
         self.__setattr__(node.name, node)
 
     def remove_vertex(self, name):
         delattr(self, name)
         self.vertices.remove(name)
         for node in self.vertices:
-            if hasattr(node, name):
-                delattr(node, name)
+            node_obj = self.__getattribute__(node)
+            if hasattr(node_obj, name):
+                delattr(node_obj, name)
+                node_obj.adjacent.remove(name)
 
     def add_edge(self, source, target):
+        source, target = self.__getattribute__(source), \
+                         self.__getattribute__(target)
         source.__setattr__(target.name, target)
-        source.adjacent.append(target.name)
+        source.adjacent.add(target.name)
 
     def remove_edge(self, source, target):
+        source, target = self.__getattribute__(source), \
+                         self.__getattribute__(target)
+        source.adjacent.remove(target.name)
         delattr(source, target.name)
