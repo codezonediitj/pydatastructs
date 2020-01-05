@@ -6,13 +6,24 @@ __all__ = [
 ]
 
 class AdjacencyList(Graph):
+    """
+    Adjacency list implementation of graphs.
 
+    See also
+    ========
+
+    pydatastructs.graphs.graph.Graph
+    """
     def __new__(cls, *vertices):
         obj = object.__new__(cls)
         for vertex in vertices:
             obj.__setattr__(vertex.name, vertex)
         obj.vertices = set([vertex.name for vertex in vertices])
         return obj
+
+    def is_adjacent(self, node1, node2):
+        node1 = self.__getattribute__(node1)
+        return hasattr(node1, node2)
 
     def neighbors(self, node):
         node = self.__getattribute__(node)

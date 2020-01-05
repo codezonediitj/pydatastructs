@@ -126,12 +126,30 @@ class LinkedListNode(Node):
         return str(self.data)
 
 class GraphNode(Node):
-
+    """
+    Abastract class for graph nodes/vertices.
+    """
     def __str__(self):
         return str((self.name, self.data))
 
 class AdjacencyListGraphNode(GraphNode):
+    """
+    Represents nodes for adjacency list implementation
+    of graphs.
 
+    Parameters
+    ==========
+
+    name: str
+        The name of the node by which it is identified
+        in the graph. Must be unique.
+    data
+        The data to be stored at each graph node.
+    adjacency_list: iterator
+        Any valid iterator to initialize the adjacent
+        nodes of the current node.
+        Optional, by default, None
+    """
     def __new__(cls, name, data, adjacency_list=None):
         obj = GraphNode.__new__(cls)
         obj.name, obj.data = name, data
@@ -143,6 +161,10 @@ class AdjacencyListGraphNode(GraphNode):
         return obj
 
     def add_adjacent_node(self, name, data):
+        """
+        Adds adjacent node to the current node's
+        adjacency list with given name and data.
+        """
         if hasattr(self, name):
             getattr(self, name).data = data
         else:
@@ -151,13 +173,29 @@ class AdjacencyListGraphNode(GraphNode):
             self.adjacent.add(new_node.name)
 
     def remove_adjacent_node(self, name):
+        """
+        Removes node with given name from
+        adjacency list.
+        """
         if not hasattr(self, name):
             raise ValueError("%s is not adjacent to %s"%(name, self.name))
         self.adjacent.remove(name)
         delattr(self, name)
 
 class AdjacencyMatrixGraphNode(GraphNode):
+    """
+    Represents nodes for adjacency matrix implementation
+    of graphs.
 
+    Parameters
+    ==========
+
+    name: str
+        The name of the node by which it is identified
+        in the graph. Must be unique.
+    data
+        The data to be stored at each graph node.
+    """
     __slots__ = ['name', 'data']
 
     def __new__(cls, name, data):
@@ -166,7 +204,17 @@ class AdjacencyMatrixGraphNode(GraphNode):
         return obj
 
 class GraphEdge(object):
+    """
+    Represents the concept of edges in graphs.
 
+    Parameters
+    ==========
+
+    node1: GraphNode or it's child classes
+        The source node of the edge.
+    node2: GraphNode or it's child classes
+        The target node of the edge.
+    """
     def __new__(cls, node1, node2, value=None):
         obj = object.__new__(cls)
         obj.source, obj.target = node1, node2
