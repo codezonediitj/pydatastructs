@@ -190,7 +190,7 @@ class AdjacencyMatrixGraphNode(GraphNode):
     Parameters
     ==========
 
-    name: str
+    name: int
         The name of the node by which it is identified
         in the graph. Must be unique.
     data
