@@ -1,7 +1,10 @@
 __all__ = [
     'TreeNode',
     'LinkedListNode',
-    'BinomialTreeNode'
+    'BinomialTreeNode',
+    'AdjacencyListGraphNode',
+    'AdjacencyMatrixGraphNode',
+    'GraphEdge'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -34,7 +37,7 @@ class TreeNode(Node):
                  'height', 'parent', 'size']
 
     def __new__(cls, key, data):
-        obj = object.__new__(cls)
+        obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.left, obj.right, obj.parent, obj.height, obj.size = \
             None, None, None, 0, 1
@@ -78,7 +81,7 @@ class BinomialTreeNode(TreeNode):
 
     def __new__(cls, key, data):
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
-        obj = object.__new__(cls)
+        obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.children, obj.parent, obj.is_root = (
         DynamicOneDimensionalArray(BinomialTreeNode, 0),
@@ -112,7 +115,7 @@ class LinkedListNode(Node):
         Any valid data to be stored in the node.
     """
     def __new__(cls, data=None, links=['next'], addrs=[None]):
-        obj = object.__new__(cls)
+        obj = Node.__new__(cls)
         obj.data = data
         for link, addr in zip(links, addrs):
             obj.__setattr__(link, addr)
@@ -121,3 +124,102 @@ class LinkedListNode(Node):
 
     def __str__(self):
         return str(self.data)
+
+class GraphNode(Node):
+    """
+    Abastract class for graph nodes/vertices.
+    """
+    def __str__(self):
+        return str((self.name, self.data))
+
+class AdjacencyListGraphNode(GraphNode):
+    """
+    Represents nodes for adjacency list implementation
+    of graphs.
+
+    Parameters
+    ==========
+
+    name: str
+        The name of the node by which it is identified
+        in the graph. Must be unique.
+    data
+        The data to be stored at each graph node.
+    adjacency_list: iterator
+        Any valid iterator to initialize the adjacent
+        nodes of the current node.
+        Optional, by default, None
+    """
+    def __new__(cls, name, data, adjacency_list=None):
+        obj = GraphNode.__new__(cls)
+        obj.name, obj.data = name, data
+        if adjacency_list is not None:
+            for node in adjacency_list:
+                obj.__setattr__(node.name, node)
+        obj.adjacent = set(adjacency_list) if adjacency_list is not None \
+                       else set()
+        return obj
+
+    def add_adjacent_node(self, name, data):
+        """
+        Adds adjacent node to the current node's
+        adjacency list with given name and data.
+        """
+        if hasattr(self, name):
+            getattr(self, name).data = data
+        else:
+            new_node = AdjacencyListGraphNode(name, data)
+            self.__setattr__(new_node.name, new_node)
+            self.adjacent.add(new_node.name)
+
+    def remove_adjacent_node(self, name):
+        """
+        Removes node with given name from
+        adjacency list.
+        """
+        if not hasattr(self, name):
+            raise ValueError("%s is not adjacent to %s"%(name, self.name))
+        self.adjacent.remove(name)
+        delattr(self, name)
+
+class AdjacencyMatrixGraphNode(GraphNode):
+    """
+    Represents nodes for adjacency matrix implementation
+    of graphs.
+
+    Parameters
+    ==========
+
+    name: str
+        The name of the node by which it is identified
+        in the graph. Must be unique.
+    data
+        The data to be stored at each graph node.
+    """
+    __slots__ = ['name', 'data']
+
+    def __new__(cls, name, data):
+        obj = GraphNode.__new__(cls)
+        obj.name, obj.data = name, data
+        return obj
+
+class GraphEdge(object):
+    """
+    Represents the concept of edges in graphs.
+
+    Parameters
+    ==========
+
+    node1: GraphNode or it's child classes
+        The source node of the edge.
+    node2: GraphNode or it's child classes
+        The target node of the edge.
+    """
+    def __new__(cls, node1, node2, value=None):
+        obj = object.__new__(cls)
+        obj.source, obj.target = node1, node2
+        obj.value = value
+        return obj
+
+    def __str__(self):
+        return str((self.source.name, self.target.name))
