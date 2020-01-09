@@ -129,8 +129,7 @@ class GraphNode(Node):
     """
     Abastract class for graph nodes/vertices.
     """
-    def __str__(self):
-        return str((self.name, self.data))
+    pass
 
 class AdjacencyListGraphNode(GraphNode):
     """
@@ -182,6 +181,9 @@ class AdjacencyListGraphNode(GraphNode):
         self.adjacent.remove(name)
         delattr(self, name)
 
+    def __str__(self):
+        return str((self.name, self.data))
+
 class AdjacencyMatrixGraphNode(GraphNode):
     """
     Represents nodes for adjacency matrix implementation
@@ -191,8 +193,7 @@ class AdjacencyMatrixGraphNode(GraphNode):
     ==========
 
     name: int
-        The name of the node by which it is identified
-        in the graph. Must be unique.
+        The index of the node in the AdjacencyMatrix.
     data
         The data to be stored at each graph node.
     """
@@ -200,7 +201,8 @@ class AdjacencyMatrixGraphNode(GraphNode):
 
     def __new__(cls, name, data):
         obj = GraphNode.__new__(cls)
-        obj.name, obj.data = name, data
+        obj.name, obj.data, obj.is_connected = \
+            name, data, None
         return obj
 
 class GraphEdge(object):
