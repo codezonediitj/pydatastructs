@@ -129,7 +129,8 @@ class GraphNode(Node):
     """
     Abastract class for graph nodes/vertices.
     """
-    pass
+    def __str__(self):
+        return str((self.name, self.data))
 
 class AdjacencyListGraphNode(GraphNode):
     """
@@ -180,9 +181,6 @@ class AdjacencyListGraphNode(GraphNode):
             raise ValueError("%s is not adjacent to %s"%(name, self.name))
         self.adjacent.remove(name)
         delattr(self, name)
-
-    def __str__(self):
-        return str((self.name, self.data))
 
 class AdjacencyMatrixGraphNode(GraphNode):
     """

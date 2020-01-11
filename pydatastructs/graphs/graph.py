@@ -48,6 +48,9 @@ class Graph(object):
         if implementation is 'adjacency_list':
             from pydatastructs.graphs.adjacency_list import AdjacencyList
             return AdjacencyList(*args)
+        elif implementation is 'adjacency_matrix':
+            from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
+            return AdjacencyMatrix(*args)
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
