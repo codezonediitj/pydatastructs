@@ -17,8 +17,8 @@ def test_AdjacencyListGraphNode():
     assert str(g) == "('g', 0)"
 
 def test_AdjacencyMatrixGraphNode():
-    g = AdjacencyMatrixGraphNode('g', 3)
-    assert str(g) == "('g', 3)"
+    g = AdjacencyMatrixGraphNode(1, 3)
+    assert str(g) == "(1, 3)"
 
 def test_GraphEdge():
     g_1 = AdjacencyListGraphNode('g_1', 1)

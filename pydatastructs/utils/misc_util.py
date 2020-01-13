@@ -190,9 +190,8 @@ class AdjacencyMatrixGraphNode(GraphNode):
     Parameters
     ==========
 
-    name: str
-        The name of the node by which it is identified
-        in the graph. Must be unique.
+    name: int
+        The index of the node in the AdjacencyMatrix.
     data
         The data to be stored at each graph node.
     """
@@ -200,7 +199,8 @@ class AdjacencyMatrixGraphNode(GraphNode):
 
     def __new__(cls, name, data):
         obj = GraphNode.__new__(cls)
-        obj.name, obj.data = name, data
+        obj.name, obj.data, obj.is_connected = \
+            name, data, None
         return obj
 
 class GraphEdge(object):
