@@ -7,7 +7,14 @@ __all__ = [
 ]
 
 class AdjacencyMatrix(Graph):
+    """
+    Adjacency matrix implementation of graphs.
 
+    See also
+    ========
+
+    pydatastructs.graphs.graph.Graph
+    """
     def __new__(cls, *vertices):
         obj = object.__new__(cls)
         num_vertices = len(vertices)

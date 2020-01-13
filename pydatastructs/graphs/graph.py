@@ -13,7 +13,7 @@ class Graph(object):
     implementation: str
         The implementation to be used for storing
         graph in memory.
-        By default, 'adjacency_list'
+        By default, 'adjacency_list'.
     vertices: AdjacencyListGraphNode(s)
         For AdjacencyList implementation vertices
         can be passed for initializing the graph.
