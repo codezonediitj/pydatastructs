@@ -122,7 +122,7 @@ class OneDimensionalSegmentTree(object):
     def build(self):
         """
         Builds the segment tree from the segments,
-        using iterative algorithm based on stacks.
+        using iterative algorithm based on queues.
         """
         if self.cache:
             return None
