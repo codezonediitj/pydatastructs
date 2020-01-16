@@ -4,9 +4,9 @@ from pydatastructs.utils.raises_util import raises
 def test_Queue():
 
     q = Queue(10)
-    q.push(1)
-    q.push(2)
-    q.push(3)
+    q.append(1)
+    q.append(2)
+    q.append(3)
     assert q.popleft() == 1
     assert q.popleft() == 2
     assert q.len() == 2
