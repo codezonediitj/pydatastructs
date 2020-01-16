@@ -12,5 +12,3 @@ def test_Queue():
     assert q.len() == 1
     assert q.popleft()
     assert q.len() == 0
-    assert q.is_empty is True
-    assert raises(ValueError, lambda : q.popleft())
