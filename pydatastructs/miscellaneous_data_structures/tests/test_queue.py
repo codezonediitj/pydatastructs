@@ -7,8 +7,6 @@ def test_Queue():
     q.append(1)
     q.append(2)
     q.append(3)
-    assert q.popleft()
-    assert q.popleft()
+    assert q.popleft() == 1
+    assert q.popleft() == 2
     assert q.len() == 1
-    assert q.append(4)
-    assert q.len() == 2
