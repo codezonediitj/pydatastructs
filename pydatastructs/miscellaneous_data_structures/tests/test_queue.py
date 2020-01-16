@@ -9,7 +9,7 @@ def test_Queue():
     q.append(3)
     assert q.popleft()
     assert q.popleft()
-    assert q.len() == 2
+    assert q.len() == 1
     assert q.popleft()
     assert q.len() == 0
     assert q.is_empty is True
