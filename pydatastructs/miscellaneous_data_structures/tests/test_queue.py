@@ -9,6 +9,6 @@ def test_Queue():
     q.append(3)
     assert q.popleft()
     assert q.popleft()
-    assert print(q.len()) == 1
+    assert q.len() == 1
     assert q.append()
-    assert print(q.len()) == 2
+    assert q.len() == 2
