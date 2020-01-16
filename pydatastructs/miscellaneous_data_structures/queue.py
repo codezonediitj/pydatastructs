@@ -10,7 +10,7 @@ class Queue(object):
     ========
 
     >>> from pydatastructs import Queue
-    >>> q = Queue()
+    >>> q = Queue(10)
     >>> q.append(1)
     >>> q.append(2)
     >>> q.append(3)
@@ -49,7 +49,7 @@ class Queue(object):
             return self.queue[self.front]
         else:
             self.front = (self.front + 1) % self.size
-            return self.queue[self.front]
+            return (self.queue[self.front])
 
     def len(self):
         return abs(abs(self.size - self.front) - abs(self.size - self.rear))+1

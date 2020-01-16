@@ -10,5 +10,5 @@ def test_Queue():
     assert q.popleft()
     assert q.popleft()
     assert q.len() == 1
-    assert q.popleft()
-    assert q.len() == 0
+    assert q.append()
+    assert q.len() == 2
