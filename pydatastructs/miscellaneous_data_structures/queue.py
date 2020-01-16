@@ -10,7 +10,7 @@ class Queue(object):
     ========
 
     >>> from pydatastructs import Queue
-    >>> q = Queue()
+    >>> q = Queue(10)
     >>> q.append(1)
     >>> q.append(2)
     >>> q.append(3)
