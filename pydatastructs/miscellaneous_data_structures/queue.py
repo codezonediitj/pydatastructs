@@ -15,7 +15,7 @@ class Queue(object):
     >>> q.append(2)
     >>> q.append(3)
     >>> q.popleft()
-    >>> q.len()
+    >>> print (q.len())
     2
 
     References
