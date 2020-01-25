@@ -54,6 +54,13 @@ def test_BinarySearchTree():
     assert b.delete(-10) is True
     assert b.delete(-3) is True
     assert b.delete(-13) is None
+	bl = BST()
+	nodes = [50, 30, 90, 70, 100, 60, 80, 55]
+	for node in nodes:
+		bl.insert(node, node)
+	assert bl.tree[bl.lowest_common_ancestor(80, 55)].key == 70
+	assert bl.tree[bl.lowest_common_ancestor(60, 70)].key == 70
+	assert bl.lowest_common_ancestor(-3, 4) == None
     raises(ValueError, lambda: BST(root_data=6))
 
 def test_BinaryTreeTraversal():
