@@ -415,6 +415,109 @@ class BinarySearchTree(BinaryTree):
             walk = p
         return r
 
+    def _simple_path(self, key, root, path):
+        """
+        Utility funtion to find the simple path between root and node.
+        """
+        if not root:
+            return False
+        path.append(root)
+
+        if self.tree[root].key == key:
+            return True
+
+        if self._simple_path(key, self.tree[root].left, path) or \
+            self._simple_path(key, self.tree[root].right, path):
+            path.append(root)
+            return True
+
+        path.pop()
+        return False
+
+    def simple_path(self, key):
+        path = []
+        self._simple_path(key, self.root_idx, path)
+        return path
+
+    def lowest_common_ancestor(self, j, k, algorithm=1):
+   
+        """
+        Computes the lowest common ancestor of two nodes.
+    
+        Parameters
+        ==========
+    
+        j: Node.key
+            key of first node
+        k: Node.key
+            key of second node
+        algorithm: int
+            The algorithm to be used for computing the
+            lowest common ancestor.
+            Optional, by default uses algorithm 1.
+    
+            1 -> Determines the lowest common ancestor by finding  
+                    the first intersection of the paths from v and w
+                    to the root.
+    
+            2 -> Modifed version of the algorithm given in the 
+                    following publication,
+                    D. Harel. A linear time algorithm for the
+                    lowest common ancestors problem. In 21s
+                    Annual Symposium On Foundations of 
+                    Computer Science, pages 308-319, 1980. 
+    
+        Returns
+        =======
+    
+        int
+            The index of the lowest common ancestor in the tree.
+            if both the nodes are present in the tree.
+        None
+            In all other cases.
+    
+        References
+        ==========
+    
+        .. [1] https://en.wikipedia.org/wiki/Lowest_common_ancestor
+    
+        .. [2] https://pdfs.semanticscholar.org/e75b/386cc554214aa0ebd6bd6dbdd0e490da3739.pdf
+    
+        """
+        if algorithm == 1:
+            curr_root = self.root_idx
+            u, v = self.search(j), self.search(k)
+            if (u == None) or (v == None):
+                return None
+            u_left = self.comparator(self.tree[u].key, self.tree[curr_root].key)
+            v_left = self.comparator(self.tree[v].key, self.tree[curr_root].key)
+            while not (u_left ^ v_left):
+                if u_left and v_left:
+                    curr_root = self.tree[curr_root].left
+                else:
+                    curr_root = self.tree[curr_root].right
+                if curr_root == u or curr_root == v:
+                    return curr_root
+                u_left = self.comparator(self.tree[u].key, self.tree[curr_root].key)
+                v_left = self.comparator(self.tree[v].key, self.tree[curr_root].key)
+            return curr_root
+        else:
+            root = self.root_idx
+            path1 = self.simple_path(j)
+            path2 = self.simple_path(k)
+            if not path1 or not path2:
+                return None
+
+            n, m = len(path1), len(path2)
+            i = j = 0
+            while i < n and j < m:
+                if path1[i] != path2[j]:
+                    return path1[i - 1]
+                i += 1
+                j += 1
+            return None
+
+
 class AVLTree(BinarySearchTree):
     """
     Represents AVL trees.
