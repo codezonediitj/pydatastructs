@@ -41,7 +41,6 @@ class Queue(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
-
     @property
     def is_empty(self):
         return self.front == -1
