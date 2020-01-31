@@ -9,7 +9,7 @@ _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)
 
 class Stack(object):
-    """Respresentation of stack data structure
+    """Representation of stack data structure
 
     Parameters
     ==========
@@ -29,8 +29,8 @@ class Stack(object):
         type of OneDimensionalArray
         For array implementation.
 
-    Example
-    =======
+    Examples
+    ========
 
     >>> from pydatastructs import Stack
     >>> s = Stack()

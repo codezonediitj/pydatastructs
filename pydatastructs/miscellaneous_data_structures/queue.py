@@ -1,10 +1,11 @@
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
 
 __all__ = [
     'Queue'
 ]
 
 class Queue(object):
-    """Respresentation of queue data structure
+    """Representation of queue data structure
 
     Examples
     ========
@@ -24,35 +25,22 @@ class Queue(object):
     .. [1] https://en.wikipedia.org/wiki/Queue_(abstract_data_type)
     """
 
-    def __init__(self, size):
-        self.size = size
-        self.queue = [None for i in range(size)]
-        self.front = self.rear = -1
+    def __new__(cls, implementation='array', **kwargs):
+        if implementation == 'array':
+            return ArrayStack(
+                kwargs.get('items', None),
+                kwargs.get('dtype', int))
+        raise NotImplementedError(
+                "%s hasn't been implemented yet."%(implementation))
 
-    def append(self, data):
-        if self.is_full:
-            raise ValueError("Queue is full")
-        elif (self.front == -1):
-            self.front = 0
-            self.rear = 0
-            self.queue[self.rear] = data
-        else:
-            self.rear = (self.rear + 1) % self.size
-            self.queue[self.rear] = data
+    def append(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
 
-    def popleft(self):
-        if self.is_empty:
-            raise ValueError("Queue is empty")
-        elif (self.front == self.rear):
-            self.front = -1
-            self.rear = -1
-            return self.queue[self.front]
-        else:
-            self.front = (self.front + 1) % self.size
-            return self.queue[self.front]
+    def popleft(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
 
-    def len(self):
-        return abs(abs(self.size - self.front) - abs(self.size - self.rear))+1
 
     @property
     def is_empty(self):
@@ -61,3 +49,48 @@ class Queue(object):
     @property
     def is_full(self):
         return ((self.rear + 1) % self.size == self.front)
+
+class ArrayStack(Stack):
+
+    __slots__ = ['items', 'dtype']
+
+    def __new__(cls, items=None, dtype=int):
+        if items is None:
+            items = DynamicOneDimensionalArray(dtype, 0)
+        else:
+            items = DynamicOneDimensionalArray(dtype, items)
+        obj = object.__new__(cls)
+        obj.items, obj.dtype = \
+            items, items._dtype
+        return obj
+
+    def __init__(self):
+        self.items.size = size
+        self.queue = [None for i in range(size)]
+        self.items.front = self.items.rear = -1
+
+    def append(self, x):
+        if self.is_full:
+            raise ValueError("Queue is full")
+        elif (self.items.front == -1):
+            self.items.front = 0
+            self.items.rear = 0
+            self.queue[self.items.rear] = x
+        else:
+            self.items.rear = (self.items.rear + 1) % self.size
+            self.queue[self.items.rear] = x
+
+    def popleft(self):
+        if self.is_empty:
+            raise ValueError("Queue is empty")
+        elif (self.items.front == self.items.rear):
+            self.items.front = -1
+            self.items.rear = -1
+            return self.queue[self.items.front]
+        else:
+            self.items.front = (self.items.front + 1) % self.size
+            return self.queue[self.items.front]
+
+    def len(self):
+        return abs(abs(self.size - self.items.front) - abs(self.size - self.items.rear))+1
+
