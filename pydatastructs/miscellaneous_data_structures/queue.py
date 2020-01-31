@@ -27,7 +27,7 @@ class Queue(object):
 
     def __new__(cls, implementation='array', **kwargs):
         if implementation == 'array':
-            return ArrayStack(
+            return ArrayQueue(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
         raise NotImplementedError(
@@ -50,7 +50,7 @@ class Queue(object):
     def is_full(self):
         return ((self.rear + 1) % self.size == self.front)
 
-class ArrayStack(Stack):
+class ArrayQueue(Queue):
 
     __slots__ = ['items', 'dtype']
 
@@ -66,7 +66,7 @@ class ArrayStack(Stack):
 
     def __init__(self):
         self.items.size = size
-        self.queue = [None for i in range(size)]
+        self.items = [None for i in range(size)]
         self.items.front = self.items.rear = -1
 
     def append(self, x):
@@ -75,10 +75,10 @@ class ArrayStack(Stack):
         elif (self.items.front == -1):
             self.items.front = 0
             self.items.rear = 0
-            self.queue[self.items.rear] = x
+            self.items[self.items.rear] = x
         else:
             self.items.rear = (self.items.rear + 1) % self.size
-            self.queue[self.items.rear] = x
+            self.items[self.items.rear] = x
 
     def popleft(self):
         if self.is_empty:
@@ -86,10 +86,10 @@ class ArrayStack(Stack):
         elif (self.items.front == self.items.rear):
             self.items.front = -1
             self.items.rear = -1
-            return self.queue[self.items.front]
+            return self.items[self.items.front]
         else:
             self.items.front = (self.items.front + 1) % self.size
-            return self.queue[self.items.front]
+            return self.items[self.items.front]
 
     def len(self):
         return abs(abs(self.size - self.items.front) - abs(self.size - self.items.rear))+1
