@@ -427,7 +427,6 @@ class BinarySearchTree(BinaryTree):
 
         if self._simple_path(key, self.tree[root].left, path) or \
             self._simple_path(key, self.tree[root].right, path):
-            path.append(root)
             return True
 
         path.pop()
@@ -504,6 +503,7 @@ class BinarySearchTree(BinaryTree):
             root = self.root_idx
             path1 = self.simple_path(j)
             path2 = self.simple_path(k)
+            print(path1, path2)
             if not path1 or not path2:
                 return None
 
@@ -514,7 +514,9 @@ class BinarySearchTree(BinaryTree):
                     return path1[i - 1]
                 i += 1
                 j += 1
-            return None
+            if path1 < path2:
+                return path1[-1]
+            return path2[-1]
 
 class AVLTree(BinarySearchTree):
     """
