@@ -433,6 +433,23 @@ class BinarySearchTree(BinaryTree):
         return False
 
     def simple_path(self, key):
+		"""
+		Return the intermediate nodes between root and node with given key
+
+		Parameters
+		==========
+
+		key: Node.key
+			key of the node for which path to be found
+
+		Returns
+		=======
+
+		list
+			List of intermediate nodes.
+			Empty list if node is not present.
+
+		"""
         path = []
         self._simple_path(key, self.root_idx, path)
         return path
