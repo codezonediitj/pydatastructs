@@ -418,6 +418,21 @@ class BinarySearchTree(BinaryTree):
     def _simple_path(self, key, root, path=[]):
         """
         Utility funtion to find the simple path between root and node.
+
+        Parameter
+        =========
+
+        key:
+            node to be searched
+
+        path:
+            Stores path from root to the node to be found
+
+        Returns
+        =======
+
+        bool:
+            True of path found else False
         """
         if root is None:
             return False
