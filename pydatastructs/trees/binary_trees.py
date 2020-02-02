@@ -432,7 +432,7 @@ class BinarySearchTree(BinaryTree):
         =======
 
         bool:
-            True of path found else False
+            True if path found else False
         """
         if root is None:
             return False
@@ -499,35 +499,45 @@ class BinarySearchTree(BinaryTree):
                 return None
             u_left = self.comparator(self.tree[u].key, self.tree[curr_root].key)
             v_left = self.comparator(self.tree[v].key, self.tree[curr_root].key)
+
             while not (u_left ^ v_left):
                 if u_left and v_left:
                     curr_root = self.tree[curr_root].left
                 else:
                     curr_root = self.tree[curr_root].right
+
                 if curr_root == u or curr_root == v:
-                    return curr_root
+                    if curr_root is None:
+                        break
+                    return self.tree[curr_root].key
+
                 u_left = self.comparator(self.tree[u].key, self.tree[curr_root].key)
                 v_left = self.comparator(self.tree[v].key, self.tree[curr_root].key)
-            return curr_root
+
+            print(j, k, self.tree[curr_root].key)
+            if curr_root is None:
+                return curr_root
+            return self.tree[curr_root].key
+
         else:
             path1, path2 = [], []
             root = self.root_idx
             self._simple_path(j, root, path1)
             self._simple_path(k, root, path2)
-
+            key = None
             if not path1 or not path2:
-                return None
+                return key
 
             n, m = len(path1), len(path2)
             i = j = 0
             while i < n and j < m:
                 if path1[i] != path2[j]:
-                    return path1[i - 1]
+                    return self.tree[path1[i - 1]].key
                 i += 1
                 j += 1
             if path1 < path2:
-                return path1[-1]
-            return path2[-1]
+                return self.tree[path1[-1]].key
+            return self.tree[path2[-1]].key
 
 class AVLTree(BinarySearchTree):
     """
