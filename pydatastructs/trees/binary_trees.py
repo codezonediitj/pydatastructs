@@ -508,13 +508,12 @@ class BinarySearchTree(BinaryTree):
 
                 if curr_root == u or curr_root == v:
                     if curr_root is None:
-                        break
+                        return None
                     return self.tree[curr_root].key
 
                 u_left = self.comparator(self.tree[u].key, self.tree[curr_root].key)
                 v_left = self.comparator(self.tree[v].key, self.tree[curr_root].key)
 
-            print(j, k, self.tree[curr_root].key)
             if curr_root is None:
                 return curr_root
             return self.tree[curr_root].key
