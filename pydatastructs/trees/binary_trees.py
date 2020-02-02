@@ -415,7 +415,7 @@ class BinarySearchTree(BinaryTree):
             walk = p
         return r
 
-    def _simple_path(self, key, root, path):
+    def _simple_path(self, key, root, path=[]):
         """
         Utility funtion to find the simple path between root and node.
         """
@@ -431,28 +431,6 @@ class BinarySearchTree(BinaryTree):
 
         path.pop()
         return False
-
-    def simple_path(self, key):
-        """
-        Return the intermediate nodes between root and node with given key
-
-        Parameters
-        ==========
-
-        key: Node.key
-            key of the node for which path to be found
-
-        Returns
-        =======
-
-        list
-            List of intermediate nodes.
-            Empty list if node is not present.
-
-        """
-        path = []
-        self._simple_path(key, self.root_idx, path)
-        return path
 
     def lowest_common_ancestor(self, j, k, algorithm=1):
 
@@ -517,10 +495,11 @@ class BinarySearchTree(BinaryTree):
                 v_left = self.comparator(self.tree[v].key, self.tree[curr_root].key)
             return curr_root
         else:
+            path1, path2 = [], []
             root = self.root_idx
-            path1 = self.simple_path(j)
-            path2 = self.simple_path(k)
-            print(path1, path2)
+            self._simple_path(j, root, path1)
+            self._simple_path(k, root, path2)
+
             if not path1 or not path2:
                 return None
 
