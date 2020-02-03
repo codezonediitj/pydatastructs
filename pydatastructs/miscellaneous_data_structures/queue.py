@@ -63,11 +63,6 @@ class ArrayQueue(Queue):
             items, items._dtype
         return obj
 
-    def __init__(self):
-        self.items.size = size
-        self.items = [None for i in range(size)]
-        self.items.front = self.items.rear = -1
-
     def append(self, x):
         if self.is_full:
             raise ValueError("Queue is full")
