@@ -3,7 +3,7 @@ from pydatastructs.utils.raises_util import raises
 
 def test_Queue():
 
-    q = Queue(10)
+    q = Queue()
     q.append(1)
     q.append(2)
     q.append(3)
