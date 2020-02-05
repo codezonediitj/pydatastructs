@@ -56,7 +56,7 @@ class ArrayQueue(Queue):
     def __new__(cls, front=None, dtype=int):
         if front is None:
             front = DynamicOneDimensionalArray(dtype, 0)
-        else if:
+        else:
             front = DynamicOneDimensionalArray(dtype, front)
         obj = object.__new__(cls)
         obj.front, obj.dtype = \
