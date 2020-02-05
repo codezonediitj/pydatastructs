@@ -51,40 +51,49 @@ class Queue(object):
 
 class ArrayQueue(Queue):
 
-    __slots__ = ['items', 'dtype']
+    __slots__ = ['front', 'rear', 'dtype']
 
-    def __new__(cls, items=None, dtype=int):
-        if items is None:
-            items = DynamicOneDimensionalArray(dtype, 0)
-        else:
-            items = DynamicOneDimensionalArray(dtype, items)
+    def __new__(cls, front=None, dtype=int):
+        if front is None:
+            front = DynamicOneDimensionalArray(dtype, 0)
+        else if:
+            front = DynamicOneDimensionalArray(dtype, front)
         obj = object.__new__(cls)
-        obj.items, obj.dtype = \
-            items, items._dtype
+        obj.front, obj.dtype = \
+            front, front._dtype
+        return obj
+
+    def __new__(cls, rear=None, dtype=int):
+        if rear is None:
+            rear = DynamicOneDimensionalArray(dtype, 0)
+        else if:
+            rear = DynamicOneDimensionalArray(dtype, rear)
+        obj = object.__new__(cls)
+        obj.rear, obj.dtype = \
+            rear, rear._dtype
         return obj
 
     def append(self, x):
         if self.is_full:
             raise ValueError("Queue is full")
-        elif (self.items.front == -1):
-            self.items.front = 0
-            self.items.rear = 0
-            self.items[self.items.rear] = x
+        elif (self.front == -1):
+            self.front = 0
+            self.rear = 0
+            self.rear = x
         else:
-            self.items.rear = (self.items.rear + 1) % self.size
-            self.items[self.items.rear] = x
+            self.rear = (self.rear + 1) % self.size
+            self.rear = x
 
     def popleft(self):
         if self.is_empty:
             raise ValueError("Queue is empty")
-        elif (self.items.front == self.items.rear):
-            self.items.front = -1
-            self.items.rear = -1
-            return self.items[self.items.front]
+        elif (self.front == self.rear):
+            self.front = -1
+            self.rear = -1
+            return self.front
         else:
-            self.items.front = (self.items.front + 1) % self.size
-            return self.items[self.items.front]
+            self.front = (self.front + 1) % self.size
+            return self.front
 
     def len(self):
-        return abs(abs(self.size - self.items.front) - abs(self.size - self.items.rear))+1
-
+        return abs(abs(self.size - self.front) - abs(self.size - self.rear)) + 1
