@@ -1,11 +1,12 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
+from copy import deepcopy as dc
 
 __all__ = [
     'Queue'
 ]
 
 class Queue(object):
-    """Representation of queue data structure
+    """Representation of queue data structure.
 
     Examples
     ========
@@ -43,57 +44,56 @@ class Queue(object):
 
     @property
     def is_empty(self):
-        return self.front == -1
-
-    @property
-    def is_full(self):
-        return ((self.rear + 1) % self.size == self.front)
+        return None
 
 class ArrayQueue(Queue):
 
-    __slots__ = ['front', 'rear', 'dtype']
+    __slots__ = ['front']
 
-    def __new__(cls, front=None, dtype=int):
-        if front is None:
-            front = DynamicOneDimensionalArray(dtype, 0)
+    def __new__(cls, items=None, dtype=int):
+        if items is None:
+            items = DynamicOneDimensionalArray(dtype, 0)
         else:
-            front = DynamicOneDimensionalArray(dtype, front)
+            items = DynamicOneDimensionalArray(dtype, items)
         obj = object.__new__(cls)
-        obj.front, obj.dtype = \
-            front, front._dtype
-        return obj
-
-    def __new__(cls, rear=None, dtype=int):
-        if rear is None:
-            rear = DynamicOneDimensionalArray(dtype, 0)
+        obj.items, obj.front = items, -1
+        if items.size == 0:
+            obj.front = -1
         else:
-            rear = DynamicOneDimensionalArray(dtype, rear)
-        obj = object.__new__(cls)
-        obj.rear, obj.dtype = \
-            rear, rear._dtype
+            obj.front = 0
         return obj
 
     def append(self, x):
-        if self.is_full:
-            raise ValueError("Queue is full")
-        elif (self.front == -1):
+        if self.is_empty:
             self.front = 0
-            self.rear = 0
-            self.rear = x
-        else:
-            self.rear = (self.rear + 1) % self.size
-            self.rear = x
+        self.items.append(x)
 
     def popleft(self):
         if self.is_empty:
-            raise ValueError("Queue is empty")
-        elif (self.front == self.rear):
+            raise ValueError("Queue is empty.")
+        return_value = dc(self.items[self.front])
+        front_temp = self.front
+        if self.front == self.rear:
             self.front = -1
-            self.rear = -1
-            return self.front
         else:
-            self.front = (self.front + 1) % self.size
-            return self.front
+            if (self.items._num - 1)/self.items._size < \
+                self.items._load_factor:
+                self.front = 0
+            else:
+                self.front += 1
+        self.items.delete(front_temp)
+        return return_value
 
-    def len(self):
-        return abs(abs(self.size - self.front) - abs(self.size - self.rear)) + 1
+    @property
+    def rear(self):
+        return self.items._last_pos_filled
+
+    @property
+    def is_empty(self):
+        return self.__len__() == 0
+
+    def __len__(self):
+        return self.items._num
+
+    def __str__(self):
+        return str(self.items._data)
