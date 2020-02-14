@@ -1,15 +1,13 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
+from pydatastructs.utils.misc_util import _check_type, NoneType
 from copy import deepcopy as dc
 
 __all__ = [
     'Stack'
 ]
 
-_check_type = lambda a, t: isinstance(a, t)
-NoneType = type(None)
-
 class Stack(object):
-    """Respresentation of stack data structure
+    """Representation of stack data structure
 
     Parameters
     ==========
@@ -24,13 +22,13 @@ class Stack(object):
         The inital items in the stack.
         For array implementation.
     dtype : A valid python type
-        Optional, by default int if item
+        Optional, by default NoneType if item
         is None, otherwise takes the data
-        type of OneDimensionalArray
+        type of DynamicOneDimensionalArray
         For array implementation.
 
-    Example
-    =======
+    Examples
+    ========
 
     >>> from pydatastructs import Stack
     >>> s = Stack()
@@ -74,19 +72,20 @@ class Stack(object):
 
 class ArrayStack(Stack):
 
-    __slots__ = ['items', 'dtype']
+    __slots__ = ['items']
 
-    def __new__(cls, items=None, dtype=int):
+    def __new__(cls, items=None, dtype=NoneType):
         if items is None:
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
             items = DynamicOneDimensionalArray(dtype, items)
         obj = object.__new__(cls)
-        obj.items, obj.dtype = \
-            items, items._dtype
+        obj.items = items
         return obj
 
     def push(self, x):
+        if self.is_empty:
+            self.items._dtype = type(x)
         self.items.append(x)
 
     def pop(self):
