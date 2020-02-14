@@ -1,4 +1,5 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
+from pydatastructs.utils.misc_util import NoneType
 from copy import deepcopy as dc
 
 __all__ = [
@@ -7,6 +8,24 @@ __all__ = [
 
 class Queue(object):
     """Representation of queue data structure.
+
+    Parameters
+    ==========
+
+    implementation : str
+        Implementation to be used for queue.
+        By default, 'array'
+        Currently only supports 'array'
+        implementation.
+    items : list/tuple
+        Optional, by default, None
+        The inital items in the queue.
+        For array implementation.
+    dtype : A valid python type
+        Optional, by default NoneType if item
+        is None, otherwise takes the data
+        type of DynamicOneDimensionalArray
+        For array implementation.
 
     Examples
     ========
@@ -17,8 +36,9 @@ class Queue(object):
     >>> q.append(2)
     >>> q.append(3)
     >>> q.popleft()
-    >>> q.len()
     1
+    >>> len(q)
+    2
 
     References
     ==========
@@ -50,10 +70,11 @@ class ArrayQueue(Queue):
 
     __slots__ = ['front']
 
-    def __new__(cls, items=None, dtype=int):
+    def __new__(cls, items=None, dtype=NoneType):
         if items is None:
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
+            dtype = type(items[0])
             items = DynamicOneDimensionalArray(dtype, items)
         obj = object.__new__(cls)
         obj.items, obj.front = items, -1
@@ -66,6 +87,7 @@ class ArrayQueue(Queue):
     def append(self, x):
         if self.is_empty:
             self.front = 0
+            self.items._dtype = type(x)
         self.items.append(x)
 
     def popleft(self):
@@ -96,4 +118,7 @@ class ArrayQueue(Queue):
         return self.items._num
 
     def __str__(self):
-        return str(self.items._data)
+        _data = []
+        for i in range(self.front, self.rear + 1):
+            _data.append(self.items._data[i])
+        return str(_data)

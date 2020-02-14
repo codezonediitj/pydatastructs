@@ -22,9 +22,9 @@ class Stack(object):
         The inital items in the stack.
         For array implementation.
     dtype : A valid python type
-        Optional, by default int if item
+        Optional, by default NoneType if item
         is None, otherwise takes the data
-        type of OneDimensionalArray
+        type of DynamicOneDimensionalArray
         For array implementation.
 
     Examples
@@ -74,7 +74,7 @@ class ArrayStack(Stack):
 
     __slots__ = ['items']
 
-    def __new__(cls, items=None, dtype=int):
+    def __new__(cls, items=None, dtype=NoneType):
         if items is None:
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
@@ -84,6 +84,8 @@ class ArrayStack(Stack):
         return obj
 
     def push(self, x):
+        if self.is_empty:
+            self.items._dtype = type(x)
         self.items.append(x)
 
     def pop(self):
