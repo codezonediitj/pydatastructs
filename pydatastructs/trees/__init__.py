@@ -2,7 +2,8 @@ __all__ = []
 
 from . import (
     binary_trees,
-    space_partitioning_trees
+    space_partitioning_trees,
+    fenwick_tree
 )
 
 from .binary_trees import (
@@ -15,8 +16,13 @@ from .space_partitioning_trees import (
 )
 __all__.extend(space_partitioning_trees.__all__)
 
+from .fenwick_tree import (
+    FenwickTree
+)
+__all__.extend(fenwick_tree.__all__)
+
 from .heaps import (
     BinaryHeap,
     BinomialHeap
 )
-__all__.extend(heaps.__all__)
+# __all__.extend(heaps.__all__)
