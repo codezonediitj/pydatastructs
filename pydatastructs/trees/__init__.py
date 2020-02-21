@@ -25,4 +25,4 @@ from .heaps import (
     BinaryHeap,
     BinomialHeap
 )
- __all__.extend(heaps.__all__)
+__all__.extend(heaps.__all__)
