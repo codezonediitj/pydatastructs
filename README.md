@@ -3,15 +3,12 @@ PyDataStructs
 
 [![Build Status](https://travis-ci.org/codezonediitj/pydatastructs.png?branch=master)](https://travis-ci.org/codezonediitj/pydatastructs) [![Join the chat at https://gitter.im/codezonediitj/pydatastructs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codezoned2017/Lobby) [![Discuss at pydatastructs@googlegroups.com](https://img.shields.io/badge/discuss-pydatastructs%40googlegroups.com-blue.svg)](https://groups.google.com/forum/#!forum/pydatastructs) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codezonediitj/pydatastructs/pulls) [![codecov](https://codecov.io/gh/codezonediitj/pydatastructs/branch/master/graph/badge.svg)](https://codecov.io/gh/codezonediitj/pydatastructs)
 
-Who are we?
+About
 -----------
 
-We are a group of people passionate about data structures and algorithms. We eye for implementing all the data structures given [here](https://en.wikipedia.org/wiki/List_of_data_structures).
+Currently, the aim of the project is to be a Python package for various data structures in computer science. In addition, we are also working on including parallel algorithms. To the best of our knowledge there doesn't exist any well designed library/package which has covered most of the data structures and algorithms including their parallel implementation.
 
-How are we different?
----------------------
-
-There are many pre-exisiting packages available in the open source world based on the above idea. However, they lack the implementation of complex data structures and this makes us different. If you have worked with C++ and Python then you know how hard it is to code bug free AVL trees :-).Well, after this project you will not have to worry about it. In fact, we will keep each data structure independent from each other for easy code reusability.
+In future, i.e, after a few releases of the package when the software design will become stable, we also aim to provide APIs for the code in C++ and Java as well. For clarity, the interested students aren't expected to know C++ and Java. Knowledge of Python is enough for this project.
 
 Installation
 ------------
