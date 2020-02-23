@@ -51,9 +51,6 @@ class BinaryTree(object):
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
-        else:
-            raise NotImplementedError("%s implementation is not a part "
-                                      "of the library currently."%(implementation))
         key = None if root_data is None else key
         root = TreeNode(key, root_data)
         root.is_root = True
