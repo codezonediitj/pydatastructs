@@ -32,3 +32,4 @@ def test_adjacency_list():
     g.remove_vertex('v')
     assert g.is_adjacent('v_2', 'v') is False
     assert g.is_adjacent('v_3', 'v') is False
+    assert raises(NotImplementedError, lambda: AdjacencyList(implementation=''))
