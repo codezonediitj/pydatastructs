@@ -77,7 +77,7 @@ class BinaryHeap(Heap):
         elif heap_property == "max":
             obj._comp = lambda key_parent, key_child: key_parent >= key_child
         else:
-            raise ValueError("%s is invalid heap property"%(heap_property))
+            raise TypeError("%s is invalid heap property"%(heap_property))
         if elements is None:
             elements = []
         obj.heap = elements
