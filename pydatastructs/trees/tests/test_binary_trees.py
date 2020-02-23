@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees)
+    ArrayForTrees, BinaryTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
@@ -55,6 +55,7 @@ def test_BinarySearchTree():
     assert b.delete(-3) is True
     assert b.delete(-13) is None
     raises(ValueError, lambda: BST(root_data=6))
+    assert raises(NotImplementedError, lambda: BinaryTree(implementation=''))
 
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree
@@ -99,6 +100,7 @@ def test_BinaryTreeTraversal():
     assert raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
     assert raises(TypeError, lambda: BTT(1))
+    assert raises(NotImplementedError, lambda: BinaryTree(implementation=''))
 
 def test_AVLTree():
     a = AVLTree('M', 'M')
@@ -274,3 +276,4 @@ def test_AVLTree():
     test_select_rank([2])
     a5.delete(2)
     test_select_rank([])
+    assert raises(NotImplementedError, lambda: BinaryTree(implementation=''))
