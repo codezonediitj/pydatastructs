@@ -374,8 +374,7 @@ class BinarySearchTree(BinaryTree):
             left_walk = self.tree[walk].left
             right_walk = self.tree[walk].right
             if left_walk is None and right_walk is None:
-                raise IndexError("The traversal is terminated "
-                                 "due to no child nodes ahead.")
+                raise IndexError("The traversal is terminated due to no child nodes ahead.")
             if i < l:
                 if left_walk is not None and \
                     self.comparator(self.tree[left_walk].key,
