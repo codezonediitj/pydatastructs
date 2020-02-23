@@ -47,10 +47,23 @@ class BinaryTree(object):
                  'is_order_statistic']
 
     def __new__(cls, key=None, root_data=None, comp=None,
-                is_order_statistic=False):
+                is_order_statistic=False,*args, **kwargs):
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
+        implementation = kwargs.get('implementation', 'BinarySearchTree')
+        if implementation is 'BinarySearchTree':
+            from pydatastructs.trees.binary_trees import BinarySearchTree
+            return BinarySearchTree(*args)
+        elif implementation is 'BinaryTreeTraversal':
+            from pydatastructs.trees.binary_trees import BinaryTreeTraversal
+            return BinaryTreeTraversal(*args)
+        elif implementation is 'AVLTree':
+            from pydatastructs.trees.binary_trees import AVLTree
+            return AVLTree(*args)
+        else:
+            raise NotImplementedError("%s implementation is not a part "
+                                      "of the library currently."%(implementation))
         key = None if root_data is None else key
         root = TreeNode(key, root_data)
         root.is_root = True
@@ -374,7 +387,8 @@ class BinarySearchTree(BinaryTree):
             left_walk = self.tree[walk].left
             right_walk = self.tree[walk].right
             if left_walk is None and right_walk is None:
-                raise IndexError("The traversal is terminated due to no child nodes ahead.")
+                raise IndexError("The traversal is terminated "
+                                 "due to no child nodes ahead.")
             if i < l:
                 if left_walk is not None and \
                     self.comparator(self.tree[left_walk].key,
