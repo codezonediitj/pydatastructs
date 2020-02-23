@@ -18,3 +18,4 @@ def test_Queue():
 
     q1 = Queue()
     raises(ValueError, lambda: q1.popleft())
+    assert raises(NotImplementedError, lambda: Queue(implementation=''))
