@@ -19,6 +19,7 @@ def test_AdjacencyListGraphNode():
 def test_AdjacencyMatrixGraphNode():
     g = AdjacencyMatrixGraphNode(1, 3)
     assert str(g) == "(1, 3)"
+    assert raises(NotImplementedError, lambda: AdjacencyMatrixGraphNode(implementation=''))
 
 def test_GraphEdge():
     g_1 = AdjacencyListGraphNode('g_1', 1)
