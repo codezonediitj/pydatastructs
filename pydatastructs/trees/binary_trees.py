@@ -47,20 +47,10 @@ class BinaryTree(object):
                  'is_order_statistic']
 
     def __new__(cls, key=None, root_data=None, comp=None,
-                is_order_statistic=False,*args, **kwargs):
+                is_order_statistic=False):
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
-        implementation = kwargs.get('implementation', 'BinarySearchTree')
-        if implementation is 'BinarySearchTree':
-            from pydatastructs.trees.binary_trees import BinarySearchTree
-            return BinarySearchTree(*args)
-        elif implementation is 'BinaryTreeTraversal':
-            from pydatastructs.trees.binary_trees import BinaryTreeTraversal
-            return BinaryTreeTraversal(*args)
-        elif implementation is 'AVLTree':
-            from pydatastructs.trees.binary_trees import AVLTree
-            return AVLTree(*args)
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
