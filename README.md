@@ -39,7 +39,7 @@ For testing your patch locally follow the steps given below,
 2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by less than 1% for your patch.
 
 Why we use Python?
------------------
+------------------
 
 As we know Python is an interepreted language and hence is slow as compared to C++, the most
 popular language for sports programming. We still decided to use Python because the software
