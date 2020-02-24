@@ -20,4 +20,3 @@ def test_AdjacencyMatrix():
     assert neighbors == [v_1]
     g.remove_edge(0, 1)
     assert g.is_adjacent(0, 1) is False
-    assert raises(NotImplementedError, lambda: Graph(implementation=''))
