@@ -8,7 +8,7 @@ About
 
 Currently, the aim of the project is to be a Python package for various data structures in computer science. In addition, we are also working on including parallel algorithms. To the best of our knowledge there doesn't exist any well designed library/package which has covered most of the data structures and algorithms including their parallel implementation. 
 
-In future, i.e, after a few releases of the package when the software design will become stable, we also aim to provide APIs for the code in C++ and Java as well. For clarity, the interested students aren't expected to know C++ and Java. Knowledge of Python is enough for this project.
+In future, i.e, after a few releases of the package when the software design will become stable, we also aim to provide APIs for the code in C++ and Java as well.
 
 Installation
 ------------
