@@ -1,4 +1,4 @@
-from pydatastructs.linear_data_structures import DoublyLinkedList
+from pydatastructs.linear_data_structures import DoublyLinkedList, SinglyLinkedList
 from pydatastructs.utils.raises_util import raises
 import copy, random
 
@@ -7,9 +7,9 @@ def test_DoublyLinkedList():
     dll = DoublyLinkedList()
     assert raises(IndexError, lambda: dll[2])
     dll.append_left(5)
-    dll.append(1)
+    dll.append_right(1)
     dll.append_left(2)
-    dll.append(3)
+    dll.append_right(3)
     dll.insert_after(dll[1], 4)
     dll.insert_after(dll[-1], 6)
     dll.insert_before(dll[0], 1)
@@ -35,3 +35,37 @@ def test_DoublyLinkedList():
         dll_copy.extract(index)
     assert str(dll_copy) == "[]"
     assert raises(ValueError, lambda: dll_copy.extract(1))
+
+def test_SinglyLinkedList():
+    random.seed(1000)
+    sll = SinglyLinkedList()
+    assert raises(IndexError, lambda: sll[2])
+    sll.append_left(5)
+    sll.append_right(1)
+    sll.append_left(2)
+    sll.append_right(3)
+    sll.insert_after(sll[1], 4)
+    sll.insert_after(sll[-1], 6)
+    # sll.insert_before(sll[0], 1)
+    sll.insert_at(0, 2)
+    sll.insert_at(-1, 9)
+    sll.extract(2)
+    sll.extract(0)
+    sll.extract(-1)
+    sll[-2].data = 0
+    assert str(sll) == "[2, 4, 1, 0, 9]"
+    assert len(sll) == 5
+    assert raises(IndexError, lambda: sll.insert_at(6, None))
+    assert raises(IndexError, lambda: sll.extract(20))
+    sll_copy = copy.deepcopy(sll)
+    for i in range(len(sll)):
+        if i%2 == 0:
+            sll.pop_left()
+        else:
+            sll.pop_right()
+    assert str(sll) == "[]"
+    for _ in range(len(sll_copy)):
+        index = random.randint(0, len(sll_copy) - 1)
+        sll_copy.extract(index)
+    assert str(sll_copy) == "[]"
+    assert raises(ValueError, lambda: sll_copy.extract(1))

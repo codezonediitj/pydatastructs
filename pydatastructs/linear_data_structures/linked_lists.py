@@ -1,6 +1,7 @@
 from pydatastructs.utils.misc_util import _check_type, LinkedListNode
 
 __all__ = [
+    'SinglyLinkedList',
     'DoublyLinkedList'
 ]
 
@@ -263,6 +264,229 @@ class DoublyLinkedList(LinkedList):
             self.head = current_node.next
         if index == self.size:
             self.tail = current_node.prev
+        return current_node
+
+    def __getitem__(self, index):
+        """
+        Returns
+        =======
+
+        current_node: LinkedListNode
+            The node at given index.
+        """
+        if index < 0:
+            index = self.size + index
+
+        if index >= self.size:
+            raise IndexError('%d index is out of range.'%(index))
+
+        counter = 0
+        current_node = self.head
+        while counter != index:
+            current_node = current_node.next
+            counter += 1
+        return current_node
+
+class SinglyLinkedList(LinkedList):
+    """
+    Represents Singly Linked List
+
+    Examples
+    ========
+
+    >>> from pydatastructs import SinglyLinkedList
+    >>> sll = SinglyLinkedList()
+    >>> sll.append_right(6)
+    >>> sll[0].data
+    6
+    >>> sll.head.data
+    6
+    >>> sll.append_right(5)
+    >>> sll.append_left(2)
+    >>> print(sll)
+    [2, 6, 5]
+    >>> sll[0].data = 7.2
+    >>> sll.extract(1).data
+    6
+    >>> print(sll)
+    [7.2, 5]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Doubly_linked_list
+
+    """
+    __slots__ = ['head', 'tail', 'size']
+
+    def __new__(cls):
+        obj = LinkedList.__new__(cls)
+        obj.head = None
+        obj.tail = None
+        obj.size = 0
+        return obj
+
+    def append_left(self, data):
+        """
+        Pushes a new node at the start i.e.,
+        the left of the list.
+
+        Parameters
+        ==========
+
+        data
+            Any valid data to be stored in the node.
+        """
+        self.insert_at(0, data)
+
+    def append_right(self, data):
+        """
+        Appends a new node at the end of the list.
+
+        Parameters
+        ==========
+
+        data
+            Any valid data to be stored in the node.
+        """
+        self.insert_at(self.size, data)
+
+    def insert_after(self, prev_node, data):
+        """
+        Inserts a new node after the prev_node.
+
+        Parameters
+        ==========
+
+        prev_node: LinkedListNode
+            The node after which the
+            new node is to be inserted.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        self.size += 1
+        new_node = LinkedListNode(data,
+                                 links=['next'],
+                                 addrs=[None])
+        new_node.next = prev_node.next
+        prev_node.next = new_node
+
+        if new_node.next is None:
+            self.tail = new_node
+
+    def insert_at(self, index, data):
+        """
+        Inserts a new node at the input index.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        if self.size == 0 and (index in (0, -1)):
+            index = 0
+
+        if index < 0:
+            index = self.size + index
+
+        if index > self.size:
+            raise IndexError('%d index is out of range.'%(index))
+
+        self.size += 1
+        new_node = LinkedListNode(data,
+                                    links=['next'],
+                                    addrs=[None])
+        if self.size == 1:
+            self.head, self.tail = \
+                new_node, new_node
+        else:
+            counter = 0
+            current_node = self.head
+            prev_node = None
+            while counter != index:
+                prev_node = current_node
+                current_node = current_node.next
+                counter += 1
+            new_node.next = current_node
+            if prev_node is not None:
+                prev_node.next = new_node
+            if new_node.next is None:
+                self.tail = new_node
+            if index == 0:
+                self.head = new_node
+
+    def pop_left(self):
+        """
+        Extracts the Node from the left
+        i.e. start of the list.
+
+        Returns
+        =======
+
+        old_head: LinkedListNode
+            The leftmost element of linked
+            list.
+        """
+        self.extract(0)
+
+    def pop_right(self):
+        """
+        Extracts the node from the right
+        of the linked list.
+
+        Returns
+        =======
+
+        old_tail: LinkedListNode
+            The leftmost element of linked
+            list.
+        """
+        self.extract(-1)
+
+    def extract(self, index):
+        """
+        Extracts the node at the index of the list.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        Returns
+        =======
+
+        current_node: LinkedListNode
+            The node at index i.
+        """
+        if self.is_empty:
+            raise ValueError("The list is empty.")
+
+        if index < 0:
+            index = self.size + index
+
+        if index >= self.size:
+            raise IndexError('%d is out of range.'%(index))
+
+        self.size -= 1
+        counter = 0
+        current_node = self.head
+        prev_node = None
+        while counter != index:
+            prev_node = current_node
+            current_node = current_node.next
+            counter += 1
+        if prev_node is not None:
+            prev_node.next = current_node.next
+        if index == 0:
+            self.head = current_node.next
+        if index == self.size:
+            self.tail = prev_node
         return current_node
 
     def __getitem__(self, index):
