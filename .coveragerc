@@ -1,3 +1,9 @@
+[run]
+parallel = True
+source = pydatastructs
+omit =
+    */tests/*
+
 [report]
 exclude_lines =
     pragma: no cover
