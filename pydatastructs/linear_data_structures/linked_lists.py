@@ -38,12 +38,12 @@ class DoublyLinkedList(LinkedList):
 
     >>> from pydatastructs import DoublyLinkedList
     >>> dll = DoublyLinkedList()
-    >>> dll.append(6)
+    >>> dll.append_right(6)
     >>> dll[0].data
     6
     >>> dll.head.data
     6
-    >>> dll.append(5)
+    >>> dll.append_right(5)
     >>> dll.append_left(2)
     >>> print(dll)
     [2, 6, 5]
@@ -81,7 +81,7 @@ class DoublyLinkedList(LinkedList):
         """
         self.insert_at(0, data)
 
-    def append(self, data):
+    def append_right(self, data):
         """
         Appends a new node at the end of the list.
 
