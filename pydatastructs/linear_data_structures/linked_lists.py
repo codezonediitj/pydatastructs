@@ -37,12 +37,12 @@ class DoublyLinkedList(LinkedList):
 
     >>> from pydatastructs import DoublyLinkedList
     >>> dll = DoublyLinkedList()
-    >>> dll.append(6)
+    >>> dll.append_right(6)
     >>> dll[0].data
     6
     >>> dll.head.data
     6
-    >>> dll.append(5)
+    >>> dll.append_right(5)
     >>> dll.append_left(2)
     >>> print(dll)
     [2, 6, 5]
@@ -80,7 +80,7 @@ class DoublyLinkedList(LinkedList):
         """
         self.insert_at(0, data)
 
-    def append(self, data):
+    def append_right(self, data):
         """
         Appends a new node at the end of the list.
 
@@ -111,6 +111,8 @@ class DoublyLinkedList(LinkedList):
                                  links=['next', 'prev'],
                                  addrs=[None, None])
         new_node.next = prev_node.next
+        if prev_node.next is not None:
+            prev_node.next.prev = new_node
         prev_node.next = new_node
         new_node.prev = prev_node
 
@@ -119,7 +121,7 @@ class DoublyLinkedList(LinkedList):
 
     def insert_before(self, next_node, data):
         """
-        Inserts a new node before the new_node.
+        Inserts a new node before the next_node.
 
         Parameters
         ==========
@@ -138,6 +140,8 @@ class DoublyLinkedList(LinkedList):
         new_node.prev = next_node.prev
         next_node.prev = new_node
         new_node.next = next_node
+        if new_node.prev is not None:
+            new_node.prev.next = next_node
 
         if new_node.prev is None:
             self.head = new_node
