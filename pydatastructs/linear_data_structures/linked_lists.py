@@ -295,12 +295,20 @@ class SinglyLinkedList(LinkedList):
 
     >>> from pydatastructs import SinglyLinkedList
     >>> sll = SinglyLinkedList()
+<<<<<<< HEAD
     >>> sll.append(6)
+=======
+    >>> sll.append_right(6)
+>>>>>>> Added tests and SinglyLinkedList
     >>> sll[0].data
     6
     >>> sll.head.data
     6
+<<<<<<< HEAD
     >>> sll.append(5)
+=======
+    >>> sll.append_right(5)
+>>>>>>> Added tests and SinglyLinkedList
     >>> sll.append_left(2)
     >>> print(sll)
     [2, 6, 5]
@@ -313,7 +321,11 @@ class SinglyLinkedList(LinkedList):
     References
     ==========
 
+<<<<<<< HEAD
     .. [1] https://en.wikipedia.org/wiki/Singly_linked_list
+=======
+    .. [1] https://en.wikipedia.org/wiki/Doubly_linked_list
+>>>>>>> Added tests and SinglyLinkedList
 
     """
     __slots__ = ['head', 'tail', 'size']

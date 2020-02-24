@@ -7,7 +7,7 @@ def test_DoublyLinkedList():
     dll = DoublyLinkedList()
     assert raises(IndexError, lambda: dll[2])
     dll.append_left(5)
-    dll.append(1)
+    dll.append_right(1)
     dll.append_left(2)
     dll.append(3)
     dll.insert_after(dll[-1], 4)
