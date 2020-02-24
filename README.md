@@ -6,7 +6,7 @@ PyDataStructs
 About
 -----------
 
-Currently, the aim of the project is to be a Python package for various data structures in computer science. In addition, we are also working on including parallel algorithms. To the best of our knowledge there doesn't exist any well designed library/package which has covered most of the data structures and algorithms including their parallel implementation. 
+Currently, the aim of the project is to be a Python package for various data structures in computer science. In addition, we are also working on including parallel algorithms. To the best of our knowledge a well designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist. 
 
 In future, i.e, after a few releases of the package when the software design will become stable, we also aim to provide APIs for the code in C++ and Java as well.
 
@@ -30,7 +30,7 @@ Make sure that your python version is above `3.5`.
 Why we use Python?
 -----------------
 
-As we know Python is an interepreted language and hence is slow as compared to C++, the most
+As we know Python is an interpreted language and hence is slow as compared to C++, the most
 popular language for sports programming. We still decided to use Python because the software
 development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time. However, keeping the need of the users in mind, we will shift to C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch, after a few releases with APIs available for all the languages.
 
@@ -58,16 +58,15 @@ See you soon with your first PR.
 Guidelines
 ----------
 
-We recommend you to introduce yourself on our [gitter channel](https://gitter.im/codezoned2017/Lobby). You can include the courses you have taken relevant to data strucutres and algorithms, some projects, prior experience, in your introduction. This will help us to allocate you issues of suitable difficulty.
+We recommend you to introduce yourself on our [gitter channel](https://gitter.im/codezoned2017/Lobby). You can include the courses you have taken relevant to data structures and algorithms, some projects, prior experience, in your introduction. This will help us to allocate you issues of suitable difficulty.
 
 Please follow the rules and guidelines given below,
 
 1. Follow the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 2. If you are planning to contribute a new data structure then first raise an issue for discussing the API, rather than directly making a PR.
-3. For the first-time contributors we recommend not to take a complex data strucutre, rather start with `linear data structures` or `abstract data types`. You can also pick issues labelled as `good_first_issues`.
+3. For the first-time contributors we recommend not to take a complex data structure, rather start with `linear data structures` or `abstract data types`. You can also pick issues labelled as `good_first_issues`.
 
-The following parameters are to be followed to pass the code quality tests for your,
-Pull Requests,
+The following parameters are to be followed to pass the code quality tests for your Pull Requests,
 
 1. There should not be any trailing white spaces at any line of code.
 2. Each `.py` file should end with exactly one new line.
