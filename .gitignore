@@ -36,6 +36,10 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+pre_commit.ps1
+htmlcov
+*coverage*
+*.egg-info/
 
 # Python Files #
 ################
@@ -43,6 +47,7 @@ Thumbs.db
 *.pyo
 *~
 __pycache__/
+.pytest_cache/
 
 # Backup Files #
 ################
