@@ -1,12 +1,55 @@
-*.swp
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.gch
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python Files #
+################
 *.pyc
-__pycache__/
 *.pyo
-*.vs
-.vs/
+*~
+__pycache__/
+
+# Backup Files #
+################
+*.bak
+*.swp
+
+# Editor Files #
+################
 .vscode/
-.pytest_cache/
-pre_commit.ps1
-htmlcov
-*coverage*
-*.egg-info/
+.vs/
