@@ -38,12 +38,12 @@ class DoublyLinkedList(LinkedList):
 
     >>> from pydatastructs import DoublyLinkedList
     >>> dll = DoublyLinkedList()
-    >>> dll.append_right(6)
+    >>> dll.append(6)
     >>> dll[0].data
     6
     >>> dll.head.data
     6
-    >>> dll.append_right(5)
+    >>> dll.append(5)
     >>> dll.append_left(2)
     >>> print(dll)
     [2, 6, 5]
@@ -81,7 +81,7 @@ class DoublyLinkedList(LinkedList):
         """
         self.insert_at(0, data)
 
-    def append_right(self, data):
+    def append(self, data):
         """
         Appends a new node at the end of the list.
 
@@ -112,8 +112,8 @@ class DoublyLinkedList(LinkedList):
                                  links=['next', 'prev'],
                                  addrs=[None, None])
         new_node.next = prev_node.next
-        if prev_node.next is not None:
-            prev_node.next.prev = new_node
+        if new_node.next is not None:
+            new_node.next.prev = new_node
         prev_node.next = new_node
         new_node.prev = prev_node
 
@@ -142,9 +142,8 @@ class DoublyLinkedList(LinkedList):
         next_node.prev = new_node
         new_node.next = next_node
         if new_node.prev is not None:
-            new_node.prev.next = next_node
-
-        if new_node.prev is None:
+            new_node.prev.next = new_node
+        else:
             self.head = new_node
 
     def insert_at(self, index, data):
@@ -296,12 +295,12 @@ class SinglyLinkedList(LinkedList):
 
     >>> from pydatastructs import SinglyLinkedList
     >>> sll = SinglyLinkedList()
-    >>> sll.append_right(6)
+    >>> sll.append(6)
     >>> sll[0].data
     6
     >>> sll.head.data
     6
-    >>> sll.append_right(5)
+    >>> sll.append(5)
     >>> sll.append_left(2)
     >>> print(sll)
     [2, 6, 5]
@@ -339,7 +338,7 @@ class SinglyLinkedList(LinkedList):
         """
         self.insert_at(0, data)
 
-    def append_right(self, data):
+    def append(self, data):
         """
         Appends a new node at the end of the list.
 
