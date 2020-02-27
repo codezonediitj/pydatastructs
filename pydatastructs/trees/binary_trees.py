@@ -415,7 +415,7 @@ class BinarySearchTree(BinaryTree):
             walk = p
         return r
 
-    def _simple_path(self, key, root, path=[]):
+    def _simple_path(self, key, root):
         """
         Utility funtion to find the simple path between root and node.
 
@@ -423,10 +423,7 @@ class BinarySearchTree(BinaryTree):
         =========
 
         key:
-            node to be searched
-
-        path:
-            Stores path from root to the node to be found
+            key of the node to be searched
 
         Returns
         =======
@@ -434,18 +431,30 @@ class BinarySearchTree(BinaryTree):
         bool:
             True if path found else False
         """
-        if root is None:
-            return False
-        path.append(root)
-        if self.tree[root].key == key:
-            return True
+        stack = Stack()
+        stack.push(root)
+        path = []
+        node_idx = -1
 
-        if self._simple_path(key, self.tree[root].left, path) or \
-            self._simple_path(key, self.tree[root].right, path):
-            return True
-
-        path.pop()
-        return False
+        while not stack.is_empty:
+            node = stack.pop()
+            if self.tree[node].key == key:
+                node_idx = node
+                break
+            if self.tree[node].left:
+                stack.push(self.tree[node].left)
+            if self.tree[node].right:
+                stack.push(self.tree[node].right)
+            
+        if node_idx == -1:
+            return path
+        
+        while node_idx != 0:
+            path.append(node_idx)
+            node_idx = self.tree[node_idx].parent
+        path.append(0)
+        
+        return path[::-1]
 
     def lowest_common_ancestor(self, j, k, algorithm=1):
 
@@ -497,8 +506,10 @@ class BinarySearchTree(BinaryTree):
             u, v = self.search(j), self.search(k)
             if (u is None) or (v is None):
                 return None
-            u_left = self.comparator(self.tree[u].key, self.tree[curr_root].key)
-            v_left = self.comparator(self.tree[v].key, self.tree[curr_root].key)
+            u_left = self.comparator(self.tree[u].key, \
+                self.tree[curr_root].key)
+            v_left = self.comparator(self.tree[v].key, \
+                self.tree[curr_root].key)
 
             while not (u_left ^ v_left):
                 if u_left and v_left:
@@ -511,18 +522,19 @@ class BinarySearchTree(BinaryTree):
                         return None
                     return self.tree[curr_root].key
 
-                u_left = self.comparator(self.tree[u].key, self.tree[curr_root].key)
-                v_left = self.comparator(self.tree[v].key, self.tree[curr_root].key)
+                u_left = self.comparator(self.tree[u].key, \
+                    self.tree[curr_root].key)
+                v_left = self.comparator(self.tree[v].key, \
+                    self.tree[curr_root].key)
 
             if curr_root is None:
                 return curr_root
             return self.tree[curr_root].key
 
         else:
-            path1, path2 = [], []
             root = self.root_idx
-            self._simple_path(j, root, path1)
-            self._simple_path(k, root, path2)
+            path1 = self._simple_path(j, root)
+            path2 = self._simple_path(k, root)
             key = None
             if not path1 or not path2:
                 return key
