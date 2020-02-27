@@ -445,15 +445,15 @@ class BinarySearchTree(BinaryTree):
                 stack.push(self.tree[node].left)
             if self.tree[node].right:
                 stack.push(self.tree[node].right)
-            
+
         if node_idx == -1:
             return path
-        
+
         while node_idx != 0:
             path.append(node_idx)
             node_idx = self.tree[node_idx].parent
         path.append(0)
-        
+
         return path[::-1]
 
     def lowest_common_ancestor(self, j, k, algorithm=1):
