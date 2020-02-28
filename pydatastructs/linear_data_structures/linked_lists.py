@@ -2,7 +2,8 @@ from pydatastructs.utils.misc_util import _check_type, LinkedListNode
 
 __all__ = [
     'SinglyLinkedList',
-    'DoublyLinkedList'
+    'DoublyLinkedList',
+    'SinglyCircularLinkedList'
 ]
 
 class LinkedList(object):
@@ -27,6 +28,8 @@ class LinkedList(object):
         while current_node is not None:
             elements.append(current_node.data)
             current_node = current_node.next
+            if current_node == self.head:
+                break
         return str(elements)
 
 class DoublyLinkedList(LinkedList):
@@ -508,3 +511,103 @@ class SinglyLinkedList(LinkedList):
             current_node = current_node.next
             counter += 1
         return current_node
+
+class SinglyCircularLinkedList(SinglyLinkedList):
+    """
+    Represents Singly Circular Linked List.
+
+    Parent Class
+    ============
+
+    SinglyLinkedList.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import SinglyCircularLinkedList
+    >>> scll = SinglyCircularLinkedList()
+    >>> scll.append(6)
+    >>> scll[0].data
+    6
+    >>> scll.head.data
+    6
+    >>> scll.append(5)
+    >>> scll.append_left(2)
+    >>> print(scll)
+    [2, 6, 5]
+    >>> scll[0].data = 7.2
+    >>> scll.extract(1).data
+    6
+    >>> print(scll)
+    [7.2, 5]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Linked_list#Circular_linked_list
+
+    """
+
+    def insert_after(self, prev_node, data):
+        """
+        Inserts a new node after the prev_node.
+
+        Parameters
+        ==========
+
+        prev_node: LinkedListNode
+            The node after which the
+            new node is to be inserted.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        super(SinglyCircularLinkedList, self).insert_after(prev_node, data)
+        if prev_node.next.next == self.head:
+            self.tail = prev_node.next
+
+    def insert_at(self, index, data):
+        """
+        Inserts a new node at the input index.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        super(SinglyCircularLinkedList, self).insert_at(index, data)
+        if self.size == 1:
+            self.head.next = self.head
+        new_node = self.__getitem__(index)
+        if index == 0:
+            self.head = new_node
+            self.tail.next = new_node
+        if new_node.next == self.head:
+            self.tail = new_node
+
+    def extract(self, index):
+        """
+        Extracts the node at the index of the list.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        Returns
+        =======
+
+        current_node: LinkedListNode
+            The node at index i.
+        """
+        node = super(SinglyCircularLinkedList, self).extract(index)
+        if self.tail is None:
+            self.head = None
+        elif index == 0:
+            self.tail.next = self.head
+        return node
