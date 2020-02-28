@@ -313,7 +313,7 @@ class SinglyLinkedList(LinkedList):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Doubly_linked_list
+    .. [1] https://en.wikipedia.org/wiki/Singly_linked_list
 
     """
     __slots__ = ['head', 'tail', 'size']
