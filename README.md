@@ -6,9 +6,9 @@ PyDataStructs
 About
 -----------
 
-Currently, the aim of the project is to be a Python package for various data structures in computer science. In addition, we are also working on including parallel algorithms. To the best of our knowledge a well designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist. 
+Currently, the aim of the project is to build a Python package for various data structures in computer science. In addition, we are also working on including parallel algorithms. To the best of our knowledge a well designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist. 
 
-In future, i.e, after a few releases of the package when the software design will become stable, we also aim to provide APIs for the code in C++ and Java as well.
+In future, i.e, after a few releases of the package when the software design will get stable, we also aim to provide APIs for the code in C++ and Java as well.
 
 Installation
 ------------
@@ -31,7 +31,7 @@ Why we use Python?
 -----------------
 
 As we know Python is an interpreted language and hence is slow as compared to C++, the most
-popular language for sports programming. We still decided to use Python because the software
+popular language for sports programming. We will still decide to use Python because the software
 development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time. However, keeping the need of the users in mind, we will shift to C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch, after a few releases with APIs available for all the languages.
 
 How to contribute?
@@ -41,6 +41,7 @@ Follow the steps given below,
 
 1. Fork, https://github.com/codezonediitj/pydatastructs/
 2. Execute, `git clone https://github.com/<your-github-username>/pydatastructs/`
+   OR         git bash clone
 3. Change your working directory to `../pydatastructs`.
 4. Execute, `git remote add origin_user https://github.com/<your-github-username>/pydatastructs/`
 5. Execute, `git checkout -b <your-new-branch-for-working>`.
