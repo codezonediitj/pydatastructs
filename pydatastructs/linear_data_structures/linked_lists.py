@@ -3,7 +3,8 @@ from pydatastructs.utils.misc_util import _check_type, LinkedListNode
 __all__ = [
     'SinglyLinkedList',
     'DoublyLinkedList',
-    'SinglyCircularLinkedList'
+    'SinglyCircularLinkedList',
+    'DoublyCircularLinkedList'
 ]
 
 class LinkedList(object):
@@ -584,7 +585,6 @@ class SinglyCircularLinkedList(SinglyLinkedList):
             self.head.next = self.head
         new_node = self.__getitem__(index)
         if index == 0:
-            self.head = new_node
             self.tail.next = new_node
         if new_node.next == self.head:
             self.tail = new_node
@@ -606,6 +606,121 @@ class SinglyCircularLinkedList(SinglyLinkedList):
             The node at index i.
         """
         node = super(SinglyCircularLinkedList, self).extract(index)
+        if self.tail is None:
+            self.head = None
+        elif index == 0:
+            self.tail.next = self.head
+        return node
+
+class DoublyCircularLinkedList(DoublyLinkedList):
+    """
+    Represents Doubly Circular Linked List
+
+    Examples
+    ========
+
+    >>> from pydatastructs import DoublyCircularLinkedList
+    >>> dcll = DoublyCircularLinkedList()
+    >>> dcll.append(6)
+    >>> dcll[0].data
+    6
+    >>> dcll.head.data
+    6
+    >>> dcll.append(5)
+    >>> dcll.append_left(2)
+    >>> print(dcll)
+    [2, 6, 5]
+    >>> dcll[0].data = 7.2
+    >>> dcll.extract(1).data
+    6
+    >>> print(dcll)
+    [7.2, 5]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Doubly_linked_list
+
+    """
+    def insert_after(self, prev_node, data):
+        """
+        Inserts a new node after the prev_node.
+
+        Parameters
+        ==========
+
+        prev_node: LinkedListNode
+            The node after which the
+            new node is to be inserted.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        super(DoublyCircularLinkedList, self).insert_after(prev_node, data)
+        if prev_node.next.next == self.head:
+            self.tail = prev_node.next
+
+    def insert_before(self, next_node, data):
+        """
+        Inserts a new node before the next_node.
+
+        Parameters
+        ==========
+
+        next_node: LinkedListNode
+            The node before which the
+            new node is to be inserted.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        super(DoublyCircularLinkedList, self).insert_before(next_node,data)
+        if next_node == self.head:
+            self.head = next_node.prev
+
+    def insert_at(self, index, data):
+        """
+        Inserts a new node at the input index.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        super(DoublyCircularLinkedList, self).insert_at(index, data)
+        if self.size == 1:
+            self.head.next = self.head
+            self.head.prev = self.head
+        new_node = self.__getitem__(index)
+        if index == 0:
+            self.tail.next = new_node
+            new_node.prev = self.tail
+        if new_node.next == self.head:
+            self.tail = new_node
+            new_node.next = self.head
+            self.head.prev = new_node
+
+    def extract(self, index):
+        """
+        Extracts the node at the index of the list.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        Returns
+        =======
+
+        current_node: LinkedListNode
+            The node at index i.
+        """
+        node = super(DoublyCircularLinkedList, self).extract(index)
         if self.tail is None:
             self.head = None
         elif index == 0:
