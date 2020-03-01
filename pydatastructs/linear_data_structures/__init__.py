@@ -9,6 +9,10 @@ from .arrays import (
     OneDimensionalArray,
     DynamicOneDimensionalArray
 )
+from .arrays import (
+        TwoDimensionalArrays,
+    DynamicTwoDimensionalArrays
+)
 __all__.extend(arrays.__all__)
 
 from .linked_lists import (
