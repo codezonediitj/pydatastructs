@@ -546,6 +546,7 @@ class SinglyCircularLinkedList(SinglyLinkedList):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Linked_list#Circular_linked_list
+    .. [2] https://www.geeksforgeeks.org/circular-singly-linked-list-insertion/
 
     """
 
@@ -639,7 +640,8 @@ class DoublyCircularLinkedList(DoublyLinkedList):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Doubly_linked_list
+    .. [1] https://en.wikipedia.org/wiki/Linked_list#Circular_linked_list
+    .. [2] https://www.geeksforgeeks.org/doubly-circular-linked-list-set-1-introduction-and-insertion/
 
     """
     def insert_after(self, prev_node, data):
