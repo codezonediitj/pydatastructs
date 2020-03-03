@@ -517,10 +517,6 @@ class SinglyCircularLinkedList(SinglyLinkedList):
     """
     Represents Singly Circular Linked List.
 
-    Parent Class
-    ============
-
-    SinglyLinkedList.
 
     Examples
     ========
