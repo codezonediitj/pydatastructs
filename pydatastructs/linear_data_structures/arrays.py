@@ -189,6 +189,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     >>> arr.delete(0)
     >>> arr[0]
     >>> arr[1]
+    >>> arr[1,2]
     2
     >>> arr.append(3)
     >>> arr.append(4)
@@ -241,6 +242,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self._last_pos_filled += 1
             self._num += 1
         self._modify()
+        
 
     def delete(self, idx):
         if idx <= self._last_pos_filled and idx >= 0 and \
