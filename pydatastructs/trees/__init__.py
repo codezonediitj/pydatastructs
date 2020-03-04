@@ -17,6 +17,7 @@ __all__.extend(space_partitioning_trees.__all__)
 
 from .heaps import (
     BinaryHeap,
+    TernaryHeap,
     DHeap,
     BinomialHeap
 )
