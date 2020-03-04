@@ -1,5 +1,5 @@
-from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
-from pydatastructs.utils.misc_util import NoneType
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
+from pydatastructs.utils.misc_util import NoneType, LinkedListNode
 from copy import deepcopy as dc
 
 __all__ = [
@@ -51,6 +51,12 @@ class Queue(object):
             return ArrayQueue(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
+        
+        elif implementation == 'linkedlist':
+            return LinkedListQueue(
+                # kwargs.get('items', None),
+                # kwargs.get('dtype', LinkedListNode)
+            )
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
 
@@ -65,6 +71,7 @@ class Queue(object):
     @property
     def is_empty(self):
         return None
+
 
 class ArrayQueue(Queue):
 
@@ -122,3 +129,42 @@ class ArrayQueue(Queue):
         for i in range(self.front, self.rear + 1):
             _data.append(self.items._data[i])
         return str(_data)
+
+
+class LinkedListQueue(Queue):
+
+    __slots__ = ['front', 'rear', 'size']
+
+    def __new__(cls):
+        obj = object.__new__(cls)
+        obj.queue = SinglyLinkedList()
+        obj.front = None
+        obj.rear = None
+        obj.size = 0
+        return obj
+
+    def append(self, x):
+        self.size += 1
+        self.queue.append(x)
+        if self.front == None:
+            self.front = self.queue.head
+        self.rear = self.queue.tail
+
+    def popleft(self):
+        if self.is_empty:
+            raise ValueError("Queue is empty.")
+        self.size -= 1
+        return_value = self.queue.pop_left()
+        self.front = self.queue.head
+        self.rear = self.queue.tail
+        return return_value
+
+    @property
+    def is_empty(self):
+        return self.size == 0
+
+    def __len__(self):
+        return self.size
+
+    def __str__(self):
+        return str(self.queue)
