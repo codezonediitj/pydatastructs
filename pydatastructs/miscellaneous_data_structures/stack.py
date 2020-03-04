@@ -1,6 +1,8 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
 from pydatastructs.utils.misc_util import _check_type, NoneType
 from copy import deepcopy as dc
+from pydatastructs import SinglyLinkedList
+from pydatastructs import DoublyLinkedList
 
 __all__ = [
     'Stack'
@@ -51,9 +53,14 @@ class Stack(object):
             return ArrayStack(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
+        
+        elif implementation == "ll":
+            return Linked_Stacks()
+
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
-
+        
+        
     def push(self, *args, **kwargs):
         raise NotImplementedError(
             "This is an abstract method.")
@@ -109,3 +116,67 @@ class ArrayStack(Stack):
         Used for printing.
         """
         return str(self.items._data)
+
+class Linked_Stacks(Stack):
+    
+    """Representation of Stack Data Structure using Doubly Linked List
+    Methods
+    ===========
+    push : 
+    A normal push operation to the Stack
+    
+    pop : 
+    Delete the top most element from the stack
+    Returns the value of top element
+
+    peek :
+    returns the value of top element
+
+    is_empty :
+    Checks for whether a Stack is been empty or not
+    Return True if empty else False
+
+    __str__ : 
+    Used for Printing the Stack
+
+    """
+    __slots__ = ["dll"]
+    def __new__(cls):
+        dll = DoublyLinkedList() 
+        obj = object.__new__(cls)
+        obj.dll = dll
+        obj.top = dll.head
+        return obj
+        
+        
+    def push(self,data):
+        self.dll.append(data)
+        if self.top is None:
+            self.top = self.dll.head
+        self.top = self.top.next
+
+    def pop(self):
+        if not self.is_empty:
+            self.data = self.top.data
+            self.top = self.top.prev
+            return self.data
+        else:
+            return "Stack is empty"
+    
+    
+    @property
+    def is_empty(self):
+        return self.top == None
+
+    @property
+    def peek(self):
+        if self.top is not None:
+            return self.top.data
+        return "Stack is empty"
+    
+    def __str__(self):
+        "Used for Printing the Stack"
+        iterator = self.top
+        while iterator is not None:
+            print(iterator.data)
+            iterator = iterator.next
