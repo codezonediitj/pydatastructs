@@ -43,14 +43,21 @@ class Graph(object):
 
     .. [1] https://en.wikipedia.org/wiki/Graph_(abstract_data_type)
     """
+
+    __slots__ = ['_impl']
+
     def __new__(cls, *args, **kwargs):
         implementation = kwargs.get('implementation', 'adjacency_list')
         if implementation is 'adjacency_list':
             from pydatastructs.graphs.adjacency_list import AdjacencyList
-            return AdjacencyList(*args)
+            obj = AdjacencyList(*args)
+            obj._impl = implementation
+            return obj
         elif implementation is 'adjacency_matrix':
             from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
-            return AdjacencyMatrix(*args)
+            obj = AdjacencyMatrix(*args)
+            obj._impl = implementation
+            return obj
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
