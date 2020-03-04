@@ -49,13 +49,13 @@ class DoublyLinkedList(LinkedList):
     6
     >>> dll.append(5)
     >>> dll.append_left(2)
-    >>> print(dll)
-    [2, 6, 5]
+    >>> str(dll)
+    '[2, 6, 5]'
     >>> dll[0].data = 7.2
     >>> dll.extract(1).data
     6
-    >>> print(dll)
-    [7.2, 5]
+    >>> str(dll)
+    '[7.2, 5]'
 
     References
     ==========
@@ -306,13 +306,13 @@ class SinglyLinkedList(LinkedList):
     6
     >>> sll.append(5)
     >>> sll.append_left(2)
-    >>> print(sll)
-    [2, 6, 5]
+    >>> str(sll)
+    '[2, 6, 5]'
     >>> sll[0].data = 7.2
     >>> sll.extract(1).data
     6
-    >>> print(sll)
-    [7.2, 5]
+    >>> str(sll)
+    '[7.2, 5]'
 
     References
     ==========
@@ -530,13 +530,13 @@ class SinglyCircularLinkedList(SinglyLinkedList):
     6
     >>> scll.append(5)
     >>> scll.append_left(2)
-    >>> print(scll)
-    [2, 6, 5]
+    >>> str(scll)
+    '[2, 6, 5]'
     >>> scll[0].data = 7.2
     >>> scll.extract(1).data
     6
-    >>> print(scll)
-    [7.2, 5]
+    >>> str(scll)
+    '[7.2, 5]'
 
     References
     ==========
@@ -624,13 +624,13 @@ class DoublyCircularLinkedList(DoublyLinkedList):
     6
     >>> dcll.append(5)
     >>> dcll.append_left(2)
-    >>> print(dcll)
-    [2, 6, 5]
+    >>> str(dcll)
+    '[2, 6, 5]'
     >>> dcll[0].data = 7.2
     >>> dcll.extract(1).data
     6
-    >>> print(dcll)
-    [7.2, 5]
+    >>> str(dcll)
+    '[7.2, 5]'
 
     References
     ==========
