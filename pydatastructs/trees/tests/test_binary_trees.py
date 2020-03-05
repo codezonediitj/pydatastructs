@@ -69,9 +69,9 @@ def test_BinarySearchTree():
     assert bl.lowest_common_ancestor(16, 80, 2) == 50
     assert bl.lowest_common_ancestor(30, 55, 2) == 50
 
-    assert bl.lowest_common_ancestor(60, 200, 2) is None
-    assert bl.lowest_common_ancestor(200, 60, 2) is None
-    assert bl.lowest_common_ancestor(-3, 4, 2) is None
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 2))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 2))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 2))
 
     assert bl.lowest_common_ancestor(80, 55, 1) == 70
     assert bl.lowest_common_ancestor(60, 70, 1) == 70
@@ -83,11 +83,9 @@ def test_BinarySearchTree():
     assert bl.lowest_common_ancestor(16, 80, 1) == 50
     assert bl.lowest_common_ancestor(30, 55, 1) == 50
 
-    assert bl.lowest_common_ancestor(60, 200, 1) is None
-    assert bl.lowest_common_ancestor(200, 60, 1) is None
-    assert bl.lowest_common_ancestor(-3, 4, 2) is None
-
-    raises(ValueError, lambda: BST(root_data=6))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree

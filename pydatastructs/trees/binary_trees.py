@@ -430,7 +430,7 @@ class BinarySearchTree(BinaryTree):
 
         path: list
         """
-        
+
         stack = Stack()
         stack.push(root)
         path = []
@@ -454,16 +454,16 @@ class BinarySearchTree(BinaryTree):
             node_idx = self.tree[node_idx].parent
         path.append(0)
         path.reverse()
-        
+
         return path
-    
+
     def _lca_1(self, j, k):
         root = self.root_idx
         path1 = self._simple_path(j, root)
         path2 = self._simple_path(k, root)
-        key = None
         if not path1 or not path2:
-            return key
+            raise ValueError("One of two path doesn't exists. See %s, %s"
+                             %(path1, path2))
 
         n, m = len(path1), len(path2)
         i = j = 0
@@ -475,12 +475,13 @@ class BinarySearchTree(BinaryTree):
         if path1 < path2:
             return self.tree[path1[-1]].key
         return self.tree[path2[-1]].key
-    
+
     def _lca_2(self, j, k):
         curr_root = self.root_idx
         u, v = self.search(j), self.search(k)
         if (u is None) or (v is None):
-            return None
+            raise ValueError("One of the nodes with key %s "
+                             "or %s doesn't exits"%(j, k))
         u_left = self.comparator(self.tree[u].key, \
             self.tree[curr_root].key)
         v_left = self.comparator(self.tree[v].key, \
@@ -549,7 +550,7 @@ class BinarySearchTree(BinaryTree):
         .. [2] https://pdfs.semanticscholar.org/e75b/386cc554214aa0ebd6bd6dbdd0e490da3739.pdf
 
         """
-        getattr(self, "_lca_"+str(algorithm))(self, j, k)
+        return getattr(self, "_lca_"+str(algorithm))(j, k)
 
 class AVLTree(BinarySearchTree):
     """
