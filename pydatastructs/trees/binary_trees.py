@@ -422,15 +422,15 @@ class BinarySearchTree(BinaryTree):
         Parameter
         =========
 
-        key:
-            key of the node to be searched
+        key: Node.key
+            Key of the node to be searched
 
         Returns
         =======
 
-        bool:
-            True if path found else False
+        path: list
         """
+        
         stack = Stack()
         stack.push(root)
         path = []
@@ -453,8 +453,58 @@ class BinarySearchTree(BinaryTree):
             path.append(node_idx)
             node_idx = self.tree[node_idx].parent
         path.append(0)
+        path.reverse()
+        
+        return path
+    
+    def _lca_1(self, j, k):
+        root = self.root_idx
+        path1 = self._simple_path(j, root)
+        path2 = self._simple_path(k, root)
+        key = None
+        if not path1 or not path2:
+            return key
 
-        return path[::-1]
+        n, m = len(path1), len(path2)
+        i = j = 0
+        while i < n and j < m:
+            if path1[i] != path2[j]:
+                return self.tree[path1[i - 1]].key
+            i += 1
+            j += 1
+        if path1 < path2:
+            return self.tree[path1[-1]].key
+        return self.tree[path2[-1]].key
+    
+    def _lca_2(self, j, k):
+        curr_root = self.root_idx
+        u, v = self.search(j), self.search(k)
+        if (u is None) or (v is None):
+            return None
+        u_left = self.comparator(self.tree[u].key, \
+            self.tree[curr_root].key)
+        v_left = self.comparator(self.tree[v].key, \
+            self.tree[curr_root].key)
+
+        while not (u_left ^ v_left):
+            if u_left and v_left:
+                curr_root = self.tree[curr_root].left
+            else:
+                curr_root = self.tree[curr_root].right
+
+            if curr_root == u or curr_root == v:
+                if curr_root is None:
+                    return None
+                return self.tree[curr_root].key
+
+            u_left = self.comparator(self.tree[u].key, \
+                self.tree[curr_root].key)
+            v_left = self.comparator(self.tree[v].key, \
+                self.tree[curr_root].key)
+
+        if curr_root is None:
+            return curr_root
+        return self.tree[curr_root].key
 
     def lowest_common_ancestor(self, j, k, algorithm=1):
 
@@ -465,9 +515,9 @@ class BinarySearchTree(BinaryTree):
         ==========
 
         j: Node.key
-            key of first node
+            Key of first node
         k: Node.key
-            key of second node
+            Key of second node
         algorithm: int
             The algorithm to be used for computing the
             lowest common ancestor.
@@ -487,11 +537,9 @@ class BinarySearchTree(BinaryTree):
         Returns
         =======
 
-        int
-            The index of the lowest common ancestor in the tree.
+        Node.key
+            The key of the lowest common ancestor in the tree.
             if both the nodes are present in the tree.
-        None
-            In all other cases.
 
         References
         ==========
@@ -501,54 +549,7 @@ class BinarySearchTree(BinaryTree):
         .. [2] https://pdfs.semanticscholar.org/e75b/386cc554214aa0ebd6bd6dbdd0e490da3739.pdf
 
         """
-        if algorithm == 1:
-            curr_root = self.root_idx
-            u, v = self.search(j), self.search(k)
-            if (u is None) or (v is None):
-                return None
-            u_left = self.comparator(self.tree[u].key, \
-                self.tree[curr_root].key)
-            v_left = self.comparator(self.tree[v].key, \
-                self.tree[curr_root].key)
-
-            while not (u_left ^ v_left):
-                if u_left and v_left:
-                    curr_root = self.tree[curr_root].left
-                else:
-                    curr_root = self.tree[curr_root].right
-
-                if curr_root == u or curr_root == v:
-                    if curr_root is None:
-                        return None
-                    return self.tree[curr_root].key
-
-                u_left = self.comparator(self.tree[u].key, \
-                    self.tree[curr_root].key)
-                v_left = self.comparator(self.tree[v].key, \
-                    self.tree[curr_root].key)
-
-            if curr_root is None:
-                return curr_root
-            return self.tree[curr_root].key
-
-        else:
-            root = self.root_idx
-            path1 = self._simple_path(j, root)
-            path2 = self._simple_path(k, root)
-            key = None
-            if not path1 or not path2:
-                return key
-
-            n, m = len(path1), len(path2)
-            i = j = 0
-            while i < n and j < m:
-                if path1[i] != path2[j]:
-                    return self.tree[path1[i - 1]].key
-                i += 1
-                j += 1
-            if path1 < path2:
-                return self.tree[path1[-1]].key
-            return self.tree[path2[-1]].key
+        getattr(self, "_lca_"+str(algorithm))(self, j, k)
 
 class AVLTree(BinarySearchTree):
     """
