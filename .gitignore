@@ -48,7 +48,6 @@ htmlcov
 *~
 __pycache__/
 .pytest_cache/
-.idea/
 
 # Backup Files #
 ################

@@ -29,7 +29,6 @@ class DHeap(Heap):
         List/tuple of initial elements in Heap.
 
     heap_property : str
-        The property of binary heap.
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -45,7 +44,7 @@ class DHeap(Heap):
     ========
 
     >>> from pydatastructs.trees.heaps import DHeap
-    >>> min_heap = DHeap(heap_property="min",d=3)
+    >>> min_heap = DHeap(heap_property="min", d=3)
     >>> min_heap.insert(1, 1)
     >>> min_heap.insert(5, 5)
     >>> min_heap.insert(7, 7)
@@ -55,7 +54,7 @@ class DHeap(Heap):
     >>> min_heap.extract().key
     4
 
-    >>> max_heap = BinaryHeap(heap_property='max')
+    >>> max_heap = DHeap(heap_property='max', d=2)
     >>> max_heap.insert(1, 1)
     >>> max_heap.insert(5, 5)
     >>> max_heap.insert(7, 7)
@@ -206,7 +205,6 @@ class BinaryHeap(DHeap):
         List/tuple of initial elements in Heap.
 
     heap_property : str
-        The property of binary heap.
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -264,7 +262,6 @@ class TernaryHeap(DHeap):
         List/tuple of initial elements in Heap.
 
     heap_property : str
-        The property of binary heap.
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -279,8 +276,8 @@ class TernaryHeap(DHeap):
     Examples
     ========
 
-    >>> from pydatastructs.trees.heaps import BinaryHeap
-    >>> min_heap = BinaryHeap(heap_property="min")
+    >>> from pydatastructs.trees.heaps import TernaryHeap
+    >>> min_heap = TernaryHeap(heap_property="min")
     >>> min_heap.insert(1, 1)
     >>> min_heap.insert(5, 5)
     >>> min_heap.insert(7, 7)
@@ -290,7 +287,7 @@ class TernaryHeap(DHeap):
     >>> min_heap.extract().key
     4
 
-    >>> max_heap = BinaryHeap(heap_property='max')
+    >>> max_heap = TernaryHeap(heap_property='max')
     >>> max_heap.insert(1, 1)
     >>> max_heap.insert(5, 5)
     >>> max_heap.insert(7, 7)
