@@ -15,17 +15,12 @@ class Queue(object):
     implementation : str
         Implementation to be used for queue.
         By default, 'array'
-        Currently only supports 'array'
-        implementation.
     items : list/tuple
         Optional, by default, None
         The inital items in the queue.
-        For array implementation.
     dtype : A valid python type
         Optional, by default NoneType if item
-        is None, otherwise takes the data
-        type of DynamicOneDimensionalArray
-        For array implementation.
+        is None.
 
     Examples
     ========
@@ -53,8 +48,8 @@ class Queue(object):
                 kwargs.get('dtype', int))
         elif implementation == 'linkedlist':
             return LinkedListQueue(
-                # kwargs.get('items', None),
-                # kwargs.get('dtype', LinkedListNode)
+                kwargs.get('items', None),
+                kwargs.get('dtype', NoneType)
             )
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
@@ -133,17 +128,34 @@ class ArrayQueue(Queue):
 
 class LinkedListQueue(Queue):
 
-    __slots__ = ['front', 'rear', 'size']
+    __slots__ = ['front', 'rear', 'size', '_dtype']
 
-    def __new__(cls):
+    def __new__(cls, items=None, dtype=NoneType):
         obj = object.__new__(cls)
         obj.queue = SinglyLinkedList()
-        obj.front = None
-        obj.rear = None
-        obj.size = 0
+        obj._dtype = dtype
+        if items is None:
+            pass
+        elif type(items) in (list, tuple):
+            if len(items) != 0 and dtype is NoneType:
+                obj._dtype = type(items[0])
+            for x in items:
+                if type(x) == obj._dtype:
+                    obj.queue.append(x)
+                else:
+                    raise TypeError("Expected %s but got %s"%(obj._dtype, type(x)))
+        else:
+            raise TypeError("Expected type: list/tuple")
+        obj.front = obj.queue.head
+        obj.rear = obj.queue.tail
+        obj.size = obj.queue.size
         return obj
 
     def append(self, x):
+        if self._dtype is NoneType:
+            self._dtype = type(x)
+        elif type(x) is not self._dtype:
+            raise TypeError("Expected %s but got %s"%(self._dtype, type(x)))
         self.size += 1
         self.queue.append(x)
         if self.front is None:

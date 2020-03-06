@@ -20,8 +20,11 @@ def test_Queue():
     raises(ValueError, lambda: q1.popleft())
 
     q1 = Queue(implementation='linkedlist')
-    q1.append(0)
     q1.append(1)
+    assert raises(TypeError, lambda: q1.append('a'))
+    assert raises(TypeError, lambda: Queue(implementation='linkedlist', items=[0], dtype=str))
+    assert raises(TypeError, lambda: Queue(implementation='linkedlist', items={0, 1}))
+    q1 = Queue(implementation='linkedlist', items = [0, 1])
     q1.append(2)
     q1.append(3)
     assert str(q1) == '[0, 1, 2, 3]'
