@@ -51,7 +51,6 @@ class Queue(object):
             return ArrayQueue(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
-        
         elif implementation == 'linkedlist':
             return LinkedListQueue(
                 # kwargs.get('items', None),
@@ -146,7 +145,7 @@ class LinkedListQueue(Queue):
     def append(self, x):
         self.size += 1
         self.queue.append(x)
-        if self.front == None:
+        if self.front is None:
             self.front = self.queue.head
         self.rear = self.queue.tail
 
