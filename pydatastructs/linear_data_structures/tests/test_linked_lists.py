@@ -17,8 +17,8 @@ def test_DoublyLinkedList():
     dll.insert_at(0, 2)
     dll.insert_at(-1, 9)
     dll.extract(2)
-    dll.extract(0)
-    dll.extract(-1)
+    assert dll.pop_left().data == 2
+    assert dll.pop_right().data == 4
     dll[-2].data = 0
     assert str(dll) == "[7, 5, 1, 6, 1, 0, 9]"
     assert len(dll) == 7
@@ -50,8 +50,8 @@ def test_SinglyLinkedList():
     sll.insert_at(0, 2)
     sll.insert_at(-1, 9)
     sll.extract(2)
-    sll.extract(0)
-    sll.extract(-1)
+    assert sll.pop_left().data == 2
+    assert sll.pop_right().data == 6
     sll[-2].data = 0
     assert str(sll) == "[2, 4, 1, 0, 9]"
     assert len(sll) == 5
@@ -83,8 +83,8 @@ def test_SinglyCircularLinkedList():
     scll.insert_at(0, 2)
     scll.insert_at(-1, 9)
     scll.extract(2)
-    scll.extract(0)
-    scll.extract(-1)
+    assert scll.pop_left().data == 2
+    assert scll.pop_right().data == 6
     scll[-2].data = 0
     assert str(scll) == "[2, 4, 1, 0, 9]"
     assert len(scll) == 5
@@ -118,8 +118,8 @@ def test_DoublyCircularLinkedList():
     dcll.insert_at(0, 2)
     dcll.insert_at(-1, 9)
     dcll.extract(2)
-    dcll.extract(0)
-    dcll.extract(-1)
+    assert dcll.pop_left().data == 2
+    assert dcll.pop_right().data == 4
     dcll[-2].data = 0
     assert str(dcll) == "[7, 5, 1, 6, 1, 0, 9]"
     assert len(dcll) == 7
