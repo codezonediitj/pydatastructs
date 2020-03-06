@@ -69,7 +69,8 @@ class Queue(object):
 
     @property
     def is_empty(self):
-        return None
+        raise NotImplementedError(
+            "This is an abstract method.")
 
 
 class ArrayQueue(Queue):

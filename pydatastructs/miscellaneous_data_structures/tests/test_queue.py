@@ -32,6 +32,4 @@ def test_Queue():
     assert q1.popleft().data == 2
     assert q1.popleft().data == 3
     assert len(q1) == 0
-
-    q1 = Queue()
     raises(ValueError, lambda: q1.popleft())
