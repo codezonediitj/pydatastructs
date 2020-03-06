@@ -210,7 +210,7 @@ class DoublyLinkedList(LinkedList):
             The leftmost element of linked
             list.
         """
-        self.extract(0)
+        return self.extract(0)
 
     def pop_right(self):
         """
@@ -224,7 +224,7 @@ class DoublyLinkedList(LinkedList):
             The leftmost element of linked
             list.
         """
-        self.extract(-1)
+        return self.extract(-1)
 
     def extract(self, index):
         """
@@ -435,7 +435,7 @@ class SinglyLinkedList(LinkedList):
             The leftmost element of linked
             list.
         """
-        self.extract(0)
+        return self.extract(0)
 
     def pop_right(self):
         """
@@ -449,7 +449,7 @@ class SinglyLinkedList(LinkedList):
             The leftmost element of linked
             list.
         """
-        self.extract(-1)
+        return self.extract(-1)
 
     def extract(self, index):
         """

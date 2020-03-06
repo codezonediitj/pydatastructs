@@ -58,3 +58,9 @@ __pycache__/
 ################
 .vscode/
 .vs/
+
+# Other Files #
+################
+.idea/
+build/
+dist/
