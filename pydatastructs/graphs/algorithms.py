@@ -38,3 +38,5 @@ def _breadth_first_search_adjacency_list(
             status = operation(curr_node, "", *args, **kwargs)
             if not status:
                 return None
+
+_breadth_first_search_adjacency_matrix = _breadth_first_search_adjacency_list

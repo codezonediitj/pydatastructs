@@ -1,67 +1,74 @@
-from pydatastructs import breadth_first_search, Graph, AdjacencyListGraphNode
+from pydatastructs import breadth_first_search, Graph
+
 
 def test_breadth_first_search():
 
-    V1 = AdjacencyListGraphNode("V1")
-    V2 = AdjacencyListGraphNode("V2")
-    V3 = AdjacencyListGraphNode("V3")
+    def _test_breadth_first_search(ds, impl):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
 
-    G1 = Graph(V1, V2, V3)
+        V1 = GraphNode(0)
+        V2 = GraphNode(1)
+        V3 = GraphNode(2)
 
-    edges = [
-        (V1.name, V2.name),
-        (V2.name, V3.name),
-        (V1.name, V3.name)
-    ]
+        G1 = Graph(V1, V2, V3, implementation=impl)
 
-    for edge in edges:
-        G1.add_edge(*edge)
+        edges = [
+            (V1.name, V2.name),
+            (V2.name, V3.name),
+            (V1.name, V3.name)
+        ]
 
-    parent = dict()
-    def bfs_tree(curr_node, next_node, parent):
-        if next_node != "":
-            parent[next_node] = curr_node
-        return True
+        for edge in edges:
+            G1.add_edge(*edge)
 
-    breadth_first_search(G1, V1.name, bfs_tree, parent)
-    print(parent)
-    assert (parent['V3'] == 'V1' and parent['V2'] == 'V1') or \
-           (parent['V3'] == 'V2' and parent['V2'] == 'V1')
+        parent = dict()
+        def bfs_tree(curr_node, next_node, parent):
+            if next_node != "":
+                parent[next_node] = curr_node
+            return True
 
-    V4 = AdjacencyListGraphNode("V4")
-    V5 = AdjacencyListGraphNode("V5")
-    V6 = AdjacencyListGraphNode("V6")
-    V7 = AdjacencyListGraphNode("V7")
-    V8 = AdjacencyListGraphNode("V8")
+        breadth_first_search(G1, V1.name, bfs_tree, parent)
+        assert (parent[V3.name] == V1.name and parent[V2.name] == V1.name) or \
+            (parent[V3.name] == V2.name and parent[V2.name] == V1.name)
 
-    edges = [
-        (V4.name, V5.name),
-        (V5.name, V6.name),
-        (V6.name, V7.name),
-        (V6.name, V4.name),
-        (V7.name, V8.name)
-    ]
+        V4 = GraphNode(0)
+        V5 = GraphNode(1)
+        V6 = GraphNode(2)
+        V7 = GraphNode(3)
+        V8 = GraphNode(4)
 
-    G2 = Graph(V4, V5, V6, V7, V8)
+        edges = [
+            (V4.name, V5.name),
+            (V5.name, V6.name),
+            (V6.name, V7.name),
+            (V6.name, V4.name),
+            (V7.name, V8.name)
+        ]
 
-    for edge in edges:
-        G2.add_edge(*edge)
+        G2 = Graph(V4, V5, V6, V7, V8, implementation=impl)
 
-    path = []
-    def path_finder(curr_node, next_node, dest_node, parent, path):
-        if next_node != "":
-            parent[next_node] = curr_node
-        if curr_node == dest_node:
-            node = curr_node
-            path.append(node)
-            while node is not None:
-                if parent.get(node, None) is not None:
-                    path.append(parent[node])
-                node = parent.get(node, None)
-            path.reverse()
-            return False
-        return True
+        for edge in edges:
+            G2.add_edge(*edge)
 
-    parent.clear()
-    breadth_first_search(G2, V4.name, path_finder, V7.name, parent, path)
-    assert path == ['V4', 'V5', 'V6', 'V7']
+        path = []
+        def path_finder(curr_node, next_node, dest_node, parent, path):
+            if next_node != "":
+                parent[next_node] = curr_node
+            if curr_node == dest_node:
+                node = curr_node
+                path.append(node)
+                while node is not None:
+                    if parent.get(node, None) is not None:
+                        path.append(parent[node])
+                    node = parent.get(node, None)
+                path.reverse()
+                return False
+            return True
+
+        parent.clear()
+        breadth_first_search(G2, V4.name, path_finder, V7.name, parent, path)
+        assert path == [V4.name, V5.name, V6.name, V7.name]
+
+    _test_breadth_first_search("List", "adjacency_list")
+    _test_breadth_first_search("Matrix", "adjacency_matrix")

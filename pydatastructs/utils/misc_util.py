@@ -152,7 +152,7 @@ class AdjacencyListGraphNode(GraphNode):
     """
     def __new__(cls, name, data=None, adjacency_list=None):
         obj = GraphNode.__new__(cls)
-        obj.name, obj.data = name, data
+        obj.name, obj.data = str(name), data
         if adjacency_list is not None:
             for node in adjacency_list:
                 obj.__setattr__(node.name, node)
@@ -197,10 +197,10 @@ class AdjacencyMatrixGraphNode(GraphNode):
     """
     __slots__ = ['name', 'data']
 
-    def __new__(cls, name, data):
+    def __new__(cls, name, data=None):
         obj = GraphNode.__new__(cls)
         obj.name, obj.data, obj.is_connected = \
-            name, data, None
+            int(name), data, None
         return obj
 
 class GraphEdge(object):
