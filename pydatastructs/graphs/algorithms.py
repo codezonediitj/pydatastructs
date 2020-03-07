@@ -20,11 +20,11 @@ def breadth_first_search(
 def _breadth_first_search_adjacency_list(
     graph, source_node, operation, *args, **kwargs):
     bfs_queue = Queue()
-    bfs_queue.append(source_node)
     visited = dict()
+    bfs_queue.append(source_node)
+    visited[source_node] = True
     while len(bfs_queue) != 0:
         curr_node = bfs_queue.popleft()
-        visited[curr_node] = True
         next_nodes = graph.neighbors(curr_node)
         if len(next_nodes) != 0:
             for next_node in next_nodes:
@@ -33,6 +33,7 @@ def _breadth_first_search_adjacency_list(
                     if not status:
                         return None
                     bfs_queue.append(next_node.name)
+                    visited[next_node.name] = True
         else:
             status = operation(curr_node, "", *args, **kwargs)
             if not status:
