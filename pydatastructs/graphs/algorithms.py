@@ -5,6 +5,7 @@ data structure.
 # TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 from pydatastructs.utils.misc_util import AdjacencyListGraphNode
+from concurrent.futures import ThreadPoolExecutor
 
 __all__ = [
     'breadth_first_search',
@@ -90,3 +91,48 @@ def _breadth_first_search_adjacency_list(
                 return None
 
 _breadth_first_search_adjacency_matrix = _breadth_first_search_adjacency_list
+
+def breadth_first_search_parallel(
+    graph, source_node, num_threads, operation, *args, **kwargs):
+    if num_threads <= 0:
+        raise ValueError("Number threads should be positive, "
+                         "found %s"%(num_threads))
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_breadth_first_search_parallel_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently breadth first search isn't implemented for "
+        "%s graphs."%(graph._impl))
+    return getattr(algorithms, func)(
+           graph, source_node, operation, *args, **kwargs)
+
+def generate_layer(graph, curr_node, next_layer, visited,
+                   status, operation, args, kwargs):
+    next_nodes = graph.neighbors(curr_node)
+    if len(next_nodes) != 0:
+        for next_node in next_nodes:
+            if visited.get(next_node, False) is False:
+                status = status and operation(curr_node, next_node.name, *args, **kwargs)
+                next_layer.add(next_node.name)
+                visited[next_node] = True
+    else:
+        status = status and operation(curr_node, "", *args, **kwargs)
+
+def _breadth_first_search_parallel_adjacency_list(
+    graph, source_node, num_threads, operation, *args, **kwargs):
+    visited, layers = dict(), dict()
+    layers[0] = set()
+    layers[0].add(source_node)
+    visited[source_node] = True
+    layer = 0
+    while len(layers[layer]) != 0:
+        status = True
+        layers[layer+1] = set()
+        with ThreadPoolExecutor(max_workers=num_threads) as Threads:
+            Threads.map(generate_layer,
+                        [(graph, node, layers[layer+1], visited,
+                         status, operation, args, kwargs)
+                         for node in layers[layer]])
+        layer += 1
+        if not status:
+            return None
