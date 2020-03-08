@@ -9,6 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 __all__ = [
     'breadth_first_search',
+    'breadth_first_search_parallel'
 ]
 
 def breadth_first_search(
@@ -104,10 +105,11 @@ def breadth_first_search_parallel(
         "Currently breadth first search isn't implemented for "
         "%s graphs."%(graph._impl))
     return getattr(algorithms, func)(
-           graph, source_node, operation, *args, **kwargs)
+           graph, source_node, num_threads, operation, *args, **kwargs)
 
 def generate_layer(graph, curr_node, next_layer, visited,
                    status, operation, args, kwargs):
+    print(curr_node)
     next_nodes = graph.neighbors(curr_node)
     if len(next_nodes) != 0:
         for next_node in next_nodes:
