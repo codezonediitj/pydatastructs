@@ -40,8 +40,7 @@ def test_BinaryHeap():
                 TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
             ]
     min_heap = BinaryHeap(elements = elements, heap_property="min")
-    expected_extracted_element = min_heap.heap[0].key
-    assert min_heap.extract().key == expected_extracted_element
+    assert min_heap.extract().key == 1
 
     expected_sorted_elements = [2, 3, 7, 17, 19, 25, 36, 100]
     sorted_elements = [min_heap.extract().key for _ in range(8)]
@@ -65,8 +64,7 @@ def test_TernaryHeap():
             '(3, 3, []), (19, 19, []), (1, 1, []), '
             '(2, 2, []), (7, 7, [])]')
 
-    expected_extracted_element = max_heap.heap[0].key
-    assert max_heap.extract().key == expected_extracted_element
+    assert max_heap.extract().key == 100
 
     expected_sorted_elements = [36, 25, 19, 17, 7, 3, 2, 1]
     sorted_elements = []
@@ -79,7 +77,7 @@ def test_TernaryHeap():
         TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
         TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
     ]
-    min_heap = BinaryHeap(elements=elements, heap_property="min")
+    min_heap = TernaryHeap(elements=elements, heap_property="min")
     expected_extracted_element = min_heap.heap[0].key
     assert min_heap.extract().key == expected_extracted_element
 
@@ -88,8 +86,8 @@ def test_TernaryHeap():
     assert expected_sorted_elements == sorted_elements
 
 def test_DHeap():
-    assert raises(ValueError, lambda: DHeap(heap_property="none", d=3))
-    max_heap = DHeap(heap_property="max", d=4)
+    assert raises(ValueError, lambda: DHeap(heap_property="none", d=4))
+    max_heap = DHeap(heap_property="max", d=5)
     assert max_heap.extract() is None
     max_heap.insert(100, 100)
     max_heap.insert(19, 19)
@@ -98,14 +96,13 @@ def test_DHeap():
     max_heap.insert(3, 3)
     max_heap.insert(25, 25)
     max_heap.insert(1, 1)
-    max_heap = DHeap(max_heap.heap, heap_property="max", d=3)
+    max_heap = DHeap(max_heap.heap, heap_property="max", d=4)
     max_heap.insert(2, 2)
     max_heap.insert(7, 7)
     assert str(max_heap) == \
-           ('[(100, 100, [1, 2, 3]), (25, 25, [4, 5, 6]), '
-            '(36, 36, [7, 8]), (17, 17, []), '
-            '(3, 3, []), (19, 19, []), (1, 1, []), '
-            '(2, 2, []), (7, 7, [])]')
+           ('[(100, 100, [1, 2, 3, 4]), (25, 25, [5, 6, 7, 8]), '
+           '(36, 36, []), (17, 17, []), (3, 3, []), (19, 19, []), '
+           '(1, 1, []), (2, 2, []), (7, 7, [])]')
 
     expected_extracted_element = max_heap.heap[0].key
     assert max_heap.extract().key == expected_extracted_element
@@ -121,9 +118,8 @@ def test_DHeap():
         TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
         TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
     ]
-    min_heap = BinaryHeap(elements=elements, heap_property="min")
-    expected_extracted_element = min_heap.heap[0].key
-    assert min_heap.extract().key == expected_extracted_element
+    min_heap = DHeap(elements=elements, heap_property="min")
+    assert min_heap.extract().key == 1
 
     expected_sorted_elements = [2, 3, 7, 17, 19, 25, 36, 100]
     sorted_elements = [min_heap.extract().key for _ in range(8)]

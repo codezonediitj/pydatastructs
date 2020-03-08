@@ -69,9 +69,9 @@ class DHeap(Heap):
 
     .. [1] https://en.wikipedia.org/wiki/D-ary_heap
     """
-    __slots__ = ['_comp', 'heap', 'm', 'heap_property', '_last_pos_filled']
+    __slots__ = ['_comp', 'heap', 'd', 'heap_property', '_last_pos_filled']
 
-    def __new__(cls, elements=None, heap_property="min", d=3):
+    def __new__(cls, elements=None, heap_property="min", d=4):
         obj = Heap.__new__(cls)
         obj.heap_property = heap_property
         obj.d = d
@@ -281,16 +281,18 @@ class TernaryHeap(DHeap):
     >>> min_heap.insert(1, 1)
     >>> min_heap.insert(5, 5)
     >>> min_heap.insert(7, 7)
+    >>> min_heap.insert(3, 3)
     >>> min_heap.extract().key
     1
     >>> min_heap.insert(4, 4)
     >>> min_heap.extract().key
-    4
+    3
 
     >>> max_heap = TernaryHeap(heap_property='max')
     >>> max_heap.insert(1, 1)
     >>> max_heap.insert(5, 5)
     >>> max_heap.insert(7, 7)
+    >>> min_heap.insert(3, 3)
     >>> max_heap.extract().key
     7
     >>> max_heap.insert(6, 6)
