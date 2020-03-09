@@ -2,11 +2,16 @@ __all__ = []
 
 from . import (
     binary_trees,
-    space_partitioning_trees
+    space_partitioning_trees,
+    heaps
 )
 
 from .binary_trees import (
-    TreeNode, BinaryTree, BinarySearchTree, BinaryTreeTraversal, AVLTree
+    BinaryTree,
+    BinarySearchTree,
+    BinaryTreeTraversal,
+    AVLTree,
+    BinaryIndexedTree
 )
 __all__.extend(binary_trees.__all__)
 
