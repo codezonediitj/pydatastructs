@@ -95,6 +95,53 @@ _breadth_first_search_adjacency_matrix = _breadth_first_search_adjacency_list
 
 def breadth_first_search_parallel(
     graph, source_node, num_threads, operation, *args, **kwargs):
+    """
+    Parallel implementation of breadth first search on graphs.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph on which BFS is to be performed.
+    source_node: str
+        The name of the source node from where the BFS is
+        to be initiated.
+    num_threads: int
+        Number of threads to be used for computation.
+    operation: function
+        The function which is to be applied
+        on every node when it is visited.
+        The prototype which is to be followed is,
+        `function_name(curr_node, next_node,
+                       arg_1, arg_2, . . ., arg_n)`.
+        Here, the first two arguments denote, the
+        current node and the node next to current node.
+        The rest of the arguments are optional and you can
+        provide your own stuff there.
+
+    Note
+    ====
+
+    You should pass all the arguments which you are going
+    to use in the prototype of your `operation` after
+    passing the operation function.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V1, V2, V3)
+    >>> from pydatastructs import breadth_first_search_parallel
+    >>> def f(curr_node, next_node, dest_node):
+    ...     return curr_node != dest_node
+    ...
+    >>> G.add_edge(V1.name, V2.name)
+    >>> G.add_edge(V2.name, V3.name)
+    >>> breadth_first_search_parallel(G, V1.name, 3, f, V3.name)
+    """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_breadth_first_search_parallel_" + graph._impl
     if not hasattr(algorithms, func):
