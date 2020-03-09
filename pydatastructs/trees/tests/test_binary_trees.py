@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees)
+    ArrayForTrees, BinaryIndexedTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
@@ -274,3 +274,17 @@ def test_AVLTree():
     test_select_rank([2])
     a5.delete(2)
     test_select_rank([])
+
+def test_BinaryIndexedTree():
+
+    FT = BinaryIndexedTree
+
+    t = FT([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+    assert t.get_sum(0, 2) == 6
+    assert t.get_sum(0, 4) == 15
+    assert t.get_sum(0, 9) == 55
+    t.update(0, 100)
+    assert t.get_sum(0, 2) == 105
+    assert t.get_sum(0, 4) == 114
+    assert t.get_sum(1, 9) == 54

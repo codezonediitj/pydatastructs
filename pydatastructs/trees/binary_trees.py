@@ -10,7 +10,8 @@ __all__ = [
     'AVLTree',
     'BinaryTree',
     'BinarySearchTree',
-    'BinaryTreeTraversal'
+    'BinaryTreeTraversal',
+    'BinaryIndexedTree'
 ]
 
 class BinaryTree(object):
@@ -783,3 +784,120 @@ class BinaryTreeTraversal(object):
             if tree[node].right is not None:
                 q.append(tree[node].right)
         return visit
+
+class BinaryIndexedTree(object):
+    """
+    Represents binary indexed trees
+    a.k.a fenwick trees.
+
+    Parameters
+    ==========
+
+    array: list/tuple
+        The array whose elements are to be
+        considered for the queries.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import BinaryIndexedTree
+    >>> bit = BinaryIndexedTree([1, 2, 3])
+    >>> bit.get_sum(0, 2)
+    6
+    >>> bit.update(0, 100)
+    >>> bit.get_sum(0, 2)
+    105
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Fenwick_tree
+    """
+
+    __slots__ = ['tree', 'array', 'flag']
+
+    def __new__(cls, array):
+
+        obj = object.__new__(cls)
+        obj.array = OneDimensionalArray(type(array[0]), array)
+        obj.tree = [0] * (obj.array._size + 2)
+        obj.flag = [0] * (obj.array._size)
+        for index in range(obj.array._size):
+            obj.update(index, array[index])
+        return obj
+
+    def update(self, index, value):
+        """
+        Updates value at the given index.
+
+        Parameters
+        ==========
+
+        index: int
+            Index of element to be updated.
+
+        value
+            The value to be inserted.
+        """
+        _index, _value = index, value
+        if self.flag[index] == 0:
+            self.flag[index] = 1
+            index += 1
+            while index < self.array._size + 1:
+                self.tree[index] += value
+                index = index + (index & (-index))
+        else:
+            value = value - self.array[index]
+            index += 1
+            while index < self.array._size + 1:
+                self.tree[index] += value
+                index = index + (index & (-index))
+        self.array[_index] = _value
+
+    def get_prefix_sum(self, index):
+        """
+        Computes sum of elements from index 0 to given index.
+
+        Parameters
+        ==========
+
+        index: int
+            Index till which sum has to be calculated.
+
+        Returns
+        =======
+
+        sum: int
+            The required sum.
+        """
+        index += 1
+        sum = 0
+        while index > 0:
+            sum += self.tree[index]
+            index = index - (index & (-index))
+        return sum
+
+    def get_sum(self, left_index, right_index):
+        """
+        Get sum of elements from left index to right index.
+
+        Parameters
+        ==========
+
+        left_index: int
+            Starting index from where sum has to be computed.
+
+        right_index: int
+            Ending index till where sum has to be computed.
+
+        Returns
+        =======
+
+        sum: int
+            The required sum
+        """
+        if left_index >= 1:
+            return self.get_prefix_sum(right_index) - \
+                   self.get_prefix_sum(left_index - 1)
+        else:
+            return self.get_prefix_sum(right_index)
