@@ -1,4 +1,5 @@
 from pydatastructs.trees.heaps import BinaryHeap, TernaryHeap, BinomialHeap, DHeap
+from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
 from pydatastructs.miscellaneous_data_structures.binomial_trees import BinomialTree
 from pydatastructs.utils.misc_util import TreeNode, BinomialTreeNode
 from pydatastructs.utils.raises_util import raises
@@ -25,10 +26,11 @@ def test_BinaryHeap():
         "(3, 3, []), (25, 25, []), (1, 1, []), "
         "(2, 2, []), (7, 7, [])]")
 
-    expected_extracted_element = max_heap.heap[0].key
-    assert max_heap.extract().key == expected_extracted_element
+    assert max_heap.extract().key == 100
 
     expected_sorted_elements = [36, 25, 19, 17, 7, 3, 2, 1]
+    l=max_heap.heap[0].left
+    l=max_heap.heap[0].right
     sorted_elements = []
     for _ in range(8):
         sorted_elements.append(max_heap.extract().key)
@@ -39,7 +41,7 @@ def test_BinaryHeap():
                 TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
                 TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
             ]
-    min_heap = BinaryHeap(elements = elements, heap_property="min")
+    min_heap = BinaryHeap(elements=DynamicOneDimensionalArray(TreeNode, 9, elements), heap_property="min")
     assert min_heap.extract().key == 1
 
     expected_sorted_elements = [2, 3, 7, 17, 19, 25, 36, 100]
@@ -77,7 +79,7 @@ def test_TernaryHeap():
         TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
         TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
     ]
-    min_heap = TernaryHeap(elements=elements, heap_property="min")
+    min_heap = TernaryHeap(elements=DynamicOneDimensionalArray(TreeNode, 9, elements), heap_property="min")
     expected_extracted_element = min_heap.heap[0].key
     assert min_heap.extract().key == expected_extracted_element
 
@@ -104,8 +106,7 @@ def test_DHeap():
            '(36, 36, []), (17, 17, []), (3, 3, []), (19, 19, []), '
            '(1, 1, []), (2, 2, []), (7, 7, [])]')
 
-    expected_extracted_element = max_heap.heap[0].key
-    assert max_heap.extract().key == expected_extracted_element
+    assert max_heap.extract().key == 100
 
     expected_sorted_elements = [36, 25, 19, 17, 7, 3, 2, 1]
     sorted_elements = []
@@ -118,7 +119,7 @@ def test_DHeap():
         TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
         TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
     ]
-    min_heap = DHeap(elements=elements, heap_property="min")
+    min_heap = DHeap(elements=DynamicOneDimensionalArray(TreeNode, 9, elements), heap_property="min")
     assert min_heap.extract().key == 1
 
     expected_sorted_elements = [2, 3, 7, 17, 19, 25, 36, 100]

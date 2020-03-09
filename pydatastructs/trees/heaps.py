@@ -82,15 +82,15 @@ class DHeap(Heap):
         else:
             raise ValueError("%s is invalid heap property"%(heap_property))
         if elements is None:
-            elements = []
+            elements = DynamicOneDimensionalArray(TreeNode, 0)
         obj.heap = elements
-        obj._last_pos_filled = len(elements) - 1
+        obj._last_pos_filled = obj.heap._last_pos_filled
         obj._build()
         return obj
 
     def _build(self):
         for i in range(self._last_pos_filled + 1):
-            self.heap[i].left, self.heap[i].right = \
+            self.heap[i]._leftmost, self.heap[i]._rightmost = \
                 self.d*i + 1, self.d*i + self.d
         for i in range((self._last_pos_filled + 1)//self.d, -1, -1):
             self._heapify(i)
@@ -143,7 +143,7 @@ class DHeap(Heap):
         self.heap.append(new_node)
         self._last_pos_filled += 1
         i = self._last_pos_filled
-        self.heap[i].left, self.heap[i].right = self.d*i + 1, self.d*i + self.d
+        self.heap[i]._leftmost, self.heap[i]._rightmost = self.d*i + 1, self.d*i + self.d
 
         while True:
             parent = (i - 1)//self.d
@@ -171,22 +171,20 @@ class DHeap(Heap):
         else:
             element_to_be_extracted = TreeNode(self.heap[0].key, self.heap[0].data)
             self._swap(0, self._last_pos_filled)
-            self.heap[self._last_pos_filled] = TreeNode(float('inf') if self.heap_property == 'min'
-                                                                else float('-inf'), None)
-            self._heapify(0)
-            self.heap.pop()
+            self.heap.delete(self._last_pos_filled)
             self._last_pos_filled -= 1
+            self._heapify(0)
             return element_to_be_extracted
 
     def __str__(self):
         to_be_printed = ['' for i in range(self._last_pos_filled + 1)]
         for i in range(self._last_pos_filled + 1):
             node = self.heap[i]
-            if node.left <= self._last_pos_filled:
-                if node.right <= self._last_pos_filled:
-                    children = [x for x in range(node.left, node.right + 1)]
+            if node._leftmost <= self._last_pos_filled:
+                if node._rightmost <= self._last_pos_filled:
+                    children = [x for x in range(node._leftmost, node._rightmost + 1)]
                 else:
-                    children = [x for x in range(node.left, self._last_pos_filled + 1)]
+                    children = [x for x in range(node._leftmost, self._last_pos_filled + 1)]
             else:
                 children = []
             to_be_printed[i] = (node.key, node.data, children)
@@ -303,6 +301,7 @@ class TernaryHeap(DHeap):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/D-ary_heap
+    .. [2] https://ece.uwaterloo.ca/~dwharder/aads/Algorithms/d-ary_heaps/Ternary_heaps/
     """
     def __new__(cls, elements=None, heap_property="min"):
         obj = DHeap.__new__(cls, elements, heap_property, 3)
