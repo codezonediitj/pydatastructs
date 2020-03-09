@@ -95,9 +95,6 @@ _breadth_first_search_adjacency_matrix = _breadth_first_search_adjacency_list
 
 def breadth_first_search_parallel(
     graph, source_node, num_threads, operation, *args, **kwargs):
-    if num_threads <= 0:
-        raise ValueError("Number threads should be positive, "
-                         "found %s"%(num_threads))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_breadth_first_search_parallel_" + graph._impl
     if not hasattr(algorithms, func):
@@ -107,18 +104,21 @@ def breadth_first_search_parallel(
     return getattr(algorithms, func)(
            graph, source_node, num_threads, operation, *args, **kwargs)
 
-def generate_layer(graph, curr_node, next_layer, visited,
-                   status, operation, args, kwargs):
-    print(curr_node)
+def _generate_layer(**kwargs):
+    _args, _kwargs = kwargs.get('args'), kwargs.get('kwargs')
+    (graph, curr_node, next_layer, visited, operation) = _args[0:5]
+    op_args, op_kwargs = _args[5:], _kwargs
     next_nodes = graph.neighbors(curr_node)
+    status = True
     if len(next_nodes) != 0:
         for next_node in next_nodes:
             if visited.get(next_node, False) is False:
-                status = status and operation(curr_node, next_node.name, *args, **kwargs)
+                status = status and operation(curr_node, next_node.name, *op_args, **op_kwargs)
                 next_layer.add(next_node.name)
-                visited[next_node] = True
+                visited[next_node.name] = True
     else:
-        status = status and operation(curr_node, "", *args, **kwargs)
+        status = status and operation(curr_node, "", *op_args, **op_kwargs)
+    return status
 
 def _breadth_first_search_parallel_adjacency_list(
     graph, source_node, num_threads, operation, *args, **kwargs):
@@ -128,13 +128,15 @@ def _breadth_first_search_parallel_adjacency_list(
     visited[source_node] = True
     layer = 0
     while len(layers[layer]) != 0:
-        status = True
         layers[layer+1] = set()
-        with ThreadPoolExecutor(max_workers=num_threads) as Threads:
-            Threads.map(generate_layer,
-                        [(graph, node, layers[layer+1], visited,
-                         status, operation, args, kwargs)
-                         for node in layers[layer]])
+        with ThreadPoolExecutor(max_workers=num_threads) as Executor:
+            for node in layers[layer]:
+                status = Executor.submit(
+                         _generate_layer, args=
+                         (graph, node, layers[layer+1], visited,
+                          operation, *args), kwargs=kwargs).result()
         layer += 1
         if not status:
             return None
+
+_breadth_first_search_parallel_adjacency_matrix = _breadth_first_search_parallel_adjacency_list
