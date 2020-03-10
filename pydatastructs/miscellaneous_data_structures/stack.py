@@ -54,7 +54,7 @@ class Stack(object):
                 kwargs.get('dtype', int))
 
         elif implementation == "ll":
-            return Linked_Stacks()
+            return LinkedListStack()
 
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
@@ -120,25 +120,6 @@ class ArrayStack(Stack):
 class LinkedListStack(Stack):
 
     """Representation of Stack Data Structure using Doubly Linked List
-    Methods
-    ===========
-    push :
-    A normal push operation to the Stack
-
-    pop :
-    Delete the top most element from the stack
-    Returns the value of top element
-
-    peek :
-    returns the value of top element
-
-    is_empty :
-    Checks for whether a Stack is been empty or not
-    Return True if empty else False
-
-    __str__ :
-    Used for Printing the Stack
-
     """
     __slots__ = ["dll"]
     def __new__(cls):
@@ -165,11 +146,7 @@ class LinkedListStack(Stack):
 
     @property
     def is_empty(self):
-        if self.top is None:
-            return 1
-        return 0
         return self.top is None
-
 
     @property
     def peek(self):

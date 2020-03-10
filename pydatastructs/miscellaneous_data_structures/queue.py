@@ -6,6 +6,7 @@ __all__ = [
     'Queue'
 ]
 
+
 class Queue(object):
     """Representation of queue data structure.
 
@@ -51,8 +52,12 @@ class Queue(object):
             return ArrayQueue(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
+        elif implementation=="pq":
+            return PriorityQueue()
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
+
+
 
     def append(self, *args, **kwargs):
         raise NotImplementedError(
@@ -122,3 +127,50 @@ class ArrayQueue(Queue):
         for i in range(self.front, self.rear + 1):
             _data.append(self.items._data[i])
         return str(_data)
+
+class PriorityQueue(Queue):
+
+    '''
+    PARAMETERS
+    ==========
+    insert : method()
+    Used to insert data into the queue
+    '''
+    def __new__(cls):
+        obj = object.__new__(cls)
+        obj.queue =[]
+        return obj
+
+    def __str__(self):
+        return ''.join([str(i) for i in self.queue])
+
+    def insert(self,data):
+        self.queue.append(data)
+
+    def deleteHighestPriority(self,priority="max"):
+        if self.is_empty:
+            raise ValueError("Queue is Empty")
+        if priority=="max":
+            max_ = max(self.queue)
+            max_index = self.queue.index(max_)
+            del self.queue[max_index]
+            return max_
+        elif priority=="min":
+            min_ = min(self.queue)
+            min_index = self.queue.index(min_)
+            del self.queue[min_index]
+            return min_
+    def getHighestPriority(self,priority="max"):
+        if self.is_empty:
+            raise ValueError("Queue is Empty")
+        if priority=="max":
+            max_ = max(self.queue)
+            max_index = self.queue.index(max_)
+            return max_
+        elif priority=="min":
+            min_ = min(self.queue)
+            min_index = self.queue.index(min_)
+            return min_
+    @property
+    def is_empty(self):
+        return len(self.queue)==0
