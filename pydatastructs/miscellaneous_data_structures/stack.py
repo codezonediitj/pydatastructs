@@ -76,6 +76,7 @@ class Stack(object):
     def peek(self):
         return None
 
+
 class ArrayStack(Stack):
 
     __slots__ = ['items']
@@ -116,7 +117,7 @@ class ArrayStack(Stack):
         """
         return str(self.items._data)
 
-class Linked_Stacks(Stack):
+class LinkedListStack(Stack):
 
     """Representation of Stack Data Structure using Doubly Linked List
     Methods
@@ -160,23 +161,29 @@ class Linked_Stacks(Stack):
             self.top = self.top.prev
             return self.data
         else:
-            return "Stack is empty"
+            raise ValueError
 
     @property
     def is_empty(self):
         if self.top is None:
             return 1
         return 0
+        return self.top is None
+
 
     @property
     def peek(self):
         if self.top is not None:
             return self.top.data
-        return "Stack is empty"
+        raise ValueError
 
     def __str__(self):
         "Used for Printing the Stack"
         iterator = self.top
+        output = ""
         while iterator is not None:
-            print(iterator.data)
-            iterator = iterator.next
+            #print(iterator.data)
+            output+=str(iterator.data)+"\n"
+            iterator = iterator.prev
+        output = output[:-1]
+        return output
