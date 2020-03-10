@@ -60,3 +60,9 @@ dist/
 ################
 .vscode/
 .vs/
+
+# Other Files #
+################
+.idea/
+build/
+dist/

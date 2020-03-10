@@ -1,6 +1,8 @@
+ queue
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray , SinglyLinkedList
 from pydatastructs.utils.misc_util import NoneType , LinkedListNode
 from copy import deepcopy as dc
+
 
 __all__ = [
     'Queue'
@@ -20,6 +22,10 @@ class Queue(object):
     dtype : A valid python type
         Optional, by default NoneType if item
         is None.
+ queue
+
+
+master
     Examples
     ========
     >>> from pydatastructs import Queue
@@ -46,8 +52,10 @@ class Queue(object):
                 kwargs.get('items', None),
                 kwargs.get('dtype', NoneType)
             )
+ queue
         elif implementation=="priority queue":
             return PriorityQueue()
+ master
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
 
@@ -177,6 +185,7 @@ class LinkedListQueue(Queue):
 
     def __str__(self):
         return str(self.queue)
+queue
 
 class PriorityQueue(Queue):
 
@@ -231,3 +240,5 @@ class PriorityQueue(Queue):
     @property
     def is_empty(self):
         return len(self.queue)==0
+
+master

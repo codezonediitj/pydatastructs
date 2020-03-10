@@ -4,9 +4,9 @@ PyDataStructs
 [![Build Status](https://travis-ci.org/codezonediitj/pydatastructs.png?branch=master)](https://travis-ci.org/codezonediitj/pydatastructs) [![Join the chat at https://gitter.im/codezonediitj/pydatastructs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codezoned2017/Lobby) [![Discuss at pydatastructs@googlegroups.com](https://img.shields.io/badge/discuss-pydatastructs%40googlegroups.com-blue.svg)](https://groups.google.com/forum/#!forum/pydatastructs) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codezonediitj/pydatastructs/pulls) [![codecov](https://codecov.io/gh/codezonediitj/pydatastructs/branch/master/graph/badge.svg)](https://codecov.io/gh/codezonediitj/pydatastructs)
 
 About
------------
+-----
 
-Currently, the aim of the project is to be a Python package for various data structures in computer science. In addition, we are also working on including parallel algorithms. To the best of our knowledge a well designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist. 
+Currently, the project aims to be a Python package for various data structures in computer science. Besides, we are also working on including parallel algorithms. To the best of our knowledge, a well-designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist. 
 
 In future, i.e, after a few releases of the package when the software design will become stable, we also aim to provide APIs for the code in C++ and Java as well.
 
@@ -19,7 +19,7 @@ You can install the library by running the following command,
 python3 setup.py install
 ```
 
-For development purposes you can use the option `develop` as shown below,
+For development purposes, you can use the option `develop` as shown below,
 
 ```python
 python3 setup.py develop
@@ -33,7 +33,7 @@ Testing
 For testing your patch locally follow the steps given below,
 
 1. Install [pytest-cov](https://pypi.org/project/pytest-cov/). Skip this step if you are already having the package.
-2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by less than 1% for your patch.
+2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
 
 Why we use Python?
 ------------------
@@ -57,7 +57,7 @@ Follow the steps given below,
 8. Execute, `git add .`.
 9. Execute, `git commit -m "your-commit-message"`.
 10. Execute, `git push origin_user <your-current-branch>`.
-11. Make a PR.
+11. Make PR.
 
 That's it, 10 easy steps for your first contribution. For future contributions just follow steps 5 to 10. Make sure that before starting work, always checkout to master and pull the recent changes using the remote `origin` and then start following steps 5 to 10.
 
@@ -79,6 +79,6 @@ The following parameters are to be followed to pass the code quality tests for y
 1. There should not be any trailing white spaces at any line of code.
 2. Each `.py` file should end with exactly one new line.
 3. Comparisons involving `True`, `False` and `None` should be done by
-reference(using `is`, `is not`) and not by value(`==`, `!=`).
+reference (using `is`, `is not`) and not by value(`==`, `!=`).
 
 Keep contributing!!
