@@ -1,5 +1,5 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray , SinglyLinkedList
-from pydatastructs.utils.misc_util import NoneType
+from pydatastructs.utils.misc_util import NoneType , LinkedListNode
 from copy import deepcopy as dc
 
 __all__ = [
