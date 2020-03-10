@@ -2,6 +2,7 @@ from pydatastructs.linear_data_structures import DynamicOneDimensionalArray , Si
 from pydatastructs.utils.misc_util import NoneType , LinkedListNode
 from copy import deepcopy as dc
 
+
 __all__ = [
     'Queue'
 ]
@@ -178,7 +179,6 @@ class LinkedListQueue(Queue):
 
     def __str__(self):
         return str(self.queue)
-
 class PriorityQueue(Queue):
 
     '''

@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees)
+    ArrayForTrees, BinaryIndexedTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
@@ -54,7 +54,38 @@ def test_BinarySearchTree():
     assert b.delete(-10) is True
     assert b.delete(-3) is True
     assert b.delete(-13) is None
-    raises(ValueError, lambda: BST(root_data=6))
+    bl = BST()
+    nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
+    for node in nodes:
+        bl.insert(node, node)
+
+    assert bl.lowest_common_ancestor(80, 55, 2) == 70
+    assert bl.lowest_common_ancestor(60, 70, 2) == 70
+    assert bl.lowest_common_ancestor(18, 18, 2) == 18
+    assert bl.lowest_common_ancestor(40, 90, 2) == 50
+
+    assert bl.lowest_common_ancestor(18, 10, 2) == 15
+    assert bl.lowest_common_ancestor(55, 100, 2) == 90
+    assert bl.lowest_common_ancestor(16, 80, 2) == 50
+    assert bl.lowest_common_ancestor(30, 55, 2) == 50
+
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 2))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 2))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 2))
+
+    assert bl.lowest_common_ancestor(80, 55, 1) == 70
+    assert bl.lowest_common_ancestor(60, 70, 1) == 70
+    assert bl.lowest_common_ancestor(18, 18, 1) == 18
+    assert bl.lowest_common_ancestor(40, 90, 1) == 50
+
+    assert bl.lowest_common_ancestor(18, 10, 1) == 15
+    assert bl.lowest_common_ancestor(55, 100, 1) == 90
+    assert bl.lowest_common_ancestor(16, 80, 1) == 50
+    assert bl.lowest_common_ancestor(30, 55, 1) == 50
+
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree
@@ -274,3 +305,17 @@ def test_AVLTree():
     test_select_rank([2])
     a5.delete(2)
     test_select_rank([])
+
+def test_BinaryIndexedTree():
+
+    FT = BinaryIndexedTree
+
+    t = FT([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+    assert t.get_sum(0, 2) == 6
+    assert t.get_sum(0, 4) == 15
+    assert t.get_sum(0, 9) == 55
+    t.update(0, 100)
+    assert t.get_sum(0, 2) == 105
+    assert t.get_sum(0, 4) == 114
+    assert t.get_sum(1, 9) == 54

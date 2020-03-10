@@ -1,4 +1,4 @@
-from pydatastructs.linear_data_structures import DoublyLinkedList, SinglyLinkedList
+from pydatastructs.linear_data_structures import DoublyLinkedList, SinglyLinkedList, SinglyCircularLinkedList, DoublyCircularLinkedList
 from pydatastructs.utils.raises_util import raises
 import copy, random
 
@@ -17,8 +17,8 @@ def test_DoublyLinkedList():
     dll.insert_at(0, 2)
     dll.insert_at(-1, 9)
     dll.extract(2)
-    dll.extract(0)
-    dll.extract(-1)
+    assert dll.pop_left().data == 2
+    assert dll.pop_right().data == 4
     dll[-2].data = 0
     assert str(dll) == "[7, 5, 1, 6, 1, 0, 9]"
     assert len(dll) == 7
@@ -50,8 +50,8 @@ def test_SinglyLinkedList():
     sll.insert_at(0, 2)
     sll.insert_at(-1, 9)
     sll.extract(2)
-    sll.extract(0)
-    sll.extract(-1)
+    assert sll.pop_left().data == 2
+    assert sll.pop_right().data == 6
     sll[-2].data = 0
     assert str(sll) == "[2, 4, 1, 0, 9]"
     assert len(sll) == 5
@@ -69,3 +69,71 @@ def test_SinglyLinkedList():
         sll_copy.extract(index)
     assert str(sll_copy) == "[]"
     assert raises(ValueError, lambda: sll_copy.extract(1))
+
+def test_SinglyCircularLinkedList():
+    random.seed(1000)
+    scll = SinglyCircularLinkedList()
+    assert raises(IndexError, lambda: scll[2])
+    scll.append_left(5)
+    scll.append(1)
+    scll.append_left(2)
+    scll.append(3)
+    scll.insert_after(scll[1], 4)
+    scll.insert_after(scll[-1], 6)
+    scll.insert_at(0, 2)
+    scll.insert_at(-1, 9)
+    scll.extract(2)
+    assert scll.pop_left().data == 2
+    assert scll.pop_right().data == 6
+    scll[-2].data = 0
+    assert str(scll) == "[2, 4, 1, 0, 9]"
+    assert len(scll) == 5
+    assert raises(IndexError, lambda: scll.insert_at(6, None))
+    assert raises(IndexError, lambda: scll.extract(20))
+    scll_copy = copy.deepcopy(scll)
+    for i in range(len(scll)):
+        if i%2 == 0:
+            scll.pop_left()
+        else:
+            scll.pop_right()
+    assert str(scll) == "[]"
+    for _ in range(len(scll_copy)):
+        index = random.randint(0, len(scll_copy) - 1)
+        scll_copy.extract(index)
+    assert str(scll_copy) == "[]"
+    assert raises(ValueError, lambda: scll_copy.extract(1))
+
+def test_DoublyCircularLinkedList():
+    random.seed(1000)
+    dcll = DoublyCircularLinkedList()
+    assert raises(IndexError, lambda: dcll[2])
+    dcll.append_left(5)
+    dcll.append(1)
+    dcll.append_left(2)
+    dcll.append(3)
+    dcll.insert_after(dcll[-1], 4)
+    dcll.insert_after(dcll[2], 6)
+    dcll.insert_before(dcll[4], 1)
+    dcll.insert_before(dcll[0], 7)
+    dcll.insert_at(0, 2)
+    dcll.insert_at(-1, 9)
+    dcll.extract(2)
+    assert dcll.pop_left().data == 2
+    assert dcll.pop_right().data == 4
+    dcll[-2].data = 0
+    assert str(dcll) == "[7, 5, 1, 6, 1, 0, 9]"
+    assert len(dcll) == 7
+    assert raises(IndexError, lambda: dcll.insert_at(8, None))
+    assert raises(IndexError, lambda: dcll.extract(20))
+    dcll_copy = copy.deepcopy(dcll)
+    for i in range(len(dcll)):
+        if i%2 == 0:
+            dcll.pop_left()
+        else:
+            dcll.pop_right()
+    assert str(dcll) == "[]"
+    for _ in range(len(dcll_copy)):
+        index = random.randint(0, len(dcll_copy) - 1)
+        dcll_copy.extract(index)
+    assert str(dcll_copy) == "[]"
+    assert raises(ValueError, lambda: dcll_copy.extract(1))
