@@ -31,6 +31,7 @@ class Queue(object):
     1
     >>> len(q)
     2
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Queue_(abstract_data_type)
