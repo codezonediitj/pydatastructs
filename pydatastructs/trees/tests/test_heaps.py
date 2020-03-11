@@ -52,9 +52,8 @@ def test_BinaryHeap():
                 TreeNode(1, 1), (2, 2), TreeNode(3, 3),
                 TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
             ]
-    assert raises(TypeError, lambda:
+    assert raises(ValueError, lambda:
                 BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
-
 def test_TernaryHeap():
     max_heap = TernaryHeap(heap_property="max")
     assert max_heap.extract() is None
