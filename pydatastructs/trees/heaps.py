@@ -85,10 +85,8 @@ class DHeap(Heap):
         if elements is None:
             elements = DynamicOneDimensionalArray(TreeNode, 0)
         else:
-            check_node = map(lambda x: type(x)==type(TreeNode(1,1)),elements)
-            is_node = all(check_node)
-            if(not is_node):
-                raise TypeError("Elements have to be list/tuple of TreeNode")
+            if not all(map(lambda x: _check_type(x, TreeNode), elements)):
+                raise ValueError("Expect a list/tuple of TreeNode got %s"%(elements))
         obj.heap = elements
         obj._last_pos_filled = obj.heap._last_pos_filled
         obj._build()
