@@ -23,7 +23,7 @@ class BinaryHeap(Heap):
 
     elements : list, tuple
         Optional, by default 'None'.
-        List/tuple of initial elements in Heap.
+        List/tuple of initial TreeNodes in Heap.
 
     heap_property : str
         The property of binary heap.
@@ -80,6 +80,12 @@ class BinaryHeap(Heap):
             raise ValueError("%s is invalid heap property"%(heap_property))
         if elements is None:
             elements = []
+        else:
+            #to check if all elements provided are TreeNodes
+            check_node = map(lambda x: type(x)==type(TreeNode(1,1)),elements)
+            is_node = all(check_node)
+            if(not is_node):
+                raise TypeError("Elements have to be list/tuple of TreeNode")
         obj.heap = elements
         obj._last_pos_filled = len(elements) - 1
         obj._build()
