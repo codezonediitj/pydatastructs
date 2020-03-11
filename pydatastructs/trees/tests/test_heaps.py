@@ -48,6 +48,13 @@ def test_BinaryHeap():
     sorted_elements = [min_heap.extract().key for _ in range(8)]
     assert expected_sorted_elements == sorted_elements
 
+    non_TreeNode_elements = [
+                (7, 7), TreeNode(25, 25), TreeNode(100, 100),
+                TreeNode(1, 1), (2, 2), TreeNode(3, 3),
+                TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
+            ]
+    assert raises(ValueError, lambda:
+                BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
 def test_TernaryHeap():
     max_heap = TernaryHeap(heap_property="max")
     assert max_heap.extract() is None

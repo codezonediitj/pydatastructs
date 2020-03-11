@@ -26,7 +26,8 @@ class DHeap(Heap):
 
     elements : list, tuple
         Optional, by default 'None'.
-        List/tuple of initial elements in Heap.
+        List/tuple of initial TreeNode in Heap.
+
 
     heap_property : str
         If the key stored in each node is
@@ -83,6 +84,9 @@ class DHeap(Heap):
             raise ValueError("%s is invalid heap property"%(heap_property))
         if elements is None:
             elements = DynamicOneDimensionalArray(TreeNode, 0)
+        else:
+            if not all(map(lambda x: _check_type(x, TreeNode), elements)):
+                raise ValueError("Expect a list/tuple of TreeNode got %s"%(elements))
         obj.heap = elements
         obj._last_pos_filled = obj.heap._last_pos_filled
         obj._build()
