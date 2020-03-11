@@ -1,5 +1,5 @@
-from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
-from pydatastructs.utils.misc_util import _check_type, NoneType
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
+from pydatastructs.utils.misc_util import _check_type, NoneType, LinkedListNode
 from copy import deepcopy as dc
 
 __all__ = [
@@ -49,6 +49,10 @@ class Stack(object):
     def __new__(cls, implementation='array', **kwargs):
         if implementation == 'array':
             return ArrayStack(
+                kwargs.get('items', None),
+                kwargs.get('dtype', int))
+        elif implementation == 'linkedlist':
+            return LinkedListStack(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
         raise NotImplementedError(
@@ -109,3 +113,61 @@ class ArrayStack(Stack):
         Used for printing.
         """
         return str(self.items._data)
+
+
+class LinkedListStack(Stack):
+
+    def __new__(cls, items=None, dtype=NoneType):
+        obj = object.__new__(cls)
+        obj.stack = SinglyLinkedList()
+        obj._dtype = dtype
+        obj.front = obj.stack.head
+        obj.tail = obj.stack.tail
+        obj.size = 0
+        if items is None:
+            pass
+        elif type(items) in (list, tuple):
+            if len(items) != 0 and dtype is NoneType:
+                obj._dtype = type(items[0])
+            for x in items:
+                if type(x) == obj._dtype:
+                    obj.push(x)
+                else:
+                    raise TypeError("Expected %s but got %s"%(obj._dtype, type(x)))
+        else:
+            raise TypeError("Expected type: list/tuple")
+        return obj
+
+    def push(self, x):
+        if self._dtype is NoneType:
+            self._dtype = type(x)
+        elif type(x) is not self._dtype:
+            raise TypeError("Expected %s but got %s"%(self._dtype, type(x)))
+        self.size += 1
+        self.stack.append_left(x)
+        if self.front is None:
+            self.front = self.stack.head
+        self.rear = self.stack.tail
+
+    def pop(self):
+        if self.is_empty:
+            raise ValueError("Stack is empty")
+        self.size -= 1
+        return_value = self.stack.pop_left()
+        self.front = self.stack.head
+        self.rear = self.stack.tail
+        return return_value
+
+    @property
+    def is_empty(self):
+        return self.size == 0
+
+    @property
+    def peek(self):
+        return self.front
+
+    def __len__(self):
+        return self.size
+
+    def __str__(self):
+        return str(self.stack)
