@@ -40,16 +40,16 @@ class PriorityQueue(object):
                 kwargs.get('items',None),
                 kwargs.get('dtype',int)
             )
-        raise NotImplementedError(f"{implementation} has not been implemented yet!")
+        raise NotImplementedError("%s has not been implemented yet!"%(implementation))
 
     def insert(self):
-        raise NotImplementedError("Abstract Method !")
+        raise NotImplementedError("%s has not been implemented yet!"%(implementation))
 
     def getHighestPriority(self):
-        raise NotImplementedError("Abstract Method !")
+        raise NotImplementedError("%s has not been implemented yet!"%(implementation))
 
     def deleteHighestPriority(self):
-        raise NotImplementedError("Abstract Method !")
+        raise NotImplementedError(" %s has not been implemented yet!"%(implementation))
 
     @property
     def is_empty(self):
