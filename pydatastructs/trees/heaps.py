@@ -85,7 +85,6 @@ class DHeap(Heap):
         if elements is None:
             elements = DynamicOneDimensionalArray(TreeNode, 0)
         else:
-            #to check if all elements provided are TreeNodes
             check_node = map(lambda x: type(x)==type(TreeNode(1,1)),elements)
             is_node = all(check_node)
             if(not is_node):
