@@ -26,7 +26,8 @@ class DHeap(Heap):
 
     elements : list, tuple
         Optional, by default 'None'.
-        List/tuple of initial TreeNodes in Heap.
+        List/tuple of initial TreeNode in Heap.
+
 
     heap_property : str
         If the key stored in each node is
