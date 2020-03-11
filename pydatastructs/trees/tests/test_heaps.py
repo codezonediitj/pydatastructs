@@ -46,7 +46,6 @@ def test_BinaryHeap():
     sorted_elements = [min_heap.extract().key for _ in range(8)]
     assert expected_sorted_elements == sorted_elements
 
-    #To test ValueError on non TreeNode list
     non_TreeNode_elements = [
                 (7, 7), TreeNode(25, 25), TreeNode(100, 100),
                 TreeNode(1, 1), (2, 2), TreeNode(3, 3),
