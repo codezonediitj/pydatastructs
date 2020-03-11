@@ -29,6 +29,8 @@ def test_BinaryHeap():
     assert max_heap.extract().key == 100
 
     expected_sorted_elements = [36, 25, 19, 17, 7, 3, 2, 1]
+    l = max_heap.heap[0].left	
+    l = max_heap.heap[0].right	
     sorted_elements = []
     for _ in range(8):
         sorted_elements.append(max_heap.extract().key)
