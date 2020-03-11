@@ -5,6 +5,8 @@ from pydatastructs.miscellaneous_data_structures.binomial_trees import BinomialT
 
 __all__ = [
     'BinaryHeap',
+    'TernaryHeap',
+    'DHeap',
     'BinomialHeap'
 ]
 
@@ -14,7 +16,182 @@ class Heap(object):
     """
     pass
 
-class BinaryHeap(Heap):
+
+class DHeap(Heap):
+    """
+    Represents D-ary Heap.
+
+    Parameters
+    ==========
+
+    elements : list, tuple
+        Optional, by default 'None'.
+        List/tuple of initial elements in Heap.
+
+    heap_property : str
+        If the key stored in each node is
+        either greater than or equal to
+        the keys in the node's children
+        then pass 'max'.
+        If the key stored in each node is
+        either less than or equal to
+        the keys in the node's children
+        then pass 'min'.
+        By default, the heap property is
+        set to 'min'.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.trees.heaps import DHeap
+    >>> min_heap = DHeap(heap_property="min", d=3)
+    >>> min_heap.insert(1, 1)
+    >>> min_heap.insert(5, 5)
+    >>> min_heap.insert(7, 7)
+    >>> min_heap.extract().key
+    1
+    >>> min_heap.insert(4, 4)
+    >>> min_heap.extract().key
+    4
+
+    >>> max_heap = DHeap(heap_property='max', d=2)
+    >>> max_heap.insert(1, 1)
+    >>> max_heap.insert(5, 5)
+    >>> max_heap.insert(7, 7)
+    >>> max_heap.extract().key
+    7
+    >>> max_heap.insert(6, 6)
+    >>> max_heap.extract().key
+    6
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/D-ary_heap
+    """
+    __slots__ = ['_comp', 'heap', 'd', 'heap_property', '_last_pos_filled']
+
+    def __new__(cls, elements=None, heap_property="min", d=4):
+        obj = Heap.__new__(cls)
+        obj.heap_property = heap_property
+        obj.d = d
+        if heap_property == "min":
+            obj._comp = lambda key_parent, key_child: key_parent <= key_child
+        elif heap_property == "max":
+            obj._comp = lambda key_parent, key_child: key_parent >= key_child
+        else:
+            raise ValueError("%s is invalid heap property"%(heap_property))
+        if elements is None:
+            elements = DynamicOneDimensionalArray(TreeNode, 0)
+        obj.heap = elements
+        obj._last_pos_filled = obj.heap._last_pos_filled
+        obj._build()
+        return obj
+
+    def _build(self):
+        for i in range(self._last_pos_filled + 1):
+            self.heap[i]._leftmost, self.heap[i]._rightmost = \
+                self.d*i + 1, self.d*i + self.d
+        for i in range((self._last_pos_filled + 1)//self.d, -1, -1):
+            self._heapify(i)
+
+    def _swap(self, idx1, idx2):
+        idx1_key, idx1_data = \
+            self.heap[idx1].key, self.heap[idx1].data
+        self.heap[idx1].key, self.heap[idx1].data = \
+            self.heap[idx2].key, self.heap[idx2].data
+        self.heap[idx2].key, self.heap[idx2].data = \
+            idx1_key, idx1_data
+
+    def _heapify(self, i):
+        while True:
+            target = i
+            l = self.d*i + 1
+            r = self.d*i + self.d
+
+            for j in range(l, r+1):
+                if j <= self._last_pos_filled:
+                    target = j if self._comp(self.heap[j].key, self.heap[target].key) \
+                            else target
+                else:
+                    break
+
+            if target != i:
+                self._swap(target, i)
+                i = target
+            else:
+                break
+
+    def insert(self, key, data):
+        """
+        Insert a new element to the heap according to heap property.
+
+        Parameters
+        ==========
+
+        key
+            The key for comparison.
+        data
+            The data to be inserted.
+
+        Returns
+        =======
+
+        None
+        """
+        new_node = TreeNode(key, data)
+        self.heap.append(new_node)
+        self._last_pos_filled += 1
+        i = self._last_pos_filled
+        self.heap[i]._leftmost, self.heap[i]._rightmost = self.d*i + 1, self.d*i + self.d
+
+        while True:
+            parent = (i - 1)//self.d
+            if i == 0 or self._comp(self.heap[parent].key, self.heap[i].key):
+                break
+            else:
+                self._swap(i, parent)
+                i = parent
+
+    def extract(self):
+        """
+        Extract root element of the Heap.
+
+        Returns
+        =======
+
+        root_element : TreeNode
+            The TreeNode at the root of the heap,
+            if the heap is not empty.
+        None
+            If the heap is empty.
+        """
+        if self._last_pos_filled == -1:
+            return None
+        else:
+            element_to_be_extracted = TreeNode(self.heap[0].key, self.heap[0].data)
+            self._swap(0, self._last_pos_filled)
+            self.heap.delete(self._last_pos_filled)
+            self._last_pos_filled -= 1
+            self._heapify(0)
+            return element_to_be_extracted
+
+    def __str__(self):
+        to_be_printed = ['' for i in range(self._last_pos_filled + 1)]
+        for i in range(self._last_pos_filled + 1):
+            node = self.heap[i]
+            if node._leftmost <= self._last_pos_filled:
+                if node._rightmost <= self._last_pos_filled:
+                    children = [x for x in range(node._leftmost, node._rightmost + 1)]
+                else:
+                    children = [x for x in range(node._leftmost, self._last_pos_filled + 1)]
+            else:
+                children = []
+            to_be_printed[i] = (node.key, node.data, children)
+        return str(to_be_printed)
+
+
+class BinaryHeap(DHeap):
     """
     Represents Binary Heap.
 
@@ -26,7 +203,6 @@ class BinaryHeap(Heap):
         List/tuple of initial elements in Heap.
 
     heap_property : str
-        The property of binary heap.
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -67,123 +243,69 @@ class BinaryHeap(Heap):
 
     .. [1] https://en.m.wikipedia.org/wiki/Binary_heap
     """
-    __slots__ = ['_comp', 'heap', 'heap_property', '_last_pos_filled']
-
     def __new__(cls, elements=None, heap_property="min"):
-        obj = Heap.__new__(cls)
-        obj.heap_property = heap_property
-        if heap_property == "min":
-            obj._comp = lambda key_parent, key_child: key_parent <= key_child
-        elif heap_property == "max":
-            obj._comp = lambda key_parent, key_child: key_parent >= key_child
-        else:
-            raise ValueError("%s is invalid heap property"%(heap_property))
-        if elements is None:
-            elements = []
-        obj.heap = elements
-        obj._last_pos_filled = len(elements) - 1
-        obj._build()
+        obj = DHeap.__new__(cls, elements, heap_property, 2)
         return obj
 
-    def _build(self):
-        for i in range(self._last_pos_filled + 1):
-            self.heap[i].left, self.heap[i].right = \
-                2*i + 1, 2*i + 2
-        for i in range((self._last_pos_filled + 1)//2, -1, -1):
-            self._heapify(i)
 
-    def _swap(self, idx1, idx2):
-        idx1_key, idx1_data = \
-            self.heap[idx1].key, self.heap[idx1].data
-        self.heap[idx1].key, self.heap[idx1].data = \
-            self.heap[idx2].key, self.heap[idx2].data
-        self.heap[idx2].key, self.heap[idx2].data = \
-            idx1_key, idx1_data
+class TernaryHeap(DHeap):
+    """
+    Represents Ternary Heap.
 
-    def _heapify(self, i):
-        while True:
-            target = i
-            l = 2*i + 1
-            r = 2*i + 2
+    Parameters
+    ==========
 
-            if l <= self._last_pos_filled:
-                target = l if self._comp(self.heap[l].key, self.heap[target].key) \
-                        else i
-            if r <= self._last_pos_filled:
-                target = r if self._comp(self.heap[r].key, self.heap[target].key) \
-                        else target
+    elements : list, tuple
+        Optional, by default 'None'.
+        List/tuple of initial elements in Heap.
 
-            if target != i:
-                self._swap(target, i)
-                i = target
-            else:
-                break
+    heap_property : str
+        If the key stored in each node is
+        either greater than or equal to
+        the keys in the node's children
+        then pass 'max'.
+        If the key stored in each node is
+        either less than or equal to
+        the keys in the node's children
+        then pass 'min'.
+        By default, the heap property is
+        set to 'min'.
 
+    Examples
+    ========
 
-    def insert(self, key, data):
-        """
-        Insert a new element to the heap according to heap property.
+    >>> from pydatastructs.trees.heaps import TernaryHeap
+    >>> min_heap = TernaryHeap(heap_property="min")
+    >>> min_heap.insert(1, 1)
+    >>> min_heap.insert(5, 5)
+    >>> min_heap.insert(7, 7)
+    >>> min_heap.insert(3, 3)
+    >>> min_heap.extract().key
+    1
+    >>> min_heap.insert(4, 4)
+    >>> min_heap.extract().key
+    3
 
-        Parameters
-        ==========
+    >>> max_heap = TernaryHeap(heap_property='max')
+    >>> max_heap.insert(1, 1)
+    >>> max_heap.insert(5, 5)
+    >>> max_heap.insert(7, 7)
+    >>> min_heap.insert(3, 3)
+    >>> max_heap.extract().key
+    7
+    >>> max_heap.insert(6, 6)
+    >>> max_heap.extract().key
+    6
 
-        key
-            The key for comparison.
-        data
-            The data to be inserted.
+    References
+    ==========
 
-        Returns
-        =======
-
-        None
-        """
-        new_node = TreeNode(key, data)
-        self.heap.append(new_node)
-        self._last_pos_filled += 1
-        i = self._last_pos_filled
-        self.heap[i].left, self.heap[i].right = 2*i + 1, 2*i + 2
-
-        while True:
-            parent = (i - 1)//2
-            if i == 0 or self._comp(self.heap[parent].key, self.heap[i].key):
-                break
-            else:
-                self._swap(i, parent)
-                i = parent
-
-    def extract(self):
-        """
-        Extract root element of the Heap.
-
-        Returns
-        =======
-
-        root_element : TreeNode
-            The TreeNode at the root of the heap,
-            if the heap is not empty.
-        None
-            If the heap is empty.
-        """
-        if self._last_pos_filled == -1:
-            return None
-        else:
-            element_to_be_extracted = TreeNode(self.heap[0].key, self.heap[0].data)
-            self._swap(0, self._last_pos_filled)
-            self.heap[self._last_pos_filled] = TreeNode(float('inf') if self.heap_property == 'min'
-                                                                else float('-inf'), None)
-            self._heapify(0)
-            self.heap.pop()
-            self._last_pos_filled -= 1
-            return element_to_be_extracted
-
-    def __str__(self):
-        to_be_printed = ['' for i in range(self._last_pos_filled + 1)]
-        for i in range(self._last_pos_filled + 1):
-            node = self.heap[i]
-            to_be_printed[i] = (node.left if node.left <= self._last_pos_filled else None,
-                                node.key, node.data,
-                                node.right if node.right <= self._last_pos_filled else None)
-        return str(to_be_printed)
+    .. [1] https://en.wikipedia.org/wiki/D-ary_heap
+    .. [2] https://ece.uwaterloo.ca/~dwharder/aads/Algorithms/d-ary_heaps/Ternary_heaps/
+    """
+    def __new__(cls, elements=None, heap_property="min"):
+        obj = DHeap.__new__(cls, elements, heap_property, 3)
+        return obj
 
 
 class BinomialHeap(Heap):
