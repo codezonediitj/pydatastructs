@@ -121,8 +121,6 @@ class LinkedListStack(Stack):
         obj = object.__new__(cls)
         obj.stack = SinglyLinkedList()
         obj._dtype = dtype
-        obj.front = obj.stack.head
-        obj.tail = obj.stack.tail
         obj.size = 0
         if items is None:
             pass
@@ -131,11 +129,13 @@ class LinkedListStack(Stack):
                 obj._dtype = type(items[0])
             for x in items:
                 if type(x) == obj._dtype:
-                    obj.push(x)
+                    obj.stack.append_left(x)
+                    obj.size+=1
                 else:
                     raise TypeError("Expected %s but got %s"%(obj._dtype, type(x)))
         else:
             raise TypeError("Expected type: list/tuple")
+        obj.top = obj.stack.head
         return obj
 
     def push(self, x):
@@ -145,17 +145,15 @@ class LinkedListStack(Stack):
             raise TypeError("Expected %s but got %s"%(self._dtype, type(x)))
         self.size += 1
         self.stack.append_left(x)
-        if self.front is None:
-            self.front = self.stack.head
-        self.rear = self.stack.tail
+        if self.top is None:
+            self.top = self.stack.head
 
     def pop(self):
         if self.is_empty:
             raise ValueError("Stack is empty")
         self.size -= 1
         return_value = self.stack.pop_left()
-        self.front = self.stack.head
-        self.rear = self.stack.tail
+        self.top = self.stack.head
         return return_value
 
     @property
@@ -164,7 +162,7 @@ class LinkedListStack(Stack):
 
     @property
     def peek(self):
-        return self.front
+        return self.top
 
     def __len__(self):
         return self.size
