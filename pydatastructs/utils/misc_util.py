@@ -4,7 +4,8 @@ __all__ = [
     'BinomialTreeNode',
     'AdjacencyListGraphNode',
     'AdjacencyMatrixGraphNode',
-    'GraphEdge'
+    'GraphEdge',
+    'Set'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)

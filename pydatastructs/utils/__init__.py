@@ -7,6 +7,7 @@ from .misc_util import (
     BinomialTreeNode,
     AdjacencyListGraphNode,
     AdjacencyMatrixGraphNode,
-    GraphEdge
+    GraphEdge,
+    Set
 )
 __all__.extend(misc_util.__all__)
