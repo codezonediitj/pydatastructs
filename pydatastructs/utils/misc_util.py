@@ -227,11 +227,11 @@ class GraphEdge(object):
 
 class Set(object):
 
-    __slots__ = ['parent', 'rank', 'size', 'key', 'data']
+    __slots__ = ['parent', 'size', 'key', 'data']
 
     def __new__(cls, key, data):
         obj = object.__new__(cls)
         obj.key = key
         obj.data = data
-        obj.parent, obj.rank, obj.size = [None]*3
+        obj.parent, obj.size = [None]*2
         return obj
