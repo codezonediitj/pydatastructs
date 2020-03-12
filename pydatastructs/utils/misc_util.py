@@ -223,3 +223,14 @@ class GraphEdge(object):
 
     def __str__(self):
         return str((self.source.name, self.target.name))
+
+class Set(object):
+
+    __slots__ = ['parent', 'rank', 'size', 'key', 'data']
+
+    def __new__(cls, key, data):
+        obj = object.__new__(cls)
+        obj.key = key
+        obj.data = data
+        obj.parent, obj.rank, obj.size = [None]*3
+        return obj
