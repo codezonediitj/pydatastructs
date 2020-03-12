@@ -13,8 +13,8 @@ class M_AryTree(object):
     ==========
 
     max_children
-        Optional, specifies the maximum number of children 
-        a node can have. Defaults to 2 in case nothing is 
+        Optional, specifies the maximum number of children
+        a node can have. Defaults to 2 in case nothing is
         specified.
     root_data
         Optional, the root node of the binary tree.
@@ -145,13 +145,13 @@ class M_AryTree(object):
 
     def to_binary_tree(self):
         """
-        Converts an m-ary tree to a binary tree. 
+        Converts an m-ary tree to a binary tree.
 
         Returns
         =======
 
         TreeNode
-            The root of the newly created binary tree. 
+            The root of the newly created binary tree.
         """
         raise NotImplementedError("This is an abstract method.")
 

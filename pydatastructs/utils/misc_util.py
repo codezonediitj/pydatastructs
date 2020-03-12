@@ -123,7 +123,7 @@ class M_AryTreeNode(TreeNode):
     The following are the data members of the class:
 
     children: DynamicOneDimensionalArray
-        An array of indices which stores the children of 
+        An array of indices which stores the children of
         this node in the M-ary tree array
     is_root: bool, by default, False
         If the current node is a root of the tree then
