@@ -12,7 +12,8 @@ class Graph(object):
 
     implementation: str
         The implementation to be used for storing
-        graph in memory.
+        graph in memory. It can be figured out
+        from type of the vertices(if passed at construction).
         By default, 'adjacency_list'.
     vertices: AdjacencyListGraphNode(s)
         For AdjacencyList implementation vertices
@@ -47,7 +48,8 @@ class Graph(object):
     __slots__ = ['_impl']
 
     def __new__(cls, *args, **kwargs):
-        implementation = kwargs.get('implementation', 'adjacency_list')
+        default_impl = args[0]._impl if args else 'adjacency_list'
+        implementation = kwargs.get('implementation', default_impl)
         if implementation is 'adjacency_list':
             from pydatastructs.graphs.adjacency_list import AdjacencyList
             obj = AdjacencyList(*args)
