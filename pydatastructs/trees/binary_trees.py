@@ -3,7 +3,6 @@ from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
-# TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 
 __all__ = [

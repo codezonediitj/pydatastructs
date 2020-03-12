@@ -2,7 +2,6 @@
 Contains all the algorithms associated with graph
 data structure.
 """
-# TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 from pydatastructs.utils.misc_util import AdjacencyListGraphNode
 from concurrent.futures import ThreadPoolExecutor

@@ -1,5 +1,4 @@
 from pydatastructs.utils import TreeNode
-# TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 from pydatastructs.linear_data_structures.arrays import _check_type
 
