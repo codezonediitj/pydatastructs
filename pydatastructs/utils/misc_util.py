@@ -1,6 +1,6 @@
 __all__ = [
     'TreeNode',
-    'M_AryTreeNode',
+    'MAryTreeNode',
     'LinkedListNode',
     'BinomialTreeNode',
     'AdjacencyListGraphNode',
@@ -105,7 +105,7 @@ class BinomialTreeNode(TreeNode):
         """
         return str((self.key, self.data))
 
-class M_AryTreeNode(TreeNode):
+class MAryTreeNode(TreeNode):
     """
     Represents node in an M-ary trees.
 

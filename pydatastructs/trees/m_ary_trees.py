@@ -1,11 +1,11 @@
-from pydatastructs.utils import M_AryTreeNode, BinomialTreeNode
+from pydatastructs.utils import MAryTreeNode
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 
 __all__ = [
-    'M_AryTree'
+    'MAryTree'
 ]
 
-class M_AryTree(object):
+class MAryTree(object):
     """
     Abstract m-ary tree.
 
@@ -18,7 +18,7 @@ class M_AryTree(object):
         specified.
     root_data
         Optional, the root node of the binary tree.
-        If not of type M_AryTreeNode, it will consider
+        If not of type MAryTreeNode, it will consider
         root as data and a new root node will
         be created.
     key
@@ -49,11 +49,11 @@ class M_AryTree(object):
         if key is None and root_data is not None:
             raise ValueError('Key required.')
         key = None if root_data is None else key
-        root = M_AryTreeNode(key, root_data)
+        root = MAryTreeNode(key, root_data)
         root.is_root = True
         obj.root_idx = 0
         obj.max_children = max_children
-        obj.tree, obj.size = ArrayForTrees(M_AryTreeNode, [root]), 1
+        obj.tree, obj.size = ArrayForTrees(MAryTreeNode, [root]), 1
         obj.comparator = lambda key1, key2: key1 < key2 \
                         if comp is None else comp
         obj.is_order_statistic = is_order_statistic
