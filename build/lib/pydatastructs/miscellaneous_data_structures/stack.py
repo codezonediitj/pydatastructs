@@ -161,7 +161,7 @@ class Linked_Stacks(Stack):
             self.top = self.top.prev
             return self.data
         else:
-            raise ValueError
+            raise ValueError("Stack is Empty")
 
     @property
     def is_empty(self):
@@ -175,7 +175,7 @@ class Linked_Stacks(Stack):
     def peek(self):
         if self.top is not None:
             return self.top.data
-        raise ValueError
+        raise ValueError("Stack is Empty")
 
     def __str__(self):
         "Used for Printing the Stack"
