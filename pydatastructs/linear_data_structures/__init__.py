@@ -12,6 +12,9 @@ from .arrays import (
 __all__.extend(arrays.__all__)
 
 from .linked_lists import (
-    DoublyLinkedList
+    SinglyLinkedList,
+    DoublyLinkedList,
+    SinglyCircularLinkedList,
+    DoublyCircularLinkedList
 )
 __all__.extend(linked_lists.__all__)

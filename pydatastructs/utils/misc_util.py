@@ -199,9 +199,10 @@ class AdjacencyListGraphNode(GraphNode):
         nodes of the current node.
         Optional, by default, None
     """
-    def __new__(cls, name, data, adjacency_list=None):
+    def __new__(cls, name, data=None, adjacency_list=None):
         obj = GraphNode.__new__(cls)
-        obj.name, obj.data = name, data
+        obj.name, obj.data = str(name), data
+        obj._impl = 'adjacency_list'
         if adjacency_list is not None:
             for node in adjacency_list:
                 obj.__setattr__(node.name, node)
@@ -246,10 +247,11 @@ class AdjacencyMatrixGraphNode(GraphNode):
     """
     __slots__ = ['name', 'data']
 
-    def __new__(cls, name, data):
+    def __new__(cls, name, data=None):
         obj = GraphNode.__new__(cls)
         obj.name, obj.data, obj.is_connected = \
-            name, data, None
+            int(name), data, None
+        obj._impl = 'adjacency_matrix'
         return obj
 
 class GraphEdge(object):

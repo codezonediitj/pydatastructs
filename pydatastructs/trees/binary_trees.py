@@ -3,14 +3,14 @@ from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
-# TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
 
 __all__ = [
     'AVLTree',
     'BinaryTree',
     'BinarySearchTree',
-    'BinaryTreeTraversal'
+    'BinaryTreeTraversal',
+    'BinaryIndexedTree'
 ]
 
 class BinaryTree(object):
@@ -415,6 +415,143 @@ class BinarySearchTree(BinaryTree):
             walk = p
         return r
 
+    def _simple_path(self, key, root):
+        """
+        Utility funtion to find the simple path between root and node.
+
+        Parameter
+        =========
+
+        key: Node.key
+            Key of the node to be searched
+
+        Returns
+        =======
+
+        path: list
+        """
+
+        stack = Stack()
+        stack.push(root)
+        path = []
+        node_idx = -1
+
+        while not stack.is_empty:
+            node = stack.pop()
+            if self.tree[node].key == key:
+                node_idx = node
+                break
+            if self.tree[node].left:
+                stack.push(self.tree[node].left)
+            if self.tree[node].right:
+                stack.push(self.tree[node].right)
+
+        if node_idx == -1:
+            return path
+
+        while node_idx != 0:
+            path.append(node_idx)
+            node_idx = self.tree[node_idx].parent
+        path.append(0)
+        path.reverse()
+
+        return path
+
+    def _lca_1(self, j, k):
+        root = self.root_idx
+        path1 = self._simple_path(j, root)
+        path2 = self._simple_path(k, root)
+        if not path1 or not path2:
+            raise ValueError("One of two path doesn't exists. See %s, %s"
+                             %(path1, path2))
+
+        n, m = len(path1), len(path2)
+        i = j = 0
+        while i < n and j < m:
+            if path1[i] != path2[j]:
+                return self.tree[path1[i - 1]].key
+            i += 1
+            j += 1
+        if path1 < path2:
+            return self.tree[path1[-1]].key
+        return self.tree[path2[-1]].key
+
+    def _lca_2(self, j, k):
+        curr_root = self.root_idx
+        u, v = self.search(j), self.search(k)
+        if (u is None) or (v is None):
+            raise ValueError("One of the nodes with key %s "
+                             "or %s doesn't exits"%(j, k))
+        u_left = self.comparator(self.tree[u].key, \
+            self.tree[curr_root].key)
+        v_left = self.comparator(self.tree[v].key, \
+            self.tree[curr_root].key)
+
+        while not (u_left ^ v_left):
+            if u_left and v_left:
+                curr_root = self.tree[curr_root].left
+            else:
+                curr_root = self.tree[curr_root].right
+
+            if curr_root == u or curr_root == v:
+                if curr_root is None:
+                    return None
+                return self.tree[curr_root].key
+
+            u_left = self.comparator(self.tree[u].key, \
+                self.tree[curr_root].key)
+            v_left = self.comparator(self.tree[v].key, \
+                self.tree[curr_root].key)
+
+        if curr_root is None:
+            return curr_root
+        return self.tree[curr_root].key
+
+    def lowest_common_ancestor(self, j, k, algorithm=1):
+
+        """
+        Computes the lowest common ancestor of two nodes.
+
+        Parameters
+        ==========
+
+        j: Node.key
+            Key of first node
+        k: Node.key
+            Key of second node
+        algorithm: int
+            The algorithm to be used for computing the
+            lowest common ancestor.
+            Optional, by default uses algorithm 1.
+
+            1 -> Determines the lowest common ancestor by finding
+                    the first intersection of the paths from v and w
+                    to the root.
+
+            2 -> Modifed version of the algorithm given in the
+                    following publication,
+                    D. Harel. A linear time algorithm for the
+                    lowest common ancestors problem. In 21s
+                    Annual Symposium On Foundations of
+                    Computer Science, pages 308-319, 1980.
+
+        Returns
+        =======
+
+        Node.key
+            The key of the lowest common ancestor in the tree.
+            if both the nodes are present in the tree.
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/Lowest_common_ancestor
+
+        .. [2] https://pdfs.semanticscholar.org/e75b/386cc554214aa0ebd6bd6dbdd0e490da3739.pdf
+
+        """
+        return getattr(self, "_lca_"+str(algorithm))(j, k)
+
 class AVLTree(BinarySearchTree):
     """
     Represents AVL trees.
@@ -783,3 +920,120 @@ class BinaryTreeTraversal(object):
             if tree[node].right is not None:
                 q.append(tree[node].right)
         return visit
+
+class BinaryIndexedTree(object):
+    """
+    Represents binary indexed trees
+    a.k.a fenwick trees.
+
+    Parameters
+    ==========
+
+    array: list/tuple
+        The array whose elements are to be
+        considered for the queries.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import BinaryIndexedTree
+    >>> bit = BinaryIndexedTree([1, 2, 3])
+    >>> bit.get_sum(0, 2)
+    6
+    >>> bit.update(0, 100)
+    >>> bit.get_sum(0, 2)
+    105
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Fenwick_tree
+    """
+
+    __slots__ = ['tree', 'array', 'flag']
+
+    def __new__(cls, array):
+
+        obj = object.__new__(cls)
+        obj.array = OneDimensionalArray(type(array[0]), array)
+        obj.tree = [0] * (obj.array._size + 2)
+        obj.flag = [0] * (obj.array._size)
+        for index in range(obj.array._size):
+            obj.update(index, array[index])
+        return obj
+
+    def update(self, index, value):
+        """
+        Updates value at the given index.
+
+        Parameters
+        ==========
+
+        index: int
+            Index of element to be updated.
+
+        value
+            The value to be inserted.
+        """
+        _index, _value = index, value
+        if self.flag[index] == 0:
+            self.flag[index] = 1
+            index += 1
+            while index < self.array._size + 1:
+                self.tree[index] += value
+                index = index + (index & (-index))
+        else:
+            value = value - self.array[index]
+            index += 1
+            while index < self.array._size + 1:
+                self.tree[index] += value
+                index = index + (index & (-index))
+        self.array[_index] = _value
+
+    def get_prefix_sum(self, index):
+        """
+        Computes sum of elements from index 0 to given index.
+
+        Parameters
+        ==========
+
+        index: int
+            Index till which sum has to be calculated.
+
+        Returns
+        =======
+
+        sum: int
+            The required sum.
+        """
+        index += 1
+        sum = 0
+        while index > 0:
+            sum += self.tree[index]
+            index = index - (index & (-index))
+        return sum
+
+    def get_sum(self, left_index, right_index):
+        """
+        Get sum of elements from left index to right index.
+
+        Parameters
+        ==========
+
+        left_index: int
+            Starting index from where sum has to be computed.
+
+        right_index: int
+            Ending index till where sum has to be computed.
+
+        Returns
+        =======
+
+        sum: int
+            The required sum
+        """
+        if left_index >= 1:
+            return self.get_prefix_sum(right_index) - \
+                   self.get_prefix_sum(left_index - 1)
+        else:
+            return self.get_prefix_sum(right_index)
