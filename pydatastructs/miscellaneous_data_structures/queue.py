@@ -46,7 +46,7 @@ class Queue(object):
             return ArrayQueue(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
-        elif implementation == 'linkedlist':
+        elif implementation == 'linked_list':
             return LinkedListQueue(
                 kwargs.get('items', None)
             )

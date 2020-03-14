@@ -19,10 +19,10 @@ def test_Queue():
     q1 = Queue()
     raises(IndexError, lambda: q1.popleft())
 
-    q1 = Queue(implementation='linkedlist')
+    q1 = Queue(implementation='linked_list')
     q1.append(1)
-    assert raises(TypeError, lambda: Queue(implementation='linkedlist', items={0, 1}))
-    q1 = Queue(implementation='linkedlist', items = [0, 1])
+    assert raises(TypeError, lambda: Queue(implementation='linked_list', items={0, 1}))
+    q1 = Queue(implementation='linked_list', items = [0, 1])
     q1.append(2)
     q1.append(3)
     assert str(q1) == '[0, 1, 2, 3]'
@@ -35,5 +35,5 @@ def test_Queue():
     assert len(q1) == 0
     raises(IndexError, lambda: q1.popleft())
 
-    q1 = Queue(implementation='linkedlist',items=['a',None,type,{}])
+    q1 = Queue(implementation='linked_list',items=['a',None,type,{}])
     assert len(q1) == 4
