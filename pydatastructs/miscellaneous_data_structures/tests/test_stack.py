@@ -14,7 +14,8 @@ def test_Stack():
     assert s.pop() == 2
     assert s.pop() == 1
     assert s.is_empty is True
-    assert raises(ValueError, lambda : s.pop())
+    assert raises(IndexError, lambda : s.pop())
     _s = Stack(items=[1, 2, 3])
     assert str(_s) == '[1, 2, 3]'
+    assert len(_s) == 3
     assert raises(NotImplementedError, lambda: Stack(implementation=''))

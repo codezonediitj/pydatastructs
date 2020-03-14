@@ -30,7 +30,7 @@ class Stack(object):
     Examples
     ========
 
-    >>> from pydatastructs import Stack
+    >>> from pydatastructs.miscellaneous_data_structures.stack import Stack
     >>> s = Stack()
     >>> s.push(1)
     >>> s.push(2)
@@ -64,15 +64,15 @@ class Stack(object):
 
     @property
     def is_empty(self):
-        return None
+        raise NotImplementedError(
+              "This is an abstract method.")
 
     @property
     def peek(self):
-        return None
+        raise NotImplementedError(
+              "This is an abstract method.")
 
 class ArrayStack(Stack):
-
-    __slots__ = ['items']
 
     def __new__(cls, items=None, dtype=NoneType):
         if items is None:
@@ -90,7 +90,7 @@ class ArrayStack(Stack):
 
     def pop(self):
         if self.is_empty:
-            raise ValueError("Stack is empty")
+            raise IndexError("Stack is empty")
 
         top_element = dc(self.items[self.items._last_pos_filled])
         self.items.delete(self.items._last_pos_filled)
@@ -103,6 +103,9 @@ class ArrayStack(Stack):
     @property
     def peek(self):
         return self.items[self.items._last_pos_filled]
+
+    def __len__(self):
+        return self.items.size
 
     def __str__(self):
         """
