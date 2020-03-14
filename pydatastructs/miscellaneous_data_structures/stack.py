@@ -73,6 +73,8 @@ class Stack(object):
               "This is an abstract method.")
 
 class ArrayStack(Stack):
+    
+    __slots__ = ['items']
 
     def __new__(cls, items=None, dtype=NoneType):
         if items is None:
