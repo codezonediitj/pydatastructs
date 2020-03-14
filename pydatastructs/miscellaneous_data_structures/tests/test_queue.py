@@ -17,7 +17,7 @@ def test_Queue():
     assert len(q1) == 0
 
     q1 = Queue()
-    raises(ValueError, lambda: q1.popleft())
+    raises(IndexError, lambda: q1.popleft())
 
     q1 = Queue(implementation='linkedlist')
     q1.append(1)
@@ -35,4 +35,4 @@ def test_Queue():
     assert q1.popleft().data == 2
     assert q1.popleft().data == 3
     assert len(q1) == 0
-    raises(ValueError, lambda: q1.popleft())
+    raises(IndexError, lambda: q1.popleft())

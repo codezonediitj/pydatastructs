@@ -1,5 +1,5 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
-from pydatastructs.utils.misc_util import NoneType, LinkedListNode
+from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
 from copy import deepcopy as dc
 
 __all__ = [
@@ -94,7 +94,7 @@ class ArrayQueue(Queue):
 
     def popleft(self):
         if self.is_empty:
-            raise ValueError("Queue is empty.")
+            raise IndexError("Queue is empty.")
         return_value = dc(self.items[self.front])
         front_temp = self.front
         if self.front == self.rear:
@@ -107,6 +107,7 @@ class ArrayQueue(Queue):
                 self.front += 1
         self.items.delete(front_temp)
         return return_value
+
 
     @property
     def rear(self):
@@ -128,7 +129,7 @@ class ArrayQueue(Queue):
 
 class LinkedListQueue(Queue):
 
-    __slots__ = ['front', 'rear', 'size', '_dtype']
+    __slots__ = ['_dtype']
 
     def __new__(cls, items=None, dtype=NoneType):
         obj = object.__new__(cls)
@@ -140,40 +141,39 @@ class LinkedListQueue(Queue):
             if len(items) != 0 and dtype is NoneType:
                 obj._dtype = type(items[0])
             for x in items:
-                if type(x) == obj._dtype:
-                    obj.queue.append(x)
-                else:
-                    raise TypeError("Expected %s but got %s"%(obj._dtype, type(x)))
+                obj.append(x)
         else:
             raise TypeError("Expected type: list/tuple")
-        obj.front = obj.queue.head
-        obj.rear = obj.queue.tail
-        obj.size = obj.queue.size
         return obj
 
     def append(self, x):
         if self._dtype is NoneType:
             self._dtype = type(x)
-        elif type(x) is not self._dtype:
+        elif not _check_type(x, self._dtype):
             raise TypeError("Expected %s but got %s"%(self._dtype, type(x)))
-        self.size += 1
         self.queue.append(x)
-        if self.front is None:
-            self.front = self.queue.head
-        self.rear = self.queue.tail
 
     def popleft(self):
         if self.is_empty:
-            raise ValueError("Queue is empty.")
-        self.size -= 1
+            raise IndexError("Queue is empty.")
         return_value = self.queue.pop_left()
-        self.front = self.queue.head
-        self.rear = self.queue.tail
         return return_value
 
     @property
     def is_empty(self):
         return self.size == 0
+
+    @property
+    def front(self):
+        return self.queue.head
+
+    @property
+    def rear(self):
+        return self.queue.tail
+
+    @property
+    def size(self):
+        return self.queue.size
 
     def __len__(self):
         return self.size
