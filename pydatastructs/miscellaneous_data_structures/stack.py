@@ -30,7 +30,7 @@ class Stack(object):
     Examples
     ========
 
-    >>> from pydatastructs.miscellaneous_data_structures.stack import Stack
+    >>> from pydatastructs import Stack
     >>> s = Stack()
     >>> s.push(1)
     >>> s.push(2)
