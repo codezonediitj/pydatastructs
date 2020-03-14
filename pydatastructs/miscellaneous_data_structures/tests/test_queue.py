@@ -37,3 +37,13 @@ def test_Queue():
 
     q1 = Queue(implementation='linked_list',items=['a',None,type,{}])
     assert len(q1) == 4
+    assert q1.size == 4
+
+    front = q1.front
+    assert front.data == q1.popleft().data
+
+    rear = q1.rear
+    for _ in range(len(q1)-1):
+        q1.popleft()
+
+    assert rear.data == q1.popleft().data
