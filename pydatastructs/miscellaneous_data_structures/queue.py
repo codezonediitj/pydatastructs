@@ -48,8 +48,7 @@ class Queue(object):
                 kwargs.get('dtype', int))
         elif implementation == 'linkedlist':
             return LinkedListQueue(
-                kwargs.get('items', None),
-                kwargs.get('dtype', NoneType)
+                kwargs.get('items', None)
             )
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
@@ -129,17 +128,12 @@ class ArrayQueue(Queue):
 
 class LinkedListQueue(Queue):
 
-    __slots__ = ['_dtype']
-
-    def __new__(cls, items=None, dtype=NoneType):
+    def __new__(cls, items=None):
         obj = object.__new__(cls)
         obj.queue = SinglyLinkedList()
-        obj._dtype = dtype
         if items is None:
             pass
         elif type(items) in (list, tuple):
-            if len(items) != 0 and dtype is NoneType:
-                obj._dtype = type(items[0])
             for x in items:
                 obj.append(x)
         else:
@@ -147,10 +141,6 @@ class LinkedListQueue(Queue):
         return obj
 
     def append(self, x):
-        if self._dtype is NoneType:
-            self._dtype = type(x)
-        elif not _check_type(x, self._dtype):
-            raise TypeError("Expected %s but got %s"%(self._dtype, type(x)))
         self.queue.append(x)
 
     def popleft(self):
