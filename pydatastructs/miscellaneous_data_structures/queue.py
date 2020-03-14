@@ -108,7 +108,6 @@ class ArrayQueue(Queue):
         self.items.delete(front_temp)
         return return_value
 
-
     @property
     def rear(self):
         return self.items._last_pos_filled
