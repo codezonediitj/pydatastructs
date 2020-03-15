@@ -44,3 +44,4 @@ def test_Stack():
 
     peek = s.peek
     assert peek == s.pop().data
+    assert raises(TypeError, lambda: Stack(implementation='linked_list', items={0, 1}))
