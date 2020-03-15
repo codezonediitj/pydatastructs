@@ -1,0 +1,37 @@
+public void parallelMergeSort(int[] numbers, int numOfThreads) {
+ 
+		if (numOfThreads <= 1) {
+			mergeSort(numbers); // SEQUENTIAL !!!!
+			return;
+		}
+ 
+		int middleIndex = numbers.length / 2;
+ 
+		int[] leftSubarray = Arrays.copyOfRange(numbers, 0, middleIndex);
+		int[] rightSubarray = Arrays.copyOfRange(numbers, middleIndex, numbers.length);
+ 
+		Thread leftSorter = mergeSortThread(leftSubarray, numOfThreads);
+		Thread rightSorter = mergeSortThread(rightSubarray, numOfThreads);
+ 
+		leftSorter.start();
+		rightSorter.start();
+ 
+		try {
+			leftSorter.join();
+			rightSorter.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+ 
+		merge(leftSubarray, rightSubarray, numbers);
+}
+ 
+private Thread mergeSortThread(int[] numbers, int numOfThreads) {
+ 
+		return new Thread() {
+			@Override
+			public void run() {
+				parallelMergeSort(numbers, numOfThreads / 2);
+			}
+		};
+}
