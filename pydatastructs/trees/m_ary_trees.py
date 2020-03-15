@@ -12,10 +12,6 @@ class MAryTree(object):
     Parameters
     ==========
 
-    max_children
-        Optional, specifies the maximum number of children
-        a node can have. Defaults to 2 in case nothing is
-        specified.
     root_data
         Optional, the root node of the binary tree.
         If not of type MAryTreeNode, it will consider
@@ -32,6 +28,10 @@ class MAryTree(object):
     is_order_statistic: bool
         Set it to True, if you want to use the
         order statistic features of the tree.
+    max_children
+        Optional, specifies the maximum number of children
+        a node can have. Defaults to 2 in case nothing is
+        specified.
 
     References
     ==========
@@ -43,8 +43,8 @@ class MAryTree(object):
                  'is_order_statistic']
 
 
-    def __new__(cls, max_children=2, key=None, root_data=None, comp=None,
-                is_order_statistic=False):
+    def __new__(cls, key=None, root_data=None, comp=None,
+                is_order_statistic=False, max_children=2):
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
@@ -90,12 +90,6 @@ class MAryTree(object):
         key
             The key of the node which is
             to be deleted.
-        balancing_info: bool
-            Optional, by default, False
-            The information needed for updating
-            the tree is returned if this parameter
-            is set to True. It is not meant for
-            user facing APIs.
 
         Returns
         =======
