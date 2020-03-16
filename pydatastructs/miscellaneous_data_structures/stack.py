@@ -111,7 +111,7 @@ class ArrayStack(Stack):
         return self.items[self.items._last_pos_filled]
 
     def __len__(self):
-        return self.items.size
+        return self.items._num
 
     def __str__(self):
         """
@@ -121,6 +121,8 @@ class ArrayStack(Stack):
 
 
 class LinkedListStack(Stack):
+
+    __slots__ = ['stack']
 
     def __new__(cls, items=None):
         obj = object.__new__(cls)

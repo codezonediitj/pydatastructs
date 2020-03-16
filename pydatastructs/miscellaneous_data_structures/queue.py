@@ -127,6 +127,8 @@ class ArrayQueue(Queue):
 
 class LinkedListQueue(Queue):
 
+    __slots__ = ['queue']
+
     def __new__(cls, items=None):
         obj = object.__new__(cls)
         obj.queue = SinglyLinkedList()
