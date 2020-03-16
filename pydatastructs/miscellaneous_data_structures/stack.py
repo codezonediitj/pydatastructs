@@ -1,4 +1,4 @@
-from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
 from pydatastructs.utils.misc_util import _check_type, NoneType
 from copy import deepcopy as dc
 
@@ -51,6 +51,10 @@ class Stack(object):
             return ArrayStack(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
+        if implementation == 'linked_list':
+            return LinkedListStack(
+                kwargs.get('items',None)
+            )
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
 
@@ -64,11 +68,13 @@ class Stack(object):
 
     @property
     def is_empty(self):
-        return None
+        raise NotImplementedError(
+              "This is an abstract method.")
 
     @property
     def peek(self):
-        return None
+        raise NotImplementedError(
+              "This is an abstract method.")
 
 class ArrayStack(Stack):
 
@@ -90,7 +96,7 @@ class ArrayStack(Stack):
 
     def pop(self):
         if self.is_empty:
-            raise ValueError("Stack is empty")
+            raise IndexError("Stack is empty")
 
         top_element = dc(self.items[self.items._last_pos_filled])
         self.items.delete(self.items._last_pos_filled)
@@ -104,8 +110,58 @@ class ArrayStack(Stack):
     def peek(self):
         return self.items[self.items._last_pos_filled]
 
+    def __len__(self):
+        return self.items._num
+
     def __str__(self):
         """
         Used for printing.
         """
         return str(self.items._data)
+
+
+class LinkedListStack(Stack):
+
+    __slots__ = ['stack']
+
+    def __new__(cls, items=None):
+        obj = object.__new__(cls)
+        obj.stack = SinglyLinkedList()
+        if items is None:
+            pass
+        elif type(items) in (list, tuple):
+            for x in items:
+                obj.push(x)
+        else:
+            raise TypeError("Expected type: list/tuple")
+        return obj
+
+    def push(self, x):
+        self.stack.append_left(x)
+
+    def pop(self):
+        if self.is_empty:
+            raise IndexError("Stack is empty")
+        return self.stack.pop_left()
+
+    @property
+    def is_empty(self):
+        return self.__len__() == 0
+
+    @property
+    def peek(self):
+        return self.top.data
+
+    @property
+    def top(self):
+        return self.stack.head
+
+    @property
+    def size(self):
+        return self.stack.size
+
+    def __len__(self):
+        return self.stack.size
+
+    def __str__(self):
+        return str(self.stack)

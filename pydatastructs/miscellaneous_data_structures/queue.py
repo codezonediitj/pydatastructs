@@ -1,5 +1,5 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
-from pydatastructs.utils.misc_util import NoneType, LinkedListNode
+from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
 from copy import deepcopy as dc
 
 __all__ = [
@@ -46,10 +46,9 @@ class Queue(object):
             return ArrayQueue(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
-        elif implementation == 'linkedlist':
+        elif implementation == 'linked_list':
             return LinkedListQueue(
-                kwargs.get('items', None),
-                kwargs.get('dtype', NoneType)
+                kwargs.get('items', None)
             )
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
@@ -94,7 +93,7 @@ class ArrayQueue(Queue):
 
     def popleft(self):
         if self.is_empty:
-            raise ValueError("Queue is empty.")
+            raise IndexError("Queue is empty.")
         return_value = dc(self.items[self.front])
         front_temp = self.front
         if self.front == self.rear:
@@ -128,52 +127,44 @@ class ArrayQueue(Queue):
 
 class LinkedListQueue(Queue):
 
-    __slots__ = ['front', 'rear', 'size', '_dtype']
+    __slots__ = ['queue']
 
-    def __new__(cls, items=None, dtype=NoneType):
+    def __new__(cls, items=None):
         obj = object.__new__(cls)
         obj.queue = SinglyLinkedList()
-        obj._dtype = dtype
         if items is None:
             pass
         elif type(items) in (list, tuple):
-            if len(items) != 0 and dtype is NoneType:
-                obj._dtype = type(items[0])
             for x in items:
-                if type(x) == obj._dtype:
-                    obj.queue.append(x)
-                else:
-                    raise TypeError("Expected %s but got %s"%(obj._dtype, type(x)))
+                obj.append(x)
         else:
             raise TypeError("Expected type: list/tuple")
-        obj.front = obj.queue.head
-        obj.rear = obj.queue.tail
-        obj.size = obj.queue.size
         return obj
 
     def append(self, x):
-        if self._dtype is NoneType:
-            self._dtype = type(x)
-        elif type(x) is not self._dtype:
-            raise TypeError("Expected %s but got %s"%(self._dtype, type(x)))
-        self.size += 1
         self.queue.append(x)
-        if self.front is None:
-            self.front = self.queue.head
-        self.rear = self.queue.tail
 
     def popleft(self):
         if self.is_empty:
-            raise ValueError("Queue is empty.")
-        self.size -= 1
+            raise IndexError("Queue is empty.")
         return_value = self.queue.pop_left()
-        self.front = self.queue.head
-        self.rear = self.queue.tail
         return return_value
 
     @property
     def is_empty(self):
         return self.size == 0
+
+    @property
+    def front(self):
+        return self.queue.head
+
+    @property
+    def rear(self):
+        return self.queue.tail
+
+    @property
+    def size(self):
+        return self.queue.size
 
     def __len__(self):
         return self.size
