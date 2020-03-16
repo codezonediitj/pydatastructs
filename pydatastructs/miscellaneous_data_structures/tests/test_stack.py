@@ -36,6 +36,7 @@ def test_LinkedListStack():
     assert s.pop().data == 1
     assert s.is_empty is True
     assert raises(IndexError, lambda : s.pop())
+    assert str(s) == '[]'
     _s = Stack(implementation='linked_list',items=[1, 2, 3])
     assert str(_s) == '[1, 2, 3]'
     assert len(_s) == 3
