@@ -1,10 +1,14 @@
 from pydatastructs.miscellaneous_data_structures import Queue
 from pydatastructs.utils.raises_util import raises
+from pydatastructs.utils.misc_util import _check_type
 
 def test_Queue():
-    q1 = Queue(implementation='array', items=[0])
+    q = Queue(implementation='array')
     q1 = Queue()
-    q1 = Queue(implementation='linked_list')
+    assert type(q) is type(q1)
+    q2 = Queue(implementation='linked_list')
+    assert _check_type(q2,Queue) is True
+    assert raises(NotImplementedError, lambda: Queue(implementation=''))
 
 def test_ArrayQueue():
     q1 = Queue()
