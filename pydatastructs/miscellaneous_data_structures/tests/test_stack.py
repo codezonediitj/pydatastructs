@@ -1,14 +1,15 @@
 from pydatastructs.miscellaneous_data_structures import Stack
-from pydatastructs.linear_data_structures import OneDimensionalArray
+from pydatastructs.miscellaneous_data_structures.stack import ArrayStack, LinkedListStack
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import _check_type
 
 def test_Stack():
     s = Stack(implementation='array')
     s1 = Stack()
-    assert type(s) is type(s1)
+    assert _check_type(s, ArrayStack) is True
+    assert _check_type(s1, ArrayStack) is True
     s2 = Stack(implementation='linked_list')
-    assert _check_type(s2,Stack) is True
+    assert _check_type(s2,LinkedListStack) is True
     assert raises(NotImplementedError, lambda: Stack(implementation=''))
 
 def test_ArrayStack():
