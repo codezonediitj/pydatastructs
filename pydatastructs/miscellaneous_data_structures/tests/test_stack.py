@@ -9,7 +9,7 @@ def test_Stack():
     assert _check_type(s, ArrayStack) is True
     assert _check_type(s1, ArrayStack) is True
     s2 = Stack(implementation='linked_list')
-    assert _check_type(s2,LinkedListStack) is True
+    assert _check_type(s2, LinkedListStack) is True
     assert raises(NotImplementedError, lambda: Stack(implementation=''))
 
 def test_ArrayStack():
