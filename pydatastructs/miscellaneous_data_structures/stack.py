@@ -4,8 +4,6 @@ from copy import deepcopy as dc
 
 __all__ = [
     'Stack',
-    'ArrayStack',
-    'LinkedListStack'
 ]
 
 class Stack(object):
@@ -84,8 +82,6 @@ class ArrayStack(Stack):
 
     def __new__(cls, items=None, dtype=NoneType):
         if items is None:
-            #TODO: Better implementation of ArrayStack(items=None, dtype=NoneType)
-            dtype = int
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
             items = DynamicOneDimensionalArray(dtype, items)

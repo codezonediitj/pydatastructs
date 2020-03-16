@@ -1,5 +1,4 @@
-from pydatastructs.miscellaneous_data_structures import (
-    Queue, ArrayQueue, LinkedListQueue)
+from pydatastructs.miscellaneous_data_structures import Queue
 from pydatastructs.utils.raises_util import raises
 
 def test_Queue():
@@ -8,11 +7,9 @@ def test_Queue():
     q1 = Queue(implementation='linked_list')
 
 def test_ArrayQueue():
-    q = ArrayQueue()
     q1 = Queue()
     raises(IndexError, lambda: q1.popleft())
     q1 = Queue(implementation='array', items=[0])
-    assert type(q) == type(q1)
     q1.append(1)
     q1.append(2)
     q1.append(3)
@@ -26,9 +23,7 @@ def test_ArrayQueue():
     assert len(q1) == 0
 
 def test_LinkedListQueue():
-    q = LinkedListQueue()
     q1 = Queue(implementation='linked_list')
-    assert type(q) == type(q1)
     q1.append(1)
     assert raises(TypeError, lambda: Queue(implementation='linked_list', items={0, 1}))
     q1 = Queue(implementation='linked_list', items = [0, 1])

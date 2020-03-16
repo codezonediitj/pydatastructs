@@ -1,4 +1,4 @@
-from pydatastructs.miscellaneous_data_structures import Stack, ArrayStack, LinkedListStack
+from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import OneDimensionalArray
 from pydatastructs.utils.raises_util import raises
 
@@ -8,7 +8,7 @@ def test_Stack():
     s = Stack(implementation='linked_list')
 
 def test_ArrayStack():
-    s = ArrayStack()
+    s = Stack(implementation='array')
     s.push(1)
     s.push(2)
     s.push(3)

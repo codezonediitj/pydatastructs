@@ -3,9 +3,7 @@ from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
 from copy import deepcopy as dc
 
 __all__ = [
-    'Queue',
-    'ArrayQueue',
-    'LinkedListQueue'
+    'Queue'
 ]
 
 class Queue(object):
@@ -75,8 +73,6 @@ class ArrayQueue(Queue):
 
     def __new__(cls, items=None, dtype=NoneType):
         if items is None:
-            #TODO: Better implementation of ArrayQueue(items=None, dtype=NoneType)
-            dtype = int
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
             dtype = type(items[0])
