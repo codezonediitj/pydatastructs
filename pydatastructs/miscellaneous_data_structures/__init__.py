@@ -17,5 +17,7 @@ __all__.extend(stack.__all__)
 
 from .queue import (
     Queue,
+    ArrayQueue,
+    LinkedListQueue
 )
 __all__.extend(queue.__all__)

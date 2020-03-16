@@ -73,6 +73,8 @@ class ArrayQueue(Queue):
 
     def __new__(cls, items=None, dtype=NoneType):
         if items is None:
+            #TODO: Better implementation of ArrayQueue(items=None, dtype=NoneType)
+            dtype = int
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
             dtype = type(items[0])
