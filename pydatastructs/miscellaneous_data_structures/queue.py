@@ -3,7 +3,9 @@ from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
 from copy import deepcopy as dc
 
 __all__ = [
-    'Queue'
+    'Queue',
+    'ArrayQueue',
+    'LinkedListQueue'
 ]
 
 class Queue(object):

@@ -12,6 +12,8 @@ __all__.extend(binomial_trees.__all__)
 
 from .stack import (
     Stack,
+    ArrayStack,
+    LinkedListStack
 )
 __all__.extend(stack.__all__)
 

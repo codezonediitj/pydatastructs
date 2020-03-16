@@ -3,7 +3,9 @@ from pydatastructs.utils.misc_util import _check_type, NoneType
 from copy import deepcopy as dc
 
 __all__ = [
-    'Stack'
+    'Stack',
+    'ArrayStack',
+    'LinkedListStack'
 ]
 
 class Stack(object):
@@ -82,6 +84,8 @@ class ArrayStack(Stack):
 
     def __new__(cls, items=None, dtype=NoneType):
         if items is None:
+            #TODO: Better implementation of ArrayStack(items=None, dtype=NoneType)
+            dtype = int
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
             items = DynamicOneDimensionalArray(dtype, items)
@@ -150,10 +154,6 @@ class LinkedListStack(Stack):
 
     @property
     def peek(self):
-        return self.top.data
-
-    @property
-    def top(self):
         return self.stack.head
 
     @property
@@ -164,4 +164,11 @@ class LinkedListStack(Stack):
         return self.stack.size
 
     def __str__(self):
-        return str(self.stack)
+        elements = []
+        current_node = self.peek
+        while current_node is not None:
+            elements.append(current_node.data)
+            current_node = current_node.next
+            if current_node == self.peek:
+                break
+        return str(elements[::-1])
