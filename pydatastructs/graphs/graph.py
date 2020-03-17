@@ -105,6 +105,15 @@ class Graph(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
+    def get_edge(self, source, target):
+        """
+        Returns GraphEdge object if there
+        is an edge between source and target
+        otherwise None.
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")
+
     def remove_edge(self, source, target):
         """
         Removes the edge starting at first parameter

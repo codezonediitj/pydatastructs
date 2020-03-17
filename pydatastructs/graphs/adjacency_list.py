@@ -53,6 +53,11 @@ class AdjacencyList(Graph):
             self.edge_weights[source.name + "_" + target.name] = \
                 GraphEdge(source, target, cost)
 
+    def get_edge(self, source, target):
+        return self.edge_weights.get(
+            source + "_" + target,
+            None)
+
     def remove_edge(self, source, target):
         source, target = self.__getattribute__(source), \
                          self.__getattribute__(target)
