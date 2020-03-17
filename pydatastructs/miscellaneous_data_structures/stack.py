@@ -3,7 +3,7 @@ from pydatastructs.utils.misc_util import _check_type, NoneType
 from copy import deepcopy as dc
 
 __all__ = [
-    'Stack',
+    'Stack'
 ]
 
 class Stack(object):
