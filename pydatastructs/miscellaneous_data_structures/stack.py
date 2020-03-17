@@ -150,10 +150,6 @@ class LinkedListStack(Stack):
 
     @property
     def peek(self):
-        return self.top.data
-
-    @property
-    def top(self):
         return self.stack.head
 
     @property
@@ -164,4 +160,9 @@ class LinkedListStack(Stack):
         return self.stack.size
 
     def __str__(self):
-        return str(self.stack)
+        elements = []
+        current_node = self.peek
+        while current_node is not None:
+            elements.append(current_node.data)
+            current_node = current_node.next
+        return str(elements[::-1])
