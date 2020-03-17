@@ -4,7 +4,8 @@ __all__ = [
     'BinomialTreeNode',
     'AdjacencyListGraphNode',
     'AdjacencyMatrixGraphNode',
-    'GraphEdge'
+    'GraphEdge',
+    'Set'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -225,3 +226,26 @@ class GraphEdge(object):
 
     def __str__(self):
         return str((self.source.name, self.target.name))
+
+class Set(object):
+    """
+    Represents a set in a forest of disjoint sets.
+
+    Parameters
+    ==========
+
+    key: Hashable python object
+        The key which uniquely identifies
+        the set.
+    data: Python object
+        The data to be stored in the set.
+    """
+
+    __slots__ = ['parent', 'size', 'key', 'data']
+
+    def __new__(cls, key, data):
+        obj = object.__new__(cls)
+        obj.key = key
+        obj.data = data
+        obj.parent, obj.size = [None]*2
+        return obj
