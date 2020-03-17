@@ -48,8 +48,8 @@ class OneDimensionalArray(Array):
     Examples
     ========
 
-    >>> from pydatastructs import OneDimensionalArray as ODA
-    >>> arr = ODA(int, 5)
+    >>> from pydatastructs import OneDimensionalArray
+    >>> arr = OneDimensionalArray(int, 5)
     >>> arr.fill(6)
     >>> arr[0]
     6
@@ -127,7 +127,6 @@ class OneDimensionalArray(Array):
         for i in range(self._size):
             self._data[i] = elem
 
-ODA = OneDimensionalArray
 
 class DynamicArray(Array):
     """
@@ -216,7 +215,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         below load factor.
         """
         if self._num/self._size < self._load_factor:
-            arr_new = ODA(self._dtype, 2*self._num + 1)
+            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
                 if self[i] is not None:
@@ -228,7 +227,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
 
     def append(self, el):
         if self._last_pos_filled + 1 == self._size:
-            arr_new = ODA(self._dtype, 2*self._size + 1)
+            arr_new = OneDimensionalArray(self._dtype, 2*self._size + 1)
             for i in range(self._last_pos_filled + 1):
                 arr_new[i] = self[i]
             arr_new[self._last_pos_filled + 1] = el
