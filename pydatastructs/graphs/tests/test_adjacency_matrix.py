@@ -5,7 +5,7 @@ def test_AdjacencyMatrix():
     v_0 = AdjacencyMatrixGraphNode(0, 0)
     v_1 = AdjacencyMatrixGraphNode(1, 1)
     v_2 = AdjacencyMatrixGraphNode(2, 2)
-    g = Graph(v_0, v_1, v_2, implementation='adjacency_matrix')
+    g = Graph(v_0, v_1, v_2)
     g.add_edge(0, 1)
     g.add_edge(1, 2)
     g.add_edge(2, 0)

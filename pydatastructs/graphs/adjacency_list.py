@@ -51,7 +51,7 @@ class AdjacencyList(Graph):
         source.adjacent.add(target.name)
         if cost is not None:
             self.edge_weights[source.name + "_" + target.name] = \
-                GraphEdge(source.name, target.name, cost)
+                GraphEdge(source, target, cost)
 
     def remove_edge(self, source, target):
         source, target = self.__getattribute__(source), \

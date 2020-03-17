@@ -213,10 +213,10 @@ class GraphEdge(object):
     Parameters
     ==========
 
-    node1: GraphNode or it's child classes
-        The source node of the edge.
-    node2: GraphNode or it's child classes
-        The target node of the edge.
+    node1: str/int
+        The name of the source node of the edge.
+    node2: str/int
+        The name of the target node of the edge.
     """
     def __new__(cls, node1, node2, value=None):
         obj = object.__new__(cls)

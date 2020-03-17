@@ -1,10 +1,10 @@
 from pydatastructs import (breadth_first_search, Graph,
-breadth_first_search_parallel)
+breadth_first_search_parallel, minimum_spanning_tree)
 
 
 def test_breadth_first_search():
 
-    def _test_breadth_first_search(ds, impl):
+    def _test_breadth_first_search(ds):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
 
@@ -12,7 +12,7 @@ def test_breadth_first_search():
         V2 = GraphNode(1)
         V3 = GraphNode(2)
 
-        G1 = Graph(V1, V2, V3, implementation=impl)
+        G1 = Graph(V1, V2, V3)
 
         edges = [
             (V1.name, V2.name),
@@ -47,7 +47,7 @@ def test_breadth_first_search():
             (V7.name, V8.name)
         ]
 
-        G2 = Graph(V4, V5, V6, V7, V8, implementation=impl)
+        G2 = Graph(V4, V5, V6, V7, V8)
 
         for edge in edges:
             G2.add_edge(*edge)
@@ -71,12 +71,12 @@ def test_breadth_first_search():
         breadth_first_search(G2, V4.name, path_finder, V7.name, parent, path)
         assert path == [V4.name, V5.name, V6.name, V7.name]
 
-    _test_breadth_first_search("List", "adjacency_list")
-    _test_breadth_first_search("Matrix", "adjacency_matrix")
+    _test_breadth_first_search("List")
+    _test_breadth_first_search("Matrix")
 
 def test_breadth_first_search_parallel():
 
-    def _test_breadth_first_search_parallel(ds, impl):
+    def _test_breadth_first_search_parallel(ds):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
 
@@ -90,7 +90,7 @@ def test_breadth_first_search_parallel():
         V8 = GraphNode(7)
 
 
-        G1 = Graph(V1, V2, V3, V4, V5, V6, V7, V8, implementation=impl)
+        G1 = Graph(V1, V2, V3, V4, V5, V6, V7, V8)
 
         edges = [
             (V1.name, V2.name),
@@ -119,5 +119,32 @@ def test_breadth_first_search_parallel():
                 (parent[V6.name] in (V2.name, V3.name)) and
                 (parent[V7.name] in (V3.name, V4.name)) and (parent[V8.name] == V4.name))
 
-    _test_breadth_first_search_parallel("List", "adjacency_list")
-    _test_breadth_first_search_parallel("Matrix", "adjacency_matrix")
+    _test_breadth_first_search_parallel("List")
+    _test_breadth_first_search_parallel("Matrix")
+
+def test_minimum_spanning_tree():
+
+    def _test_minimum_spanning_tree(ds, algorithm):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        a, b, c, d, e = [GraphNode(x) for x in [0, 1, 2, 3, 4]]
+        graph = Graph(a, b, c, d, e)
+        graph.add_edge(a.name, c.name, 10)
+        graph.add_edge(c.name, a.name, 10)
+        graph.add_edge(a.name, d.name, 7)
+        graph.add_edge(d.name, a.name, 7)
+        graph.add_edge(c.name, d.name, 9)
+        graph.add_edge(d.name, c.name, 9)
+        graph.add_edge(d.name, b.name, 32)
+        graph.add_edge(b.name, d.name, 32)
+        graph.add_edge(d.name, e.name, 23)
+        graph.add_edge(e.name, d.name, 23)
+        mst = minimum_spanning_tree(graph, algorithm=algorithm)
+        expected_mst = [('0_3', 7), ('2_3', 9), ('3_4', 23), ('3_1', 32),
+                        ('3_0', 7), ('3_2', 9), ('4_3', 23), ('1_3', 32)]
+        assert len(expected_mst) == 2*len(mst.edge_weights.items())
+        for k, v in mst.edge_weights.items():
+            assert (k, v.value) in expected_mst
+
+    _test_minimum_spanning_tree("List", "kruskal")
+    _test_minimum_spanning_tree("Matrix", "kruskal")

@@ -96,7 +96,7 @@ class Graph(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
-    def add_edge(self, source, target):
+    def add_edge(self, source, target, cost=None):
         """
         Adds the edge starting at first parameter
         i.e., source and ending at the second
