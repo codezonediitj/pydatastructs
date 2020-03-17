@@ -127,7 +127,6 @@ class OneDimensionalArray(Array):
         for i in range(self._size):
             self._data[i] = elem
 
-ODA = OneDimensionalArray
 
 class DynamicArray(Array):
     """
