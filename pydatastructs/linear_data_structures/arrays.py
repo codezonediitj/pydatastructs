@@ -48,7 +48,7 @@ class OneDimensionalArray(Array):
     Examples
     ========
 
-     
+    >>> from pydatastructs import OneDimensionalArray
     >>> arr = OneDimensionalArray(int, 5)
     >>> arr.fill(6)
     >>> arr[0]
