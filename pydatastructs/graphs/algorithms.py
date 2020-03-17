@@ -3,8 +3,10 @@ Contains all the algorithms associated with graph
 data structure.
 """
 from collections import deque as Queue
-from pydatastructs.utils.misc_util import AdjacencyListGraphNode
 from concurrent.futures import ThreadPoolExecutor
+from pydatastructs.utils import GraphEdge
+from pydatastructs.miscellaneous_data_structures import DisjointSetForest
+from pydatastructs.graphs.graph import Graph
 
 __all__ = [
     'breadth_first_search',
@@ -186,3 +188,26 @@ def _breadth_first_search_parallel_adjacency_list(
             return None
 
 _breadth_first_search_parallel_adjacency_matrix = _breadth_first_search_parallel_adjacency_list
+
+def _minimum_spanning_tree_kruskal_adjacency_list(graph):
+    mst = Graph(*graph.vertices)
+    sort_key = lambda item: item[1].value
+    dsf = DisjointSetForest()
+    for v in graph.vertices:
+        dsf.make_set(v.name)
+    for _, edge in sorted(graph.edge_weights.items(), sort_key):
+        u, v = edge.source.name, edge.target.name
+        if dsf.find_root(u) is not dsf.find_root(v):
+            mst.add_edge(u, v, edge.value)
+            dsf.union(u, v)
+    return mst
+
+def minimum_spanning_tree(graph, algorithm):
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_minimum_spanning_tree_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algoithm for %s implementation of graphs "
+        "isn't implemented for finding minimum spanning trees."
+        %(algorithm, graph._impl))
+    getattr(algorithms, func)(graph)
