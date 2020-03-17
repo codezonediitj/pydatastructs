@@ -68,5 +68,5 @@ def test_presence_of_tabs():
             if (line.find('\t') != -1):
                 assert False, "Tab present at %s in %s. " \
                             "Configure your editor to use " \
-                            "white spaces."
+                            "white spaces."%(line, file_path)
         file.close()
