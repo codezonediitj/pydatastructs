@@ -93,9 +93,7 @@ def test_TernaryHeap():
     expected_sorted_elements = [2, 3, 7, 17, 19, 25, 36, 100]
     sorted_elements = [min_heap.extract().key for _ in range(8)]
     assert expected_sorted_elements == sorted_elements
-<<<<<<< HEAD
     raises(ValueError,lambda:BinaryHeap(heap_property='arbitrary'))
-=======
 
 def test_DHeap():
     assert raises(ValueError, lambda: DHeap(heap_property="none", d=4))
