@@ -1,4 +1,4 @@
-from pydatastructs.utils.misc_util import NoneType, _check_type
+from pydatastructs.utils.misc_util import _check_type, NoneType
 
 __all__ = [
 'OneDimensionalArray',
