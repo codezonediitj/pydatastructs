@@ -134,7 +134,6 @@ def test_DHeap():
     sorted_elements = [min_heap.extract().key for _ in range(8)]
     assert expected_sorted_elements == sorted_elements
 
->>>>>>> 835aeef937c270062b713ad47b39b1788d69b374
 def test_BinomialHeap():
 
     # Corner cases
