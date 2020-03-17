@@ -17,7 +17,7 @@ from .binary_trees import (
 __all__.extend(binary_trees.__all__)
 
 from .m_ary_trees import (
-	MAryTreeNode, MAryTree
+    MAryTreeNode, MAryTree
 )
 
 __all__.extend(m_ary_trees.__all__)
