@@ -1,9 +1,9 @@
-from pydatastructs import DisjointSetTree
+from pydatastructs import DisjointSetForest
 from pydatastructs.utils.raises_util import raises
 
-def test_DisjointSetTree():
+def test_DisjointSetForest():
 
-    dst = DisjointSetTree()
+    dst = DisjointSetForest()
     for i in range(8):
         dst.make_set(i+1)
 

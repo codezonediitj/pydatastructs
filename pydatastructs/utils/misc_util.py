@@ -226,6 +226,18 @@ class GraphEdge(object):
         return str((self.source.name, self.target.name))
 
 class Set(object):
+    """
+    Represents a set in a forest of disjoint sets.
+
+    Parameters
+    ==========
+
+    key: Hashable python object
+        The key which uniquely identifies
+        the set.
+    data: Python object
+        The data to be stored in the set.
+    """
 
     __slots__ = ['parent', 'size', 'key', 'data']
 

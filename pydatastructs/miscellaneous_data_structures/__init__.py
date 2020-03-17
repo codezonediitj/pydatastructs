@@ -23,6 +23,6 @@ from .queue import (
 __all__.extend(queue.__all__)
 
 from .disjoint_set import (
-    DisjointSetTree,
+    DisjointSetForest,
 )
 __all__.extend(disjoint_set.__all__)
