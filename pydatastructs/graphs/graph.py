@@ -96,11 +96,20 @@ class Graph(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
-    def add_edge(self, source, target):
+    def add_edge(self, source, target, cost=None):
         """
         Adds the edge starting at first parameter
         i.e., source and ending at the second
         parameter i.e., target.
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def get_edge(self, source, target):
+        """
+        Returns GraphEdge object if there
+        is an edge between source and target
+        otherwise None.
         """
         raise NotImplementedError(
             "This is an abstract method.")

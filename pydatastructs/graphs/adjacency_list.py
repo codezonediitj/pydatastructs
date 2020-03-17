@@ -1,5 +1,6 @@
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
+from pydatastructs.utils.misc_util import GraphEdge
 
 __all__ = [
     'AdjacencyList'
@@ -19,6 +20,7 @@ class AdjacencyList(Graph):
         for vertex in vertices:
             obj.__setattr__(vertex.name, vertex)
         obj.vertices = set([vertex.name for vertex in vertices])
+        obj.edge_weights = dict()
         return obj
 
     def is_adjacent(self, node1, node2):
@@ -42,14 +44,24 @@ class AdjacencyList(Graph):
                 delattr(node_obj, name)
                 node_obj.adjacent.remove(name)
 
-    def add_edge(self, source, target):
+    def add_edge(self, source, target, cost=None):
         source, target = self.__getattribute__(source), \
                          self.__getattribute__(target)
         source.__setattr__(target.name, target)
         source.adjacent.add(target.name)
+        if cost is not None:
+            self.edge_weights[source.name + "_" + target.name] = \
+                GraphEdge(source, target, cost)
+
+    def get_edge(self, source, target):
+        return self.edge_weights.get(
+            source + "_" + target,
+            None)
 
     def remove_edge(self, source, target):
         source, target = self.__getattribute__(source), \
                          self.__getattribute__(target)
         source.adjacent.remove(target.name)
         delattr(source, target.name)
+        self.edge_weights.pop(source.name + "_" + target.name,
+                                None)

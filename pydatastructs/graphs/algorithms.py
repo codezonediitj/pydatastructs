@@ -3,12 +3,15 @@ Contains all the algorithms associated with graph
 data structure.
 """
 from collections import deque as Queue
-from pydatastructs.utils.misc_util import AdjacencyListGraphNode
 from concurrent.futures import ThreadPoolExecutor
+from pydatastructs.utils import GraphEdge
+from pydatastructs.miscellaneous_data_structures import DisjointSetForest
+from pydatastructs.graphs.graph import Graph
 
 __all__ = [
     'breadth_first_search',
-    'breadth_first_search_parallel'
+    'breadth_first_search_parallel',
+    'minimum_spanning_tree'
 ]
 
 def breadth_first_search(
@@ -186,3 +189,83 @@ def _breadth_first_search_parallel_adjacency_list(
             return None
 
 _breadth_first_search_parallel_adjacency_matrix = _breadth_first_search_parallel_adjacency_list
+
+def _minimum_spanning_tree_kruskal_adjacency_list(graph):
+    mst = Graph(*[getattr(graph, v) for v in graph.vertices])
+    sort_key = lambda item: item[1].value
+    dsf = DisjointSetForest()
+    for v in graph.vertices:
+        dsf.make_set(v)
+    for _, edge in sorted(graph.edge_weights.items(), key=sort_key):
+        u, v = edge.source.name, edge.target.name
+        if dsf.find_root(u) is not dsf.find_root(v):
+            mst.add_edge(u, v, edge.value)
+            dsf.union(u, v)
+    return mst
+
+def _minimum_spanning_tree_kruskal_adjacency_matrix(graph):
+    mst = Graph(*[getattr(graph, str(v)) for v in graph.vertices])
+    sort_key = lambda item: item[1].value
+    dsf = DisjointSetForest()
+    for v in graph.vertices:
+        dsf.make_set(v)
+    for _, edge in sorted(graph.edge_weights.items(), key=sort_key):
+        u, v = edge.source.name, edge.target.name
+        if dsf.find_root(u) is not dsf.find_root(v):
+            mst.add_edge(u, v, edge.value)
+            dsf.union(u, v)
+    return mst
+
+def minimum_spanning_tree(graph, algorithm):
+    """
+    Computes a minimum spanning tree for the given
+    graph and algorithm.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph whose minimum spanning tree
+        has to be computed.
+    algorithm: str
+        The algorithm which should be used for
+        computing a minimum spanning tree.
+        Currently the following algorithms are
+        supported,
+        'kruskal' -> Kruskal's algorithm as given in
+                     [1].
+
+    Returns
+    =======
+
+    mst: Graph
+        A minimum spanning tree using the implementation
+        same as the graph provided in the input.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import minimum_spanning_tree
+    >>> u = AdjacencyListGraphNode('u')
+    >>> v = AdjacencyListGraphNode('v')
+    >>> G = Graph(u, v)
+    >>> G.add_edge(u.name, v.name, 3)
+    >>> mst = minimum_spanning_tree(G, 'kruskal')
+    >>> u_n = mst.neighbors(u.name)
+    >>> mst.get_edge(u.name, u_n[0].name).value
+    3
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_minimum_spanning_tree_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algoithm for %s implementation of graphs "
+        "isn't implemented for finding minimum spanning trees."
+        %(algorithm, graph._impl))
+    return getattr(algorithms, func)(graph)
