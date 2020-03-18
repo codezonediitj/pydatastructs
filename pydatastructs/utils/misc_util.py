@@ -147,11 +147,6 @@ class MAryTreeNode(TreeNode):
         for child in children:
             self.children.append(child)
 
-    def __str__(self):
-        """
-        For printing the key and data.
-        """
-        return str((self.key, self.data))
 
 class LinkedListNode(Node):
     """
