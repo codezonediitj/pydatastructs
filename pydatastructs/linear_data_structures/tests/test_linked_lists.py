@@ -175,13 +175,11 @@ def test_SkipList():
         skip_list.insert("Key10", 10)
 
         node = skip_list.head
-        all_values = {}
+        all_values = dict()
         while node.level != 0:
             node = node.forward[0]
             all_values[node.key] = node.value
 
-        if len(all_values) != 4:
-            print()
         assert len(all_values) == 4
         assert all_values["Key1"] == 12
         assert all_values["Key7"] == 7
