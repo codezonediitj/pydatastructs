@@ -727,7 +727,7 @@ class DoublyCircularLinkedList(DoublyLinkedList):
 
 class SkipList(LinkedList):
     """
-    Represents Doubly Circular Linked List
+    Represents Skip List
 
     Examples
     ========
