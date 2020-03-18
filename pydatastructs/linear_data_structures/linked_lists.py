@@ -741,19 +741,6 @@ class SkipList(LinkedList):
     >>> skip_list.insert(8, "4")
     >>> skip_list.insert(9, "4")
     >>> skip_list.delete(4)
-    >>> print(skip_list)
-    SkipList(level=7)
-    [root]--* * * * * * *
-            | | | | | | |
-    [2]-----2 | | | | | |
-            | | | | | | |
-    [6]-----6 6 6 6 6 6 6
-            | | | | | | |
-    [8]-----8 8 8 | | | |
-            | | | | | | |
-    [9]-----9 | | | | | |
-            | | | | | | |
-    None    * * * * * * *
 
     References
     ==========
