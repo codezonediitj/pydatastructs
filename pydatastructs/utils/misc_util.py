@@ -5,7 +5,8 @@ __all__ = [
     'AdjacencyListGraphNode',
     'AdjacencyMatrixGraphNode',
     'GraphEdge',
-    'Set'
+    'Set',
+    'SkipListNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -114,6 +115,12 @@ class LinkedListNode(Node):
 
     data
         Any valid data to be stored in the node.
+
+    links
+        List of names of attributes which should be used as links to other nodes.
+
+    addrs
+        List of address of nodes to be assigned to each of the attributes in links.
     """
     def __new__(cls, data=None, links=['next'], addrs=[None]):
         obj = Node.__new__(cls)
@@ -125,6 +132,33 @@ class LinkedListNode(Node):
 
     def __str__(self):
         return str(self.data)
+
+class SkipListNode(Node):
+    """
+    Represents node in skip lists.
+
+    Parameters
+    ==========
+
+    name
+        Name of the node.
+
+    data
+        Any valid data to be stored in the node.
+    """
+    def __new__(cls, name, data):
+        obj = Node.__new__(cls)
+        obj.key = name
+        obj.value = data
+        obj.forward = []
+        return obj
+
+    def __str__(self):
+        return str((self.key, self.value))
+
+    @property
+    def level(self):
+        return len(self.forward)
 
 class GraphNode(Node):
     """

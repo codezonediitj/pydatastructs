@@ -1,10 +1,12 @@
-from pydatastructs.utils.misc_util import _check_type, LinkedListNode
+from pydatastructs.utils.misc_util import _check_type, LinkedListNode, SkipListNode
+from random import random
 
 __all__ = [
     'SinglyLinkedList',
     'DoublyLinkedList',
     'SinglyCircularLinkedList',
-    'DoublyCircularLinkedList'
+    'DoublyCircularLinkedList',
+    'SkipList'
 ]
 
 class LinkedList(object):
@@ -722,3 +724,226 @@ class DoublyCircularLinkedList(DoublyLinkedList):
         elif index == 0:
             self.tail.next = self.head
         return node
+
+class SkipList(LinkedList):
+    """
+    Represents Doubly Circular Linked List
+
+    Examples
+    ========
+
+    >>> from pydatastructs import SkipList
+    >>> skip_list = SkipList()
+    >>> skip_list.insert(2, "2")
+    >>> skip_list.insert(4, "4")
+    >>> skip_list.insert(6, "4")
+    >>> skip_list.insert(4, "5")
+    >>> skip_list.insert(8, "4")
+    >>> skip_list.insert(9, "4")
+    >>> skip_list.delete(4)
+    >>> print(skip_list)
+    SkipList(level=7)
+    [root]--* * * * * * *
+            | | | | | | |
+    [2]-----2 | | | | | |
+            | | | | | | |
+    [6]-----6 6 6 6 6 6 6
+            | | | | | | |
+    [8]-----8 8 8 | | | |
+            | | | | | | |
+    [9]-----9 | | | | | |
+            | | | | | | |
+    None    * * * * * * *
+
+    References
+    ==========
+
+    .. [1] https://epaperpress.com/sortsearch/download/skiplist.pdf
+    .. [2] https://github.com/TheAlgorithms/Python/blob/a9f73e318cddf43769083614a3e1f9dab1ec50fc/data_structures/linked_list/skip_list.py
+
+    Parameters
+    ==========
+
+    p
+        Fraction of nodes of level i which are present at level i+1 also.
+
+    max_level
+        Maximum level that can be attained by any node.
+
+    """
+
+    __slots__ = ['size', 'level', 'p', 'max_level']
+
+    def __new__(cls, p=0.5, max_level=16):
+        obj = LinkedList.__new__(cls)
+        obj.head = SkipListNode("root", None)
+        obj.level = 0
+        obj.p = p
+        obj.max_level = max_level
+        obj.size = 0
+        return obj
+
+    def __str__(self):
+        """
+        :return: Visual representation of SkipList
+        >>> skip_list = SkipList()
+        >>> print(skip_list)
+        SkipList(level=0)
+        >>> skip_list.insert("Key1", "Value")
+        >>> print(skip_list) # doctest: +ELLIPSIS
+        SkipList(level=...
+        [root]--...
+        [Key1]--Key1...
+        None    *...
+        >>> skip_list.insert("Key2", "OtherValue")
+        >>> print(skip_list) # doctest: +ELLIPSIS
+        SkipList(level=...
+        [root]--...
+        [Key1]--Key1...
+        [Key2]--Key2...
+        None    *...
+        """
+
+        items = list(self)
+
+        if len(items) == 0:
+            return f"SkipList(level={self.level})"
+
+        label_size = max((len(str(item)) for item in items), default=4)
+        label_size = max(label_size, 4) + 4
+
+        node = self.head
+        lines = []
+
+        forwards = node.forward.copy()
+        lines.append(f"[{node.key}]".ljust(label_size, "-") + "* " * len(forwards))
+        lines.append(" " * label_size + "| " * len(forwards))
+
+        while len(node.forward) != 0:
+            node = node.forward[0]
+
+            lines.append(
+                f"[{node.key}]".ljust(label_size, "-")
+                + " ".join(str(n.key) if n.key == node.key else "|" for n in forwards)
+            )
+            lines.append(" " * label_size + "| " * len(forwards))
+            forwards[: node.level] = node.forward
+
+        lines.append("None".ljust(label_size) + "* " * len(forwards))
+        return f"SkipList(level={self.level})\n" + "\n".join(lines)
+
+    def __iter__(self):
+        node = self.head
+
+        while len(node.forward) != 0:
+            yield node.forward[0].key
+            node = node.forward[0]
+
+    def random_level(self):
+        level = 1
+        while random() < self.p and level < self.max_level:
+            level += 1
+
+        return level
+
+    def _locate_node(self, key):
+        """
+        :param key: Searched key,
+        :return: Tuple with searched node (or None if given key is not present)
+                 and list of nodes that refer (if key is present) of should refer to given node.
+        """
+        update_vector = []
+
+        node = self.head
+
+        for i in reversed(range(self.level)):
+            while i < node.level and node.forward[i].key < key:
+                node = node.forward[i]
+            update_vector.append(node)
+
+        update_vector.reverse()
+        if len(node.forward) != 0 and node.forward[0].key == key:
+            return node.forward[0], update_vector
+        else:
+            return None, update_vector
+
+    def delete(self, key):
+        """
+        :param key: Key to remove from list.
+        >>> skip_list = SkipList()
+        >>> skip_list.insert(2, "Two")
+        >>> skip_list.insert(1, "One")
+        >>> skip_list.insert(3, "Three")
+        >>> list(skip_list)
+        [1, 2, 3]
+        >>> skip_list.delete(2)
+        >>> list(skip_list)
+        [1, 3]
+        """
+
+        node, update_vector = self._locate_node(key)
+
+        if node is not None:
+            for i, update_node in enumerate(update_vector):
+                if update_node.level > i and update_node.forward[i].key == key:
+                    if node.level > i:
+                        update_node.forward[i] = node.forward[i]
+                    else:
+                        update_node.forward = update_node.forward[:i]
+            self.size -= 1
+
+    def insert(self, key, value):
+        """
+        :param key: Key to insert.
+        :param value: Value associated with given key.
+        >>> skip_list = SkipList()
+        >>> skip_list.insert(2, "Two")
+        >>> skip_list.find(2)
+        'Two'
+        >>> list(skip_list)
+        [2]
+        """
+
+        node, update_vector = self._locate_node(key)
+        if node is not None:
+            node.value = value
+        else:
+            level = self.random_level()
+
+            if level > self.level:
+                for i in range(self.level - 1, level):
+                    update_vector.append(self.head)
+                self.level = level
+
+            new_node = SkipListNode(key, value)
+
+            for i, update_node in enumerate(update_vector[:level]):
+                if update_node.level > i:
+                    new_node.forward.append(update_node.forward[i])
+
+                if update_node.level < i + 1:
+                    update_node.forward.append(new_node)
+                else:
+                    update_node.forward[i] = new_node
+            self.size += 1
+
+    def find(self, key):
+        """
+        :param key: Search key.
+        :return: Value associated with given key or None if given key is not present.
+        >>> skip_list = SkipList()
+        >>> skip_list.find(2)
+        >>> skip_list.insert(2, "Two")
+        >>> skip_list.find(2)
+        'Two'
+        >>> skip_list.insert(2, "Three")
+        >>> skip_list.find(2)
+        'Three'
+        """
+
+        node, _ = self._locate_node(key)
+
+        if node is not None:
+            return node.value
+
+        return None

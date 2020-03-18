@@ -1,4 +1,4 @@
-from pydatastructs.utils import AdjacencyListGraphNode, AdjacencyMatrixGraphNode, GraphEdge
+from pydatastructs.utils import AdjacencyListGraphNode, AdjacencyMatrixGraphNode, GraphEdge, SkipListNode
 from pydatastructs.utils.raises_util import raises
 
 def test_AdjacencyListGraphNode():
@@ -25,3 +25,7 @@ def test_GraphEdge():
     g_2 = AdjacencyListGraphNode('g_2', 2)
     e = GraphEdge(g_1, g_2, value=2)
     assert str(e) == "('g_1', 'g_2')"
+
+def test_SkipListNode():
+    s = SkipListNode('Key1', 1)
+    assert str(s) == "('Key1', 1)"

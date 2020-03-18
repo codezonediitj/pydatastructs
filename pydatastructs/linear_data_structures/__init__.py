@@ -15,6 +15,7 @@ from .linked_lists import (
     SinglyLinkedList,
     DoublyLinkedList,
     SinglyCircularLinkedList,
-    DoublyCircularLinkedList
+    DoublyCircularLinkedList,
+    SkipList
 )
 __all__.extend(linked_lists.__all__)
