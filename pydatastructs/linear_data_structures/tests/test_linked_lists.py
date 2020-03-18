@@ -303,8 +303,6 @@ def test_SkipList():
         assert is_sorted(list(skip_list))
 
     for i in range(100):
-        # Repeat test 100 times due to the probabilistic nature of skip list
-        # random values == random bugs
         test_insert()
         test_insert_overrides_existing_value()
 
