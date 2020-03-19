@@ -1,6 +1,7 @@
 __all__ = [
     'TreeNode',
     'MAryTreeNode',
+    'BTreeNode',
     'LinkedListNode',
     'BinomialTreeNode',
     'AdjacencyListGraphNode',
@@ -96,7 +97,7 @@ class BinomialTreeNode(TreeNode):
         """
         Adds children of current node.
         """
-        for child in children:
+        for child in children: 
             self.children.append(child)
             child.parent = self
 
@@ -296,4 +297,16 @@ class Set(object):
         obj.key = key
         obj.data = data
         obj.parent, obj.size = [None]*2
+        return obj
+
+class BTreeNode(object):
+
+    __slots__ = ['keys', 'degree', 'parent', 'children', 'data', 'is_root', 'no_of_keys', 'search', 'traverse']
+
+    def __new__(cls, key, data, degree, children):
+        obj = Node.__new__(cls)
+        obj.data, obj.key = data, key
+        obj.degree = degree
+        obj.children = [] or children
+        obj.is_root = False
         return obj
