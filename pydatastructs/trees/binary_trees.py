@@ -552,7 +552,7 @@ class BinarySearchTree(BinaryTree):
         """
         return getattr(self, "_lca_"+str(algorithm))(j, k)
 
-class SelfBalanceingTree(BinarySearchTree):
+class SelfBalancingTree(BinarySearchTree):
     """
     Represents Base class for all rotation based balancing trees like AVL tree, Red Black tree, Splay Tree.
     """
