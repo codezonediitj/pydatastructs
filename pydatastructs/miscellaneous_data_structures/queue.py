@@ -41,7 +41,8 @@ class Queue(object):
     .. [1] https://en.wikipedia.org/wiki/Queue_(abstract_data_type)
     """
 
-    def __new__(cls, implementation='array', doubly_ended = True, **kwargs):
+    def __new__(cls, implementation='array', **kwargs):
+        doubly_ended = kwargs.get('doubly_ended', False)
         if implementation == 'array':
                 obj = ArrayQueue(kwargs.get('items', None),
                                               kwargs.get('dtype', int))
