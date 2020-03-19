@@ -158,6 +158,10 @@ class LinkedListNode(Node):
 
     data
         Any valid data to be stored in the node.
+    links
+        List of names of attributes which should be used as links to other nodes.
+    addrs
+        List of address of nodes to be assigned to each of the attributes in links.
     """
     def __new__(cls, data=None, links=['next'], addrs=[None]):
         obj = Node.__new__(cls)
