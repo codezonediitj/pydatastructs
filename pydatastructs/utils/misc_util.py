@@ -299,14 +299,25 @@ class Set(object):
         obj.parent, obj.size = [None]*2
         return obj
 
-class BTreeNode(object):
+'''class BTreeNode(object):
 
-    __slots__ = ['keys', 'degree', 'parent', 'children', 'data', 'is_root', 'no_of_keys', 'search', 'traverse']
+    __slots__ = ['keys', 'degree', 'children', 'data', 'is_root', 'no_of_keys', 'search', 'traverse']
 
     def __new__(cls, key, data, degree, children):
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.degree = degree
+        obj.no_of_keys = no_of_keys
         obj.children = [] or children
         obj.is_root = False
         return obj
+
+    def searchNode(node):
+        i = 0
+        while i<no_of_keys and node>keys[i]:
+            i = i + 1
+            if keys[i] == node:
+                return self
+            if children == []
+                return None
+            return children[i].searchNode(node)'''
