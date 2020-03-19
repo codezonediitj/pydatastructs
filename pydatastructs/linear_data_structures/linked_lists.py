@@ -826,7 +826,7 @@ class SkipList(LinkedList):
             yield node.forward[0].key
             node = node.forward[0]
 
-    def random_level(self):
+    def _random_level(self):
         level = 1
         while random() < self.p and level < self.max_level:
             level += 1
@@ -895,7 +895,7 @@ class SkipList(LinkedList):
         if node is not None:
             node.value = value
         else:
-            level = self.random_level()
+            level = self._random_level()
 
             if level > self.level:
                 for i in range(self.level - 1, level):
