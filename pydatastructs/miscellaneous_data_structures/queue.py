@@ -41,19 +41,35 @@ class Queue(object):
     .. [1] https://en.wikipedia.org/wiki/Queue_(abstract_data_type)
     """
 
-    def __new__(cls, implementation='array', **kwargs):
+    def __new__(cls, implementation='array', doubly_ended = True, **kwargs):
         if implementation == 'array':
-            return ArrayQueue(
-                kwargs.get('items', None),
-                kwargs.get('dtype', int))
+            if doubly_ended == True:
+                return ArrayQueue(
+                    kwargs.get('items', None),
+                    kwargs.get('dtype', int))
+            else:
+                raise TypeError("Queue is not doubly ended")
+
         elif implementation == 'linked_list':
-            return LinkedListQueue(
-                kwargs.get('items', None)
-            )
+            if doubly_ended == True:
+
+                return LinkedListQueue(
+                    kwargs.get('items', None)
+                )
+            else:
+                raise TypeError("Queue is not doubly ended")
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
 
     def append(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def appendleft(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def popright(self, *args, **kwargs):
         raise NotImplementedError(
             "This is an abstract method.")
 
@@ -91,6 +107,16 @@ class ArrayQueue(Queue):
             self.items._dtype = type(x)
         self.items.append(x)
 
+    def appendleft(self, x):
+        if self.is_empty:
+            self.front = 0
+            self.rear = 0
+        elif self.front == 0:
+            self.front = self.items._size - 1
+        else:
+            self.front = self.front - 1
+        self.items.append(x)
+
     def popleft(self):
         if self.is_empty:
             raise IndexError("Queue is empty.")
@@ -105,6 +131,19 @@ class ArrayQueue(Queue):
             else:
                 self.front += 1
         self.items.delete(front_temp)
+        return return_value
+
+    def popright(self):
+        if self.is_empty:
+            raise IndexError("Queue is empty")
+        return_value = dc(self.items[self.rear])
+        if self.front == self.rear:
+            self.front = -1
+            self.rear = -1
+        elif(self.rear == 0):
+            self.rear = self.items._size - 1
+        else:
+            self.rear = self.rear - 1
         return return_value
 
     @property
