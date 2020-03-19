@@ -77,7 +77,13 @@ class MAryTree(object):
 
         None
         """
-        raise NotImplementedError("This is an abstract method.")
+        temp = self.search(key)
+        if temp.is_root is True and temp.key is None:
+            temp.key = key
+            temp.data = data
+        if temp is not None:
+            self.tree[temp].data = data
+
 
     def delete(self, key, **kwargs):
         """
