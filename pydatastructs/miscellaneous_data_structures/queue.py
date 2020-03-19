@@ -131,6 +131,8 @@ class ArrayQueue(Queue):
         return return_value
 
     def popright(self):
+        if not self.doubly_ended:
+            raise TypeError("Queue is not doubly ended.")
         if self.is_empty:
             raise IndexError("Queue is empty")
         return_value = dc(self.items[self.rear])
