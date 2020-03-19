@@ -43,13 +43,10 @@ class Queue(object):
 
     def __new__(cls, implementation='array', doubly_ended = True, **kwargs):
         if implementation == 'array':
-            if doubly_ended == True:
-                return ArrayQueue(
-                    kwargs.get('items', None),
-                    kwargs.get('dtype', int))
-            else:
-                raise TypeError("Queue is not doubly ended")
-
+                obj = ArrayQueue(kwargs.get('items', None),
+                                              kwargs.get('dtype', int))
+                obj.doubly_ended = doubly_ended
+                return obj
         elif implementation == 'linked_list':
             if doubly_ended == True:
 
