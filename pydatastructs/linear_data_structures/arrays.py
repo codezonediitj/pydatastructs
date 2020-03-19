@@ -209,12 +209,12 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         obj._last_pos_filled = obj._num - 1
         return obj
 
-    def _modify(self):
+    def _modify(self, force=False):
         """
         Contracts the array if Num(T)/Size(T) falls
         below load factor.
         """
-        if self._num/self._size < self._load_factor:
+        if (self._num/self._size < self._load_factor) or force:
             arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
@@ -231,14 +231,12 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             for i in range(self._last_pos_filled + 1):
                 arr_new[i] = self[i]
             arr_new[self._last_pos_filled + 1] = el
-            self._last_pos_filled += 1
             self._size = arr_new._size
-            self._num += 1
             self._data = arr_new._data
         else:
             self[self._last_pos_filled + 1] = el
-            self._last_pos_filled += 1
-            self._num += 1
+        self._last_pos_filled += 1
+        self._num += 1
         self._modify()
 
     def delete(self, idx):
