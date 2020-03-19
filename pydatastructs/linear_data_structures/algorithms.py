@@ -41,6 +41,41 @@ def _merge(array, sl, el, sr, er, end):
         k += 1
 
 def merge_sort_parallel(array, num_threads, **kwargs):
+    """
+    Implements parallel merge sort.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    num_threads: int
+        The maximum number of threads
+        to be used for sorting.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, merge_sort_parallel
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> merge_sort_parallel(arr, 3)
+    >>> [arr[0], arr[1], arr[2]]
+    [1, 2, 3]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Merge_sort
+    """
     start = kwargs.get('start', 0)
     end = kwargs.get('end', array._size - 1)
     for size in range(floor(log(end - start + 1, 2)) + 1):
