@@ -618,7 +618,7 @@ class SelfBalancingTree(BinarySearchTree):
         self.tree[j].parent = k
         self.tree[k].left = j
 
-class AVLTree(SelfBalanceingTree):
+class AVLTree(SelfBalancingTree):
     """
     Represents AVL trees.
 
