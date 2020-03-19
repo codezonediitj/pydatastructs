@@ -49,13 +49,11 @@ class Queue(object):
                 obj.doubly_ended = doubly_ended
                 return obj
         elif implementation == 'linked_list':
-            if doubly_ended == True:
-
-                return LinkedListQueue(
+            obj = LinkedListQueue(
                     kwargs.get('items', None)
                 )
-            else:
-                raise TypeError("Queue is not doubly ended")
+            obj.doubly_ended = doubly_ended
+            return obj
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
 
