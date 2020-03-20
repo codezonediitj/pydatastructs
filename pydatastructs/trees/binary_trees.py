@@ -44,7 +44,7 @@ class BinaryTree(object):
     """
 
     __slots__ = ['root_idx', 'comparator', 'tree', 'size',
-                 'is_order_statistic']
+                 'is_order_statistic', 'Node']
 
     def __new__(cls, key=None, root_data=None, comp=None,
                 is_order_statistic=False, Node=RedBlackTreeNode):
@@ -54,6 +54,7 @@ class BinaryTree(object):
         key = None if root_data is None else key
         root = Node(key, root_data)
         root.is_root = True
+        obj.Node = Node
         obj.root_idx = 0
         obj.tree, obj.size = ArrayForTrees(Node, [root]), 1
         obj.comparator = lambda key1, key2: key1 < key2 \
@@ -216,7 +217,7 @@ class BinarySearchTree(BinaryTree):
             self.tree[walk].key = key
             self.tree[walk].data = data
             return None
-        new_node, prev_node, flag = TreeNode(key, data), 0, True
+        new_node, prev_node, flag = self.Node(key, data), 0, True
         while flag:
             if not self.comparator(key, self.tree[walk].key):
                 if self.tree[walk].right is None:

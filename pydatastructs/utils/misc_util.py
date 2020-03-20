@@ -53,7 +53,7 @@ class TreeNode(Node):
         """
         return str((self.left, self.key, self.data, self.right))
 
-class RedBlackTreeNode(Node):
+class RedBlackTreeNode(TreeNode):
     """
     Represents node in trees.
 
