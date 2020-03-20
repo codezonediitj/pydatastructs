@@ -1,4 +1,4 @@
-from pydatastructs.utils import TreeNode
+from pydatastructs.utils import TreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
@@ -47,15 +47,15 @@ class BinaryTree(object):
                  'is_order_statistic']
 
     def __new__(cls, key=None, root_data=None, comp=None,
-                is_order_statistic=False):
+                is_order_statistic=False, Node=RedBlackTreeNode):
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
         key = None if root_data is None else key
-        root = TreeNode(key, root_data)
+        root = Node(key, root_data)
         root.is_root = True
         obj.root_idx = 0
-        obj.tree, obj.size = ArrayForTrees(TreeNode, [root]), 1
+        obj.tree, obj.size = ArrayForTrees(Node, [root]), 1
         obj.comparator = lambda key1, key2: key1 < key2 \
                         if comp is None else comp
         obj.is_order_statistic = is_order_statistic
