@@ -171,3 +171,46 @@ class LinkedListQueue(Queue):
 
     def __str__(self):
         return str(self.queue)
+
+class PriorityQueue(object):
+
+    def __new__(cls, implementation='linked_list', **kwargs):
+        if implementation == 'linked_list':
+            return LinkedListPriorityQueue()
+
+    def push(self, value, priority):
+        raise NotImplementedError(
+                "This is an abstract method.")
+
+    def pop(self):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    @property
+    def is_empty(self):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+class LinkedListPriorityQueue(PriorityQueue):
+
+    __slots__ = ['items']
+
+    def __new__(cls, items=None):
+        obj = object.__new__(cls)
+        obj.items = SinglyLinkedList()
+        return obj
+
+    def push(self, value, priority):
+        self.items.append((value, priority))
+
+    def pop(self):
+        walk = self.items.head
+        i, max_i, max_p = 0, None, walk.data[1]
+        while walk is not None:
+            if walk.data[1] > max_p:
+                max_i = i
+                max_p = walk.data[1]
+            i += 1
+            walk = walk.next
+        pop_val = self.items.extract(max_i)
+        return pop_val.data[0]
