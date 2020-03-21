@@ -127,6 +127,9 @@ class OneDimensionalArray(Array):
         for i in range(self._size):
             self._data[i] = elem
 
+    def __len__(self):
+        return self._size
+
 
 class DynamicArray(Array):
     """

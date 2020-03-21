@@ -7,11 +7,13 @@ from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils import GraphEdge
 from pydatastructs.miscellaneous_data_structures import DisjointSetForest
 from pydatastructs.graphs.graph import Graph
+from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 
 __all__ = [
     'breadth_first_search',
     'breadth_first_search_parallel',
-    'minimum_spanning_tree'
+    'minimum_spanning_tree',
+    'minimum_spanning_tree_parallel'
 ]
 
 def breadth_first_search(
@@ -190,31 +192,34 @@ def _breadth_first_search_parallel_adjacency_list(
 
 _breadth_first_search_parallel_adjacency_matrix = _breadth_first_search_parallel_adjacency_list
 
+def _generate_mst_object(graph):
+    mst = Graph(*[getattr(graph, str(v)) for v in graph.vertices])
+    return mst
+
+def _sort_edges(graph, num_threads=None):
+    edges = list(graph.edge_weights.items())
+    if num_threads is None:
+        sort_key = lambda item: item[1].value
+        return sorted(edges, key=sort_key)
+
+    merge_sort_parallel(edges, num_threads,
+                        comp=lambda u,v: u[1].value <= v[1].value)
+    return edges
+
 def _minimum_spanning_tree_kruskal_adjacency_list(graph):
-    mst = Graph(*[getattr(graph, v) for v in graph.vertices])
-    sort_key = lambda item: item[1].value
+    mst = _generate_mst_object(graph)
     dsf = DisjointSetForest()
     for v in graph.vertices:
         dsf.make_set(v)
-    for _, edge in sorted(graph.edge_weights.items(), key=sort_key):
+    for _, edge in _sort_edges(graph):
         u, v = edge.source.name, edge.target.name
         if dsf.find_root(u) is not dsf.find_root(v):
             mst.add_edge(u, v, edge.value)
             dsf.union(u, v)
     return mst
 
-def _minimum_spanning_tree_kruskal_adjacency_matrix(graph):
-    mst = Graph(*[getattr(graph, str(v)) for v in graph.vertices])
-    sort_key = lambda item: item[1].value
-    dsf = DisjointSetForest()
-    for v in graph.vertices:
-        dsf.make_set(v)
-    for _, edge in sorted(graph.edge_weights.items(), key=sort_key):
-        u, v = edge.source.name, edge.target.name
-        if dsf.find_root(u) is not dsf.find_root(v):
-            mst.add_edge(u, v, edge.value)
-            dsf.union(u, v)
-    return mst
+_minimum_spanning_tree_kruskal_adjacency_matrix = \
+    _minimum_spanning_tree_kruskal_adjacency_list
 
 def minimum_spanning_tree(graph, algorithm):
     """
@@ -269,3 +274,29 @@ def minimum_spanning_tree(graph, algorithm):
         "isn't implemented for finding minimum spanning trees."
         %(algorithm, graph._impl))
     return getattr(algorithms, func)(graph)
+
+def _minimum_spanning_tree_parallel_kruskal_adjacency_list(graph, num_threads):
+    mst = _generate_mst_object(graph)
+    dsf = DisjointSetForest()
+    for v in graph.vertices:
+        dsf.make_set(v)
+    edges = _sort_edges(graph, num_threads)
+    for _, edge in edges:
+        u, v = edge.source.name, edge.target.name
+        if dsf.find_root(u) is not dsf.find_root(v):
+            mst.add_edge(u, v, edge.value)
+            dsf.union(u, v)
+    return mst
+
+_minimum_spanning_tree_parallel_kruskal_adjacency_matrix = \
+    _minimum_spanning_tree_parallel_kruskal_adjacency_list
+
+def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_minimum_spanning_tree_parallel_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algoithm for %s implementation of graphs "
+        "isn't implemented for finding minimum spanning trees."
+        %(algorithm, graph._impl))
+    return getattr(algorithms, func)(graph, num_threads)

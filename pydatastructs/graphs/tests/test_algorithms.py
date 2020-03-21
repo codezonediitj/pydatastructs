@@ -1,5 +1,6 @@
 from pydatastructs import (breadth_first_search, Graph,
-breadth_first_search_parallel, minimum_spanning_tree)
+breadth_first_search_parallel, minimum_spanning_tree,
+minimum_spanning_tree_parallel)
 
 
 def test_breadth_first_search():
@@ -148,3 +149,30 @@ def test_minimum_spanning_tree():
 
     _test_minimum_spanning_tree("List", "kruskal")
     _test_minimum_spanning_tree("Matrix", "kruskal")
+
+def test_minimum_spanning_tree_parallel():
+
+    def _test_minimum_spanning_tree_parallel(ds, algorithm):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        a, b, c, d, e = [GraphNode(x) for x in [0, 1, 2, 3, 4]]
+        graph = Graph(a, b, c, d, e)
+        graph.add_edge(a.name, c.name, 10)
+        graph.add_edge(c.name, a.name, 10)
+        graph.add_edge(a.name, d.name, 7)
+        graph.add_edge(d.name, a.name, 7)
+        graph.add_edge(c.name, d.name, 9)
+        graph.add_edge(d.name, c.name, 9)
+        graph.add_edge(d.name, b.name, 32)
+        graph.add_edge(b.name, d.name, 32)
+        graph.add_edge(d.name, e.name, 23)
+        graph.add_edge(e.name, d.name, 23)
+        mst = minimum_spanning_tree_parallel(graph, algorithm, 3)
+        expected_mst = [('0_3', 7), ('2_3', 9), ('3_4', 23), ('3_1', 32),
+                        ('3_0', 7), ('3_2', 9), ('4_3', 23), ('1_3', 32)]
+        assert len(expected_mst) == 2*len(mst.edge_weights.items())
+        for k, v in mst.edge_weights.items():
+            assert (k, v.value) in expected_mst
+
+    _test_minimum_spanning_tree_parallel("List", "kruskal")
+    _test_minimum_spanning_tree_parallel("Matrix", "kruskal")

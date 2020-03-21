@@ -87,7 +87,7 @@ def merge_sort_parallel(array, num_threads, **kwargs):
     .. [1] https://en.wikipedia.org/wiki/Merge_sort
     """
     start = kwargs.get('start', 0)
-    end = kwargs.get('end', array._size - 1)
+    end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
     for size in range(floor(log(end - start + 1, 2)) + 1):
         pow_2 = 2**size
