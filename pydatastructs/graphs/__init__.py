@@ -10,7 +10,8 @@ from . import algorithms
 from .algorithms import (
     breadth_first_search,
     breadth_first_search_parallel,
-    minimum_spanning_tree
+    minimum_spanning_tree,
+    minimum_spanning_tree_parallel
 )
 
 __all__.extend(algorithms.__all__)
