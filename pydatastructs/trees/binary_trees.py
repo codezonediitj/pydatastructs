@@ -28,7 +28,7 @@ class BinaryTree(object):
     key
         Required if tree is to be instantiated with
         root otherwise not needed.
-    comp: lambda
+    comp: lambda/function
         Optional, A lambda function which will be used
         for comparison of keys. Should return a
         bool value. By default it implements less
