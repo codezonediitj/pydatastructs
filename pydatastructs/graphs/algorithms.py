@@ -292,6 +292,52 @@ _minimum_spanning_tree_parallel_kruskal_adjacency_matrix = \
     _minimum_spanning_tree_parallel_kruskal_adjacency_list
 
 def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
+    """
+    Computes a minimum spanning tree for the given
+    graph and algorithm using the given number of threads.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph whose minimum spanning tree
+        has to be computed.
+    algorithm: str
+        The algorithm which should be used for
+        computing a minimum spanning tree.
+        Currently the following algorithms are
+        supported,
+        'kruskal' -> Kruskal's algorithm as given in
+                     [1].
+    num_threads: int
+        The number of threads to be used.
+
+    Returns
+    =======
+
+    mst: Graph
+        A minimum spanning tree using the implementation
+        same as the graph provided in the input.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import minimum_spanning_tree_parallel
+    >>> u = AdjacencyListGraphNode('u')
+    >>> v = AdjacencyListGraphNode('v')
+    >>> G = Graph(u, v)
+    >>> G.add_edge(u.name, v.name, 3)
+    >>> mst = minimum_spanning_tree_parallel(G, 'kruskal', 3)
+    >>> u_n = mst.neighbors(u.name)
+    >>> mst.get_edge(u.name, u_n[0].name).value
+    3
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm#Parallel_algorithm
+    """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_minimum_spanning_tree_parallel_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
