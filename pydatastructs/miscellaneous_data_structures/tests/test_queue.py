@@ -1,5 +1,7 @@
 from pydatastructs.miscellaneous_data_structures import Queue
-from pydatastructs.miscellaneous_data_structures.queue import ArrayQueue, LinkedListQueue
+from pydatastructs.miscellaneous_data_structures.queue import (
+    ArrayQueue, LinkedListQueue, PriorityQueue,
+    LinkedListPriorityQueue)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import _check_type
 
@@ -57,3 +59,18 @@ def test_LinkedListQueue():
         q1.popleft()
 
     assert rear.key == q1.popleft().key
+
+def test_PriorityQueue():
+    pq1 = PriorityQueue(implementation='linked_list')
+    assert _check_type(pq1, LinkedListPriorityQueue) is True
+    assert raises(NotImplementedError, lambda: Queue(implementation=''))
+
+def test_LinkedListPriorityQueue():
+    pq1 = PriorityQueue(implementation='linked_list')
+    pq1.push(1, 2)
+    pq1.push(2, 3)
+    pq1.push(3, 4)
+    assert pq1.pop() == 3
+    assert pq1.pop() == 2
+    assert pq1.pop() == 1
+    assert raises(IndexError, lambda: pq1.pop())

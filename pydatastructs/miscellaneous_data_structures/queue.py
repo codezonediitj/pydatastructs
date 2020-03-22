@@ -3,7 +3,8 @@ from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
 from copy import deepcopy as dc
 
 __all__ = [
-    'Queue'
+    'Queue',
+    'PriorityQueue'
 ]
 
 class Queue(object):
@@ -171,3 +172,97 @@ class LinkedListQueue(Queue):
 
     def __str__(self):
         return str(self.queue)
+
+class PriorityQueue(object):
+    """
+    Represents the concept of priority queue.
+
+    Parameters
+    ==========
+
+    implementation: str
+        The implementation which is to be
+        used for supporting operations
+        of priority queue.
+        The following implementations are supported,
+        'linked_list' -> Linked list implementation.
+        Optional, by default, 'linked_list' implementation
+        is used.
+    comp: function
+        The comparator to be used while comparing priorities.
+        Must return a bool object.
+        By default, `lambda u, v: u > v` is used to compare
+        priorities i.e., maximum priority elements are extracted
+        by pop operation.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import PriorityQueue
+    >>> pq = PriorityQueue()
+    >>> pq.push(1, 2)
+    >>> pq.push(2, 3)
+    >>> pq.pop()
+    2
+    >>> pq2 = PriorityQueue(comp=lambda u, v: u < v)
+    >>> pq2.push(1, 2)
+    >>> pq2.push(2, 3)
+    >>> pq2.pop()
+    1
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Priority_queue#Naive_implementations
+    """
+
+    def __new__(cls, implementation='linked_list', **kwargs):
+        if implementation == 'linked_list':
+            return LinkedListPriorityQueue(
+                kwargs.get("comp", lambda u, v: u > v)
+            )
+
+    def push(self, value, priority):
+        raise NotImplementedError(
+                "This is an abstract method.")
+
+    def pop(self):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    @property
+    def is_empty(self):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+class LinkedListPriorityQueue(PriorityQueue):
+
+    __slots__ = ['items', 'comp']
+
+    def __new__(cls, comp=lambda u, v: u > v):
+        obj = object.__new__(cls)
+        obj.items = SinglyLinkedList()
+        obj.comp = comp
+        return obj
+
+    def push(self, value, priority):
+        self.items.append(value, priority)
+
+    def pop(self):
+        if self.is_empty:
+            raise IndexError("Priority queue is empty.")
+
+        walk = self.items.head
+        i, max_i, max_p = 0, 0, walk.data
+        while walk is not None:
+            if self.comp(walk.data, max_p):
+                max_i = i
+                max_p = walk.data
+            i += 1
+            walk = walk.next
+        pop_val = self.items.extract(max_i)
+        return pop_val.key
+
+    @property
+    def is_empty(self):
+        return self.items.size == 0
