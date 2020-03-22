@@ -194,24 +194,32 @@ class PriorityQueue(object):
 
 class LinkedListPriorityQueue(PriorityQueue):
 
-    __slots__ = ['items']
+    __slots__ = ['items', 'comp']
 
-    def __new__(cls):
+    def __new__(cls, comp=lambda u, v: u > v):
         obj = object.__new__(cls)
         obj.items = SinglyLinkedList()
+        obj.comp = comp
         return obj
 
     def push(self, value, priority):
         self.items.append(value, priority)
 
     def pop(self):
+        if self.is_empty:
+            raise IndexError("Priority queue is empty.")
+
         walk = self.items.head
-        i, max_i, max_p = 0, None, walk.data
+        i, max_i, max_p = 0, 0, walk.data
         while walk is not None:
-            if walk.data > max_p:
+            if self.comp(walk.data, max_p):
                 max_i = i
                 max_p = walk.data
             i += 1
             walk = walk.next
         pop_val = self.items.extract(max_i)
         return pop_val.key
+
+    @property
+    def is_empty(self):
+        return self.items.size == 0
