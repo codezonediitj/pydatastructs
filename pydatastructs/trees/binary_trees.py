@@ -552,73 +552,7 @@ class BinarySearchTree(BinaryTree):
         """
         return getattr(self, "_lca_"+str(algorithm))(j, k)
 
-class SelfBalancingBinaryTree(BinarySearchTree):
-    """
-    Represents Base class for all rotation based balancing trees like AVL tree, Red Black tree, Splay Tree.
-    """
-    def _right_rotate(self, j, k):
-        y = self.tree[k].right
-        if y is not None:
-            self.tree[y].parent = j
-        self.tree[j].left = y
-        self.tree[k].parent = self.tree[j].parent
-        if self.tree[k].parent is not None:
-            self.tree[self.tree[k].parent].left = k
-        self.tree[j].parent = k
-        self.tree[k].right = j
-
-    def _left_right_rotate(self, j, k):
-        i = self.tree[k].right
-        v, w = self.tree[i].left, self.tree[i].right
-        self.tree[k].right, self.tree[j].left = v, w
-        if v is not None:
-            self.tree[v].parent = k
-        if w is not None:
-            self.tree[w].parent = j
-        self.tree[i].left, self.tree[i].right, self.tree[i].parent = \
-            k, j, self.tree[j].parent
-        self.tree[k].parent, self.tree[j].parent = i, i
-        ip = self.tree[i].parent
-        if ip is not None:
-            if self.tree[ip].left == j:
-                self.tree[ip].left = i
-            else:
-                self.tree[ip].right = i
-        else:
-            self.root_idx = i
-
-    def _right_left_rotate(self, j, k):
-        i = self.tree[k].left
-        v, w = self.tree[i].left, self.tree[i].right
-        self.tree[k].left, self.tree[j].right = w, v
-        if v is not None:
-            self.tree[v].parent = j
-        if w is not None:
-            self.tree[w].parent = k
-        self.tree[i].right, self.tree[i].left, self.tree[i].parent = \
-            k, j, self.tree[j].parent
-        self.tree[k].parent, self.tree[j].parent = i, i
-        ip = self.tree[i].parent
-        if ip is not None:
-            if self.tree[ip].left == j:
-                self.tree[ip].left = i
-            else:
-                self.tree[ip].right = i
-        else:
-            self.root_idx = i
-
-    def _left_rotate(self, j, k):
-        y = self.tree[k].left
-        if y is not None:
-            self.tree[y].parent = j
-        self.tree[j].right = y
-        self.tree[k].parent = self.tree[j].parent
-        if self.tree[k].parent is not None:
-            self.tree[self.tree[k].parent].right = k
-        self.tree[j].parent = k
-        self.tree[k].left = j
-
-class AVLTree(SelfBalancingBinaryTree):
+class AVLTree(BinarySearchTree):
     """
     Represents AVL trees.
 
@@ -642,7 +576,15 @@ class AVLTree(SelfBalancingBinaryTree):
                                         self.left_height(node)
 
     def _right_rotate(self, j, k):
-        super(AVLTree, self)._right_rotate(j, k)
+        y = self.tree[k].right
+        if y is not None:
+            self.tree[y].parent = j
+        self.tree[j].left = y
+        self.tree[k].parent = self.tree[j].parent
+        if self.tree[k].parent is not None:
+            self.tree[self.tree[k].parent].left = k
+        self.tree[j].parent = k
+        self.tree[k].right = j
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
         kp = self.tree[k].parent
@@ -653,11 +595,28 @@ class AVLTree(SelfBalancingBinaryTree):
                                  self.right_size(self.tree[j]) + 1)
 
     def _left_right_rotate(self, j, k):
-        super(AVLTree, self)._left_right_rotate(j, k)
+        i = self.tree[k].right
+        v, w = self.tree[i].left, self.tree[i].right
+        self.tree[k].right, self.tree[j].left = v, w
+        if v is not None:
+            self.tree[v].parent = k
+        if w is not None:
+            self.tree[w].parent = j
+        self.tree[i].left, self.tree[i].right, self.tree[i].parent = \
+            k, j, self.tree[j].parent
+        self.tree[k].parent, self.tree[j].parent = i, i
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
         self.tree[k].height = max(self.left_height(self.tree[k]),
                                     self.right_height(self.tree[k])) + 1
+        ip = self.tree[i].parent
+        if ip is not None:
+            if self.tree[ip].left == j:
+                self.tree[ip].left = i
+            else:
+                self.tree[ip].right = i
+        else:
+            self.root_idx = i
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
@@ -665,11 +624,28 @@ class AVLTree(SelfBalancingBinaryTree):
                                  self.right_size(self.tree[k]) + 1)
 
     def _right_left_rotate(self, j, k):
-        super(AVLTree, self)._right_left_rotate(j, k)
+        i = self.tree[k].left
+        v, w = self.tree[i].left, self.tree[i].right
+        self.tree[k].left, self.tree[j].right = w, v
+        if v is not None:
+            self.tree[v].parent = j
+        if w is not None:
+            self.tree[w].parent = k
+        self.tree[i].right, self.tree[i].left, self.tree[i].parent = \
+            k, j, self.tree[j].parent
+        self.tree[k].parent, self.tree[j].parent = i, i
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
         self.tree[k].height = max(self.left_height(self.tree[k]),
                                     self.right_height(self.tree[k])) + 1
+        ip = self.tree[i].parent
+        if ip is not None:
+            if self.tree[ip].left == j:
+                self.tree[ip].left = i
+            else:
+                self.tree[ip].right = i
+        else:
+            self.root_idx = i
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
@@ -677,7 +653,15 @@ class AVLTree(SelfBalancingBinaryTree):
                                  self.right_size(self.tree[k]) + 1)
 
     def _left_rotate(self, j, k):
-        super(AVLTree, self)._left_rotate(j, k)
+        y = self.tree[k].left
+        if y is not None:
+            self.tree[y].parent = j
+        self.tree[j].right = y
+        self.tree[k].parent = self.tree[j].parent
+        if self.tree[k].parent is not None:
+            self.tree[self.tree[k].parent].right = k
+        self.tree[j].parent = k
+        self.tree[k].left = j
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
         self.tree[k].height = max(self.left_height(self.tree[k]),
