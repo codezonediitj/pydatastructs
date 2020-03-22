@@ -12,15 +12,17 @@ def test_DoublyLinkedList():
     dll.append(3)
     dll.insert_after(dll[-1], 4)
     dll.insert_after(dll[2], 6)
-    dll.insert_before(dll[4], 1)
+    dll.insert_before(dll[4], 1.1)
     dll.insert_before(dll[0], 7)
     dll.insert_at(0, 2)
     dll.insert_at(-1, 9)
     dll.extract(2)
     assert dll.pop_left().key == 2
     assert dll.pop_right().key == 4
+    assert dll.search(3) == dll[-2]
+    assert dll.search(-1) is None
     dll[-2].key = 0
-    assert str(dll) == "['7', '5', '1', '6', '1', '0', '9']"
+    assert str(dll) == "['7', '5', '1', '6', '1.1', '0', '9']"
     assert len(dll) == 7
     assert raises(IndexError, lambda: dll.insert_at(8, None))
     assert raises(IndexError, lambda: dll.extract(20))
@@ -89,6 +91,7 @@ def test_SinglyCircularLinkedList():
     scll.extract(2)
     assert scll.pop_left().key == 2
     assert scll.pop_right().key == 6
+    assert scll.search(-1) is None
     scll[-2].key = 0
     assert str(scll) == "['2', '4', '1', '0', '9']"
     assert len(scll) == 5

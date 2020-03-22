@@ -20,6 +20,16 @@ class LinkedList(object):
     def is_empty(self):
         return self.size == 0
 
+    def search(self, key):
+        curr_node = self.head
+        while curr_node is not None:
+            if curr_node.key == key:
+                return curr_node
+            curr_node = curr_node.next
+            if curr_node is self.head:
+                return None
+        return None
+
     def __str__(self):
         """
         For printing the linked list.
