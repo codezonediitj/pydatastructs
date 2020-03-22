@@ -174,10 +174,53 @@ class LinkedListQueue(Queue):
         return str(self.queue)
 
 class PriorityQueue(object):
+    """
+    Represents the concept of priority queue.
+
+    Parameters
+    ==========
+
+    implementation: str
+        The implementation which is to be
+        used for supporting operations
+        of priority queue.
+        The following implementations are supported,
+        'linked_list' -> Linked list implementation.
+        Optional, by default, 'linked_list' implementation
+        is used.
+    comp: function
+        The comparator to be used while comparing priorities.
+        Must return a bool object.
+        By default, `lambda u, v: u > v` is used to compare
+        priorities i.e., maximum priority elements are extracted
+        by pop operation.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import PriorityQueue
+    >>> pq = PriorityQueue()
+    >>> pq.push(1, 2)
+    >>> pq.push(2, 3)
+    >>> pq.pop()
+    2
+    >>> pq2 = PriorityQueue(comp=lambda u, v: u < v)
+    >>> pq2.push(1, 2)
+    >>> pq2.push(2, 3)
+    >>> pq2.pop()
+    1
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Priority_queue#Naive_implementations
+    """
 
     def __new__(cls, implementation='linked_list', **kwargs):
         if implementation == 'linked_list':
-            return LinkedListPriorityQueue()
+            return LinkedListPriorityQueue(
+                kwargs.get("comp", lambda u, v: u > v)
+            )
 
     def push(self, value, priority):
         raise NotImplementedError(
