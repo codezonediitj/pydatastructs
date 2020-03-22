@@ -566,6 +566,9 @@ class SelfBalancingBinaryTree(BinarySearchTree):
             self.tree[self.tree[k].parent].left = k
         self.tree[j].parent = k
         self.tree[k].right = j
+        kp = self.tree[k].parent
+        if kp is None:
+            self.root_idx = k
 
     def _left_right_rotate(self, j, k):
         i = self.tree[k].right
@@ -617,6 +620,9 @@ class SelfBalancingBinaryTree(BinarySearchTree):
             self.tree[self.tree[k].parent].right = k
         self.tree[j].parent = k
         self.tree[k].left = j
+        kp = self.tree[k].parent
+        if kp is None:
+            self.root_idx = k
 
 class AVLTree(SelfBalancingBinaryTree):
     """
@@ -645,9 +651,6 @@ class AVLTree(SelfBalancingBinaryTree):
         super(AVLTree, self)._right_rotate(j, k)
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
-        kp = self.tree[k].parent
-        if kp is None:
-            self.root_idx = k
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
@@ -682,9 +685,6 @@ class AVLTree(SelfBalancingBinaryTree):
                                   self.right_height(self.tree[j])) + 1
         self.tree[k].height = max(self.left_height(self.tree[k]),
                                     self.right_height(self.tree[k])) + 1
-        kp = self.tree[k].parent
-        if kp is None:
-            self.root_idx = k
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
