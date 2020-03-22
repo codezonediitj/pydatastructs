@@ -163,6 +163,6 @@ class LinkedListStack(Stack):
         elements = []
         current_node = self.peek
         while current_node is not None:
-            elements.append(current_node.data)
+            elements.append(str(current_node))
             current_node = current_node.next
         return str(elements[::-1])

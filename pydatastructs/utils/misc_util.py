@@ -176,7 +176,7 @@ class LinkedListNode(Node):
         return obj
 
     def __str__(self):
-        return str(self.key, self.data)
+        return str(self.key)
 
 class GraphNode(Node):
     """

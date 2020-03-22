@@ -43,19 +43,19 @@ class DoublyLinkedList(LinkedList):
     >>> from pydatastructs import DoublyLinkedList
     >>> dll = DoublyLinkedList()
     >>> dll.append(6)
-    >>> dll[0].data
+    >>> dll[0].key
     6
-    >>> dll.head.data
+    >>> dll.head.key
     6
     >>> dll.append(5)
     >>> dll.append_left(2)
     >>> str(dll)
-    '[2, 6, 5]'
-    >>> dll[0].data = 7.2
-    >>> dll.extract(1).data
+    "['2', '6', '5']"
+    >>> dll[0].key = 7.2
+    >>> dll.extract(1).key
     6
     >>> str(dll)
-    '[7.2, 5]'
+    "['7.2', '5']"
 
     References
     ==========
@@ -300,19 +300,19 @@ class SinglyLinkedList(LinkedList):
     >>> from pydatastructs import SinglyLinkedList
     >>> sll = SinglyLinkedList()
     >>> sll.append(6)
-    >>> sll[0].data
+    >>> sll[0].key
     6
-    >>> sll.head.data
+    >>> sll.head.key
     6
     >>> sll.append(5)
     >>> sll.append_left(2)
     >>> str(sll)
-    '[2, 6, 5]'
-    >>> sll[0].data = 7.2
-    >>> sll.extract(1).data
+    "['2', '6', '5']"
+    >>> sll[0].key = 7.2
+    >>> sll.extract(1).key
     6
     >>> str(sll)
-    '[7.2, 5]'
+    "['7.2', '5']"
 
     References
     ==========
@@ -524,19 +524,19 @@ class SinglyCircularLinkedList(SinglyLinkedList):
     >>> from pydatastructs import SinglyCircularLinkedList
     >>> scll = SinglyCircularLinkedList()
     >>> scll.append(6)
-    >>> scll[0].data
+    >>> scll[0].key
     6
-    >>> scll.head.data
+    >>> scll.head.key
     6
     >>> scll.append(5)
     >>> scll.append_left(2)
     >>> str(scll)
-    '[2, 6, 5]'
-    >>> scll[0].data = 7.2
-    >>> scll.extract(1).data
+    "['2', '6', '5']"
+    >>> scll[0].key = 7.2
+    >>> scll.extract(1).key
     6
     >>> str(scll)
-    '[7.2, 5]'
+    "['7.2', '5']"
 
     References
     ==========
@@ -619,19 +619,19 @@ class DoublyCircularLinkedList(DoublyLinkedList):
     >>> from pydatastructs import DoublyCircularLinkedList
     >>> dcll = DoublyCircularLinkedList()
     >>> dcll.append(6)
-    >>> dcll[0].data
+    >>> dcll[0].key
     6
-    >>> dcll.head.data
+    >>> dcll.head.key
     6
     >>> dcll.append(5)
     >>> dcll.append_left(2)
     >>> str(dcll)
-    '[2, 6, 5]'
-    >>> dcll[0].data = 7.2
-    >>> dcll.extract(1).data
+    "['2', '6', '5']"
+    >>> dcll[0].key = 7.2
+    >>> dcll.extract(1).key
     6
     >>> str(dcll)
-    '[7.2, 5]'
+    "['7.2', '5']"
 
     References
     ==========

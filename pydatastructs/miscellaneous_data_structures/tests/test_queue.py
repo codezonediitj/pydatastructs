@@ -35,13 +35,13 @@ def test_LinkedListQueue():
     q1 = Queue(implementation='linked_list', items = [0, 1])
     q1.append(2)
     q1.append(3)
-    assert str(q1) == '[0, 1, 2, 3]'
+    assert str(q1) == "['0', '1', '2', '3']"
     assert len(q1) == 4
-    assert q1.popleft().data == 0
-    assert q1.popleft().data == 1
+    assert q1.popleft().key == 0
+    assert q1.popleft().key == 1
     assert len(q1) == 2
-    assert q1.popleft().data == 2
-    assert q1.popleft().data == 3
+    assert q1.popleft().key == 2
+    assert q1.popleft().key == 3
     assert len(q1) == 0
     raises(IndexError, lambda: q1.popleft())
 
@@ -50,10 +50,10 @@ def test_LinkedListQueue():
     assert q1.size == 4
 
     front = q1.front
-    assert front.data == q1.popleft().data
+    assert front.key == q1.popleft().key
 
     rear = q1.rear
     for _ in range(len(q1)-1):
         q1.popleft()
 
-    assert rear.data == q1.popleft().data
+    assert rear.key == q1.popleft().key
