@@ -75,13 +75,13 @@ class OneDimensionalArray(Array):
             if _check_type(args[0], list) and \
                 _check_type(args[1], int):
                 for i in range(len(args[0])):
-                    if dtype != type(args[0][i]):
+                    if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 size, data = args[1], [arg for arg in args[0]]
             elif _check_type(args[1], list) and \
                 _check_type(args[0], int):
                 for i in range(len(args[1])):
-                    if dtype != type(args[1][i]):
+                    if _check_type(args[1][i], dtype) is False:
                         args[1][i] = dtype(args[1][i])
                 size, data = args[0], [arg for arg in args[1]]
             else:
@@ -99,7 +99,7 @@ class OneDimensionalArray(Array):
                 obj._data = [init for i in range(args[0])]
             elif _check_type(args[0], (list, tuple)):
                 for i in range(len(args[0])):
-                    if dtype != type(args[0][i]):
+                    if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
                                         [arg for arg in args[0]]
@@ -118,7 +118,7 @@ class OneDimensionalArray(Array):
         if elem is None:
             self._data[idx] = None
         else:
-            if type(elem) != self._dtype:
+            if _check_type(elem, self._dtype) is False:
                 elem = self._dtype(elem)
             self._data[idx] = elem
 
