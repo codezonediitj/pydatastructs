@@ -3,7 +3,8 @@ from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
 from copy import deepcopy as dc
 
 __all__ = [
-    'Queue'
+    'Queue',
+    'PriorityQueue'
 ]
 
 class Queue(object):
@@ -195,22 +196,22 @@ class LinkedListPriorityQueue(PriorityQueue):
 
     __slots__ = ['items']
 
-    def __new__(cls, items=None):
+    def __new__(cls):
         obj = object.__new__(cls)
         obj.items = SinglyLinkedList()
         return obj
 
     def push(self, value, priority):
-        self.items.append((value, priority))
+        self.items.append(value, priority)
 
     def pop(self):
         walk = self.items.head
-        i, max_i, max_p = 0, None, walk.data[1]
+        i, max_i, max_p = 0, None, walk.data
         while walk is not None:
-            if walk.data[1] > max_p:
+            if walk.data > max_p:
                 max_i = i
-                max_p = walk.data[1]
+                max_p = walk.data
             i += 1
             walk = walk.next
         pop_val = self.items.extract(max_i)
-        return pop_val.data[0]
+        return pop_val.key
