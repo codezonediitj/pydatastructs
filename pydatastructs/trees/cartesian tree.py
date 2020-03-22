@@ -1,31 +1,21 @@
-class node:
-    def __init__(self,data):
-        self.data=data
-        self.left=None
-        self.right=None 
+from pydatastructs.utils import TreeNode
+from pydatastructs.trees import BinaryTreeTraversal
+from pydatastructs.miscellaneous_data_structures import Stack
 
 
 class CartesianTree:
     def __init__(self,arr):
         self.arr=arr
 
-    def printInorder(self,root):
-
-        if root==None:
-            return
-        self.printInorder(root.left)
-        print(root.data,end=' ')
-        self.printInorder(root.right)
+    def show(self,root):
+        self._pre_order(root)
 
     def buildhelper(self,root,arr,parent,leftchild,rightchild):
         if root==-1:
             return None
-
-        temp=node(arr[root])
-
+        temp=TreeNode(arr[root])
         temp.left=self.buildhelper(leftchild[root],arr,parent,leftchild,rightchild)
         temp.right=self.buildhelper(rightchild[root],arr,parent,leftchild,rightchild)
-
         return temp
 
     def buildCartesiantree(self,arr):
@@ -65,7 +55,6 @@ class CartesianTree:
         return self.buildhelper(root,arr,parent,leftchild,rightchild)
 
     
-
     def cartesiansort(self,root):
         myPq = PriorityQueue()
         myPq.insert(root)
@@ -104,4 +93,4 @@ class PriorityQueue():
                 return item 
             except IndexError: 
                 print() 
-                exit()
+                
