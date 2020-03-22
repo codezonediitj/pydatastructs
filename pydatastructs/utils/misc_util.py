@@ -38,7 +38,7 @@ class TreeNode(Node):
     __slots__ = ['key', 'data', 'left', 'right', 'is_root',
                  'height', 'parent', 'size']
 
-    def __new__(cls, key, data):
+    def __new__(cls, key, data=None):
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.left, obj.right, obj.parent, obj.height, obj.size = \
@@ -81,7 +81,7 @@ class BinomialTreeNode(TreeNode):
     """
     __slots__ = ['parent', 'key', 'children', 'data', 'is_root']
 
-    def __new__(cls, key, data):
+    def __new__(cls, key, data=None):
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
@@ -132,7 +132,7 @@ class MAryTreeNode(TreeNode):
     """
     __slots__ = ['key', 'children', 'data', 'is_root']
 
-    def __new__(cls, key, data):
+    def __new__(cls, key, data=None):
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
         obj = Node.__new__(cls)
         obj.data = data
@@ -156,6 +156,9 @@ class LinkedListNode(Node):
     Parameters
     ==========
 
+    key
+        Any valid identifier to uniquely
+        identify the node in the linked list.
     data
         Any valid data to be stored in the node.
     links
@@ -163,16 +166,17 @@ class LinkedListNode(Node):
     addrs
         List of address of nodes to be assigned to each of the attributes in links.
     """
-    def __new__(cls, data=None, links=['next'], addrs=[None]):
+    def __new__(cls, key, data=None, links=['next'], addrs=[None]):
         obj = Node.__new__(cls)
+        obj.key = key
         obj.data = data
         for link, addr in zip(links, addrs):
             obj.__setattr__(link, addr)
-        obj.__slots__ = ['data'] + links
+        obj.__slots__ = ['key', 'data'] + links
         return obj
 
     def __str__(self):
-        return str(self.data)
+        return str(self.key, self.data)
 
 class GraphNode(Node):
     """
@@ -291,7 +295,7 @@ class Set(object):
 
     __slots__ = ['parent', 'size', 'key', 'data']
 
-    def __new__(cls, key, data):
+    def __new__(cls, key, data=None):
         obj = object.__new__(cls)
         obj.key = key
         obj.data = data
