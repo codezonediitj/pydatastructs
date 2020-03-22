@@ -33,16 +33,16 @@ def test_LinkedListStack():
     s.push(1)
     s.push(2)
     s.push(3)
-    assert s.peek.data == 3
-    assert str(s) == '[1, 2, 3]'
-    assert s.pop().data == 3
-    assert s.pop().data == 2
-    assert s.pop().data == 1
+    assert s.peek.key == 3
+    assert str(s) == "['1', '2', '3']"
+    assert s.pop().key == 3
+    assert s.pop().key == 2
+    assert s.pop().key == 1
     assert s.is_empty is True
     assert raises(IndexError, lambda : s.pop())
     assert str(s) == '[]'
     _s = Stack(implementation='linked_list',items=[1, 2, 3])
-    assert str(_s) == '[1, 2, 3]'
+    assert str(_s) == "['1', '2', '3']"
     assert len(_s) == 3
 
     s = Stack(implementation='linked_list',items=['a',None,type,{}])
@@ -50,5 +50,5 @@ def test_LinkedListStack():
     assert s.size == 4
 
     peek = s.peek
-    assert peek.data == s.pop().data
+    assert peek.key == s.pop().key
     assert raises(TypeError, lambda: Stack(implementation='linked_list', items={0, 1}))
