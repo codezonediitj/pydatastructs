@@ -1,0 +1,31 @@
+diff a/pydatastructs/graphs/algorithms.py b/pydatastructs/graphs/algorithms.py	(rejected hunks)
+@@ -265,6 +265,14 @@ def minimum_spanning_tree(graph, algorithm):
+     ==========
+ 
+     .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
++
++    Note
++    ====
++
++    The concept of minimum spanning tree is valid only for
++    connected and undirected graphs. So, this function
++    should be used only for such graphs. Using with other
++    types of graphs may lead to unwanted results.
+     """
+     import pydatastructs.graphs.algorithms as algorithms
+     func = "_minimum_spanning_tree_" + algorithm + "_" + graph._impl
+@@ -337,6 +345,14 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
+     ==========
+ 
+     .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm#Parallel_algorithm
++
++    Note
++    ====
++
++    The concept of minimum spanning tree is valid only for
++    connected and undirected graphs. So, this function
++    should be used only for such graphs. Using with other
++    types of graphs will lead to unwanted results.
+     """
+     import pydatastructs.graphs.algorithms as algorithms
+     func = "_minimum_spanning_tree_parallel_" + algorithm + "_" + graph._impl
