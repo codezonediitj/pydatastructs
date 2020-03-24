@@ -45,3 +45,12 @@ def test_brick_sort():
     brick_sort(arr, comp=lambda u, v: u>v)
     b = list(reversed(sorted(arr)))
     assert b == list(arr)
+
+    arr = DynamicOneDimensionalArray(int, 0)
+    for i in range(n):
+        arr.append(random.randint(1,1000))
+
+    x = [arr[i] for i in range(arr._last_pos_filled+1)]
+    b = sorted(x)
+    brick_sort(arr)
+    assert b == [arr[i] for i in range(arr._last_pos_filled+1)]

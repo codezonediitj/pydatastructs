@@ -148,7 +148,7 @@ def brick_sort(array, **kwargs):
     .. [1] https://www.geeksforgeeks.org/odd-even-sort-brick-sort/
     """
     start = kwargs.get('start', 0)
-    end = kwargs.get('end', len(array) - 1)
+    end = kwargs.get('end', array._last_pos_filled if _check_type(array, DynamicArray) else len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
 
     is_sorted = False
@@ -162,3 +162,6 @@ def brick_sort(array, **kwargs):
             if comp(array[i+1], array[i]):
                 array[i], array[i+1] = array[i+1], array[i]
                 is_sorted = False
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
