@@ -356,7 +356,7 @@ class BinomialHeap(Heap):
                     raise TypeError("The root_list should contain "
                                     "references to objects of BinomialTree.")
         obj = Heap.__new__(cls)
-        obj.root_list = DynamicOneDimensionalArray(BinomialTree, root_list)
+        obj.root_list = root_list
         return obj
 
     def merge_tree(self, tree1, tree2):
@@ -387,8 +387,8 @@ class BinomialHeap(Heap):
         """
         Merges last tree node in root list with the incoming tree.
         """
-        pos = new_root_list._last_pos_filled
-        if (new_root_list.size != 0) and new_root_list[pos].order == new_tree.order:
+        pos = -1
+        if len(new_root_list) > 0 and new_root_list[pos].order == new_tree.order:
             new_root_list[pos] = self.merge_tree(new_root_list[pos], new_tree)
         else:
             new_root_list.append(new_tree)
@@ -404,10 +404,10 @@ class BinomialHeap(Heap):
         """
         if not _check_type(other_heap, BinomialHeap):
             raise TypeError("Other heap is not of type BinomialHeap.")
-        new_root_list = DynamicOneDimensionalArray(BinomialTree, 0)
+        new_root_list = []
         i, j = 0, 0
-        while ((i <= self.root_list._last_pos_filled) and
-               (j <= other_heap.root_list._last_pos_filled)):
+        while (i < len(self.root_list)) and \
+              (j < len(other_heap.root_list)):
             new_tree = None
             while self.root_list[i] is None:
                 i += 1
@@ -427,11 +427,11 @@ class BinomialHeap(Heap):
                     j += 1
             self._merge_heap_last_new_tree(new_root_list, new_tree)
 
-        while i <= self.root_list._last_pos_filled:
+        while i < len(self.root_list):
             new_tree = self.root_list[i]
             self._merge_heap_last_new_tree(new_root_list, new_tree)
             i += 1
-        while j <= other_heap.root_list._last_pos_filled:
+        while j < len(other_heap.root_list):
             new_tree = other_heap.root_list[j]
             self._merge_heap_last_new_tree(new_root_list, new_tree)
             j += 1
@@ -486,13 +486,13 @@ class BinomialHeap(Heap):
         for k, child in enumerate(min_node.children):
             if child is not None:
                 child_root_list.append(BinomialTree(root=child, order=k))
-        self.root_list.delete(min_idx)
+        self.root_list.remove(self.root_list[min_idx])
         child_heap = BinomialHeap(root_list=child_root_list)
         self.merge(child_heap)
 
     @property
     def is_empty(self):
-        return self.root_list._last_pos_filled == -1
+        return len(self.root_list) == 0
 
     def decrease_key(self, node, new_key):
         """

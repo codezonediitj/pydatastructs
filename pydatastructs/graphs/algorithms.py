@@ -5,7 +5,8 @@ data structure.
 from collections import deque as Queue
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils import GraphEdge
-from pydatastructs.miscellaneous_data_structures import DisjointSetForest
+from pydatastructs.miscellaneous_data_structures import (
+    DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 
@@ -215,11 +216,35 @@ def _minimum_spanning_tree_kruskal_adjacency_list(graph):
         u, v = edge.source.name, edge.target.name
         if dsf.find_root(u) is not dsf.find_root(v):
             mst.add_edge(u, v, edge.value)
+            mst.add_edge(v, u, edge.value)
             dsf.union(u, v)
     return mst
 
 _minimum_spanning_tree_kruskal_adjacency_matrix = \
     _minimum_spanning_tree_kruskal_adjacency_list
+
+def _minimum_spanning_tree_prim_adjacency_list(graph):
+    q = PriorityQueue(implementation='binomial_heap')
+    e = dict()
+    mst = Graph(implementation='adjacency_list')
+    q.push(next(iter(graph.vertices)), 0)
+    while not q.is_empty:
+        v = q.pop()
+        if not hasattr(mst, v):
+            mst.add_vertex(graph.__getattribute__(v))
+            if e.get(v, None) is not None:
+                edge = e[v]
+                mst.add_vertex(edge.target)
+                mst.add_edge(edge.source.name, edge.target.name, edge.value)
+                mst.add_edge(edge.target.name, edge.source.name, edge.value)
+            for w_node in graph.neighbors(v):
+                w = w_node.name
+                vw = graph.edge_weights[v + '_' + w]
+                q.push(w, vw.value)
+                if e.get(w, None) is None or \
+                    e[w].value > vw.value:
+                    e[w] = vw
+    return mst
 
 def minimum_spanning_tree(graph, algorithm):
     """
@@ -293,6 +318,7 @@ def _minimum_spanning_tree_parallel_kruskal_adjacency_list(graph, num_threads):
         u, v = edge.source.name, edge.target.name
         if dsf.find_root(u) is not dsf.find_root(v):
             mst.add_edge(u, v, edge.value)
+            mst.add_edge(v, u, edge.value)
             dsf.union(u, v)
     return mst
 
