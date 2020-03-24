@@ -171,7 +171,7 @@ class DHeap(Heap):
             If the heap is empty.
         """
         if self._last_pos_filled == -1:
-            return None
+            raise IndexError("Heap is empty.")
         else:
             element_to_be_extracted = TreeNode(self.heap[0].key, self.heap[0].data)
             self._swap(0, self._last_pos_filled)
@@ -193,6 +193,13 @@ class DHeap(Heap):
                 children = []
             to_be_printed[i] = (node.key, node.data, children)
         return str(to_be_printed)
+
+    @property
+    def is_empty(self):
+        """
+        Checks if the heap is empty.
+        """
+        return self.heap._last_pos_filled == -1
 
 
 class BinaryHeap(DHeap):
@@ -456,7 +463,7 @@ class BinomialHeap(Heap):
         min_node: BinomialTreeNode
         """
         if self.is_empty:
-            raise ValueError("Binomial heap is empty.")
+            raise IndexError("Binomial heap is empty.")
         min_node = None
         idx, min_idx = 0, None
         for tree in self.root_list:
