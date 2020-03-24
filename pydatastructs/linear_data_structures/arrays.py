@@ -130,6 +130,9 @@ class OneDimensionalArray(Array):
     def __len__(self):
         return self._size
 
+    def __str__(self):
+        return str(self._data)
+
 
 class DynamicArray(Array):
     """
@@ -254,6 +257,9 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     @property
     def size(self):
         return self._size
+
+    def __str__(self):
+        return str(self._data[:self._last_pos_filled+1])
 
 class ArrayForTrees(DynamicOneDimensionalArray):
     """

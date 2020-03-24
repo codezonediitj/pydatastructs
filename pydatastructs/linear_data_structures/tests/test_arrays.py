@@ -7,6 +7,7 @@ def test_OneDimensionalArray():
     ODA = OneDimensionalArray
     A = ODA(int, 5, [1.0, 2, 3, 4, 5], init=6)
     A[1] = 2.0
+    assert str(A) == '[1, 2, 3, 4, 5]'
     assert A
     assert ODA(int, [1.0, 2, 3, 4, 5], 5)
     assert ODA(int, 5)
@@ -27,6 +28,7 @@ def test_DynamicOneDimensionalArray():
     A.append(2)
     A.append(3)
     A.append(4)
+    assert str(A) == '[1, 2, 3, 4]'
     A.delete(0)
     A.delete(0)
     A.delete(15)
