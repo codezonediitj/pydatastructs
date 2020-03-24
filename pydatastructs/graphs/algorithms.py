@@ -264,6 +264,7 @@ def minimum_spanning_tree(graph, algorithm):
         supported,
         'kruskal' -> Kruskal's algorithm as given in
                      [1].
+        'prim' -> Prim's algorithm as given in [2].
 
     Returns
     =======
@@ -290,6 +291,7 @@ def minimum_spanning_tree(graph, algorithm):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Prim%27s_algorithm
 
     Note
     ====
