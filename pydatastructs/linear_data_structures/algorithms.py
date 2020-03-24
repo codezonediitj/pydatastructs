@@ -106,7 +106,7 @@ def merge_sort_parallel(array, num_threads, **kwargs):
     if _check_type(array, DynamicArray):
         array._modify(force=True)
 
-def brick_sort(array: OneDimensionalArray, **kwargs):
+def brick_sort(array, **kwargs):
     """
     Implements Brick Sort / Odd Even sorting algorithm
 
