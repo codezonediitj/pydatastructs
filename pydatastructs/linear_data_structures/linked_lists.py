@@ -743,6 +743,15 @@ class SkipList(LinkedList):
     """
     Represents Skip List
 
+    Parameters
+    ==========
+
+    p: float
+        Probability that node at level i appears in level i+1.
+
+    levels: int
+        Number of levels in the skip list.
+
     Examples
     ========
 
@@ -761,15 +770,6 @@ class SkipList(LinkedList):
 
     .. [1] https://epaperpress.com/sortsearch/download/skiplist.pdf
     .. [2] https://github.com/TheAlgorithms/Python/blob/a9f73e318cddf43769083614a3e1f9dab1ec50fc/data_structures/linked_list/skip_list.py
-
-    Parameters
-    ==========
-
-    p
-        Fraction of nodes of level i which are present at level i+1 also.
-
-    max_level
-        Maximum level that can be attained by any node.
 
     """
 
