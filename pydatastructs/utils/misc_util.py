@@ -179,7 +179,7 @@ class LinkedListNode(Node):
     def __str__(self):
         return str(self.key)
 
-class SkipListNode(Node):
+class SkipListNode(LinkedListNode):
     """
     Represents node in skip lists.
 
@@ -193,14 +193,14 @@ class SkipListNode(Node):
         Any valid data to be stored in the node.
     """
     def __new__(cls, name, data):
-        obj = Node.__new__(cls)
-        obj.key = name
-        obj.value = data
-        obj.forward = []
+        obj = LinkedListNode.__new__(cls, key=name,
+                                    data=data,
+                                    links=['forward'],
+                                    addrs=[list()])
         return obj
 
     def __str__(self):
-        return str((self.key, self.value))
+        return str((self.key, self.data))
 
     @property
     def level(self):

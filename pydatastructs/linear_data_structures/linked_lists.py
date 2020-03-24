@@ -775,7 +775,7 @@ class SkipList(LinkedList):
 
     __slots__ = ['size', 'level', 'p', 'max_level']
 
-    def __new__(cls, p=0.5, max_level=16):
+    def __new__(cls, p, max_level):
         obj = LinkedList.__new__(cls)
         obj.head = SkipListNode("root", None)
         obj.level = 0
@@ -907,7 +907,7 @@ class SkipList(LinkedList):
 
         node, update_vector = self._locate_node(key)
         if node is not None:
-            node.value = value
+            node.data = value
         else:
             level = self._random_level()
 
@@ -945,6 +945,6 @@ class SkipList(LinkedList):
         node, _ = self._locate_node(key)
 
         if node is not None:
-            return node.value
+            return node.data
 
         return None

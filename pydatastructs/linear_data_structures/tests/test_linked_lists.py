@@ -152,7 +152,7 @@ def test_DoublyCircularLinkedList():
 def test_SkipList():
 
     def test_insert():
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
         skip_list.insert("Key1", 3)
         skip_list.insert("Key2", 12)
         skip_list.insert("Key3", 41)
@@ -162,7 +162,7 @@ def test_SkipList():
         all_values = {}
         while node.level != 0:
             node = node.forward[0]
-            all_values[node.key] = node.value
+            all_values[node.key] = node.data
 
         assert len(skip_list) == 4
         assert len(all_values) == 4
@@ -173,7 +173,7 @@ def test_SkipList():
 
 
     def test_insert_overrides_existing_value():
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
         skip_list.insert("Key1", 10)
         skip_list.insert("Key1", 12)
 
@@ -189,7 +189,7 @@ def test_SkipList():
         all_values = dict()
         while node.level != 0:
             node = node.forward[0]
-            all_values[node.key] = node.value
+            all_values[node.key] = node.data
 
         assert len(all_values) == 4
         assert all_values["Key1"] == 12
@@ -199,12 +199,12 @@ def test_SkipList():
 
 
     def test_searching_empty_list_returns_none():
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
         assert skip_list.find("Some key") is None
 
 
     def test_search():
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
 
         skip_list.insert("Key2", 20)
         assert skip_list.find("Key2") == 20
@@ -220,14 +220,14 @@ def test_SkipList():
 
 
     def test_deleting_item_from_empty_list_do_nothing():
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
         skip_list.delete("Some key")
 
         assert len(skip_list.head.forward) == 0
 
 
     def test_deleted_items_are_not_founded_by_find_method():
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
 
         skip_list.insert("Key1", 12)
         skip_list.insert("V", 13)
@@ -242,7 +242,7 @@ def test_SkipList():
 
 
     def test_delete_removes_only_given_key():
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
 
         skip_list.insert("Key1", 12)
         skip_list.insert("V", 13)
@@ -277,7 +277,7 @@ def test_SkipList():
 
 
     def test_delete_doesnt_leave_dead_nodes():
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
 
         skip_list.insert("Key1", 12)
         skip_list.insert("V", 13)
@@ -301,7 +301,7 @@ def test_SkipList():
                     return False
             return True
 
-        skip_list = SkipList()
+        skip_list = SkipList(0.5, 16)
         for i in range(10):
             skip_list.insert(i, i)
         assert is_sorted(list(skip_list))
