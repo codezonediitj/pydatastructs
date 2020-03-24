@@ -147,22 +147,17 @@ def brick_sort(array, **kwargs):
     ==========
     .. [1] https://www.geeksforgeeks.org/odd-even-sort-brick-sort/
     """
-
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
 
     is_sorted = False
-
     while is_sorted is False:
-
         is_sorted = True
-
         for i in range(start+1, end, 2):
             if comp(array[i+1], array[i]):
                 array[i], array[i+1] = array[i+1], array[i]
                 is_sorted = False
-
         for i in range(start, end, 2):
             if comp(array[i+1], array[i]):
                 array[i], array[i+1] = array[i+1], array[i]
