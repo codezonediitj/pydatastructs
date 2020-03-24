@@ -181,7 +181,7 @@ def test_BinomialHeap():
 
     def bfs(heap):
         bfs_trav = []
-        for i in range(heap.root_list._last_pos_filled + 1):
+        for i in range(len(heap.root_list)):
             layer = []
             bfs_q = Queue()
             bfs_q.append(heap.root_list[i].root)
