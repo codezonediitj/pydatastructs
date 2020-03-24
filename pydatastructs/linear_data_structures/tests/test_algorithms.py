@@ -1,6 +1,6 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
-    OneDimensionalArray)
+    OneDimensionalArray, brick_sort)
 import random
 
 def test_merge_sort_parallel():
@@ -31,3 +31,17 @@ def test_merge_sort_parallel():
                     709, 910]
     merge_sort_parallel(arr, 5, start=2, end=5)
     assert arr._data == expected_arr
+
+def test_brick_sort():
+
+    random.seed(1000)
+    n = 10
+    arr = OneDimensionalArray(int, [random.randint(1,1000) for _ in range(n)])
+    b = sorted(arr)
+    brick_sort(arr)
+    assert b == list(arr)
+
+    arr = OneDimensionalArray(int, [random.randint(1,1000) for _ in range(n)])
+    brick_sort(arr, comp=lambda u, v: u>v)
+    b = list(reversed(sorted(arr)))
+    assert b == list(arr)
