@@ -196,8 +196,8 @@ class PriorityQueue(object):
     comp: function
         The comparator to be used while comparing priorities.
         Must return a bool object.
-        By default, `lambda u, v: u > v` is used to compare
-        priorities i.e., maximum priority elements are extracted
+        By default, `lambda u, v: u < v` is used to compare
+        priorities i.e., minimum priority elements are extracted
         by pop operation.
 
     Examples
@@ -209,16 +209,16 @@ class PriorityQueue(object):
     >>> pq.push(2, 3)
     >>> pq.pop()
     1
-    >>> pq2 = PriorityQueue(comp=lambda u, v: u < v)
+    >>> pq2 = PriorityQueue(comp=lambda u, v: u > v)
     >>> pq2.push(1, 2)
     >>> pq2.push(2, 3)
     >>> pq2.pop()
-    1
+    2
 
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Priority_queue#Naive_implementations
+    .. [1] https://en.wikipedia.org/wiki/Priority_queue
     """
 
     def __new__(cls, implementation='binary_heap', **kwargs):
@@ -229,17 +229,36 @@ class PriorityQueue(object):
             return BinaryHeapPriorityQueue(comp)
         elif implementation == 'binomial_heap':
             return BinomialHeapPriorityQueue()
+        else:
+            raise NotImplementedError(
+                "%s implementation is not currently supported "
+                "by priority queue.")
 
     def push(self, value, priority):
+        """
+        Pushes the value to the priority queue
+        according to the given priority.
+
+        value
+            Value to be pushed.
+        priority
+            Priority to be given to the value.
+        """
         raise NotImplementedError(
                 "This is an abstract method.")
 
     def pop(self):
+        """
+        Pops out the value from the priority queue.
+        """
         raise NotImplementedError(
             "This is an abstract method.")
 
     @property
     def is_empty(self):
+        """
+        Checks if the priority queue is empty.
+        """
         raise NotImplementedError(
             "This is an abstract method.")
 
