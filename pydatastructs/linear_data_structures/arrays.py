@@ -75,13 +75,13 @@ class OneDimensionalArray(Array):
             if _check_type(args[0], list) and \
                 _check_type(args[1], int):
                 for i in range(len(args[0])):
-                    if dtype != type(args[0][i]):
+                    if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 size, data = args[1], [arg for arg in args[0]]
             elif _check_type(args[1], list) and \
                 _check_type(args[0], int):
                 for i in range(len(args[1])):
-                    if dtype != type(args[1][i]):
+                    if _check_type(args[1][i], dtype) is False:
                         args[1][i] = dtype(args[1][i])
                 size, data = args[0], [arg for arg in args[1]]
             else:
@@ -99,7 +99,7 @@ class OneDimensionalArray(Array):
                 obj._data = [init for i in range(args[0])]
             elif _check_type(args[0], (list, tuple)):
                 for i in range(len(args[0])):
-                    if dtype != type(args[0][i]):
+                    if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
                                         [arg for arg in args[0]]
@@ -118,7 +118,7 @@ class OneDimensionalArray(Array):
         if elem is None:
             self._data[idx] = None
         else:
-            if type(elem) != self._dtype:
+            if _check_type(elem, self._dtype) is False:
                 elem = self._dtype(elem)
             self._data[idx] = elem
 
@@ -126,6 +126,9 @@ class OneDimensionalArray(Array):
         elem = self._dtype(elem)
         for i in range(self._size):
             self._data[i] = elem
+
+    def __len__(self):
+        return self._size
 
 
 class DynamicArray(Array):
@@ -209,12 +212,12 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         obj._last_pos_filled = obj._num - 1
         return obj
 
-    def _modify(self):
+    def _modify(self, force=False):
         """
         Contracts the array if Num(T)/Size(T) falls
         below load factor.
         """
-        if self._num/self._size < self._load_factor:
+        if (self._num/self._size < self._load_factor) or force:
             arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
@@ -231,14 +234,12 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             for i in range(self._last_pos_filled + 1):
                 arr_new[i] = self[i]
             arr_new[self._last_pos_filled + 1] = el
-            self._last_pos_filled += 1
             self._size = arr_new._size
-            self._num += 1
             self._data = arr_new._data
         else:
             self[self._last_pos_filled + 1] = el
-            self._last_pos_filled += 1
-            self._num += 1
+        self._last_pos_filled += 1
+        self._num += 1
         self._modify()
 
     def delete(self, idx):

@@ -22,6 +22,16 @@ class LinkedList(object):
     def is_empty(self):
         return self.size == 0
 
+    def search(self, key):
+        curr_node = self.head
+        while curr_node is not None:
+            if curr_node.key == key:
+                return curr_node
+            curr_node = curr_node.next
+            if curr_node is self.head:
+                return None
+        return None
+
     def __str__(self):
         """
         For printing the linked list.
@@ -29,7 +39,7 @@ class LinkedList(object):
         elements = []
         current_node = self.head
         while current_node is not None:
-            elements.append(current_node.data)
+            elements.append(str(current_node))
             current_node = current_node.next
             if current_node == self.head:
                 break
@@ -45,19 +55,19 @@ class DoublyLinkedList(LinkedList):
     >>> from pydatastructs import DoublyLinkedList
     >>> dll = DoublyLinkedList()
     >>> dll.append(6)
-    >>> dll[0].data
+    >>> dll[0].key
     6
-    >>> dll.head.data
+    >>> dll.head.key
     6
     >>> dll.append(5)
     >>> dll.append_left(2)
     >>> str(dll)
-    '[2, 6, 5]'
-    >>> dll[0].data = 7.2
-    >>> dll.extract(1).data
+    "['2', '6', '5']"
+    >>> dll[0].key = 7.2
+    >>> dll.extract(1).key
     6
     >>> str(dll)
-    '[7.2, 5]'
+    "['7.2', '5']"
 
     References
     ==========
@@ -74,7 +84,7 @@ class DoublyLinkedList(LinkedList):
         obj.size = 0
         return obj
 
-    def append_left(self, data):
+    def append_left(self, key, data=None):
         """
         Pushes a new node at the start i.e.,
         the left of the list.
@@ -85,9 +95,9 @@ class DoublyLinkedList(LinkedList):
         data
             Any valid data to be stored in the node.
         """
-        self.insert_at(0, data)
+        self.insert_at(0, key, data)
 
-    def append(self, data):
+    def append(self, key, data=None):
         """
         Appends a new node at the end of the list.
 
@@ -97,9 +107,9 @@ class DoublyLinkedList(LinkedList):
         data
             Any valid data to be stored in the node.
         """
-        self.insert_at(self.size, data)
+        self.insert_at(self.size, key, data)
 
-    def insert_after(self, prev_node, data):
+    def insert_after(self, prev_node, key, data=None):
         """
         Inserts a new node after the prev_node.
 
@@ -114,7 +124,7 @@ class DoublyLinkedList(LinkedList):
             Any valid data to be stored in the node.
         """
         self.size += 1
-        new_node = LinkedListNode(data,
+        new_node = LinkedListNode(key, data,
                                  links=['next', 'prev'],
                                  addrs=[None, None])
         new_node.next = prev_node.next
@@ -126,7 +136,7 @@ class DoublyLinkedList(LinkedList):
         if new_node.next is None:
             self.tail = new_node
 
-    def insert_before(self, next_node, data):
+    def insert_before(self, next_node, key, data=None):
         """
         Inserts a new node before the next_node.
 
@@ -141,7 +151,7 @@ class DoublyLinkedList(LinkedList):
             Any valid data to be stored in the node.
         """
         self.size += 1
-        new_node = LinkedListNode(data,
+        new_node = LinkedListNode(key, data,
                                  links=['next', 'prev'],
                                  addrs=[None, None])
         new_node.prev = next_node.prev
@@ -152,7 +162,7 @@ class DoublyLinkedList(LinkedList):
         else:
             self.head = new_node
 
-    def insert_at(self, index, data):
+    def insert_at(self, index, key, data=None):
         """
         Inserts a new node at the input index.
 
@@ -175,7 +185,7 @@ class DoublyLinkedList(LinkedList):
             raise IndexError('%d index is out of range.'%(index))
 
         self.size += 1
-        new_node = LinkedListNode(data,
+        new_node = LinkedListNode(key, data,
                                     links=['next', 'prev'],
                                     addrs=[None, None])
         if self.size == 1:
@@ -302,19 +312,19 @@ class SinglyLinkedList(LinkedList):
     >>> from pydatastructs import SinglyLinkedList
     >>> sll = SinglyLinkedList()
     >>> sll.append(6)
-    >>> sll[0].data
+    >>> sll[0].key
     6
-    >>> sll.head.data
+    >>> sll.head.key
     6
     >>> sll.append(5)
     >>> sll.append_left(2)
     >>> str(sll)
-    '[2, 6, 5]'
-    >>> sll[0].data = 7.2
-    >>> sll.extract(1).data
+    "['2', '6', '5']"
+    >>> sll[0].key = 7.2
+    >>> sll.extract(1).key
     6
     >>> str(sll)
-    '[7.2, 5]'
+    "['7.2', '5']"
 
     References
     ==========
@@ -331,7 +341,7 @@ class SinglyLinkedList(LinkedList):
         obj.size = 0
         return obj
 
-    def append_left(self, data):
+    def append_left(self, key, data=None):
         """
         Pushes a new node at the start i.e.,
         the left of the list.
@@ -342,9 +352,9 @@ class SinglyLinkedList(LinkedList):
         data
             Any valid data to be stored in the node.
         """
-        self.insert_at(0, data)
+        self.insert_at(0, key, data)
 
-    def append(self, data):
+    def append(self, key, data=None):
         """
         Appends a new node at the end of the list.
 
@@ -354,9 +364,9 @@ class SinglyLinkedList(LinkedList):
         data
             Any valid data to be stored in the node.
         """
-        self.insert_at(self.size, data)
+        self.insert_at(self.size, key, data)
 
-    def insert_after(self, prev_node, data):
+    def insert_after(self, prev_node, key, data=None):
         """
         Inserts a new node after the prev_node.
 
@@ -371,7 +381,7 @@ class SinglyLinkedList(LinkedList):
             Any valid data to be stored in the node.
         """
         self.size += 1
-        new_node = LinkedListNode(data,
+        new_node = LinkedListNode(key, data,
                                  links=['next'],
                                  addrs=[None])
         new_node.next = prev_node.next
@@ -380,7 +390,7 @@ class SinglyLinkedList(LinkedList):
         if new_node.next is None:
             self.tail = new_node
 
-    def insert_at(self, index, data):
+    def insert_at(self, index, key, data=None):
         """
         Inserts a new node at the input index.
 
@@ -403,7 +413,7 @@ class SinglyLinkedList(LinkedList):
             raise IndexError('%d index is out of range.'%(index))
 
         self.size += 1
-        new_node = LinkedListNode(data,
+        new_node = LinkedListNode(key, data,
                                     links=['next'],
                                     addrs=[None])
         if self.size == 1:
@@ -526,19 +536,19 @@ class SinglyCircularLinkedList(SinglyLinkedList):
     >>> from pydatastructs import SinglyCircularLinkedList
     >>> scll = SinglyCircularLinkedList()
     >>> scll.append(6)
-    >>> scll[0].data
+    >>> scll[0].key
     6
-    >>> scll.head.data
+    >>> scll.head.key
     6
     >>> scll.append(5)
     >>> scll.append_left(2)
     >>> str(scll)
-    '[2, 6, 5]'
-    >>> scll[0].data = 7.2
-    >>> scll.extract(1).data
+    "['2', '6', '5']"
+    >>> scll[0].key = 7.2
+    >>> scll.extract(1).key
     6
     >>> str(scll)
-    '[7.2, 5]'
+    "['7.2', '5']"
 
     References
     ==========
@@ -547,7 +557,7 @@ class SinglyCircularLinkedList(SinglyLinkedList):
 
     """
 
-    def insert_after(self, prev_node, data):
+    def insert_after(self, prev_node, key, data=None):
         """
         Inserts a new node after the prev_node.
 
@@ -561,11 +571,12 @@ class SinglyCircularLinkedList(SinglyLinkedList):
         data
             Any valid data to be stored in the node.
         """
-        super(SinglyCircularLinkedList, self).insert_after(prev_node, data)
+        super(SinglyCircularLinkedList, self).\
+            insert_after(prev_node, key, data)
         if prev_node.next.next == self.head:
             self.tail = prev_node.next
 
-    def insert_at(self, index, data):
+    def insert_at(self, index, key, data=None):
         """
         Inserts a new node at the input index.
 
@@ -578,7 +589,7 @@ class SinglyCircularLinkedList(SinglyLinkedList):
         data
             Any valid data to be stored in the node.
         """
-        super(SinglyCircularLinkedList, self).insert_at(index, data)
+        super(SinglyCircularLinkedList, self).insert_at(index, key, data)
         if self.size == 1:
             self.head.next = self.head
         new_node = self.__getitem__(index)
@@ -620,19 +631,19 @@ class DoublyCircularLinkedList(DoublyLinkedList):
     >>> from pydatastructs import DoublyCircularLinkedList
     >>> dcll = DoublyCircularLinkedList()
     >>> dcll.append(6)
-    >>> dcll[0].data
+    >>> dcll[0].key
     6
-    >>> dcll.head.data
+    >>> dcll.head.key
     6
     >>> dcll.append(5)
     >>> dcll.append_left(2)
     >>> str(dcll)
-    '[2, 6, 5]'
-    >>> dcll[0].data = 7.2
-    >>> dcll.extract(1).data
+    "['2', '6', '5']"
+    >>> dcll[0].key = 7.2
+    >>> dcll.extract(1).key
     6
     >>> str(dcll)
-    '[7.2, 5]'
+    "['7.2', '5']"
 
     References
     ==========
@@ -640,7 +651,7 @@ class DoublyCircularLinkedList(DoublyLinkedList):
     .. [1] https://en.wikipedia.org/wiki/Doubly_linked_list#Circular_doubly_linked_lists
 
     """
-    def insert_after(self, prev_node, data):
+    def insert_after(self, prev_node, key, data=None):
         """
         Inserts a new node after the prev_node.
 
@@ -654,11 +665,12 @@ class DoublyCircularLinkedList(DoublyLinkedList):
         data
             Any valid data to be stored in the node.
         """
-        super(DoublyCircularLinkedList, self).insert_after(prev_node, data)
+        super(DoublyCircularLinkedList, self)\
+            .insert_after(prev_node, key, data)
         if prev_node.next.next == self.head:
             self.tail = prev_node.next
 
-    def insert_before(self, next_node, data):
+    def insert_before(self, next_node, key, data=None):
         """
         Inserts a new node before the next_node.
 
@@ -672,11 +684,12 @@ class DoublyCircularLinkedList(DoublyLinkedList):
         data
             Any valid data to be stored in the node.
         """
-        super(DoublyCircularLinkedList, self).insert_before(next_node,data)
+        super(DoublyCircularLinkedList, self).\
+            insert_before(next_node, key, data)
         if next_node == self.head:
             self.head = next_node.prev
 
-    def insert_at(self, index, data):
+    def insert_at(self, index, key, data=None):
         """
         Inserts a new node at the input index.
 
@@ -689,7 +702,8 @@ class DoublyCircularLinkedList(DoublyLinkedList):
         data
             Any valid data to be stored in the node.
         """
-        super(DoublyCircularLinkedList, self).insert_at(index, data)
+        super(DoublyCircularLinkedList, self).\
+            insert_at(index, key, data)
         if self.size == 1:
             self.head.next = self.head
             self.head.prev = self.head
