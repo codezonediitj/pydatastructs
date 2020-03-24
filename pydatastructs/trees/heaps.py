@@ -17,7 +17,7 @@ class Heap(object):
     pass
 
 
-class DHeap(heap):
+class DHeap(Heap):
      def heapsort( aList ):
           # convert aList to heap
           length = len( aList ) - 1
