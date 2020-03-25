@@ -756,7 +756,7 @@ class SkipList(LinkedList):
     ========
 
     >>> from pydatastructs import SkipList
-    >>> skip_list = SkipList()
+    >>> skip_list = SkipList(0.5, 16)
     >>> skip_list.insert(2, "2")
     >>> skip_list.insert(4, "4")
     >>> skip_list.insert(6, "4")
