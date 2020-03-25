@@ -265,6 +265,10 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
                 to_be_printed[i] = str(self._data[i])
         return str(to_be_printed)
 
+    def __reversed__(self):
+        for i in range(self._last_pos_filled, -1, -1):
+            yield self._data[i]
+
 class ArrayForTrees(DynamicOneDimensionalArray):
     """
     Utility dynamic array for storing nodes of a tree.
