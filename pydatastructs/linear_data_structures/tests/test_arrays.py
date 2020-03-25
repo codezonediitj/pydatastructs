@@ -28,7 +28,7 @@ def test_DynamicOneDimensionalArray():
     A.append(2)
     A.append(3)
     A.append(4)
-    assert str(A) == '[1, 2, 3, 4]'
+    assert str(A) == "['1', '2', '3', '4']"
     A.delete(0)
     A.delete(0)
     A.delete(15)
@@ -36,7 +36,7 @@ def test_DynamicOneDimensionalArray():
     A.delete(1)
     A.delete(2)
     assert A._data == [4, None, None]
-    assert str(A) == '[4]'
+    assert str(A) == "['4']"
     assert A.size == 3
     A.fill(4)
     assert A._data == [4, 4, 4]

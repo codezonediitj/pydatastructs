@@ -259,7 +259,11 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         return self._size
 
     def __str__(self):
-        return str(self._data[:self._last_pos_filled+1])
+        to_be_printed = ['' for i in range(self._last_pos_filled + 1)]
+        for i in range(self._last_pos_filled + 1):
+            if self._data[i] is not None:
+                to_be_printed[i] = str(self._data[i])
+        return str(to_be_printed)
 
 class ArrayForTrees(DynamicOneDimensionalArray):
     """
