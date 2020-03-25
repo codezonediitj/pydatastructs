@@ -787,7 +787,7 @@ class SkipList(LinkedList):
     def __str__(self):
         """
         :return: Visual representation of SkipList
-        >>> skip_list = SkipList()
+        >>> skip_list = SkipList(0.5, 16)
         >>> print(skip_list)
         SkipList(level=0)
         >>> skip_list.insert("Key1", "Value")
@@ -871,7 +871,7 @@ class SkipList(LinkedList):
     def delete(self, key):
         """
         :param key: Key to remove from list.
-        >>> skip_list = SkipList()
+        >>> skip_list = SkipList(0.5, 16)
         >>> skip_list.insert(2, "Two")
         >>> skip_list.insert(1, "One")
         >>> skip_list.insert(3, "Three")
@@ -897,7 +897,7 @@ class SkipList(LinkedList):
         """
         :param key: Key to insert.
         :param value: Value associated with given key.
-        >>> skip_list = SkipList()
+        >>> skip_list = SkipList(0.5, 16)
         >>> skip_list.insert(2, "Two")
         >>> skip_list.find(2)
         'Two'
@@ -932,7 +932,7 @@ class SkipList(LinkedList):
         """
         :param key: Search key.
         :return: Value associated with given key or None if given key is not present.
-        >>> skip_list = SkipList()
+        >>> skip_list = SkipList(0.5, 16)
         >>> skip_list.find(2)
         >>> skip_list.insert(2, "Two")
         >>> skip_list.find(2)
@@ -948,3 +948,7 @@ class SkipList(LinkedList):
             return node.data
 
         return None
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
