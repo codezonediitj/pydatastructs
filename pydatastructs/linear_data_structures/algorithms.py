@@ -1,6 +1,6 @@
 from pydatastructs.linear_data_structures.arrays import (
     OneDimensionalArray, DynamicArray)
-from pydatastructs.utils.misc_util import _check_type
+from pydatastructs.utils.misc_util import _check_type, _comp
 from concurrent.futures import ThreadPoolExecutor
 from math import log, floor
 
@@ -11,18 +11,16 @@ __all__ = [
 def _merge(array, sl, el, sr, er, end, comp):
     l, r = [],  []
     for i in range(sl, el + 1):
-        if (i <= end and
-            array[i] is not None):
+        if i <= end:
             l.append(array[i])
             array[i] = None
     for i in range(sr, er + 1):
-        if (i <= end and
-            array[i] is not None):
+        if i <= end:
             r.append(array[i])
             array[i] = None
     i, j, k = 0, 0, sl
     while i < len(l) and j < len(r):
-        if comp(l[i], r[j]):
+        if _comp(l[i], r[j], comp):
             array[k] = l[i]
             i += 1
         else:
