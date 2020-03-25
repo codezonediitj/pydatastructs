@@ -65,3 +65,9 @@ __pycache__/
 build/
 dist/
 venv/
+*.gem
+.bundle
+.sass-cache
+_site
+Gemfile.lock
+node_modules
