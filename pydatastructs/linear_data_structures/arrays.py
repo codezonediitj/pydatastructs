@@ -217,11 +217,16 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         Contracts the array if Num(T)/Size(T) falls
         below load factor.
         """
-        if (self._num/self._size < self._load_factor) or force:
+        if force:
+            i = -1
+            while self._data[i] is None:
+                i -= 1
+            self._last_pos_filled = i%self._size
+        if (self._num/self._size < self._load_factor):
             arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
-                if self[i] is not None:
+                if self._data[i] is not None:
                     arr_new[j] = self[i]
                     j += 1
             self._last_pos_filled = j - 1
@@ -254,6 +259,10 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     @property
     def size(self):
         return self._size
+
+    def __reversed__(self):
+        for i in range(self._last_pos_filled, -1, -1):
+            yield self._data[i]
 
 class ArrayForTrees(DynamicOneDimensionalArray):
     """

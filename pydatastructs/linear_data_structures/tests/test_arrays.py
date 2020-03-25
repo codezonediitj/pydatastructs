@@ -37,3 +37,11 @@ def test_DynamicOneDimensionalArray():
     assert A.size == 3
     A.fill(4)
     assert A._data == [4, 4, 4]
+    b = DynamicOneDimensionalArray(int, 0)
+    b.append(1)
+    b.append(2)
+    b.append(3)
+    b.append(4)
+    b.append(5)
+    assert b._data == [1, 2, 3, 4, 5, None, None]
+    assert list(reversed(b)) == [5, 4, 3, 2, 1]
