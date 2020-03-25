@@ -32,9 +32,7 @@ def test_DynamicOneDimensionalArray():
     A.delete(15)
     A.delete(-1)
     A.delete(1)
-    print(A._data)
     A.delete(2)
-    print(A._data)
     assert A._data == [4, None, None]
     assert A.size == 3
     A.fill(4)
