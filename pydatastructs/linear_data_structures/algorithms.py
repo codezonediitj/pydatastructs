@@ -140,7 +140,7 @@ def brick_sort(array, **kwargs):
     >>> [arr[0], arr[1], arr[2]]
     [1, 2, 3]
     >>> brick_sort(arr, comp=lambda u, v: u > v)
-    >>> print(list(arr))
+    >>> [arr[0], arr[1], arr[2]]
     [3, 2, 1]
 
     References
