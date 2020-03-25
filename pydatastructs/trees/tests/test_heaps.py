@@ -9,7 +9,7 @@ def test_BinaryHeap():
 
     max_heap = BinaryHeap(heap_property="max")
 
-    assert max_heap.extract() is None
+    assert raises(IndexError, lambda: max_heap.extract())
 
     max_heap.insert(100, 100)
     max_heap.insert(19, 19)
@@ -57,7 +57,7 @@ def test_BinaryHeap():
                 BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
 def test_TernaryHeap():
     max_heap = TernaryHeap(heap_property="max")
-    assert max_heap.extract() is None
+    assert raises(IndexError, lambda: max_heap.extract())
     max_heap.insert(100, 100)
     max_heap.insert(19, 19)
     max_heap.insert(36, 36)
@@ -97,7 +97,7 @@ def test_TernaryHeap():
 def test_DHeap():
     assert raises(ValueError, lambda: DHeap(heap_property="none", d=4))
     max_heap = DHeap(heap_property="max", d=5)
-    assert max_heap.extract() is None
+    assert raises(IndexError, lambda: max_heap.extract())
     max_heap.insert(100, 100)
     max_heap.insert(19, 19)
     max_heap.insert(36, 36)
@@ -181,7 +181,7 @@ def test_BinomialHeap():
 
     def bfs(heap):
         bfs_trav = []
-        for i in range(heap.root_list._last_pos_filled + 1):
+        for i in range(len(heap.root_list)):
             layer = []
             bfs_q = Queue()
             bfs_q.append(heap.root_list[i].root)
@@ -213,7 +213,7 @@ def test_BinomialHeap():
 
     # Testing BinomialHeap.insert
     heap = BinomialHeap()
-    assert raises(ValueError, lambda: heap.find_minimum())
+    assert raises(IndexError, lambda: heap.find_minimum())
     heap.insert(1, 1)
     heap.insert(3, 3)
     heap.insert(6, 6)

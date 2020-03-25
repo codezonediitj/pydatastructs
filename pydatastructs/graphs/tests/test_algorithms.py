@@ -143,12 +143,13 @@ def test_minimum_spanning_tree():
         mst = minimum_spanning_tree(graph, algorithm=algorithm)
         expected_mst = [('0_3', 7), ('2_3', 9), ('3_4', 23), ('3_1', 32),
                         ('3_0', 7), ('3_2', 9), ('4_3', 23), ('1_3', 32)]
-        assert len(expected_mst) == 2*len(mst.edge_weights.items())
+        assert len(expected_mst) == len(mst.edge_weights.items())
         for k, v in mst.edge_weights.items():
             assert (k, v.value) in expected_mst
 
     _test_minimum_spanning_tree("List", "kruskal")
     _test_minimum_spanning_tree("Matrix", "kruskal")
+    _test_minimum_spanning_tree("List", "prim")
 
 def test_minimum_spanning_tree_parallel():
 
@@ -170,7 +171,7 @@ def test_minimum_spanning_tree_parallel():
         mst = minimum_spanning_tree_parallel(graph, algorithm, 3)
         expected_mst = [('0_3', 7), ('2_3', 9), ('3_4', 23), ('3_1', 32),
                         ('3_0', 7), ('3_2', 9), ('4_3', 23), ('1_3', 32)]
-        assert len(expected_mst) == 2*len(mst.edge_weights.items())
+        assert len(expected_mst) == len(mst.edge_weights.items())
         for k, v in mst.edge_weights.items():
             assert (k, v.value) in expected_mst
 
