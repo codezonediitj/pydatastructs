@@ -255,6 +255,15 @@ class PriorityQueue(object):
             "This is an abstract method.")
 
     @property
+    def peek(self):
+        """
+        Returns the pointer to the value which will be
+        popped out by `pop` method.
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    @property
     def is_empty(self):
         """
         Checks if the priority queue is empty.
@@ -273,22 +282,32 @@ class LinkedListPriorityQueue(PriorityQueue):
         return obj
 
     def push(self, value, priority):
-        self.items.append(value, priority)
+        self.items.append(priority, value)
 
     def pop(self):
+        _, max_i = self._find_peek(return_index=True)
+        pop_val = self.items.extract(max_i)
+        return pop_val.data
+
+    def _find_peek(self, return_index=False):
         if self.is_empty:
             raise IndexError("Priority queue is empty.")
 
         walk = self.items.head
-        i, max_i, max_p = 0, 0, walk.data
+        i, max_i, max_p = 0, 0, walk
         while walk is not None:
-            if self.comp(walk.data, max_p):
+            if self.comp(walk.key, max_p.key):
                 max_i = i
-                max_p = walk.data
+                max_p = walk
             i += 1
             walk = walk.next
-        pop_val = self.items.extract(max_i)
-        return pop_val.key
+        if return_index:
+            return max_p, max_i
+        return max_p
+
+    @property
+    def peek(self):
+        return self._find_peek()
 
     @property
     def is_empty(self):
@@ -312,6 +331,12 @@ class BinaryHeapPriorityQueue(PriorityQueue):
         return node.data
 
     @property
+    def peek(self):
+        if self.items.is_empty:
+            raise IndexError("Priority queue is empty.")
+        return self.items.heap[0]
+
+    @property
     def is_empty(self):
         return self.items.is_empty
 
@@ -331,6 +356,10 @@ class BinomialHeapPriorityQueue(PriorityQueue):
         node = self.items.find_minimum()
         self.items.delete_minimum()
         return node.data
+
+    @property
+    def peek(self):
+        return self.items.find_minimum()
 
     @property
     def is_empty(self):
