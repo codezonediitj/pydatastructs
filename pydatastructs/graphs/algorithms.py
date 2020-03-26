@@ -398,6 +398,7 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
         supported,
         'kruskal' -> Kruskal's algorithm as given in
                      [1].
+        'prim' -> Prim's algorithm as given in [2].
     num_threads: int
         The number of threads to be used.
 
@@ -426,6 +427,7 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm#Parallel_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Prim%27s_algorithm#Parallel_algorithm
 
     Note
     ====
