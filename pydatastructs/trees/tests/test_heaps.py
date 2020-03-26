@@ -55,6 +55,17 @@ def test_BinaryHeap():
             ]
     assert raises(ValueError, lambda:
                 BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
+
+    non_TreeNode_elements = DynamicOneDimensionalArray(int, 0)
+    non_TreeNode_elements.append(1)
+    non_TreeNode_elements.append(2)
+    assert raises(ValueError, lambda:
+                BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
+
+    non_heapable = "[1, 2, 3]"
+    assert raises(ValueError, lambda:
+                BinaryHeap(elements = non_heapable, heap_property='min'))
+
 def test_TernaryHeap():
     max_heap = TernaryHeap(heap_property="max")
     assert raises(IndexError, lambda: max_heap.extract())
