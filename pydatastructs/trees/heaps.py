@@ -537,7 +537,3 @@ class BinomialHeap(Heap):
         """
         self.decrease_key(node, self.find_minimum().key - 1)
         self.delete_minimum()
-
-if __name__ == "__main__":
-    from pydatastructs import OneDimensionalArray
-    h = BinaryHeap(OneDimensionalArray(TreeNode,[TreeNode(i,i) for i in range(5)]))
