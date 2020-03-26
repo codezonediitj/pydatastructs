@@ -41,7 +41,7 @@ def test_BinaryHeap():
                 TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
                 TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
             ]
-    min_heap = BinaryHeap(elements=DynamicOneDimensionalArray(TreeNode, 9, elements), heap_property="min")
+    min_heap = BinaryHeap(elements=elements, heap_property="min")
     assert min_heap.extract().key == 1
 
     expected_sorted_elements = [2, 3, 7, 17, 19, 25, 36, 100]
@@ -86,7 +86,7 @@ def test_TernaryHeap():
         TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
         TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
     ]
-    min_heap = TernaryHeap(elements=DynamicOneDimensionalArray(TreeNode, 9, elements), heap_property="min")
+    min_heap = TernaryHeap(elements=elements, heap_property="min")
     expected_extracted_element = min_heap.heap[0].key
     assert min_heap.extract().key == expected_extracted_element
 
