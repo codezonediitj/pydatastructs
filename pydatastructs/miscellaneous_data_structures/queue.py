@@ -112,6 +112,7 @@ class ArrayQueue(Queue):
         else:
             self.front = self.front - 1
         self.items.append(x)
+
     def popleft(self):
         if self.is_empty:
             raise IndexError("Queue is empty.")
