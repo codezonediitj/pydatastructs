@@ -1,6 +1,6 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
-    OneDimensionalArray, brick_sort)
+    OneDimensionalArray, brick_sort, brick_sort_parallel)
 import random
 
 def _test_common_sort(sort, *args, **kwargs):
@@ -44,3 +44,6 @@ def test_merge_sort_parallel():
 
 def test_brick_sort():
     _test_common_sort(brick_sort)
+
+def test_brick_sort_parallel():
+    _test_common_sort(brick_sort_parallel)
