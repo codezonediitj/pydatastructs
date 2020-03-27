@@ -785,25 +785,6 @@ class SkipList(LinkedList):
         return obj
 
     def __str__(self):
-        """
-        :return: Visual representation of SkipList
-        >>> skip_list = SkipList(0.5, 16)
-        >>> print(skip_list)
-        SkipList(level=0)
-        >>> skip_list.insert("Key1", "Value")
-        >>> print(skip_list) # doctest: +ELLIPSIS
-        SkipList(level=...
-        [root]--...
-        [Key1]--Key1...
-        None    *...
-        >>> skip_list.insert("Key2", "OtherValue")
-        >>> print(skip_list) # doctest: +ELLIPSIS
-        SkipList(level=...
-        [root]--...
-        [Key1]--Key1...
-        [Key2]--Key2...
-        None    *...
-        """
 
         items = list(self)
 
@@ -848,11 +829,7 @@ class SkipList(LinkedList):
         return level
 
     def _locate_node(self, key):
-        """
-        :param key: Searched key,
-        :return: Tuple with searched node (or None if given key is not present)
-                 and list of nodes that refer (if key is present) of should refer to given node.
-        """
+
         update_vector = []
 
         node = self.head
@@ -870,7 +847,15 @@ class SkipList(LinkedList):
 
     def delete(self, key):
         """
-        :param key: Key to remove from list.
+        Parameter
+        =========
+
+        key
+            Key of node to delete
+
+        Examples
+        ========
+
         >>> skip_list = SkipList(0.5, 16)
         >>> skip_list.insert(2, "Two")
         >>> skip_list.insert(1, "One")
@@ -895,8 +880,18 @@ class SkipList(LinkedList):
 
     def insert(self, key, value):
         """
-        :param key: Key to insert.
-        :param value: Value associated with given key.
+        Parameters
+        ==========
+
+        key
+            Key to insert.
+
+        value
+            Value associated with given key.
+
+        Examples
+        ========
+
         >>> skip_list = SkipList(0.5, 16)
         >>> skip_list.insert(2, "Two")
         >>> skip_list.find(2)
@@ -930,8 +925,20 @@ class SkipList(LinkedList):
 
     def find(self, key):
         """
-        :param key: Search key.
-        :return: Value associated with given key or None if given key is not present.
+        Parameters
+        ==========
+
+        key
+            Search key.
+
+        Returns
+        =======
+
+        Value associated with given key or None if given key is not present.
+
+        Examples
+        ========
+
         >>> skip_list = SkipList(0.5, 16)
         >>> skip_list.find(2)
         >>> skip_list.insert(2, "Two")
