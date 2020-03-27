@@ -1,4 +1,5 @@
-from pydatastructs.utils import AdjacencyListGraphNode, AdjacencyMatrixGraphNode, GraphEdge, SkipListNode, LinkedListNode
+from pydatastructs.utils import (AdjacencyListGraphNode, AdjacencyMatrixGraphNode,
+                                GraphEdge, BinomialTreeNode, MAryTreeNode, SkipListNode)
 from pydatastructs.utils.raises_util import raises
 
 def test_AdjacencyListGraphNode():
@@ -33,3 +34,15 @@ def test_SkipListNode():
 def test_LinkedListNode():
     l = LinkedListNode("data")
     assert str(l) == 'data'
+
+def test_BinomialTreeNode():
+    b = BinomialTreeNode(1,1)
+    b.add_children(*[BinomialTreeNode(i,i) for i in range(2,10)])
+    assert str(b) == '(1, 1)'
+    assert str(b.children) == "['(2, 2)', '(3, 3)', '(4, 4)', '(5, 5)', '(6, 6)', '(7, 7)', '(8, 8)', '(9, 9)']"
+
+def test_MAryTreeNode():
+    m = MAryTreeNode(1, 1)
+    m.add_children(*[i for i in range(2,10)])
+    assert str(m) == "(1, 1)"
+    assert str(m.children) == "['2', '3', '4', '5', '6', '7', '8', '9']"

@@ -45,6 +45,66 @@ class LinkedList(object):
                 break
         return str(elements)
 
+    def insert_after(self, prev_node, key, data=None):
+        """
+        Inserts a new node after the prev_node.
+
+        Parameters
+        ==========
+
+        prev_node: LinkedListNode
+            The node after which the
+            new node is to be inserted.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        raise NotImplementedError('This is an abstract method')
+
+    def insert_at(self, index, key, data=None):
+        """
+        Inserts a new node at the input index.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        data
+            Any valid data to be stored in the node.
+        """
+        raise NotImplementedError('This is an abstract method')
+
+    def extract(self, index):
+        """
+        Extracts the node at the index of the list.
+
+        Parameters
+        ==========
+
+        index: int
+            An integer satisfying python indexing properties.
+
+        Returns
+        =======
+
+        current_node: LinkedListNode
+            The node at index i.
+        """
+        raise NotImplementedError('This is an abstract method')
+
+    def __getitem__(self, index):
+        """
+        Returns
+        =======
+
+        current_node: LinkedListNode
+            The node at given index.
+        """
+        raise NotImplementedError('This is an abstract method')
+
+
 class DoublyLinkedList(LinkedList):
     """
     Represents Doubly Linked List

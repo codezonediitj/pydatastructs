@@ -149,6 +149,9 @@ class MAryTreeNode(TreeNode):
         for child in children:
             self.children.append(child)
 
+    def __str__(self):
+        return str((self.key, self.data))
+
 
 class LinkedListNode(Node):
     """
@@ -329,3 +332,17 @@ class Set(object):
         obj.data = data
         obj.parent, obj.size = [None]*2
         return obj
+
+def _comp(u, v, tcomp):
+    """
+    Overloaded comparator for comparing
+    two values where any one of them can be
+    `None`.
+    """
+    if u is None and v is not None:
+        return False
+    elif u is not None and v is None:
+        return True
+    elif u is None and v is None:
+        return False
+    return tcomp(u, v)

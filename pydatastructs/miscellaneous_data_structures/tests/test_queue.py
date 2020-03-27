@@ -65,12 +65,18 @@ def test_PriorityQueue():
     assert _check_type(pq1, LinkedListPriorityQueue) is True
     assert raises(NotImplementedError, lambda: Queue(implementation=''))
 
-def test_LinkedListPriorityQueue():
-    pq1 = PriorityQueue(implementation='linked_list')
-    pq1.push(1, 2)
-    pq1.push(2, 3)
-    pq1.push(3, 4)
-    assert pq1.pop() == 3
-    assert pq1.pop() == 2
-    assert pq1.pop() == 1
-    assert raises(IndexError, lambda: pq1.pop())
+def test_ImplementationPriorityQueue():
+    impls = ['linked_list', 'binomial_heap', 'binary_heap']
+    for impl in impls:
+        pq1 = PriorityQueue(implementation=impl)
+        pq1.push(1, 4)
+        pq1.push(2, 3)
+        pq1.push(3, 2)
+        assert pq1.peek.data == 3
+        assert pq1.pop() == 3
+        assert pq1.peek.data == 2
+        assert pq1.pop() == 2
+        assert pq1.peek.data == 1
+        assert pq1.pop() == 1
+        assert pq1.is_empty is True
+        assert raises(IndexError, lambda: pq1.peek)

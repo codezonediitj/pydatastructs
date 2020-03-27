@@ -1,5 +1,6 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
 from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
+from pydatastructs.trees.heaps import BinaryHeap, BinomialHeap
 from copy import deepcopy as dc
 
 __all__ = [
@@ -186,13 +187,17 @@ class PriorityQueue(object):
         of priority queue.
         The following implementations are supported,
         'linked_list' -> Linked list implementation.
-        Optional, by default, 'linked_list' implementation
+        'binary_heap' -> Binary heap implementation.
+        'binomial_heap' -> Binomial heap implementation.
+            Doesn't support custom comparators, minimum
+            key data is extracted in every pop.
+        Optional, by default, 'binary_heap' implementation
         is used.
     comp: function
         The comparator to be used while comparing priorities.
         Must return a bool object.
-        By default, `lambda u, v: u > v` is used to compare
-        priorities i.e., maximum priority elements are extracted
+        By default, `lambda u, v: u < v` is used to compare
+        priorities i.e., minimum priority elements are extracted
         by pop operation.
 
     Examples
@@ -203,35 +208,66 @@ class PriorityQueue(object):
     >>> pq.push(1, 2)
     >>> pq.push(2, 3)
     >>> pq.pop()
-    2
-    >>> pq2 = PriorityQueue(comp=lambda u, v: u < v)
+    1
+    >>> pq2 = PriorityQueue(comp=lambda u, v: u > v)
     >>> pq2.push(1, 2)
     >>> pq2.push(2, 3)
     >>> pq2.pop()
-    1
+    2
 
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Priority_queue#Naive_implementations
+    .. [1] https://en.wikipedia.org/wiki/Priority_queue
     """
 
-    def __new__(cls, implementation='linked_list', **kwargs):
+    def __new__(cls, implementation='binary_heap', **kwargs):
+        comp = kwargs.get("comp", lambda u, v: u < v)
         if implementation == 'linked_list':
-            return LinkedListPriorityQueue(
-                kwargs.get("comp", lambda u, v: u > v)
-            )
+            return LinkedListPriorityQueue(comp)
+        elif implementation == 'binary_heap':
+            return BinaryHeapPriorityQueue(comp)
+        elif implementation == 'binomial_heap':
+            return BinomialHeapPriorityQueue()
+        else:
+            raise NotImplementedError(
+                "%s implementation is not currently supported "
+                "by priority queue.")
 
     def push(self, value, priority):
+        """
+        Pushes the value to the priority queue
+        according to the given priority.
+
+        value
+            Value to be pushed.
+        priority
+            Priority to be given to the value.
+        """
         raise NotImplementedError(
                 "This is an abstract method.")
 
     def pop(self):
+        """
+        Pops out the value from the priority queue.
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    @property
+    def peek(self):
+        """
+        Returns the pointer to the value which will be
+        popped out by `pop` method.
+        """
         raise NotImplementedError(
             "This is an abstract method.")
 
     @property
     def is_empty(self):
+        """
+        Checks if the priority queue is empty.
+        """
         raise NotImplementedError(
             "This is an abstract method.")
 
@@ -239,30 +275,92 @@ class LinkedListPriorityQueue(PriorityQueue):
 
     __slots__ = ['items', 'comp']
 
-    def __new__(cls, comp=lambda u, v: u > v):
+    def __new__(cls, comp):
         obj = object.__new__(cls)
         obj.items = SinglyLinkedList()
         obj.comp = comp
         return obj
 
     def push(self, value, priority):
-        self.items.append(value, priority)
+        self.items.append(priority, value)
 
     def pop(self):
+        _, max_i = self._find_peek(return_index=True)
+        pop_val = self.items.extract(max_i)
+        return pop_val.data
+
+    def _find_peek(self, return_index=False):
         if self.is_empty:
             raise IndexError("Priority queue is empty.")
 
         walk = self.items.head
-        i, max_i, max_p = 0, 0, walk.data
+        i, max_i, max_p = 0, 0, walk
         while walk is not None:
-            if self.comp(walk.data, max_p):
+            if self.comp(walk.key, max_p.key):
                 max_i = i
-                max_p = walk.data
+                max_p = walk
             i += 1
             walk = walk.next
-        pop_val = self.items.extract(max_i)
-        return pop_val.key
+        if return_index:
+            return max_p, max_i
+        return max_p
+
+    @property
+    def peek(self):
+        return self._find_peek()
 
     @property
     def is_empty(self):
         return self.items.size == 0
+
+class BinaryHeapPriorityQueue(PriorityQueue):
+
+    __slots__ = ['items']
+
+    def __new__(cls, comp):
+        obj = object.__new__(cls)
+        obj.items = BinaryHeap()
+        obj.items._comp = comp
+        return obj
+
+    def push(self, value, priority):
+        self.items.insert(priority, value)
+
+    def pop(self):
+        node = self.items.extract()
+        return node.data
+
+    @property
+    def peek(self):
+        if self.items.is_empty:
+            raise IndexError("Priority queue is empty.")
+        return self.items.heap[0]
+
+    @property
+    def is_empty(self):
+        return self.items.is_empty
+
+class BinomialHeapPriorityQueue(PriorityQueue):
+
+    __slots__ = ['items']
+
+    def __new__(cls):
+        obj = object.__new__(cls)
+        obj.items = BinomialHeap()
+        return obj
+
+    def push(self, value, priority):
+        self.items.insert(priority, value)
+
+    def pop(self):
+        node = self.items.find_minimum()
+        self.items.delete_minimum()
+        return node.data
+
+    @property
+    def peek(self):
+        return self.items.find_minimum()
+
+    @property
+    def is_empty(self):
+        return self.items.is_empty

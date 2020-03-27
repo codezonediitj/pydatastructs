@@ -22,6 +22,7 @@ from .linked_lists import (
 __all__.extend(linked_lists.__all__)
 
 from .algorithms import (
-    merge_sort_parallel
+    merge_sort_parallel,
+    brick_sort
 )
 __all__.extend(algorithms.__all__)

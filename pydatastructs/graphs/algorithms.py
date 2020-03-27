@@ -5,7 +5,9 @@ data structure.
 from collections import deque as Queue
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils import GraphEdge
-from pydatastructs.miscellaneous_data_structures import DisjointSetForest
+from pydatastructs.utils.misc_util import _comp
+from pydatastructs.miscellaneous_data_structures import (
+    DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 
@@ -215,11 +217,35 @@ def _minimum_spanning_tree_kruskal_adjacency_list(graph):
         u, v = edge.source.name, edge.target.name
         if dsf.find_root(u) is not dsf.find_root(v):
             mst.add_edge(u, v, edge.value)
+            mst.add_edge(v, u, edge.value)
             dsf.union(u, v)
     return mst
 
 _minimum_spanning_tree_kruskal_adjacency_matrix = \
     _minimum_spanning_tree_kruskal_adjacency_list
+
+def _minimum_spanning_tree_prim_adjacency_list(graph):
+    q = PriorityQueue(implementation='binomial_heap')
+    e = dict()
+    mst = Graph(implementation='adjacency_list')
+    q.push(next(iter(graph.vertices)), 0)
+    while not q.is_empty:
+        v = q.pop()
+        if not hasattr(mst, v):
+            mst.add_vertex(graph.__getattribute__(v))
+            if e.get(v, None) is not None:
+                edge = e[v]
+                mst.add_vertex(edge.target)
+                mst.add_edge(edge.source.name, edge.target.name, edge.value)
+                mst.add_edge(edge.target.name, edge.source.name, edge.value)
+            for w_node in graph.neighbors(v):
+                w = w_node.name
+                vw = graph.edge_weights[v + '_' + w]
+                q.push(w, vw.value)
+                if e.get(w, None) is None or \
+                    e[w].value > vw.value:
+                    e[w] = vw
+    return mst
 
 def minimum_spanning_tree(graph, algorithm):
     """
@@ -239,6 +265,7 @@ def minimum_spanning_tree(graph, algorithm):
         supported,
         'kruskal' -> Kruskal's algorithm as given in
                      [1].
+        'prim' -> Prim's algorithm as given in [2].
 
     Returns
     =======
@@ -265,6 +292,7 @@ def minimum_spanning_tree(graph, algorithm):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Prim%27s_algorithm
 
     Note
     ====
@@ -293,11 +321,64 @@ def _minimum_spanning_tree_parallel_kruskal_adjacency_list(graph, num_threads):
         u, v = edge.source.name, edge.target.name
         if dsf.find_root(u) is not dsf.find_root(v):
             mst.add_edge(u, v, edge.value)
+            mst.add_edge(v, u, edge.value)
             dsf.union(u, v)
     return mst
 
 _minimum_spanning_tree_parallel_kruskal_adjacency_matrix = \
     _minimum_spanning_tree_parallel_kruskal_adjacency_list
+
+def _find_min(q, v, i):
+    if not q.is_empty:
+        v[i] = q.peek
+    else:
+        v[i] = None
+
+def _minimum_spanning_tree_parallel_prim_adjacency_list(graph, num_threads):
+    q = [PriorityQueue(implementation='binomial_heap') for _ in range(num_threads)]
+    e = [dict() for _ in range(num_threads)]
+    v2q = dict()
+    mst = Graph(implementation='adjacency_list')
+
+    itr = iter(graph.vertices)
+    for i in range(len(graph.vertices)):
+        v2q[next(itr)] = i%len(q)
+    q[0].push(next(iter(graph.vertices)), 0)
+
+    while True:
+
+        _vs = [None for _ in range(num_threads)]
+        with ThreadPoolExecutor(max_workers=num_threads) as Executor:
+            for i in range(num_threads):
+                Executor.submit(_find_min, q[i], _vs, i).result()
+        v = None
+
+        for i in range(num_threads):
+            if _comp(_vs[i], v, lambda u, v: u.key < v.key):
+                v = _vs[i]
+        if v is None:
+            break
+        v = v.data
+        idx = v2q[v]
+        q[idx].pop()
+
+        if not hasattr(mst, v):
+            mst.add_vertex(graph.__getattribute__(v))
+            if e[idx].get(v, None) is not None:
+                edge = e[idx][v]
+                mst.add_vertex(edge.target)
+                mst.add_edge(edge.source.name, edge.target.name, edge.value)
+                mst.add_edge(edge.target.name, edge.source.name, edge.value)
+            for w_node in graph.neighbors(v):
+                w = w_node.name
+                vw = graph.edge_weights[v + '_' + w]
+                j = v2q[w]
+                q[j].push(w, vw.value)
+                if e[j].get(w, None) is None or \
+                    e[j][w].value > vw.value:
+                    e[j][w] = vw
+
+    return mst
 
 def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
     """
@@ -317,6 +398,7 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
         supported,
         'kruskal' -> Kruskal's algorithm as given in
                      [1].
+        'prim' -> Prim's algorithm as given in [2].
     num_threads: int
         The number of threads to be used.
 
@@ -345,6 +427,7 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm#Parallel_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Prim%27s_algorithm#Parallel_algorithm
 
     Note
     ====
