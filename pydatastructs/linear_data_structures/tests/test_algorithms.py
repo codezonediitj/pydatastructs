@@ -1,6 +1,10 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
+<<<<<<< HEAD
     OneDimensionalArray, brick_sort, brick_sort_parallel)
+=======
+    OneDimensionalArray, brick_sort)
+>>>>>>> 6cc969c0c55ce348097025d917060d585f8054dd
 import random
 
 def _test_common_sort(sort, *args, **kwargs):

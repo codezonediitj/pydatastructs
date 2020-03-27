@@ -130,6 +130,9 @@ class OneDimensionalArray(Array):
     def __len__(self):
         return self._size
 
+    def __str__(self):
+        return str(self._data)
+
 
 class DynamicArray(Array):
     """
@@ -259,6 +262,13 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     @property
     def size(self):
         return self._size
+
+    def __str__(self):
+        to_be_printed = ['' for i in range(self._last_pos_filled + 1)]
+        for i in range(self._last_pos_filled + 1):
+            if self._data[i] is not None:
+                to_be_printed[i] = str(self._data[i])
+        return str(to_be_printed)
 
     def __reversed__(self):
         for i in range(self._last_pos_filled, -1, -1):
