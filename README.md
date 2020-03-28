@@ -48,7 +48,7 @@ How to contribute?
 Follow the steps given below,
 
 1. Fork, https://github.com/codezonediitj/pydatastructs/
-2. Execute, `git clone https://github.com/<your-github-username>/pydatastructs/`
+2. Execute, `git clone https://github.com/codezonediitj/pydatastructs/`
 3. Change your working directory to `../pydatastructs`.
 4. Execute, `git remote add origin_user https://github.com/<your-github-username>/pydatastructs/`
 5. Execute, `git checkout -b <your-new-branch-for-working>`.
@@ -66,13 +66,13 @@ See you soon with your first PR.
 Guidelines
 ----------
 
-We recommend you to introduce yourself on our [gitter channel](https://gitter.im/codezoned2017/Lobby). You can include the courses you have taken relevant to data structures and algorithms, some projects, prior experience, in your introduction. This will help us to allocate you issues of suitable difficulty.
+We recommend you to join our [gitter channel](https://gitter.im/codezoned2017/Lobby) for dicussing anything related to the project.
 
 Please follow the rules and guidelines given below,
 
 1. Follow the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 2. If you are planning to contribute a new data structure then first raise an issue for discussing the API, rather than directly making a PR.
-3. For the first-time contributors we recommend not to take a complex data structure, rather start with `linear data structures` or `abstract data types`. You can also pick issues labelled as `good_first_issues`.
+3. For the first-time contributors we recommend not to take a complex data structure, rather start with `beginner` or `easy`.
 
 The following parameters are to be followed to pass the code quality tests for your Pull Requests,
 
