@@ -51,7 +51,6 @@ class AdjacencyMatrix(Graph):
 
     def add_edge(self, source, target, cost=None):
         source, target = str(source), str(target)
-        print(source, target)
         self.matrix[source][target] = True
         if cost is not None:
             self.edge_weights[source + "_" + target] = \
