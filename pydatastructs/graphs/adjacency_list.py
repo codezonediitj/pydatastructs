@@ -19,7 +19,7 @@ class AdjacencyList(Graph):
         obj = object.__new__(cls)
         for vertex in vertices:
             obj.__setattr__(vertex.name, vertex)
-        obj.vertices = set([vertex.name for vertex in vertices])
+        obj.vertices = [vertex.name for vertex in vertices]
         obj.edge_weights = dict()
         return obj
 
@@ -32,7 +32,7 @@ class AdjacencyList(Graph):
         return [self.__getattribute__(name) for name in node.adjacent]
 
     def add_vertex(self, node):
-        self.vertices.add(node.name)
+        self.vertices.append(node.name)
         self.__setattr__(node.name, node)
 
     def remove_vertex(self, name):
@@ -47,8 +47,7 @@ class AdjacencyList(Graph):
     def add_edge(self, source, target, cost=None):
         source, target = self.__getattribute__(source), \
                          self.__getattribute__(target)
-        source.__setattr__(target.name, target)
-        source.adjacent.add(target.name)
+        source.add_adjacent_node(target.name)
         if cost is not None:
             self.edge_weights[source.name + "_" + target.name] = \
                 GraphEdge(source, target, cost)
@@ -61,7 +60,6 @@ class AdjacencyList(Graph):
     def remove_edge(self, source, target):
         source, target = self.__getattribute__(source), \
                          self.__getattribute__(target)
-        source.adjacent.remove(target.name)
-        delattr(source, target.name)
+        source.remove_adjacent_node(target.name)
         self.edge_weights.pop(source.name + "_" + target.name,
                                 None)
