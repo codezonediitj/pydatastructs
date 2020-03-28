@@ -445,3 +445,57 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
         "isn't implemented for finding minimum spanning trees."
         %(algorithm, graph._impl))
     return getattr(algorithms, func)(graph, num_threads)
+
+def _visit(graph, vertex, visited, incoming, L):
+    stack = [vertex]
+    while stack:
+        top = stack[-1]
+        if not visited.get(top, False):
+            visited[top] = True
+            if incoming.get(vertex, None) is None:
+                incoming[vertex] = []
+            for node in graph.neighbors(top):
+                if not visited.get(node.name, False):
+                    incoming[vertex].append(node.name)
+                    stack.append(node.name)
+        if top is stack[-1]:
+            L.append(stack.pop())
+
+def _assign(graph, u, incoming, assigned, component):
+    stack = [u]
+    while stack:
+        top = stack[-1]
+        if not assigned.get(top, False):
+            assigned[top] = True
+            component.add(top)
+            for u in incoming[top]:
+                if not assigned.get(u, False):
+                    stack.append(u)
+        if top is stack[-1]:
+            stack.pop()
+
+def strongly_connect_components_kosaraju_adjacency_list(graph):
+    visited, incoming, L = dict(), dict(), []
+    for u in graph.vertices:
+        if not visited.get(u, False):
+            _visit(graph, u, visited, incoming, L)
+
+    assigned = dict()
+    components = []
+    for i in range(-1, -len(L) - 1, -1):
+        comp = {}
+        if not assigned.get(L[i], False):
+            _assign(graph, L[i], incoming, assigned, comp)
+        components.append(comp)
+
+    return components
+
+def strongly_connect_components(graph, algorithm):
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_strongly_connected_components_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algoithm for %s implementation of graphs "
+        "isn't implemented for finding strongly connected components."
+        %(algorithm, graph._impl))
+    return getattr(algorithms, func)(graph)
