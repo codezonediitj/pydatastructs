@@ -12,8 +12,22 @@ Methods
 4. fill(self, elem)
 
 '''
+from pydatastructs.utils.misc_util import _check_type, NoneType
 
-class MutiDimensionalArray(object):
+__all__ = [
+'OneDimensionalArray',
+'DynamicOneDimensionalArray',
+'MutiDimensionalArray'
+]
+
+class Array(object):
+    '''
+    Abstract class for arrays in pydatastructs.
+    '''
+    pass
+
+
+class MutiDimensionalArray(Array):
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         obj = object.__new__(cls)
@@ -25,12 +39,25 @@ class MutiDimensionalArray(object):
     def __getitem__(self, *indices):
         #get indices and form a matrix
         #create a m x n matrix
+        m = indices[0]
+        n = indices[1]
         a = [[0 for x in range(n)] for x in range(m)] 
         
-    def __setitem__(self, value, *indices):
+        
+    def __setitem__(self, m, n, *indices_value):
         # to get updated values of an index and update the index
-        pass
+        value = indices_value[-1]
+        # update elem
+        if value is None:
+            self._data[m][n] = None
+        else:
+            if type(value) != self._dtype:
+                value = self._dtype(value)
+            self._data[m][n] = value
     
-    def fill(self, elem):
+    def fill(self, m ,n, elem):
         # fill all the updated incides in n-d array
-        pass
+        elem = self._dtype(elem)
+        for i in range(m):
+            for j in range (n)
+                self._data[i][j] = elem
