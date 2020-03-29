@@ -10,23 +10,25 @@ from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
+import math
 
 __all__ = [
     'breadth_first_search',
     'breadth_first_search_parallel',
     'minimum_spanning_tree',
-    'minimum_spanning_tree_parallel'
+    'minimum_spanning_tree_parallel',
+    'LCA_range_minquery',
+    'LCA_binary_lifting'
 ]
+
 
 def breadth_first_search(
     graph, source_node, operation, *args, **kwargs):
     """
     Implementation of serial breadth first search(BFS)
     algorithm.
-
     Parameters
     ==========
-
     graph: Graph
         The graph on which BFS is to be performed.
     source_node: str
@@ -42,17 +44,13 @@ def breadth_first_search(
         current node and the node next to current node.
         The rest of the arguments are optional and you can
         provide your own stuff there.
-
     Note
     ====
-
     You should pass all the arguments which you are going
     to use in the prototype of your `operation` after
     passing the operation function.
-
     Examples
     ========
-
     >>> from pydatastructs import Graph, AdjacencyListGraphNode
     >>> V1 = AdjacencyListGraphNode("V1")
     >>> V2 = AdjacencyListGraphNode("V2")
@@ -103,10 +101,8 @@ def breadth_first_search_parallel(
     graph, source_node, num_threads, operation, *args, **kwargs):
     """
     Parallel implementation of breadth first search on graphs.
-
     Parameters
     ==========
-
     graph: Graph
         The graph on which BFS is to be performed.
     source_node: str
@@ -124,17 +120,13 @@ def breadth_first_search_parallel(
         current node and the node next to current node.
         The rest of the arguments are optional and you can
         provide your own stuff there.
-
     Note
     ====
-
     You should pass all the arguments which you are going
     to use in the prototype of your `operation` after
     passing the operation function.
-
     Examples
     ========
-
     >>> from pydatastructs import Graph, AdjacencyListGraphNode
     >>> V1 = AdjacencyListGraphNode("V1")
     >>> V2 = AdjacencyListGraphNode("V2")
@@ -251,10 +243,8 @@ def minimum_spanning_tree(graph, algorithm):
     """
     Computes a minimum spanning tree for the given
     graph and algorithm.
-
     Parameters
     ==========
-
     graph: Graph
         The graph whose minimum spanning tree
         has to be computed.
@@ -266,17 +256,13 @@ def minimum_spanning_tree(graph, algorithm):
         'kruskal' -> Kruskal's algorithm as given in
                      [1].
         'prim' -> Prim's algorithm as given in [2].
-
     Returns
     =======
-
     mst: Graph
         A minimum spanning tree using the implementation
         same as the graph provided in the input.
-
     Examples
     ========
-
     >>> from pydatastructs import Graph, AdjacencyListGraphNode
     >>> from pydatastructs import minimum_spanning_tree
     >>> u = AdjacencyListGraphNode('u')
@@ -287,16 +273,12 @@ def minimum_spanning_tree(graph, algorithm):
     >>> u_n = mst.neighbors(u.name)
     >>> mst.get_edge(u.name, u_n[0].name).value
     3
-
     References
     ==========
-
     .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
     .. [2] https://en.wikipedia.org/wiki/Prim%27s_algorithm
-
     Note
     ====
-
     The concept of minimum spanning tree is valid only for
     connected and undirected graphs. So, this function
     should be used only for such graphs. Using with other
@@ -384,10 +366,8 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
     """
     Computes a minimum spanning tree for the given
     graph and algorithm using the given number of threads.
-
     Parameters
     ==========
-
     graph: Graph
         The graph whose minimum spanning tree
         has to be computed.
@@ -401,17 +381,13 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
         'prim' -> Prim's algorithm as given in [2].
     num_threads: int
         The number of threads to be used.
-
     Returns
     =======
-
     mst: Graph
         A minimum spanning tree using the implementation
         same as the graph provided in the input.
-
     Examples
     ========
-
     >>> from pydatastructs import Graph, AdjacencyListGraphNode
     >>> from pydatastructs import minimum_spanning_tree_parallel
     >>> u = AdjacencyListGraphNode('u')
@@ -422,16 +398,12 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
     >>> u_n = mst.neighbors(u.name)
     >>> mst.get_edge(u.name, u_n[0].name).value
     3
-
     References
     ==========
-
     .. [1] https://en.wikipedia.org/wiki/Kruskal%27s_algorithm#Parallel_algorithm
     .. [2] https://en.wikipedia.org/wiki/Prim%27s_algorithm#Parallel_algorithm
-
     Note
     ====
-
     The concept of minimum spanning tree is valid only for
     connected and undirected graphs. So, this function
     should be used only for such graphs. Using with other
@@ -445,3 +417,270 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
         "isn't implemented for finding minimum spanning trees."
         %(algorithm, graph._impl))
     return getattr(algorithms, func)(graph, num_threads)
+
+
+class LCA_binary_lifting:
+    """
+    To query Lowest common ancestor between two nodes a and b of a connected Graph with 
+    no cycles
+    Algorithm used here is Binary Lifting 
+    Class functions
+    ===============
+    constructor : takes number of vertices of a graph
+
+
+    preprocess(graph, node)
+    =====================
+    to do the pre processing needed to done before querying
+        Parameters
+        ===========
+        graph:Graph
+            The graph on which you want to query LCA
+        node: int
+            Root node of the tree
+        Returns
+        =======
+        NULL
+
+
+    lca(u , v)
+    ==========
+    to get lowest common ancestor between nodes u and v
+        Parameters
+        ===========
+        a: str
+            first node
+        b: str
+            second node
+        Returns
+        ========
+        str: LCA of u, v
+
+    """
+    def __init__(self, n):
+        self.parent = [[-1 for i in range((2+int((math.log(n)/math.log(2)))))] for j in range(n)] 
+        self.n = n
+        self.logn = int(math.log(n)/math.log(2))+1
+        self.level = [0]*n
+        self.count = 0
+        self.mapping = dict()
+        self.revmap = ['']*n
+
+    def dfs(self, graph, node, par):
+        self.mapping[node] = self.count
+        self.revmap[self.count] = node
+        self.count = self.count + 1
+        next_nodes = graph.neighbors(node)
+        for next_node in next_nodes:
+            if next_node.name != par :
+                self.dfs(graph, next_node.name, node)
+
+    def traverse(self, graph, node, par):
+        x = self.mapping[node]
+        self.parent[x][0] = par
+        for i in range(1,self.logn+1):
+            if self.parent[x][i-1] < 0:
+                self.parent[x][i] = -1
+            else:
+                self.parent[x][i] = self.parent[(self.parent[x][i-1])][i-1]
+        
+        next_nodes = graph.neighbors(node)
+        for next_node in next_nodes:
+            if self.mapping[next_node.name] != par :
+                self.level[self.mapping[next_node.name]] = self.level[x]+1
+                self.traverse(graph, next_node.name, x)
+
+    def preprocess(self, graph, node):
+        self.node = node
+        self.dfs(graph, node, '')
+        self.traverse(graph, node, -1)
+
+    def lca(self, a , b):
+        u = self.mapping[a]
+        v = self.mapping[b]
+
+        if ((u > self.n) or (v > self.n)):
+            return ''
+        if self.level[u] < self.level[v]:
+            temp = u
+            u = v
+            v = temp
+        for i in reversed(range(0,1+self.logn)):
+            if (self.level[u]-(1<<i)) >= self.level[v]:
+                u = self.parent[u][i]
+        if u == v:
+            if u < 0:
+                return self.node
+            return self.revmap[u]
+        for i in reversed(range(0,1+self.logn)):
+            if self.parent[u][i] != self.parent[v][i]:
+                u = self.parent[u][i]
+                v = self.parent[v][i]
+        if self.parent[u][0] < 0:
+            return self.node
+        return self.revmap[self.parent[u][0]]
+
+
+
+
+
+class LCA_range_minquery:
+    """
+    To query Lowest common ancestor between two nodes a and b of a connected Graph with 
+    no cycles
+    Algorithm used here is Range Minimum Query with Eulars tour and DataStructure 
+    used is Segment Tree 
+    Class functions
+    ===============
+    constructor : takes number of vertices of a graph
+
+
+    preprocess(graph, node)
+    =====================
+    to do the pre processing needed to done before querying
+        Parameters
+        ===========
+        graph:Graph
+            The graph on which you want to query LCA
+        node: int
+            Root node of the tree
+        Returns
+        =======
+        NULL
+
+
+    lca(u , v)
+    ==========
+    to get lowest common ancestor between nodes u and v
+        Parameters
+        ===========
+        a: str
+            first node
+        b: str
+            second node
+        Returns
+        ========
+        str: LCA of u, v
+
+
+    to Check
+    ========
+
+        from pydatastructs.graphs import Graph
+        from pydatastructs.utils import AdjacencyListGraphNode
+        v_1 = AdjacencyListGraphNode('0')
+        v_2 = AdjacencyListGraphNode('1')
+        v_3 = AdjacencyListGraphNode('2')
+        v_4 = AdjacencyListGraphNode('3')
+        v_5 = AdjacencyListGraphNode('4')
+        g = Graph(v_1, v_2,v_3,v_4,v_5)
+        g.add_edge('0', '2')
+        g.add_edge('0', '1')
+        g.add_edge('1', '3')
+        g.add_edge('1', '4')
+
+        No change even if this part is not added(ie same for directed and undirected)
+        ==========
+        g.add_edge('2','0')
+        g.add_edge('1','0')
+        g.add_edge('3','1')
+        g.add_edge('4','1')
+        =============
+
+        x= LCA_binary_lifting(5)
+        x.preprocess(g, '0')
+        print(x.lca('3','4'))
+
+    """
+    def __init__(self, n):
+        self.eular = [0]*(2*n-1)
+        self.n = n
+        self.fst_occur = [0]*(n)
+        self.level = [0]*(2*n-1)
+        self.ind = 0
+        self.seg_tree = [0]*(4*n+2)
+        self.count = 0
+        self.mapping = dict()
+        self.revmap = ['']*n
+
+    def dfs(self, graph, node, par):
+        self.mapping[node] = self.count
+        self.revmap[self.count] = node
+        self.count = self.count + 1
+        next_nodes = graph.neighbors(node)
+        # print(next_nodes)
+        for next_node in next_nodes:
+            # print(next_node)
+            if next_node.name != par :
+                self.dfs(graph, next_node.name, node)
+                
+
+    def traverse(self, graph, node, par, lev):
+        self.fst_occur[self.mapping[node]] = self.ind
+        self.eular[self.ind] = self.mapping[node]
+        self.level[self.ind] = lev
+        self.ind = self.ind +1
+        next_nodes = graph.neighbors(node)
+        for next_node in next_nodes:
+            if self.mapping[next_node.name] != par :
+                self.traverse(graph, next_node.name, self.mapping[node], lev+1)
+                self.eular[self.ind] = self.mapping[node]
+                self.level[self.ind] = lev
+                self.ind = self.ind +1
+
+    def build(self, a, b, node):
+        # print(a)
+        # print(b)
+        if a == b:
+            self.seg_tree[node] = a
+            return 
+        else:
+            self.build(a, int((a+b)/2), 2*node)
+            self.build(1+int((a+b)/2), b, 2*node+1)
+            if self.level[self.seg_tree[2*node]] < self.level[self.seg_tree[2*node+1]]:
+                self.seg_tree[node] = self.seg_tree[2*node]
+            else:
+                self.seg_tree[node] = self.seg_tree[2*node+1]
+
+
+    def query(self, x, y, a, b, node):
+        if x == y:
+            return x
+        if x <= a and y >= b:
+            return self.seg_tree[node]
+        elif y <= int((a+b)/2):
+            return self.query(x, y, a, int((a+b)/2), 2*node)
+        elif x > int((a+b)/2):
+            return self.query(x, y, int((a+b)/2)+1, b, 2*node+1)
+        else:
+            h = self.query(x, y, a, int((a+b)/2), 2*node)
+            k = self.query(x, y, int((a+b)/2)+1, b, 2*node+1)
+            if self.level[h] < self.level[k]:
+                return h
+            else:
+                return k
+
+
+    def preprocess(self, graph, node):
+        self.dfs(graph, node, 'usless_stuff')
+        self.traverse(graph, node, -1, 0)
+        self.build(0, self.ind-1, 1)
+
+
+    def lca(self, a , b):
+        u = self.mapping[a]
+        v = self.mapping[b]
+        if u > self.n or v > self.n:
+            return -1
+        x = self.fst_occur[u]
+        y = self.fst_occur[v]
+        if x > y:
+            temp = x
+            x = y
+            y = temp
+        i = self.query(x, y, 0, self.ind-1, 1)
+        return self.revmap[self.eular[i]]
+
+
+
+
