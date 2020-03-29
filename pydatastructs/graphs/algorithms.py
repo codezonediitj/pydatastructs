@@ -15,7 +15,8 @@ __all__ = [
     'breadth_first_search',
     'breadth_first_search_parallel',
     'minimum_spanning_tree',
-    'minimum_spanning_tree_parallel'
+    'minimum_spanning_tree_parallel',
+    'strongly_connected_components'
 ]
 
 def breadth_first_search(
@@ -452,11 +453,11 @@ def _visit(graph, vertex, visited, incoming, L):
         top = stack[-1]
         if not visited.get(top, False):
             visited[top] = True
-            if incoming.get(vertex, None) is None:
-                incoming[vertex] = []
             for node in graph.neighbors(top):
+                if incoming.get(node.name, None) is None:
+                    incoming[node.name] = []
+                incoming[node.name].append(top)
                 if not visited.get(node.name, False):
-                    incoming[vertex].append(node.name)
                     stack.append(node.name)
         if top is stack[-1]:
             L.append(stack.pop())
@@ -474,7 +475,7 @@ def _assign(graph, u, incoming, assigned, component):
         if top is stack[-1]:
             stack.pop()
 
-def strongly_connect_components_kosaraju_adjacency_list(graph):
+def _strongly_connected_components_kosaraju_adjacency_list(graph):
     visited, incoming, L = dict(), dict(), []
     for u in graph.vertices:
         if not visited.get(u, False):
@@ -483,14 +484,18 @@ def strongly_connect_components_kosaraju_adjacency_list(graph):
     assigned = dict()
     components = []
     for i in range(-1, -len(L) - 1, -1):
-        comp = {}
+        comp = set()
         if not assigned.get(L[i], False):
             _assign(graph, L[i], incoming, assigned, comp)
-        components.append(comp)
+        if comp:
+            components.append(comp)
 
     return components
 
-def strongly_connect_components(graph, algorithm):
+_strongly_connected_components_kosaraju_adjacency_matrix = \
+    _strongly_connected_components_kosaraju_adjacency_list
+
+def strongly_connected_components(graph, algorithm):
     import pydatastructs.graphs.algorithms as algorithms
     func = "_strongly_connected_components_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
