@@ -563,7 +563,10 @@ class SelfBalancingBinaryTree(BinarySearchTree):
         self.tree[j].left = y
         self.tree[k].parent = self.tree[j].parent
         if self.tree[k].parent is not None:
-            self.tree[self.tree[k].parent].left = k
+            if self.tree[self.tree[k].parent].left == j:
+                self.tree[self.tree[k].parent].left = k
+            else:
+                self.tree[self.tree[k].parent].right = k
         self.tree[j].parent = k
         self.tree[k].right = j
         kp = self.tree[k].parent
@@ -617,7 +620,10 @@ class SelfBalancingBinaryTree(BinarySearchTree):
         self.tree[j].right = y
         self.tree[k].parent = self.tree[j].parent
         if self.tree[k].parent is not None:
-            self.tree[self.tree[k].parent].right = k
+            if self.tree[self.tree[k].parent].left == j:
+                self.tree[self.tree[k].parent].left = k
+            else:
+                self.tree[self.tree[k].parent].right = k
         self.tree[j].parent = k
         self.tree[k].left = j
         kp = self.tree[k].parent
