@@ -166,7 +166,7 @@ def brick_sort(array, **kwargs):
         array._modify(force=True)
 
 def _brick_sort_swap(array, i, j, comp, is_sorted):
-    if(_comp(array[j], array[i], comp)):
+    if _comp(array[j], array[i], comp):
         array[i], array[j] = array[j], array[i]
         is_sorted[0] = False
 
@@ -177,7 +177,7 @@ def brick_sort_parallel(array, num_threads, **kwargs):
     Parameters
     ==========
 
-    array: Array
+    array: Array/list
         The array which is to be sorted.
     num_threads: int
         The maximum number of threads
@@ -212,7 +212,8 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 
     References
     ==========
-    .. [1] https://www.geeksforgeeks.org/odd-even-sort-brick-sort/
+
+    .. [1] https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort
     """
 
     start = kwargs.get('start', 0)
@@ -223,7 +224,7 @@ def brick_sort_parallel(array, num_threads, **kwargs):
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         while is_sorted[0] is False:
             is_sorted[0] = True
-            for i in range(start+1, end, 2):
+            for i in range(start + 1, end, 2):
                 executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
 
             for i in range(start, end, 2):
