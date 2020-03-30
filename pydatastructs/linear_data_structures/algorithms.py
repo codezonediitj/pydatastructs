@@ -201,6 +201,7 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 
     Examples
     ========
+
     >>> from pydatastructs import OneDimensionalArray, brick_sort_parallel
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
     >>> brick_sort_parallel(arr, num_threads=5)
