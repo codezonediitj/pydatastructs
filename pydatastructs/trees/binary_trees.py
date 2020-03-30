@@ -757,7 +757,6 @@ class CartesianTree(SelfBalancingBinaryTree):
         if node_idx != None:
             self._trickle_down(node_idx)
             return super(CartesianTree, self).delete(key, balancing_info = True)
-        return None
 
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
