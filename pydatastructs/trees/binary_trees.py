@@ -801,10 +801,6 @@ class Treap(CartesianTree):
 
     .. [1] https://en.wikipedia.org/wiki/Treap
 
-    See Also
-    ========
-
-    pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
     """
     
     priorities = set()
