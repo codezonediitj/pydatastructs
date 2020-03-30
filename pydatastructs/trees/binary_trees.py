@@ -770,7 +770,6 @@ class CartesianTree(SelfBalancingBinaryTree):
     
 
 class Treap(CartesianTree):
-
     """
     Represents treaps.
 
