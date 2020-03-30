@@ -799,7 +799,7 @@ class Treap(CartesianTree):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Binary_search_tree
+    .. [1] https://en.wikipedia.org/wiki/Treap
 
     See Also
     ========
