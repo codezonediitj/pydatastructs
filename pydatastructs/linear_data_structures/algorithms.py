@@ -6,7 +6,8 @@ from math import log, floor
 
 __all__ = [
     'merge_sort_parallel',
-    'brick_sort'
+    'brick_sort',
+    'brick_sort_parallel'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -160,6 +161,75 @@ def brick_sort(array, **kwargs):
             if _comp(array[i+1], array[i], comp):
                 array[i], array[i+1] = array[i+1], array[i]
                 is_sorted = False
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
+def _brick_sort_swap(array, i, j, comp, is_sorted):
+    if _comp(array[j], array[i], comp):
+        array[i], array[j] = array[j], array[i]
+        is_sorted[0] = False
+
+def brick_sort_parallel(array, num_threads, **kwargs):
+    """
+    Implements Concurrent Brick Sort / Odd Even sorting algorithm
+
+    Parameters
+    ==========
+
+    array: Array/list
+        The array which is to be sorted.
+    num_threads: int
+        The maximum number of threads
+        to be used for sorting.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, brick_sort_parallel
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> brick_sort_parallel(arr, num_threads=5)
+    >>> [arr[0], arr[1], arr[2]]
+    [1, 2, 3]
+    >>> brick_sort_parallel(arr, num_threads=5, comp=lambda u, v: u > v)
+    >>> [arr[0], arr[1], arr[2]]
+    [3, 2, 1]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort
+    """
+
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+
+    is_sorted = [False]
+    with ThreadPoolExecutor(max_workers=num_threads) as Executor:
+        while is_sorted[0] is False:
+            is_sorted[0] = True
+            for i in range(start + 1, end, 2):
+                Executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
+
+            for i in range(start, end, 2):
+                Executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
