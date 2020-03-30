@@ -165,11 +165,10 @@ def brick_sort(array, **kwargs):
     if _check_type(array, DynamicArray):
         array._modify(force=True)
 
-def _brick_sort_comp(array, i, j, comp):
+def _brick_sort_swap(array, i, j, comp, is_sorted):
     if(_comp(array[j], array[i], comp)):
         array[i], array[j] = array[j], array[i]
-        return False
-    return True
+        is_sorted[0] = False
 
 def brick_sort_parallel(array, num_threads, **kwargs):
     """
@@ -220,19 +219,15 @@ def brick_sort_parallel(array, num_threads, **kwargs):
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
 
-    is_sorted = False
+    is_sorted = [False]
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        while is_sorted is False:
-            is_sorted = True
-            futures = []
+        while is_sorted[0] is False:
+            is_sorted[0] = True
             for i in range(start+1, end, 2):
-                futures.append(executor.submit(_brick_sort_comp, array, i, i+1, comp))
-            is_sorted = all(i.result() for i in futures)
+                executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
 
-            futures = []
             for i in range(start, end, 2):
-                futures.append(executor.submit(_brick_sort_comp, array, i, i+1, comp))
-            is_sorted = all(i.result() for i in futures)
+                executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
