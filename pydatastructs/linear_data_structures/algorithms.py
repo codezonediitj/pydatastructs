@@ -221,14 +221,14 @@ def brick_sort_parallel(array, num_threads, **kwargs):
     comp = kwargs.get("comp", lambda u, v: u <= v)
 
     is_sorted = [False]
-    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+    with ThreadPoolExecutor(max_workers=num_threads) as Executor:
         while is_sorted[0] is False:
             is_sorted[0] = True
             for i in range(start + 1, end, 2):
-                executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
+                Executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
 
             for i in range(start, end, 2):
-                executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
+                Executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
