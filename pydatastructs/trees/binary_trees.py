@@ -667,41 +667,6 @@ class CartesianTree(SelfBalancingBinaryTree):
     pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
     """
     
-    def _left_rotate(self, j, k):
-        y = self.tree[k].left
-        if y is not None:
-            self.tree[y].parent = j
-        self.tree[j].right = y
-        self.tree[k].parent = self.tree[j].parent
-        if self.tree[k].parent is not None:
-            if self.tree[self.tree[k].parent].left == j:
-                self.tree[self.tree[k].parent].left = k
-            else:
-                self.tree[self.tree[k].parent].right = k
-                
-        self.tree[j].parent = k
-        self.tree[k].left = j
-        kp = self.tree[k].parent
-        if kp is None:
-            self.root_idx = k
-            
-    def _right_rotate(self, j, k):
-        y = self.tree[k].right
-        if y is not None:
-            self.tree[y].parent = j
-        self.tree[j].left = y
-        self.tree[k].parent = self.tree[j].parent
-        if self.tree[k].parent is not None:
-            if self.tree[self.tree[k].parent].left == j:
-                self.tree[self.tree[k].parent].left = k
-            else:
-                self.tree[self.tree[k].parent].right = k
-        self.tree[j].parent = k
-        self.tree[k].right = j
-        kp = self.tree[k].parent
-        if kp is None:
-            self.root_idx = k
-
     def _bubble_up(self, node_idx):
         node = self.tree[node_idx]
         parent_idx = self.tree[node_idx].parent
