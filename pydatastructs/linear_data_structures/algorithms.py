@@ -165,15 +165,13 @@ def brick_sort(array, **kwargs):
     if _check_type(array, DynamicArray):
         array._modify(force=True)
 
-def _brick_sort_parallel_helper(array, start, end, comp, o):
-    is_sorted = True
-    for i in range(start+o, end, 2):
-        if _comp(array[i+1], array[i], comp):
-            array[i], array[i+1] = array[i+1], array[i]
-            is_sorted = False
-    return is_sorted
+def _brick_sort_comp(array, i, j, comp):
+    if(_comp(array[j], array[i], comp)):
+        array[i], array[j] = array[j], array[i]
+        return False
+    return True
 
-def brick_sort_parallel(array, **kwargs):
+def brick_sort_parallel(array, num_threads, **kwargs):
     """
     Implements Concurrent Brick Sort / Odd Even sorting algorithm
 
@@ -182,6 +180,9 @@ def brick_sort_parallel(array, **kwargs):
 
     array: Array
         The array which is to be sorted.
+    num_threads: int
+        The maximum number of threads
+        to be used for sorting.
     start: int
         The starting index of the portion
         which is to be sorted.
@@ -203,10 +204,10 @@ def brick_sort_parallel(array, **kwargs):
     ========
     >>> from pydatastructs import OneDimensionalArray, brick_sort_parallel
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
-    >>> brick_sort_parallel(arr)
+    >>> brick_sort_parallel(arr, num_threads=5)
     >>> [arr[0], arr[1], arr[2]]
     [1, 2, 3]
-    >>> brick_sort_parallel(arr, comp=lambda u, v: u > v)
+    >>> brick_sort_parallel(arr, num_threads=5, comp=lambda u, v: u > v)
     >>> [arr[0], arr[1], arr[2]]
     [3, 2, 1]
 
@@ -220,13 +221,18 @@ def brick_sort_parallel(array, **kwargs):
     comp = kwargs.get("comp", lambda u, v: u <= v)
 
     is_sorted = False
-    while is_sorted is False:
-        is_sorted = True
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            t1 = executor.submit(_brick_sort_parallel_helper, array, start, end, comp, 1)
-            t2 = executor.submit(_brick_sort_parallel_helper, array, start, end, comp, 0)
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        while is_sorted is False:
+            is_sorted = True
+            futures = []
+            for i in range(start+1, end, 2):
+                futures.append(executor.submit(_brick_sort_comp, array, i, i+1, comp))
+            is_sorted = all(i.result() for i in futures)
 
-            is_sorted = t1.result() and t2.result()
+            futures = []
+            for i in range(start, end, 2):
+                futures.append(executor.submit(_brick_sort_comp, array, i, i+1, comp))
+            is_sorted = all(i.result() for i in futures)
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)

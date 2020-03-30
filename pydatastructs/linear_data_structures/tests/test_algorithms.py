@@ -47,4 +47,4 @@ def test_brick_sort():
     _test_common_sort(brick_sort)
 
 def test_brick_sort_parallel():
-    _test_common_sort(brick_sort_parallel)
+    _test_common_sort(brick_sort_parallel, num_threads=3)
