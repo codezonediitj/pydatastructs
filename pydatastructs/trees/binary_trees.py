@@ -1,5 +1,4 @@
-from pydatastructs.utils import TreeNode
-from pydatastructs.utils import CartesianTreeNode
+from pydatastructs.utils import TreeNode, CartesianTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
