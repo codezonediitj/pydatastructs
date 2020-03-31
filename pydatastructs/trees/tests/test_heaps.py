@@ -53,13 +53,13 @@ def test_BinaryHeap():
                 TreeNode(1, 1), (2, 2), TreeNode(3, 3),
                 TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
             ]
-    assert raises(ValueError, lambda:
+    assert raises(TypeError, lambda:
                 BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
 
     non_TreeNode_elements = DynamicOneDimensionalArray(int, 0)
     non_TreeNode_elements.append(1)
     non_TreeNode_elements.append(2)
-    assert raises(ValueError, lambda:
+    assert raises(TypeError, lambda:
                 BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
 
     non_heapable = "[1, 2, 3]"

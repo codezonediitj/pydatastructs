@@ -84,13 +84,10 @@ class DHeap(Heap):
             raise ValueError("%s is invalid heap property"%(heap_property))
         if elements is None:
             elements = DynamicOneDimensionalArray(TreeNode, 0)
-        elif type(elements) in (list,tuple):
-            if not all(map(lambda x: _check_type(x, TreeNode), elements)):
-                raise ValueError("Expected a list/tuple/Array of TreeNode got %s"%(elements))
+        elif _check_type(elements, (list,tuple)):
             elements = DynamicOneDimensionalArray(TreeNode, len(elements), elements)
         elif _check_type(elements, Array):
-            if(not _check_type(elements[0], TreeNode)):
-                raise ValueError(f'Expected a list/tuple/Array of TreeNode got {type(elements[0])}')
+            elements = DynamicOneDimensionalArray(TreeNode, len(elements), elements._data)
         else:
             raise ValueError(f'Expected a list/tuple/Array of TreeNode got {type(elements)}')
         obj.heap = elements
