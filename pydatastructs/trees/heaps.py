@@ -1,6 +1,6 @@
 from pydatastructs.utils.misc_util import _check_type, NoneType, TreeNode, BinomialTreeNode
 from pydatastructs.linear_data_structures.arrays import (ArrayForTrees,
-     DynamicOneDimensionalArray)
+     DynamicOneDimensionalArray, Array)
 from pydatastructs.miscellaneous_data_structures.binomial_trees import BinomialTree
 
 __all__ = [
@@ -24,9 +24,9 @@ class DHeap(Heap):
     Parameters
     ==========
 
-    elements : list, tuple
+    elements : list, tuple, Array
         Optional, by default 'None'.
-        List/tuple of initial TreeNode in Heap.
+        list/tuple/Array of initial TreeNode in Heap.
 
 
     heap_property : str
@@ -84,9 +84,12 @@ class DHeap(Heap):
             raise ValueError("%s is invalid heap property"%(heap_property))
         if elements is None:
             elements = DynamicOneDimensionalArray(TreeNode, 0)
+        elif _check_type(elements, (list,tuple)):
+            elements = DynamicOneDimensionalArray(TreeNode, len(elements), elements)
+        elif _check_type(elements, Array):
+            elements = DynamicOneDimensionalArray(TreeNode, len(elements), elements._data)
         else:
-            if not all(map(lambda x: _check_type(x, TreeNode), elements)):
-                raise ValueError("Expect a list/tuple of TreeNode got %s"%(elements))
+            raise ValueError(f'Expected a list/tuple/Array of TreeNode got {type(elements)}')
         obj.heap = elements
         obj._last_pos_filled = obj.heap._last_pos_filled
         obj._build()
@@ -326,7 +329,7 @@ class BinomialHeap(Heap):
     Parameters
     ==========
 
-    root_list: list/tuple
+    root_list: list/tuple/Array
         By default, []
         The list of BinomialTree object references
         in sorted order.
