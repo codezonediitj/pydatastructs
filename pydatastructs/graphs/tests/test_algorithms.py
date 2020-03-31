@@ -1,6 +1,6 @@
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
-minimum_spanning_tree_parallel)
+minimum_spanning_tree_parallel, strongly_connected_components)
 
 
 def test_breadth_first_search():
@@ -155,3 +155,33 @@ def test_minimum_spanning_tree():
     _test_minimum_spanning_tree(fmstp, "List", "kruskal", 3)
     _test_minimum_spanning_tree(fmstp, "Matrix", "kruskal", 3)
     _test_minimum_spanning_tree(fmstp, "List", "prim", 3)
+
+def test_strongly_connected_components():
+
+    def _test_strongly_connected_components(func, ds, algorithm, *args):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        a, b, c, d, e, f, g, h = \
+        [GraphNode(chr(x)) for x in range(ord('a'), ord('h') + 1)]
+        graph = Graph(a, b, c, d, e, f, g, h)
+        graph.add_edge(a.name, b.name)
+        graph.add_edge(b.name, c.name)
+        graph.add_edge(b.name, f.name)
+        graph.add_edge(b.name, e.name)
+        graph.add_edge(c.name, d.name)
+        graph.add_edge(c.name, g.name)
+        graph.add_edge(d.name, h.name)
+        graph.add_edge(d.name, c.name)
+        graph.add_edge(e.name, f.name)
+        graph.add_edge(e.name, a.name)
+        graph.add_edge(f.name, g.name)
+        graph.add_edge(g.name, f.name)
+        graph.add_edge(h.name, d.name)
+        graph.add_edge(h.name, g.name)
+        comps = func(graph, algorithm)
+        expected_comps = [{'e', 'a', 'b'}, {'d', 'c', 'h'}, {'g', 'f'}]
+        assert comps == expected_comps
+
+    scc = strongly_connected_components
+    _test_strongly_connected_components(scc, "List", "kosaraju")
+    _test_strongly_connected_components(scc, "Matrix", "kosaraju")

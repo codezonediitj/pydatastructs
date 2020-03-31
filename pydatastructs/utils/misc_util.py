@@ -229,7 +229,7 @@ class AdjacencyListGraphNode(GraphNode):
         in the graph. Must be unique.
     data
         The data to be stored at each graph node.
-    adjacency_list: iterator
+    adjacency_list: list
         Any valid iterator to initialize the adjacent
         nodes of the current node.
         Optional, by default, None
@@ -241,11 +241,11 @@ class AdjacencyListGraphNode(GraphNode):
         if adjacency_list is not None:
             for node in adjacency_list:
                 obj.__setattr__(node.name, node)
-        obj.adjacent = set(adjacency_list) if adjacency_list is not None \
-                       else set()
+        obj.adjacent = adjacency_list if adjacency_list is not None \
+                       else []
         return obj
 
-    def add_adjacent_node(self, name, data):
+    def add_adjacent_node(self, name, data=None):
         """
         Adds adjacent node to the current node's
         adjacency list with given name and data.
@@ -255,7 +255,7 @@ class AdjacencyListGraphNode(GraphNode):
         else:
             new_node = AdjacencyListGraphNode(name, data)
             self.__setattr__(new_node.name, new_node)
-            self.adjacent.add(new_node.name)
+            self.adjacent.append(new_node.name)
 
     def remove_adjacent_node(self, name):
         """
@@ -275,7 +275,7 @@ class AdjacencyMatrixGraphNode(GraphNode):
     Parameters
     ==========
 
-    name: int
+    name: str
         The index of the node in the AdjacencyMatrix.
     data
         The data to be stored at each graph node.
@@ -285,7 +285,7 @@ class AdjacencyMatrixGraphNode(GraphNode):
     def __new__(cls, name, data=None):
         obj = GraphNode.__new__(cls)
         obj.name, obj.data, obj.is_connected = \
-            int(name), data, None
+            str(name), data, None
         obj._impl = 'adjacency_matrix'
         return obj
 
