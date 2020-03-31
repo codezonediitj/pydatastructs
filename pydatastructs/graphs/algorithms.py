@@ -548,3 +548,36 @@ def strongly_connected_components(graph, algorithm):
         "isn't implemented for finding strongly connected components."
         %(algorithm, graph._impl))
     return getattr(algorithms, func)(graph)
+
+
+def random_walk(G,path_length,rand=random.Random()start=None):
+    '''
+    G is adjacency list 
+    path_length: Length : Length of the random walk.
+    start: the start node of the random walk.'''
+    if start:
+        path=[start]
+    else:
+        path=[rand.choice(list(G.vertices()))]
+    while len(path)<path_length:
+        cur=path[-1]
+        if len(G[cur])>0:
+            path.append(rand.choice(G[cur]))
+        else:
+            break
+        return [str(node) for node in path]
+def loop_erased_random_walk(G,path_length,rand=random.Random(),start=None):
+    if start:
+        path=[start]
+    else:
+        path=[rand.choice(list(G.vertices()))]
+
+    while len(path)<path_length:
+        cur=path[-1]
+        if len(G[cur])>0:
+            if rand.choice(G[cur]) not in path:
+                path.append(rand.choice(G[cur]))
+        else:
+            break
+    return [str(node) for node in path]
+    #rather than erasing loops they aren't allowed to be formed here
