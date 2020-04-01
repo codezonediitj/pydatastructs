@@ -548,3 +548,60 @@ def strongly_connected_components(graph, algorithm):
         "isn't implemented for finding strongly connected components."
         %(algorithm, graph._impl))
     return getattr(algorithms, func)(graph)
+
+#G is adjacency list
+def create_transition_matrix(G, nodes):
+  matrix = len(nodes)*[(len(nodes)*[None])]
+
+  for i in range(0, len(nodes)):
+    next_nodes = G.neighbors(nodes[i])
+    sums = 0
+    for n in next_nodes:
+      edge = G.get_edge(node[i], n) #sum of weights associated with edges attached to this node
+      sum += edge.value  #value = weight here
+
+    for j in range(0, len(nodes)):
+      if i == j :
+        matrix[i,j] = 0
+      else:
+        if nodes[j] not in next_nodes:
+          matrix[i, j] = 0
+        else:
+          edge = G.get_edge(node[i], node[j])
+          matrix[i, j] = edge.value / sums
+
+  return matrix
+
+def random_walk_per_node(start, transition_matrix, path_length, alpha):
+  import random
+  if start:
+      path = [start]
+  else:
+      path = [random.choices(list(G.nodes)]
+
+  for i in range(0, path_length):
+    cur = path[-1]
+    if random.random() < alpha:    #alpha determines(directly proportional) randomness of random walk
+      next_node = start
+    else:
+      if cur.neighbors == []:
+        break
+      probablity = transition_matrix[cur.data-1]  #considering node.data holds the index of the node
+      next_node = random.choices(cur.neighbors, probablity)
+
+    path.append(next_node)
+
+  return path
+
+def random_walk(G, num_paths_per_node, path_length, alpha):
+  nodes = G.nodes
+  transition_matrix = create_transition_matrix(G, nodes)
+
+  random_walks = []
+
+  for i in range(0, len(nodes)):
+    for j in range(0, num_paths_per_node):
+      walks = random_walk_per_node(i, transition_matrix, path_length, alpha)
+      random_walks.append([node.name for node in walks])
+
+  return random_walks
