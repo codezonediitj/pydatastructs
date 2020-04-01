@@ -1,6 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
-    OneDimensionalArray, brick_sort, brick_sort_parallel)
+    OneDimensionalArray, brick_sort, brick_sort_parallel,
+    heap_sort)
 
 import random
 
@@ -48,3 +49,6 @@ def test_brick_sort():
 
 def test_brick_sort_parallel():
     _test_common_sort(brick_sort_parallel, num_threads=3)
+
+def test_heap_sort():
+    _test_common_sort(heap_sort)
