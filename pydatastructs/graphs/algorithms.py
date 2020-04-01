@@ -577,7 +577,7 @@ def random_walk_per_node(start, transition_matrix, path_length, alpha):
   if start:
       path = [start]
   else:
-      path = [random.choices(list(G.nodes)]
+      path = [random.choices(G.nodes)]
 
   for i in range(0, path_length):
     cur = path[-1]
