@@ -243,12 +243,12 @@ def _matrix_multiply_helper(m1, m2, row, col):
 
 def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
     """
-    Implementes concurrent Matrix multiplication
+    Implements concurrent Matrix multiplication
 
     Parameters
     ==========
 
-    matrix_1: list of list / tuple of tuple / OneDimensionalArray of OneDimensionalArray
+    matrix_1: Any matrix representation
         Left matrix
 
     matrix_2: Any matrix representation
@@ -276,18 +276,19 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
     >>> from pydatastructs import matrix_multiply_parallel
     >>> I = [[1, 1, 0], [0, 1, 0], [0, 0, 1]]
     >>> J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
-    >>> matrix_multiply_parallel(I, J, num_threads = 5)
+    >>> matrix_multiply_parallel(I, J, num_threads=5)
     [[3, 3, 3], [1, 2, 1], [2, 2, 2]]
 
     References
     ==========
-    .. [1] https://en.wikipedia.org/wiki/Matrix_multiplication_algorithm#Parallel_and_distributed_algorithms
+    .. [1] https://www3.nd.edu/~zxu2/acms60212-40212/Lec-07-3.pdf
     """
     row_matrix_1, col_matrix_1 = len(matrix_1), len(matrix_1[0])
     row_matrix_2, col_matrix_2 = len(matrix_2), len(matrix_2[0])
 
     if col_matrix_1 != row_matrix_2:
-        raise IndexError("Matrices cannot be multiplied")
+        raise ValueError("Matrix size mismatch: %s * %s"%(
+        (row_matrix_1, col_matrix_1), (row_matrix_2, col_matrix_2)))
 
     C = [[None for i in range(col_matrix_1)] for j in range(row_matrix_2)]
 
