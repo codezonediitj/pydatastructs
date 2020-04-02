@@ -241,7 +241,7 @@ def _matrix_multiply_helper(m1, m2, row, col):
         s += m1[row][i] * m2[i][col]
     return s
 
-def matrix_multiply_parallel(matrix_1, matrix_2, num_threads=None):
+def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
     """
     Implementes concurrent Matrix multiplication
 
@@ -251,7 +251,7 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads=None):
     matrix_1: list of list / tuple of tuple / OneDimensionalArray of OneDimensionalArray
         Left matrix
 
-    matrix_2: Any matrix representation 
+    matrix_2: Any matrix representation
         Right matrix
 
     num_threads: int
@@ -290,9 +290,6 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads=None):
         raise IndexError("Matrices cannot be multiplied")
 
     C = [[None for i in range(col_matrix_1)] for j in range(row_matrix_2)]
-
-    if(not num_threads):
-        num_threads = row_matrix_1
 
     with ThreadPoolExecutor(max_workers=num_threads) as Executor:
         for i in range(row_matrix_1):

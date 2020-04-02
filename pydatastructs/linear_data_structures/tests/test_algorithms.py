@@ -57,17 +57,17 @@ def test_matrix_multiply_parallel():
 
     I = ODA(ODA, [ODA(int, [1, 1, 0]), ODA(int, [0, 1, 0]), ODA(int, [0, 0, 1])])
     J = ODA(ODA, [ODA(int, [2, 1, 2]), ODA(int, [1, 2, 1]), ODA(int, [2, 2, 2])])
-    output = matrix_multiply_parallel(I, J)
+    output = matrix_multiply_parallel(I, J, num_threads=5)
     assert expected_result == output
 
     I = [[1, 1, 0], [0, 1, 0], [0, 0, 1]]
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
-    output = matrix_multiply_parallel(I, J)
+    output = matrix_multiply_parallel(I, J, num_threads=5)
     assert expected_result == output
 
     I = [[1, 1, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
-    assert raises(IndexError, lambda: matrix_multiply_parallel(I,J))
+    assert raises(IndexError, lambda: matrix_multiply_parallel(I, J, num_threads=5))
 
     I = [[1, 1, 0], [0, 1, 0], [0, 0, 1]]
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
