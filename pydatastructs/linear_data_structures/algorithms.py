@@ -277,7 +277,7 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads=None):
     >>> from pydatastructs import matrix_multiply_parallel
     >>> I = [[1, 1, 0], [0, 1, 0], [0, 0, 1]]
     >>> J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
-    >>> print(matrix_multiply_parallel(I, J))
+    >>> matrix_multiply_parallel(I, J)
     [[3, 3, 3], [1, 2, 1], [2, 2, 2]]
 
     References
