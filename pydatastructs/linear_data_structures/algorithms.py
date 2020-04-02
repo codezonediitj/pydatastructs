@@ -261,7 +261,7 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
     Raises
     ======
 
-    IndexError
+    ValueError
         When the columns in matrix_1 are not equal to the rows in matrix_2
 
     Returns
