@@ -7,7 +7,8 @@ from math import log, floor
 __all__ = [
     'merge_sort_parallel',
     'brick_sort',
-    'brick_sort_parallel'
+    'brick_sort_parallel',
+    'matrix_multiply_parallel'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -233,3 +234,70 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
+
+def _matrix_multiply_helper(m1, m2, row, col):
+    s = 0
+    for i in range(len(m1)):
+        s += m1[row][i] * m2[i][col]
+    return s
+
+def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
+    """
+    Implements concurrent Matrix multiplication
+
+    Parameters
+    ==========
+
+    matrix_1: Any matrix representation
+        Left matrix
+
+    matrix_2: Any matrix representation
+        Right matrix
+
+    num_threads: int
+        The maximum number of threads
+        to be used for multiplication.
+
+    Raises
+    ======
+
+    ValueError
+        When the columns in matrix_1 are not equal to the rows in matrix_2
+
+    Returns
+    =======
+
+    C: list
+        The result of matrix multiplication.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import matrix_multiply_parallel
+    >>> I = [[1, 1, 0], [0, 1, 0], [0, 0, 1]]
+    >>> J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
+    >>> matrix_multiply_parallel(I, J, num_threads=5)
+    [[3, 3, 3], [1, 2, 1], [2, 2, 2]]
+
+    References
+    ==========
+    .. [1] https://www3.nd.edu/~zxu2/acms60212-40212/Lec-07-3.pdf
+    """
+    row_matrix_1, col_matrix_1 = len(matrix_1), len(matrix_1[0])
+    row_matrix_2, col_matrix_2 = len(matrix_2), len(matrix_2[0])
+
+    if col_matrix_1 != row_matrix_2:
+        raise ValueError("Matrix size mismatch: %s * %s"%(
+        (row_matrix_1, col_matrix_1), (row_matrix_2, col_matrix_2)))
+
+    C = [[None for i in range(col_matrix_1)] for j in range(row_matrix_2)]
+
+    with ThreadPoolExecutor(max_workers=num_threads) as Executor:
+        for i in range(row_matrix_1):
+            for j in range(col_matrix_2):
+                C[i][j] = Executor.submit(_matrix_multiply_helper,
+                                          matrix_1,
+                                          matrix_2,
+                                          i, j).result()
+
+    return C
