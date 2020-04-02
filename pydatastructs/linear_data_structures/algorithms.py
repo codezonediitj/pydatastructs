@@ -268,7 +268,8 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads=None):
     Returns
     =======
 
-    Matrix: Resultant matrix of matrix_1 * matrix_2
+    C: list
+        The result of matrix multiplication.
 
     Examples
     ========
