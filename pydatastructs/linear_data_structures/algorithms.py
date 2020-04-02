@@ -257,7 +257,6 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads=None):
     num_threads: int
         The maximum number of threads
         to be used for multiplication.
-        If not specified then assumed to be equal to number of rows.
 
     Raises
     ======
