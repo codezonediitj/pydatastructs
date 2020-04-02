@@ -251,7 +251,7 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads=None):
     matrix_1: list of list / tuple of tuple / OneDimensionalArray of OneDimensionalArray
         Left matrix
 
-    matrix_1: list of list / tuple of tuple / OneDimensionalArray of OneDimensionalArray
+    matrix_2: Any matrix representation 
         Right matrix
 
     num_threads: int
