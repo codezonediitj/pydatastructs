@@ -275,7 +275,7 @@ def heapsort(array, **kwargs):
         array[i] = None
 
     i = start
-    while h._last_pos_filled != -1:
+    while not h.is_empty:
         array[i] = h.extract().key
         i += 1
 
