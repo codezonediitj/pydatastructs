@@ -274,14 +274,10 @@ def heapsort(array, **kwargs):
             h.insert(array[i], array[i])
         array[i] = None
 
-    k = start
-    while True:
-        try:
-            x = h.extract()
-            array[k] = x.key
-            k += 1
-        except IndexError:
-            break
+    i = start
+    while h._last_pos_filled != -1:
+        array[i] = h.extract().key
+        i += 1
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
