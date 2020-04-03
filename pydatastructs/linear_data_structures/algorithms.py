@@ -8,7 +8,7 @@ __all__ = [
     'merge_sort_parallel',
     'brick_sort',
     'brick_sort_parallel',
-    'heap_sort',
+    'heapsort',
     'matrix_multiply_parallel'
 ]
 
@@ -236,7 +236,33 @@ def brick_sort_parallel(array, num_threads, **kwargs):
     if _check_type(array, DynamicArray):
         array._modify(force=True)
 
-def heap_sort(array, **kwargs):
+def heapsort(array, **kwargs):
+    """
+    Implements Heap Sort sorting algorithm
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+
+    Examples
+    ========
+    >>> from pydatastructs import OneDimensionalArray, heapsort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> heapsort(arr)
+    >>> [arr[0], arr[1], arr[2]]
+    [1, 2, 3]
+    """
     from pydatastructs.trees.heaps import BinaryHeap
 
     start = kwargs.get('start', 0)
