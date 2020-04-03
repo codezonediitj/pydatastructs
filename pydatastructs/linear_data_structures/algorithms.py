@@ -249,7 +249,7 @@ def heap_sort(array, **kwargs):
         array[i] = None
 
     k = start
-    while(True):
+    while True:
         try:
             x = h.extract()
             array[k] = x.key
