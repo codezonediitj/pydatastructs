@@ -1,7 +1,7 @@
 from pydatastructs.miscellaneous_data_structures import Queue
 from pydatastructs.miscellaneous_data_structures.queue import (
     ArrayQueue, LinkedListQueue, PriorityQueue,
-    LinkedListPriorityQueue)
+    LinkedListPriorityQueue, ArrayDeque)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import _check_type
 
@@ -80,3 +80,27 @@ def test_ImplementationPriorityQueue():
         assert pq1.pop() == 1
         assert pq1.is_empty is True
         assert raises(IndexError, lambda: pq1.peek)
+
+def test_ArrayDeque():
+    q = ArrayDeque(int, [1,2,3])
+    assert q.pop() == 3
+    assert q.pop() == 2
+    assert q.pop() == 1
+    q.append(1)
+    q.append(2)
+    q.append(3)
+    q.append(4)
+    assert q.popleft() == 1
+    q.appendleft(1)
+    q.appendleft(0)
+    q.appendleft(-1)
+    assert str(q) == "['-1', '0', '1', '2', '3', '4']"
+    q.appendleft(-2)
+    q.appendleft(-3)
+    assert str(q) == "['-3', '-2', '-1', '0', '1', '2', '3', '4']"
+    for i in range(len(q)):
+        q.popleft()
+    assert str(q) == "[]"
+    assert len(q) == 0
+    assert raises(IndexError, lambda: q.pop())
+    assert raises(IndexError, lambda: q.popleft())

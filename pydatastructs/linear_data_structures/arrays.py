@@ -211,7 +211,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         obj = super().__new__(cls, dtype, *args, **kwargs)
         obj._load_factor = float(kwargs.get('load_factor', 0.25))
-        obj._num = 0 if obj._size == 0 or obj[0] is None else obj._size
+        obj._num = 0 if obj._size == 0 or obj._data[0] is None else obj._size
         obj._last_pos_filled = obj._num - 1
         return obj
 
