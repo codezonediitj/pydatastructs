@@ -5,8 +5,7 @@ from copy import deepcopy as dc
 
 __all__ = [
     'Queue',
-    'PriorityQueue',
-    'ArrayDeque'
+    'PriorityQueue'
 ]
 
 class Queue(object):
@@ -52,6 +51,11 @@ class Queue(object):
         elif implementation == 'linked_list':
             return LinkedListQueue(
                 kwargs.get('items', None)
+            )
+        elif implementation == 'deque':
+            return ArrayDeque(
+                kwargs.get('dtype', int),
+                kwargs.get('items', [])
             )
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
@@ -364,7 +368,7 @@ class BinomialHeapPriorityQueue(PriorityQueue):
     def is_empty(self):
         return self.items.is_empty
 
-class ArrayDeque(DynamicOneDimensionalArray):
+class ArrayDeque(Queue, DynamicOneDimensionalArray):
     """
     Represents Deque datastracture implemented using Array
 
@@ -412,8 +416,8 @@ class ArrayDeque(DynamicOneDimensionalArray):
     Examples
     ========
 
-    >>> from pydatastructs import ArrayDeque
-    >>> q = ArrayDeque(int, [1,2,3])
+    >>> from pydatastructs import Queue
+    >>> q = Queue(implementation='deque', dtype=int, items=[1,2,3])
     >>> q.pop()
     3
     >>> q.popleft()
@@ -426,8 +430,8 @@ class ArrayDeque(DynamicOneDimensionalArray):
 
     __slots__ = ['_load_factor', '_num', '_last_pos_filled', '_size', '_rear', '_front', '_num']
 
-    def __new__(cls, dtype=NoneType, *args, **kwargs):
-        obj = super().__new__(cls, dtype, *args, **kwargs)
+    def __new__(cls, dtype, *args, **kwargs):
+        obj = DynamicOneDimensionalArray.__new__(cls, dtype, *args, **kwargs)
         obj._front = obj._last_pos_filled
         obj._rear = 0
         obj._num = obj._front + 1

@@ -12,6 +12,8 @@ def test_Queue():
     assert _check_type(q1, ArrayQueue) is True
     q2 = Queue(implementation='linked_list')
     assert _check_type(q2, LinkedListQueue) is True
+    q3 = Queue(implementation='deque')
+    assert _check_type(q3, ArrayDeque) is True
     assert raises(NotImplementedError, lambda: Queue(implementation=''))
 
 def test_ArrayQueue():
@@ -82,7 +84,7 @@ def test_ImplementationPriorityQueue():
         assert raises(IndexError, lambda: pq1.peek)
 
 def test_ArrayDeque():
-    q = ArrayDeque(int, [1,2,3])
+    q = Queue(implementation="deque", dtype=int, items=[1,2,3])
     assert q.pop() == 3
     assert q.pop() == 2
     assert q.pop() == 1
@@ -106,6 +108,6 @@ def test_ArrayDeque():
     assert raises(IndexError, lambda: q.popleft())
     for i in range(100):
         q.append(i)
-    for i in range(99):
-        q.popleft()
+    for i in range(100):
         assert q._num/len(q._data) > q._load_factor
+        q.popleft()
