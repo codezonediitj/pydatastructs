@@ -492,7 +492,6 @@ class ArrayDeque(DynamicOneDimensionalArray):
             self[self.size] = el
             self.front += 1
         self._num += 1
-        self._modify()
 
     def popleft(self):
         if self.is_empty:
@@ -517,13 +516,12 @@ class ArrayDeque(DynamicOneDimensionalArray):
             self[-1] = el
             self.rear -= 1
         self._num += 1
-        self._modify()
 
     def __len__(self):
         return self._num
 
     def _modify(self):
-        if (self._num/self._size < self._load_factor):
+        if (self._num/len(self._data) < self._load_factor):
             arr_new = OneDimensionalArray(self._dtype, 2*self.size + 1)
             for i in range(self.size):
                 arr_new[i] = self[i]

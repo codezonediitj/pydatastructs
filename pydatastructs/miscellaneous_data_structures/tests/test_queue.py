@@ -104,3 +104,8 @@ def test_ArrayDeque():
     assert len(q) == 0
     assert raises(IndexError, lambda: q.pop())
     assert raises(IndexError, lambda: q.popleft())
+    for i in range(100):
+        q.append(i)
+    for i in range(99):
+        q.popleft()
+        assert q._num/len(q._data) > q._load_factor
