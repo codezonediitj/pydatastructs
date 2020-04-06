@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees, BinaryIndexedTree)
+    ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
@@ -319,3 +319,24 @@ def test_BinaryIndexedTree():
     assert t.get_sum(0, 2) == 105
     assert t.get_sum(0, 4) == 114
     assert t.get_sum(1, 9) == 54
+
+def test_issue_234():
+    """
+    https://github.com/codezonediitj/pydatastructs/issues/234
+    """
+    tree = SelfBalancingBinaryTree() 
+    tree.insert(5,5)
+    tree.insert(5.5,5.5)
+    tree.insert(4.5,4.5)
+    tree.insert(4.6,4.6)
+    tree.insert(4.4, 4.4)
+    tree.insert(4.55, 4.55)
+    tree.insert(4.65, 4.65)
+
+    
+    tree._right_rotate(3, 5)
+    
+    assert tree.tree[3].parent == 5
+    assert tree.tree[2].right != 3
+    		 
+
