@@ -16,6 +16,14 @@ class Node(object):
     """
     pass
 
+class FibNode:
+        def __init__(self, key, value):
+            self.key = key
+            self.value = value
+            self.parent = self.child = self.left = self.right = None
+            self.degree = 0
+            self.mark = False
+
 class TreeNode(Node):
     """
     Represents node in trees.
