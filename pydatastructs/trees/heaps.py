@@ -443,7 +443,7 @@ class BinomialHeap(Heap):
             j += 1
         self.root_list = new_root_list
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         """
         Inserts new node with the given key and data.
 

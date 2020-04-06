@@ -61,7 +61,7 @@ class BinaryTree(object):
         obj.is_order_statistic = is_order_statistic
         return obj
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         """
         Inserts data by the passed key using iterative
         algorithm.
@@ -206,7 +206,7 @@ class BinarySearchTree(BinaryTree):
                     self.right_size(self.tree[walk]) + 1)
                 walk = self.tree[walk].parent
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         res = self.search(key)
         if res is not None:
             self.tree[res].data = data
@@ -715,7 +715,7 @@ class AVLTree(SelfBalancingBinaryTree):
             path.append(walk), path.append(last)
             walk = self.tree[walk].parent
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         super(AVLTree, self).insert(key, data)
         self._balance_insertion(self.size - 1, self.tree[self.size-1].parent)
 
