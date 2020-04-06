@@ -332,9 +332,7 @@ def test_issue_234():
     tree.insert(4.4, 4.4)
     tree.insert(4.55, 4.55)
     tree.insert(4.65, 4.65)
-    
     tree._right_rotate(3, 5)
-    
     assert tree.tree[3].parent == 5
     assert tree.tree[2].right != 3
     assert str(tree) == ("[(2, 5, 5, 1), (None, 5.5, 5.5, None), "
