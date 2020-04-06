@@ -129,7 +129,7 @@ class DHeap(Heap):
             else:
                 break
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         """
         Insert a new element to the heap according to heap property.
 
@@ -440,7 +440,7 @@ class BinomialHeap(Heap):
             j += 1
         self.root_list = new_root_list
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         """
         Inserts new node with the given key and data.
 
