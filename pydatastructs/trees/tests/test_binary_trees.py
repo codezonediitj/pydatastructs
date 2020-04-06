@@ -342,7 +342,7 @@ def test_issue_234():
                          "(None, 4.4, 4.4, None), (None, 4.55, 4.55, 3), "
                          "(None, 4.65, 4.65, None)]")
     assert tree.tree[tree.tree[3].parent].right == 3
-    tree._left_rotate(5,3)
+    tree._left_rotate(5, 3)
     assert str(tree) == original_tree
     tree.insert(4.54, 4.54)
     tree.insert(4.56, 4.56)
