@@ -337,3 +337,7 @@ def test_issue_234():
     
     assert tree.tree[3].parent == 5
     assert tree.tree[2].right != 3
+    assert str(tree) == ("[(2, 5, 5, 1), (None, 5.5, 5.5, None), "
+                         "(4, 4.5, 4.5, 5), (None, 4.6, 4.6, 6), "
+                         "(None, 4.4, 4.4, None), (None, 4.55, 4.55, 3), "
+                         "(None, 4.65, 4.65, None)]")
