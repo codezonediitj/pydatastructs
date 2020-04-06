@@ -11,7 +11,7 @@ def test_BinaryHeap():
 
     assert raises(IndexError, lambda: max_heap.extract())
 
-    max_heap.insert(100, 100)
+    max_heap.insert(100)
     max_heap.insert(19, 19)
     max_heap.insert(36, 36)
     max_heap.insert(17, 17)

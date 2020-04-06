@@ -129,7 +129,7 @@ class DHeap(Heap):
             else:
                 break
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         """
         Insert a new element to the heap according to heap property.
 
@@ -146,6 +146,9 @@ class DHeap(Heap):
 
         None
         """
+        if data is None:
+            data = key
+
         new_node = TreeNode(key, data)
         self.heap.append(new_node)
         self._last_pos_filled += 1
