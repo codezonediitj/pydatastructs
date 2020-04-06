@@ -324,11 +324,11 @@ def test_issue_234():
     """
     https://github.com/codezonediitj/pydatastructs/issues/234
     """
-    tree = SelfBalancingBinaryTree() 
-    tree.insert(5,5)
-    tree.insert(5.5,5.5)
-    tree.insert(4.5,4.5)
-    tree.insert(4.6,4.6)
+    tree = SelfBalancingBinaryTree()
+    tree.insert(5, 5)
+    tree.insert(5.5, 5.5)
+    tree.insert(4.5, 4.5)
+    tree.insert(4.6, 4.6)
     tree.insert(4.4, 4.4)
     tree.insert(4.55, 4.55)
     tree.insert(4.65, 4.65)
