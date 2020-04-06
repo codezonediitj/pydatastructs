@@ -369,64 +369,6 @@ class BinomialHeapPriorityQueue(PriorityQueue):
         return self.items.is_empty
 
 class ArrayDeque(Queue, DynamicOneDimensionalArray):
-    """
-    Represents Deque datastracture implemented using Array
-
-    Parameters
-    ==========
-
-    dtype: type
-        A valid object type.
-    size: int
-        The number of elements in the array.
-    elements: list/tuple
-        The elements in the array, all should
-        be of same type.
-    init: a python type
-        The inital value with which the element has
-        to be initialized. By default none, used only
-        when the data is not given.
-    load_factor: float, by default 0.25
-        The number below which if the ratio, Num(T)/Size(T)
-        falls then the array is contracted such that at
-        most only half the positions are filled.
-
-    Raises
-    ======
-
-    ValueError
-        When the number of elements in the list do not
-        match with the size.
-        More than three parameters are passed as arguments.
-        Types of arguments is not as mentioned in the docstring.
-        The load factor is not of floating point type.
-
-    IndexError
-        When pop/popleft is used on an empty Deque
-
-    Note
-    ====
-
-    At least one parameter should be passed as an argument along
-    with the dtype.
-    Num(T) means the number of positions which are not None in the
-    array.
-    Size(T) means the maximum number of elements that the array can hold.
-
-    Examples
-    ========
-
-    >>> from pydatastructs import Queue
-    >>> q = Queue(implementation='deque', dtype=int, items=[1,2,3])
-    >>> q.pop()
-    3
-    >>> q.popleft()
-    1
-    >>> q.append(1)
-    >>> q.appendleft(3)
-    >>> [q[i] for i in range(len(q))]
-    [3, 2, 1]
-    """
 
     __slots__ = ['_load_factor', '_num', '_last_pos_filled', '_size', '_rear', '_front', '_num']
 
