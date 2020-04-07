@@ -271,7 +271,7 @@ def heapsort(array, **kwargs):
     h = BinaryHeap(heap_property="min")
     for i in range(start, end+1):
         if array[i] is not None:
-            h.insert(array[i], array[i])
+            h.insert(array[i])
         array[i] = None
 
     i = start
