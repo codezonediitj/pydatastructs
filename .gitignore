@@ -10,3 +10,4 @@ pre_commit.ps1
 htmlcov
 *coverage*
 *.egg-info/
+*.idea
