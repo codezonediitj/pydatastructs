@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree)
+    ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
@@ -348,3 +348,37 @@ def test_issue_234():
     tree.insert(4.56, 4.56)
     tree._left_rotate(5, 8)
     assert tree.tree[tree.tree[8].parent].left == 8
+
+def test_SplayTree():
+    t = SplayTree(100, 100)
+    t.insert(50, 50)
+    t.insert(200, 200)
+    t.insert(40, 40)
+    t.insert(30, 30)
+    t.insert(20, 20)
+    t.insert(55, 55)
+
+    assert str(t) == ("[(None, 100, 100, None), (None, 50, 50, None), "
+                      "(0, 200, 200, None), (None, 40, 40, 1), (5, 30, 30, 3), "
+                      "(None, 20, 20, None), (4, 55, 55, 2)]")
+    t.delete(40)
+    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), "
+                      "(4, 50, 50, 6), (5, 30, 30, None), (None, 20, 20, None), "
+                      "(None, 55, 55, 2)]")
+    t.delete(150)
+    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), (4, 50, 50, 6), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (None, 55, 55, 2)]")
+
+    t1 = SplayTree(1000, 1000)
+    t1.insert(2000, 2000)
+    assert str(t1) == ("[(None, 1000, 1000, None), (0, 2000, 2000, None)]")
+
+    t.join(t1)
+    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, 8), (4, 50, 50, None), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), (None, 1000, 1000, None), "
+                      "(7, 2000, 2000, None), '']")
+
+    s = t.split(200)
+    assert str(s) == ("[(1, 2000, 2000, None), (None, 1000, 1000, None)]")
+    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, None), (4, 50, 50, None), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), '', '', '']")
