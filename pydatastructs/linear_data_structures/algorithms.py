@@ -238,7 +238,7 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 
 def heapsort(array, **kwargs):
     """
-    Implements Heap Sort sorting algorithm
+    Implements Heapsort algorithm.
 
     Parameters
     ==========
