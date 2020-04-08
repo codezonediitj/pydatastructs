@@ -1067,6 +1067,7 @@ class SplayTree(SelfBalancingBinaryTree):
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Splay_tree
 
     """
@@ -1138,11 +1139,9 @@ class SplayTree(SelfBalancingBinaryTree):
         elements = traverse.depth_first_search(order='pre_order', node=other.root_idx)
         for i in range(len(elements)):
             super(SelfBalancingBinaryTree, self).insert(elements[i].key, elements[i].data)
-        j = len(elements)-1
-        while j>=0:
+        for j in range(len(elements) - 1, -1, -1):
             e, p = super(SelfBalancingBinaryTree, other).search(elements[j].key, parent=True)
             other.tree[e] = None
-            j-=1
 
     def split(self, x):
         """
@@ -1173,10 +1172,8 @@ class SplayTree(SelfBalancingBinaryTree):
             elements = traverse.depth_first_search(order='pre_order', node=self.tree[self.root_idx].right)
             for i in range(len(elements)):
                 super(SelfBalancingBinaryTree, other).insert(elements[i].key, elements[i].data)
-            j = len(elements)-1
-            while j>=0:
+            for j in range(len(elements) - 1, -1, -1):
                 e, p = super(SelfBalancingBinaryTree, self).search(elements[j].key, parent=True)
                 self.tree[e] = None
-                j-=1
             self.tree[self.root_idx].right = None
         return other
