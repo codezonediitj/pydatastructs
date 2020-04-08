@@ -257,11 +257,23 @@ def heapsort(array, **kwargs):
 
     Examples
     ========
+
     >>> from pydatastructs import OneDimensionalArray, heapsort
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
     >>> heapsort(arr)
     >>> [arr[0], arr[1], arr[2]]
     [1, 2, 3]
+    
+    References
+    =========
+    
+    .. [1] https://en.wikipedia.org/wiki/Heapsort
+    
+    Note
+    ====
+    
+    This function does not support custom comparators as is the case with 
+    other sorting functions in this file.
     """
     from pydatastructs.trees.heaps import BinaryHeap
 
