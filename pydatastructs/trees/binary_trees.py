@@ -280,7 +280,6 @@ class BinarySearchTree(BinaryTree):
 
         elif self.tree[walk].left is not None and \
             self.tree[walk].right is not None:
-            print(walk)
             twalk = self.tree[walk].right
             par = walk
             flag = False
