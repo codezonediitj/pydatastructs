@@ -358,19 +358,27 @@ def test_SplayTree():
     t.insert(20, 20)
     t.insert(55, 55)
 
-    assert str(t) == ("[(None, 100, 100, None), (None, 50, 50, None), (0, 200, 200, None), (None, 40, 40, 1), (5, 30, 30, 3), (None, 20, 20, None), (4, 55, 55, 2)]")
+    assert str(t) == ("[(None, 100, 100, None), (None, 50, 50, None), "
+                      "(0, 200, 200, None), (None, 40, 40, 1), (5, 30, 30, 3), "
+                      "(None, 20, 20, None), (4, 55, 55, 2)]")
     t.delete(40)
-    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), (4, 50, 50, 6), (5, 30, 30, None), (None, 20, 20, None), (None, 55, 55, 2)]")
+    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), "
+                      "(4, 50, 50, 6), (5, 30, 30, None), (None, 20, 20, None), "
+                      "(None, 55, 55, 2)]")
     t.delete(150)
-    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), (4, 50, 50, 6), (5, 30, 30, None), (None, 20, 20, None), (None, 55, 55, 2)]")
+    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), (4, 50, 50, 6), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (None, 55, 55, 2)]")
+
     t1 = SplayTree(1000, 1000)
     t1.insert(2000, 2000)
-
     assert str(t1) == ("[(None, 1000, 1000, None), (0, 2000, 2000, None)]")
 
     t.join(t1)
-    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, 7), (4, 50, 50, None), (5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), (8, 2000, 2000, None), (None, 1000, 1000, None)]")
-    s = t.split(200)
+    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, 8), (4, 50, 50, None), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), (None, 1000, 1000, None), "
+                      "(7, 2000, 2000, None), '']")
 
+    s = t.split(200)
     assert str(s) == ("[(1, 2000, 2000, None), (None, 1000, 1000, None)]")
-    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, None), (4, 50, 50, None), (5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), '', '']")
+    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, None), (4, 50, 50, None), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), '', '', '']")
