@@ -8,6 +8,7 @@ __all__ = [
     'merge_sort_parallel',
     'brick_sort',
     'brick_sort_parallel',
+    'heapsort',
     'matrix_multiply_parallel'
 ]
 
@@ -231,6 +232,64 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 
             for i in range(start, end, 2):
                 Executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
+def heapsort(array, **kwargs):
+    """
+    Implements Heapsort algorithm.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, heapsort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> heapsort(arr)
+    >>> [arr[0], arr[1], arr[2]]
+    [1, 2, 3]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Heapsort
+
+    Note
+    ====
+
+    This function does not support custom comparators as is the case with
+    other sorting functions in this file.
+    """
+    from pydatastructs.trees.heaps import BinaryHeap
+
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+
+    h = BinaryHeap(heap_property="min")
+    for i in range(start, end+1):
+        if array[i] is not None:
+            h.insert(array[i])
+        array[i] = None
+
+    i = start
+    while not h.is_empty:
+        array[i] = h.extract().key
+        i += 1
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
