@@ -129,113 +129,74 @@ class OneDimensionalArray(Array):
 
 class MultiDimensionalArray(Array):
     __slots__ = ['_size', '_data', '_dtype']
-    '''
-    Example
-    >>> from pydatastructs import OneDimensionalArray as ODA
-    >>> arr = ODA(int, 5)
-    >>> arr.fill(6)
-    >>> arr[0]
-    6
-    >>> arr[0] = 7.2
-    >>> arr[0]
-    7
-    '''
     def __new__(cls, dtype=NoneType, *args, **kwargs):
-        if dtype is NoneType or len(args) in (1):
+        if dtype is NoneType or len(args) == (0):
             raise ValueError("1D array cannot be created due to incorrect"
                              " information.")
-        dimensiones = args.pop(0)
-        if dtype == MultiDimensionalArray:
-            # its an array of arrays
-            if (len(dimensiones) > 1):
-                # theres still to do
-                array = MultiDimensionalArray(MultiDimensionalArray, dimensiones)
+        dimensiones = list(args)
 
-                pass
-            else:
-                array = OneDimensionalArray(dtype, dimensiones[0])
-                pass  # ended do not recall
+        if dtype == MultiDimensionalArray:
+            # # its an array of arrays
+            obj = Array.__new__(cls)
+            obj._dtype = MultiDimensionalArray
+            obj._size = dimensiones[0]
+            obj._data = [None] * obj._size
+
+            return obj
+        elif dtype == OneDimensionalArray:
+            obj = Array.__new__(cls)
+            obj._dtype = OneDimensionalArray
+            obj._size = dimensiones[0]
+            obj._data = [None] * obj._size
+
+            return obj
             pass
         else:
             # Initialization of array
-            # last dimension
-            array = OneDimensionalArray(dtype, dimensiones.pop(0))
-            obj = Array.__new__(cls)
-            obj._dtype = OneDimensionalArray
-            obj._data = OneDimensionalArray(dtype, dimensiones.pop(0))
-            obj._size = obj._data
-            # calling for more dimensions
-
-            pass
-
-        array = OneDimensionalArray(dtype, dimensiones[0])
-        for i in range(len(args), 1, -1):
-            new_array = MultiDimensionalArray(OneDimensionalArray, args[i])
-            for j in new_array:
-                j = array
+            i = len(dimensiones)-1
+            array = OneDimensionalArray(dtype, dimensiones[i])
+            i -= 1
+            new_array = MultiDimensionalArray(OneDimensionalArray, dimensiones[i])
+            i -= 1
+            for j in range(new_array._size):
+                new_array._data[j] = array
             array = new_array
+            while(i>= 0):
+                new_array = MultiDimensionalArray(MultiDimensionalArray, dimensiones[i])
+                for j in range(new_array._size):
+                    new_array._data[j] = array
+                i -= 1
+                array = new_array
+        return array
 
-        obj = Array.__new__(cls)
-        obj._dtype = dtype
-        # checking for list and size in args
-        if len(args) == 2:
-            if _check_type(args[0], list) and \
-                    _check_type(args[1], int):
-
-                for i in range(len(args[0])):
-                    if dtype is not args[0][i].isinstancel:
-                        args[0][i] = dtype(args[0][i])
-                size, data = args[1], [arg for arg in args[0]]
-            elif _check_type(args[1], list) and \
-                    _check_type(args[0], int):
-                for i in range(len(args[1])):
-                    if dtype != type(args[1][i]):
-                        args[1][i] = dtype(args[1][i])
-                size, data = args[0], [arg for arg in args[1]]
-            else:
-                raise TypeError("Expected type of size is int and "
-                                "expected type of data is list/tuple.")
-            if size != len(data):
-                raise ValueError("Conflict in the size %s and length of data %s"
-                                 % (size, len(data)))
-            obj._size, obj._data = size, data
-
-        elif len(args) == 1:
-            if _check_type(args[0], int):
-                obj._size = args[0]
-                init = kwargs.get('init', None)
-                obj._data = [init for i in range(args[0])]
-            elif _check_type(args[0], (list, tuple)):
-                for i in range(len(args[0])):
-                    if dtype != type(args[0][i]):
-                        args[0][i] = dtype(args[0][i])
-                obj._size, obj._data = len(args[0]), \
-                                       [arg for arg in args[0]]
-            else:
-                raise TypeError("Expected type of size is int and "
-                                "expected type of data is list/tuple.")
-
-        return obj
-
-    def __getitem__(self, i):
+    def __getitem__(self, idx):
         # return list
-        if i >= self._size or i < 0:
+        if idx >= self._size or idx < 0:
             raise IndexError("Index out of range.")
-        return self._data.__getitem__(i)
+        return self._data.__getitem__(idx)
 
-    def __setitem__(self, idx, elem):
+    def __setitem__(self, idx, element):
+        if idx >= self._size or idx < 0:
+            raise IndexError("Index out of range.")
+        if type(element) != self._dtype:
+            raise TypeError("Unexpected item type.")
         # Check the size of the element if it is, set it
-        if type(elem) is list:
-            if (len(elem) == len(self._dtype.__getitem__(idx))):
-                self._dtype.__setitem__(idx, elem)
-            raise TypeError("Cannot be none")
+        if self.compare_size(element):
+            self._data[idx] = element
         else:
-            raise TypeError("Expected element is list.")
-
-    def fill(self, elem):
-        elem = self._dtype(elem)
+            raise TypeError("Unexpected item type.")
+    def compare_size(self, array):
+        if self._size == array._size:
+            if array._dtype == MultiDimensionalArray:
+                return self._data[0].compare_size(array)
+            elif array._dtype == OneDimensionalArray:
+                if array[0]._dtype == self._data[0]._dtype:
+                    return True
+        return False
+    def fill(self, element):
+        element = element
         for i in range(self._size):
-            self._data[i] = elem
+            self.__setitem__(i, element)
 
 ODA = OneDimensionalArray
 
@@ -396,3 +357,14 @@ class ArrayForTrees(DynamicOneDimensionalArray):
             self._size = arr_new._size
             return new_indices
         return None
+
+def main():
+    x = MultiDimensionalArray(int, 3, 2, 7)
+    print(x)
+    print(x._data)
+    for y in x:
+        print("y: ", y._data)
+        for z in y:
+            print("z: ", z._data)
+if __name__ == "__main__":
+    main()
