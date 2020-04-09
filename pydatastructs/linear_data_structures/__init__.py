@@ -7,6 +7,7 @@ from . import (
 
 from .arrays import (
     OneDimensionalArray,
+    MultiDimensionalArray,
     DynamicOneDimensionalArray
 )
 __all__.extend(arrays.__all__)
