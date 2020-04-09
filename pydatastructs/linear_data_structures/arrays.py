@@ -186,13 +186,14 @@ class MultiDimensionalArray(Array):
         else:
             raise TypeError("Unexpected item type.")
     def compare_size(self, array):
-        if self._size == array._size:
+        if self._data[0]._size == array._size:
             if array._dtype == MultiDimensionalArray:
                 return self._data[0].compare_size(array)
             elif array._dtype == OneDimensionalArray:
-                if array[0]._dtype == self._data[0]._dtype:
+                if array[0]._dtype == self._data[0][0]._dtype:
                     return True
         return False
+
     def fill(self, element):
         element = element
         for i in range(self._size):
@@ -362,6 +363,7 @@ def main():
     x = MultiDimensionalArray(int, 3, 2, 7)
     print(x)
     print(x._data)
+    x[2] = x[0]
     for y in x:
         print("y: ", y._data)
         for z in y:
