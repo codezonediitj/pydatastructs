@@ -601,7 +601,7 @@ def depth_first_search(
     >>> depth_first_search(G, V1.name, f, V3.name)
 
     References
-    =========
+    ==========
 
     .. [1] https://en.wikipedia.org/wiki/Depth-first_search
     """
