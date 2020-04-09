@@ -599,6 +599,11 @@ def depth_first_search(
     >>> G.add_edge(V1.name, V2.name)
     >>> G.add_edge(V2.name, V3.name)
     >>> depth_first_search(G, V1.name, f, V3.name)
+
+    References
+    =========
+
+    .. [1] https://en.wikipedia.org/wiki/Depth-first_search
     """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_depth_first_search_" + graph._impl
