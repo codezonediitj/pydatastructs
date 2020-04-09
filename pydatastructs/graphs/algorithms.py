@@ -620,7 +620,7 @@ def _depth_first_search_adjacency_list(
         next_nodes = graph.neighbors(curr_node)
         if len(next_nodes) != 0:
             for next_node in next_nodes:
-                if visited.get(next_node.name, False) is False:
+                if next_node.name not in visited:
                     status = operation(curr_node, next_node.name, *args, **kwargs)
                     if not status:
                         return None
