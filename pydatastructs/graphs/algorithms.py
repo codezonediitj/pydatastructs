@@ -555,7 +555,7 @@ def strongly_connected_components(graph, algorithm):
 def depth_first_search(
     graph, source_node, operation, *args, **kwargs):
     """
-    Implementation of serial depth first search (DFS)
+    Implementation of depth first search (DFS)
     algorithm.
 
     Parameters
