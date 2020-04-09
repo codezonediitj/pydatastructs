@@ -564,7 +564,7 @@ def depth_first_search(
     graph: Graph
         The graph on which DFS is to be performed.
     source_node: str
-        The name of the source node from where the BFS is
+        The name of the source node from where the DFS is
         to be initiated.
     operation: function
         The function which is to be applied
