@@ -2,7 +2,7 @@
 Contains all the algorithms associated with graph
 data structure.
 """
-from collections import deque as Queue
+from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils import GraphEdge
 from pydatastructs.utils.misc_util import _comp
@@ -16,8 +16,11 @@ __all__ = [
     'breadth_first_search_parallel',
     'minimum_spanning_tree',
     'minimum_spanning_tree_parallel',
-    'strongly_connected_components'
+    'strongly_connected_components',
+    'depth_first_search'
 ]
+
+Stack = Queue = deque
 
 def breadth_first_search(
     graph, source_node, operation, *args, **kwargs):
@@ -548,3 +551,89 @@ def strongly_connected_components(graph, algorithm):
         "isn't implemented for finding strongly connected components."
         %(algorithm, graph._impl))
     return getattr(algorithms, func)(graph)
+
+def depth_first_search(
+    graph, source_node, operation, *args, **kwargs):
+    """
+    Implementation of depth first search (DFS)
+    algorithm.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph on which DFS is to be performed.
+    source_node: str
+        The name of the source node from where the DFS is
+        to be initiated.
+    operation: function
+        The function which is to be applied
+        on every node when it is visited.
+        The prototype which is to be followed is,
+        `function_name(curr_node, next_node,
+                       arg_1, arg_2, . . ., arg_n)`.
+        Here, the first two arguments denote, the
+        current node and the node next to current node.
+        The rest of the arguments are optional and you can
+        provide your own stuff there.
+
+    Note
+    ====
+
+    You should pass all the arguments which you are going
+    to use in the prototype of your `operation` after
+    passing the operation function.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V1, V2, V3)
+    >>> from pydatastructs import depth_first_search
+    >>> def f(curr_node, next_node, dest_node):
+    ...     return curr_node != dest_node
+    ...
+    >>> G.add_edge(V1.name, V2.name)
+    >>> G.add_edge(V2.name, V3.name)
+    >>> depth_first_search(G, V1.name, f, V3.name)
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Depth-first_search
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_depth_first_search_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently depth first search isn't implemented for "
+        "%s graphs."%(graph._impl))
+    return getattr(algorithms, func)(
+           graph, source_node, operation, *args, **kwargs)
+
+def _depth_first_search_adjacency_list(
+    graph, source_node, operation, *args, **kwargs):
+    dfs_stack = Stack()
+    visited = dict()
+    dfs_stack.append(source_node)
+    visited[source_node] = True
+    while len(dfs_stack) != 0:
+        curr_node = dfs_stack.pop()
+        next_nodes = graph.neighbors(curr_node)
+        if len(next_nodes) != 0:
+            for next_node in next_nodes:
+                if next_node.name not in visited:
+                    status = operation(curr_node, next_node.name, *args, **kwargs)
+                    if not status:
+                        return None
+                    dfs_stack.append(next_node.name)
+                    visited[next_node.name] = True
+        else:
+            status = operation(curr_node, "", *args, **kwargs)
+            if not status:
+                return None
+
+_depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
