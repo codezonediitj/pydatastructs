@@ -1,15 +1,18 @@
 from pydatastructs.utils.misc_util import _check_type, NoneType
 
 __all__ = [
-'OneDimensionalArray',
-'DynamicOneDimensionalArray'
+    'OneDimensionalArray',
+    'MultiDimensionalArray',
+    'DynamicOneDimensionalArray'
 ]
+
 
 class Array(object):
     '''
     Abstract class for arrays in pydatastructs.
     '''
     pass
+
 
 class OneDimensionalArray(Array):
     '''
@@ -68,18 +71,18 @@ class OneDimensionalArray(Array):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype is NoneType or len(args) not in (1, 2):
             raise ValueError("1D array cannot be created due to incorrect"
-                                " information.")
+                             " information.")
         obj = Array.__new__(cls)
         obj._dtype = dtype
         if len(args) == 2:
             if _check_type(args[0], list) and \
-                _check_type(args[1], int):
+                    _check_type(args[1], int):
                 for i in range(len(args[0])):
                     if dtype != type(args[0][i]):
                         args[0][i] = dtype(args[0][i])
                 size, data = args[1], [arg for arg in args[0]]
             elif _check_type(args[1], list) and \
-                _check_type(args[0], int):
+                    _check_type(args[0], int):
                 for i in range(len(args[1])):
                     if dtype != type(args[1][i]):
                         args[1][i] = dtype(args[1][i])
@@ -89,7 +92,7 @@ class OneDimensionalArray(Array):
                                 "expected type of data is list/tuple.")
             if size != len(data):
                 raise ValueError("Conflict in the size %s and length of data %s"
-                                 %(size, len(data)))
+                                 % (size, len(data)))
             obj._size, obj._data = size, data
 
         elif len(args) == 1:
@@ -102,7 +105,7 @@ class OneDimensionalArray(Array):
                     if dtype != type(args[0][i]):
                         args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
-                                        [arg for arg in args[0]]
+                                       [arg for arg in args[0]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -127,11 +130,62 @@ class OneDimensionalArray(Array):
         for i in range(self._size):
             self._data[i] = elem
 
+
 class MultiDimensionalArray(Array):
+    '''
+        Represents a multi-dimensional array.
+
+        Parameters
+        ==========
+
+        dtype: type
+            A valid object type.
+        size: int
+            The number of elements in the array.
+
+        Raises
+        ======
+
+        ValueError
+            When the number of elements in the list do not
+            match with the size.
+            More than three parameters are passed as arguments.
+            Types of arguments is not as mentioned in the docstring.
+
+        Note
+        ====
+
+
+        Examples
+        ========
+        x = MultiDimensionalArray(int, 3,4,5)
+
+        x.fill(32)
+        print(x)
+        print(x._data)
+        for y in x:
+            print("y: ", y._data)
+            for z in y:
+                print("z: ", z._data)
+        >>> from pydatastructs import MultiDimensionalArray as MDA
+        >>> arr = MDA(int, 5, 6, 9)
+        >>> arr.fill(32)
+        >>> arr[3][0][0]
+        32
+        >>> arr[3][0][0] = 7.2
+        >>> arr[3][0][0]
+        7
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
+        '''
     __slots__ = ['_size', '_data', '_dtype']
+
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype is NoneType or len(args) == (0):
-            raise ValueError("1D array cannot be created due to incorrect"
+            raise ValueError("array cannot be created due to incorrect"
                              " information.")
         dimensiones = list(args)
 
@@ -152,21 +206,18 @@ class MultiDimensionalArray(Array):
             return obj
             pass
         else:
+
             # Initialization of array
-            i = len(dimensiones)-1
+            i = len(dimensiones) - 1
             array = OneDimensionalArray(dtype, dimensiones[i])
             i -= 1
-            new_array = MultiDimensionalArray(OneDimensionalArray, dimensiones[i])
-            i -= 1
-            for j in range(new_array._size):
-                new_array._data[j] = array
-            array = new_array
-            while(i>= 0):
-                new_array = MultiDimensionalArray(MultiDimensionalArray, dimensiones[i])
+            while (i >= 0):
+                new_array = MultiDimensionalArray(OneDimensionalArray, dimensiones[i])
                 for j in range(new_array._size):
                     new_array._data[j] = array
-                i -= 1
                 array = new_array
+                i -= 1
+
         return array
 
     def __getitem__(self, idx):
@@ -178,13 +229,14 @@ class MultiDimensionalArray(Array):
     def __setitem__(self, idx, element):
         if idx >= self._size or idx < 0:
             raise IndexError("Index out of range.")
-        if type(element) != self._dtype:
+        if type(element) != self._data[0]._dtype:
             raise TypeError("Unexpected item type.")
         # Check the size of the element if it is, set it
         if self.compare_size(element):
             self._data[idx] = element
         else:
             raise TypeError("Unexpected item type.")
+
     def compare_size(self, array):
         if self._data[0]._size == array._size:
             if array._dtype == MultiDimensionalArray:
@@ -195,17 +247,21 @@ class MultiDimensionalArray(Array):
         return False
 
     def fill(self, element):
-        element = element
+        element
         for i in range(self._size):
-            self.__setitem__(i, element)
+            self._data[i].fill(element)
+            # self.__setitem__(i, element)
+
 
 ODA = OneDimensionalArray
+
 
 class DynamicArray(Array):
     """
     Abstract class for dynamic arrays.
     """
     pass
+
 
 class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     """
@@ -287,8 +343,8 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         Contracts the array if Num(T)/Size(T) falls
         below load factor.
         """
-        if self._num/self._size < self._load_factor:
-            arr_new = ODA(self._dtype, 2*self._num + 1)
+        if self._num / self._size < self._load_factor:
+            arr_new = ODA(self._dtype, 2 * self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
                 if self[i] is not None:
@@ -300,7 +356,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
 
     def append(self, el):
         if self._last_pos_filled + 1 == self._size:
-            arr_new = ODA(self._dtype, 2*self._size + 1)
+            arr_new = ODA(self._dtype, 2 * self._size + 1)
             for i in range(self._last_pos_filled + 1):
                 arr_new[i] = self[i]
             arr_new[self._last_pos_filled + 1] = el
@@ -316,7 +372,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
 
     def delete(self, idx):
         if idx <= self._last_pos_filled and idx >= 0 and \
-            self[idx] is not None:
+                self[idx] is not None:
             self[idx] = None
             self._num -= 1
             if self._last_pos_filled == idx:
@@ -327,6 +383,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     def size(self):
         return self._size
 
+
 class ArrayForTrees(DynamicOneDimensionalArray):
     """
     Utility dynamic array for storing nodes of a tree.
@@ -336,10 +393,11 @@ class ArrayForTrees(DynamicOneDimensionalArray):
 
     pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
     """
+
     def _modify(self):
-        if self._num/self._size < self._load_factor:
+        if self._num / self._size < self._load_factor:
             new_indices = dict()
-            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
+            arr_new = OneDimensionalArray(self._dtype, 2 * self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
                 if self[i] is not None:
@@ -359,14 +417,18 @@ class ArrayForTrees(DynamicOneDimensionalArray):
             return new_indices
         return None
 
+
 def main():
-    x = MultiDimensionalArray(int, 3, 2, 7)
+    x = MultiDimensionalArray(int, 3, 4, 5)
+
+    x.fill(32)
     print(x)
     print(x._data)
-    x[2] = x[0]
     for y in x:
         print("y: ", y._data)
         for z in y:
             print("z: ", z._data)
+
+
 if __name__ == "__main__":
     main()
