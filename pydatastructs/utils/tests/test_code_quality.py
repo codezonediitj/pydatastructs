@@ -1,4 +1,4 @@
-import os, re, sys
+import os, re, sys, pydatastructs, inspect
 
 def _list_files():
     root_path = os.path.abspath(
@@ -70,3 +70,22 @@ def test_presence_of_tabs():
                             "Configure your editor to use " \
                             "white spaces."%(line, file_path)
         file.close()
+
+def test_public_api():
+    pyds = pydatastructs
+    public_api = dir(pydatastructs)
+    for name in public_api:
+        if inspect.isclass(getattr(pyds, name)):
+            _class = getattr(pyds, name)
+            mro = _class.__mro__
+            must_methods = _class.methods()
+            for supercls in mro:
+                if supercls != _class:
+                    for method in must_methods:
+                        if hasattr(supercls, method) and \
+                            getattr(supercls, method) == \
+                            getattr(_class, method):
+                            assert False, ("%s class doesn't "
+                                "have %s method implemented."%(
+                                    _class, method
+                                ))
