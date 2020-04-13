@@ -1,5 +1,5 @@
 from pydatastructs.linear_data_structures import (
-    OneDimensionalArray, DynamicOneDimensionalArray)
+    OneDimensionalArray, DynamicOneDimensionalArray, MultiDimensionalArray)
 from pydatastructs.utils.raises_util import raises
 
 
@@ -19,6 +19,19 @@ def test_OneDimensionalArray():
     assert raises(TypeError, lambda: ODA(int, 5.0))
     assert raises(TypeError, lambda: ODA(int, set([1, 2, 3])))
     assert raises(ValueError, lambda: ODA(int, 3, [1]))
+
+def test_MultiDimensionalArray():
+    MDA = MultiDimensionalArray
+    A = MDA(int, 5, 9, 3, 8)
+    A[1] = 2.0
+    assert A
+    assert raises(IndexError, lambda: A[5])
+    assert raises(IndexError, lambda: A[4][10])
+    assert raises(IndexError, lambda: A[-1])
+    assert raises(ValueError, lambda: MDA())
+    assert raises(ValueError, lambda: MDA(int))
+    assert raises(TypeError, lambda: MDA(int, 0))
+    assert raises(TypeError, lambda: MDA(int, 5, 6, ""))
 
 def test_DynamicOneDimensionalArray():
     DODA = DynamicOneDimensionalArray
