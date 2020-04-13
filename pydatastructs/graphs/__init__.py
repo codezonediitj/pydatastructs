@@ -13,6 +13,7 @@ from .algorithms import (
     minimum_spanning_tree,
     minimum_spanning_tree_parallel,
     strongly_connected_components,
+    random_walk,
     depth_first_search
 )
 

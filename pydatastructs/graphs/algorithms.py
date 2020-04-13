@@ -2,6 +2,7 @@
 Contains all the algorithms associated with graph
 data structure.
 """
+import random
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils import GraphEdge
@@ -17,6 +18,7 @@ __all__ = [
     'minimum_spanning_tree',
     'minimum_spanning_tree_parallel',
     'strongly_connected_components',
+    'random_walk',
     'depth_first_search'
 ]
 
@@ -637,3 +639,65 @@ def _depth_first_search_adjacency_list(
                 return None
 
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
+
+def random_walk(graph, start, path_length, operation, seed=44, *args):
+    '''
+    Executes random walk from the starting node and given graph.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph on which random walk needs to be executed.
+    start: GraphNode or it's subclasses
+        The node/vertex from where random walk will begin.
+    path_length:
+        The maximum number of nodes/vertices traversed by random walk.
+    operation: function
+        The function which is to be applied
+        on next node, in order to append it to path.
+        The prototype which is to be followed is,
+        `function_name(next_node,
+                       arg_1, arg_2, . . ., arg_n)`.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import random_walk
+    >>> v1, v2, v3 = [AdjacencyListGraphNode(i) for i in range(3)]
+    >>> g = Graph(v1, v2, v3)
+    >>> g.add_edge(v1.name, v2.name)
+    >>> g.add_edge(v2.name, v3.name)
+    >>> g.add_edge(v3.name, v1.name)
+    >>> path = []
+    >>> def f(next_node, path):
+    ...     path.append(next_node)
+    ...     return True
+    ...
+
+    >>> random_walk(g, v1, 5, f, 44, path)
+    >>> path == ['0', '1', '2', '0', '1']
+    True
+
+    '''
+
+
+    random.seed(seed)
+    path = args[0]
+    path.append(start.name)
+    op_args = args
+    for i in range(path_length):
+        curr_node = path[-1]
+        next_nodes = graph.neighbors(curr_node)
+        random.shuffle(next_nodes)
+        if len(next_nodes) != 0:
+            for next_node in next_nodes:
+                    status = operation(next_node.name, *op_args)
+                    if not status:
+                        continue
+                    else:
+                        break
+        else:
+            return None
+    return None

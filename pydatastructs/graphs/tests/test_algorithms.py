@@ -258,3 +258,50 @@ def test_depth_first_search():
 
     _test_depth_first_search("List")
     _test_depth_first_search("Matrix")
+
+def test_random_walk():
+
+    def _test_random_walk(ds):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+
+        V1 = GraphNode(0)
+        V2 = GraphNode(1)
+        V3 = GraphNode(2)
+        V4 = GraphNode(3)
+        V5 = GraphNode(4)
+        V6 = GraphNode(5)
+        V7 = GraphNode(6)
+        V8 = GraphNode(7)
+
+        G = Graph(V1, V2, V3, V4, V5, V6, V7, V8)
+
+        edges = [
+            (V1.name, V2.name),
+            (V1.name, V3.name),
+            (V1.name, V4.name),
+            (V2.name, V5.name),
+            (V2.name, V6.name),
+            (V3.name, V6.name),
+            (V3.name, V7.name),
+            (V4.name, V7.name),
+            (V4.name, V8.name)
+        ]
+
+        for edge in edges:
+            G.add_edge(*edge)
+
+        path = []
+
+        def walk(next_node, path):
+            path.append(next_node)
+            return True
+
+
+        random_walk(G, V1, 5, walk, 44, path)
+
+        assert path == ['0', '3', '7']
+
+    _test_random_walk("List")
+    _test_random_walk("Matrix")
+
