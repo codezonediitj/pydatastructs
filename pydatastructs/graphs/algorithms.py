@@ -687,7 +687,7 @@ def random_walk(graph, start, path_length, operation, seed=44, *args):
     path = args[0]
     path.append(start.name)
     op_args = args
-    for i in range(path_length):
+    for i in range(path_length - 1):
         curr_node = path[-1]
         next_nodes = graph.neighbors(curr_node)
         random.shuffle(next_nodes)
