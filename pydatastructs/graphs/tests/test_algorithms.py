@@ -1,7 +1,7 @@
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
-depth_first_search)
+depth_first_search, random_walk)
 
 
 def test_breadth_first_search():
@@ -304,4 +304,3 @@ def test_random_walk():
 
     _test_random_walk("List")
     _test_random_walk("Matrix")
-
