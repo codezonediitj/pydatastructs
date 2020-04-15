@@ -11,12 +11,10 @@
 
         Raises
         ======
-        IndexError
-            Index goes out of boundaries
-        ValueError
-            When there's no dimensions or the dimension size is 0
-        TypeError
-            An argument is not what expected
+        IndexError: 
+            list index out of range
+        TypeError: 
+            object of type 'int' has no len()
 
         Examples
         ========
@@ -35,6 +33,7 @@
         References
         ==========
         .. [1] https://www.geeksforgeeks.org/trie-insert-and-search/
+        .. [2] https://gist.github.com/huseynlilkin/d512e7e57dce32cc7317754c3d9d9bce
         '''
 
 #Init node class
@@ -120,10 +119,6 @@ class Trie:
             
             pC.isEndOfWord = False
 
-
-
-
-
         
    
 def main(): 
@@ -151,7 +146,9 @@ def main():
     print("{} ---- {}".format("try",output[t.search("try")]))
     t.delete("try")
     print("{} ---- {}".format("try",output[t.search("try")]))
-
+   
+    
+    
 
   
 if __name__ == '__main__': 
