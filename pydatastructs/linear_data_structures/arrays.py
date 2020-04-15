@@ -158,15 +158,6 @@ class MultiDimensionalArray(Array):
 
         Examples
         ========
-        x = MultiDimensionalArray(int, 3,4,5)
-
-        x.fill(32)
-        print(x)
-        print(x._data)
-        for y in x:
-            print("y: ", y._data)
-            for z in y:
-                print("z: ", z._data)
         >>> from pydatastructs import MultiDimensionalArray as MDA
         >>> arr = MDA(int, 5, 6, 9)
         >>> arr.fill(32)
@@ -187,41 +178,30 @@ class MultiDimensionalArray(Array):
         if dtype is NoneType or len(args) == (0):
             raise ValueError("array cannot be created due to incorrect"
                              " information.")
-        dimensiones = list(args)
-
-        if dtype == MultiDimensionalArray:
-            # # its an array of arrays
-            obj = Array.__new__(cls)
-            obj._dtype = MultiDimensionalArray
-            obj._size = dimensiones[0]
-            obj._data = [None] * obj._size
-
-            return obj
-        elif dtype == OneDimensionalArray:
+        dimensions = list(args)
+        if dimensions[0] <= 0:
+            raise ValueError("array cannot be created due to incorrect"
+                             " number of dimensions.")
+        if len(dimensions) == 2:
             obj = Array.__new__(cls)
             obj._dtype = OneDimensionalArray
-            obj._size = dimensiones[0]
+            obj._size = dimensions.pop(0)
             obj._data = [None] * obj._size
-
+            for i in range(obj._size):
+                obj._data[i] = MultiDimensionalArray(dtype, *dimensions)
             return obj
-            pass
+        elif len(dimensions) == 1:
+            return OneDimensionalArray(dtype, dimensions[0])
         else:
-
-            # Initialization of array
-            i = len(dimensiones) - 1
-            array = OneDimensionalArray(dtype, dimensiones[i])
-            i -= 1
-            while (i >= 0):
-                new_array = MultiDimensionalArray(OneDimensionalArray, dimensiones[i])
-                for j in range(new_array._size):
-                    new_array._data[j] = array
-                array = new_array
-                i -= 1
-
-        return array
+            obj = Array.__new__(cls)
+            obj._dtype = MultiDimensionalArray
+            obj._size = dimensions.pop(0)
+            obj._data = [None] * obj._size
+            for i in range(obj._size):
+                obj._data[i] = MultiDimensionalArray(dtype, *dimensions)
+            return obj
 
     def __getitem__(self, idx):
-        # return list
         if idx >= self._size or idx < 0:
             raise IndexError("Index out of range.")
         return self._data.__getitem__(idx)
@@ -247,10 +227,8 @@ class MultiDimensionalArray(Array):
         return False
 
     def fill(self, element):
-        element
         for i in range(self._size):
             self._data[i].fill(element)
-            # self.__setitem__(i, element)
 
 
 ODA = OneDimensionalArray
@@ -416,19 +394,3 @@ class ArrayForTrees(DynamicOneDimensionalArray):
             self._size = arr_new._size
             return new_indices
         return None
-
-
-def main():
-    x = MultiDimensionalArray(int, 3, 4, 5)
-
-    x.fill(32)
-    print(x)
-    print(x._data)
-    for y in x:
-        print("y: ", y._data)
-        for z in y:
-            print("z: ", z._data)
-
-
-if __name__ == "__main__":
-    main()
