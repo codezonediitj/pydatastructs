@@ -1,9 +1,7 @@
-import trie_structure
-from pydatastructs.utils.raises_util import raises
-
+from pydatastructs.trees.trie_structure import Trie
 
 def test_trie():
-    trie = trie_structure.Trie()
+    trie = Trie()
     trie.insert("hi")
     trie.insert("search")
     trie.insert("sea")
@@ -14,4 +12,4 @@ def test_trie():
     assert trie.search("sew") == False
     trie.delete("see")
     assert trie.search("see") == False
-    assert trie.search("sea") 
+    assert trie.search("sea")
