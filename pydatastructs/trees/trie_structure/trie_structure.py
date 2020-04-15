@@ -109,6 +109,18 @@ class Trie:
             pC = pC.children[index] 
   
         return pC != None and pC.isEndOfWord #and is a boolean expression  | isEndofWord: True if node represent the end of the word
+    
+    def delete(self,key):
+        pC = self.root
+        length = len(key)
+        for level in range(length):
+            index = self._charToIndex(key[level, None])
+            if index is None:
+                break
+            else:
+                pC.isEndOfWord = False
+
+        
    
 def main(): 
   
