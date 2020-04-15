@@ -133,6 +133,100 @@ class OneDimensionalArray(Array):
     def __str__(self):
         return str(self._data)
 
+class MultiDimensionalArray(Array):
+    '''
+        Represents a multi-dimensional array.
+
+        Parameters
+        ==========
+
+        dtype: type
+            A valid object type.
+        size: int
+            The number of elements in the array.
+
+        Raises
+        ======
+        IndexError
+            Index goes out of boundaries
+        ValueError
+            When there's no dimensions or the dimension size is 0
+        TypeError
+            An argument is not what expected
+
+        Examples
+        ========
+        >>> from pydatastructs import MultiDimensionalArray as MDA
+        >>> arr = MDA(int, 5, 6, 9)
+        >>> arr.fill(32)
+        >>> arr[3][0][0]
+        32
+        >>> arr[3][0][0] = 7.2
+        >>> arr[3][0][0]
+        7
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
+        '''
+    __slots__ = ['_size', '_data', '_dtype']
+
+    def __new__(cls, dtype=NoneType, *args, **kwargs):
+        if dtype is NoneType or len(args) == (0):
+            raise ValueError("array cannot be created due to incorrect"
+                             " information.")
+        dimensions = list(args)
+        if dimensions[0] <= 0:
+            raise ValueError("array cannot be created due to incorrect"
+                             " number of dimensions.")
+        if len(dimensions) == 2:
+            obj = Array.__new__(cls)
+            obj._dtype = OneDimensionalArray
+            obj._size = dimensions.pop(0)
+            obj._data = [None] * obj._size
+            for i in range(obj._size):
+                obj._data[i] = MultiDimensionalArray(dtype, *dimensions)
+            return obj
+        elif len(dimensions) == 1:
+            return OneDimensionalArray(dtype, dimensions[0])
+        else:
+            obj = Array.__new__(cls)
+            obj._dtype = MultiDimensionalArray
+            obj._size = dimensions.pop(0)
+            obj._data = [None] * obj._size
+            for i in range(obj._size):
+                obj._data[i] = MultiDimensionalArray(dtype, *dimensions)
+            return obj
+
+    def __getitem__(self, idx):
+        if idx >= self._size or idx < 0:
+            raise IndexError("Index out of range.")
+        return self._data.__getitem__(idx)
+
+    def __setitem__(self, idx, element):
+        if idx >= self._size or idx < 0:
+            raise IndexError("Index out of range.")
+        if type(element) != self._data[0]._dtype:
+            raise TypeError("Unexpected item type.")
+        # Check the size of the element if it is, set it
+        if self.compare_size(element):
+            self._data[idx] = element
+        else:
+            raise TypeError("Unexpected item type.")
+
+    def compare_size(self, array):
+        if self._data[0]._size == array._size:
+            if array._dtype == MultiDimensionalArray:
+                return self._data[0].compare_size(array)
+            elif array._dtype == OneDimensionalArray:
+                if array[0]._dtype == self._data[0][0]._dtype:
+                    return True
+        return False
+
+    def fill(self, element):
+        for i in range(self._size):
+            self._data[i].fill(element)
 
 class DynamicArray(Array):
     """
