@@ -4,7 +4,8 @@ from . import (
     binary_trees,
     m_ary_trees,
     space_partitioning_trees,
-    heaps
+    heaps,
+    trie_structure
 )
 
 from .binary_trees import (
@@ -35,3 +36,9 @@ from .heaps import (
     BinomialHeap
 )
 __all__.extend(heaps.__all__)
+
+from .trie_structure import (
+    Trie
+)
+
+__all__.extend(trie_structure.__all__)
