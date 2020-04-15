@@ -1,4 +1,26 @@
 '''
+API
+
+TrieNode:
+The class TrieNode will extend from Node base class to represent a node in Trie
+
+Attributes:
+children- dict() to represent children of the node
+isEndofWord- Boolean to represent leaf position (end of the word).
+
+Trie:
+The class Trie to represent data structure Trie.
+
+Attributes:
+root - start Node 
+
+Methods:
+
+insert(string): insert a key(=string) in Trie
+search(string): returning True if key presents in trie, else false. 
+delete(string): delete a key from Trie
+'''
+'''
         Represents a trie data structure.
 
         Parameters
