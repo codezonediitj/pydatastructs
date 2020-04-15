@@ -111,14 +111,18 @@ class Trie:
         return pC != None and pC.isEndOfWord #and is a boolean expression  | isEndofWord: True if node represent the end of the word
     
     def delete(self,key):
-        pC = self.root
-        length = len(key)
-        for level in range(length):
-            index = self._charToIndex(key[level, None])
-            if index is None:
-                break
-            else:
-                pC.isEndOfWord = False
+        pC=self.root
+
+        if self.search(key):
+            for c in key:
+                index = self._charToIndex(c)
+                pC = pC.children[index]
+            
+            pC.isEndOfWord = False
+
+
+
+
 
         
    
@@ -142,6 +146,13 @@ def main():
     print("{} ---- {}".format("bye",output[t.search("bye")])) 
     print("{} ---- {}".format("no",output[t.search("no")])) 
     print("{} ---- {}".format("pydatastructs",output[t.search("pydatastructs")])) 
+    
+    #delete function
+    print("{} ---- {}".format("try",output[t.search("try")]))
+    t.delete("try")
+    print("{} ---- {}".format("try",output[t.search("try")]))
+
+
   
 if __name__ == '__main__': 
     main() 
