@@ -12,7 +12,8 @@ class Graph(object):
 
     implementation: str
         The implementation to be used for storing
-        graph in memory.
+        graph in memory. It can be figured out
+        from type of the vertices(if passed at construction).
         By default, 'adjacency_list'.
     vertices: AdjacencyListGraphNode(s)
         For AdjacencyList implementation vertices
@@ -43,14 +44,22 @@ class Graph(object):
 
     .. [1] https://en.wikipedia.org/wiki/Graph_(abstract_data_type)
     """
+
+    __slots__ = ['_impl']
+
     def __new__(cls, *args, **kwargs):
-        implementation = kwargs.get('implementation', 'adjacency_list')
+        default_impl = args[0]._impl if args else 'adjacency_list'
+        implementation = kwargs.get('implementation', default_impl)
         if implementation is 'adjacency_list':
             from pydatastructs.graphs.adjacency_list import AdjacencyList
-            return AdjacencyList(*args)
+            obj = AdjacencyList(*args)
+            obj._impl = implementation
+            return obj
         elif implementation is 'adjacency_matrix':
             from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
-            return AdjacencyMatrix(*args)
+            obj = AdjacencyMatrix(*args)
+            obj._impl = implementation
+            return obj
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
@@ -87,11 +96,20 @@ class Graph(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
-    def add_edge(self, source, target):
+    def add_edge(self, source, target, cost=None):
         """
         Adds the edge starting at first parameter
         i.e., source and ending at the second
         parameter i.e., target.
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def get_edge(self, source, target):
+        """
+        Returns GraphEdge object if there
+        is an edge between source and target
+        otherwise None.
         """
         raise NotImplementedError(
             "This is an abstract method.")

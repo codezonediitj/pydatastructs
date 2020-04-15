@@ -21,12 +21,18 @@ def test_adjacency_list():
     assert neighbors == [v_2]
     v = AdjacencyListGraphNode('v', 4)
     g.add_vertex(v)
-    g.add_edge('v_1', 'v')
-    g.add_edge('v_2', 'v')
-    g.add_edge('v_3', 'v')
+    g.add_edge('v_1', 'v', 0)
+    g.add_edge('v_2', 'v', 0)
+    g.add_edge('v_3', 'v', 0)
     assert g.is_adjacent('v_1', 'v') is True
     assert g.is_adjacent('v_2', 'v') is True
     assert g.is_adjacent('v_3', 'v') is True
+    e1 = g.get_edge('v_1', 'v')
+    e2 = g.get_edge('v_2', 'v')
+    e3 = g.get_edge('v_3', 'v')
+    assert (e1.source.name, e1.target.name) == ('v_1', 'v')
+    assert (e2.source.name, e2.target.name) == ('v_2', 'v')
+    assert (e3.source.name, e3.target.name) == ('v_3', 'v')
     g.remove_edge('v_1', 'v')
     assert g.is_adjacent('v_1', 'v') is False
     g.remove_vertex('v')

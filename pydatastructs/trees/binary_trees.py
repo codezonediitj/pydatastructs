@@ -3,14 +3,16 @@ from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
-# TODO: REPLACE COLLECTIONS QUEUE WITH PYDATASTRUCTS QUEUE
 from collections import deque as Queue
+from copy import deepcopy
 
 __all__ = [
     'AVLTree',
     'BinaryTree',
     'BinarySearchTree',
-    'BinaryTreeTraversal'
+    'BinaryTreeTraversal',
+    'BinaryIndexedTree',
+    'SplayTree'
 ]
 
 class BinaryTree(object):
@@ -28,7 +30,7 @@ class BinaryTree(object):
     key
         Required if tree is to be instantiated with
         root otherwise not needed.
-    comp: lambda
+    comp: lambda/function
         Optional, A lambda function which will be used
         for comparison of keys. Should return a
         bool value. By default it implements less
@@ -61,7 +63,7 @@ class BinaryTree(object):
         obj.is_order_statistic = is_order_statistic
         return obj
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         """
         Inserts data by the passed key using iterative
         algorithm.
@@ -206,7 +208,7 @@ class BinarySearchTree(BinaryTree):
                     self.right_size(self.tree[walk]) + 1)
                 walk = self.tree[walk].parent
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         res = self.search(key)
         if res is not None:
             self.tree[res].data = data
@@ -415,7 +417,222 @@ class BinarySearchTree(BinaryTree):
             walk = p
         return r
 
-class AVLTree(BinarySearchTree):
+    def _simple_path(self, key, root):
+        """
+        Utility funtion to find the simple path between root and node.
+
+        Parameter
+        =========
+
+        key: Node.key
+            Key of the node to be searched
+
+        Returns
+        =======
+
+        path: list
+        """
+
+        stack = Stack()
+        stack.push(root)
+        path = []
+        node_idx = -1
+
+        while not stack.is_empty:
+            node = stack.pop()
+            if self.tree[node].key == key:
+                node_idx = node
+                break
+            if self.tree[node].left:
+                stack.push(self.tree[node].left)
+            if self.tree[node].right:
+                stack.push(self.tree[node].right)
+
+        if node_idx == -1:
+            return path
+
+        while node_idx != 0:
+            path.append(node_idx)
+            node_idx = self.tree[node_idx].parent
+        path.append(0)
+        path.reverse()
+
+        return path
+
+    def _lca_1(self, j, k):
+        root = self.root_idx
+        path1 = self._simple_path(j, root)
+        path2 = self._simple_path(k, root)
+        if not path1 or not path2:
+            raise ValueError("One of two path doesn't exists. See %s, %s"
+                             %(path1, path2))
+
+        n, m = len(path1), len(path2)
+        i = j = 0
+        while i < n and j < m:
+            if path1[i] != path2[j]:
+                return self.tree[path1[i - 1]].key
+            i += 1
+            j += 1
+        if path1 < path2:
+            return self.tree[path1[-1]].key
+        return self.tree[path2[-1]].key
+
+    def _lca_2(self, j, k):
+        curr_root = self.root_idx
+        u, v = self.search(j), self.search(k)
+        if (u is None) or (v is None):
+            raise ValueError("One of the nodes with key %s "
+                             "or %s doesn't exits"%(j, k))
+        u_left = self.comparator(self.tree[u].key, \
+            self.tree[curr_root].key)
+        v_left = self.comparator(self.tree[v].key, \
+            self.tree[curr_root].key)
+
+        while not (u_left ^ v_left):
+            if u_left and v_left:
+                curr_root = self.tree[curr_root].left
+            else:
+                curr_root = self.tree[curr_root].right
+
+            if curr_root == u or curr_root == v:
+                if curr_root is None:
+                    return None
+                return self.tree[curr_root].key
+
+            u_left = self.comparator(self.tree[u].key, \
+                self.tree[curr_root].key)
+            v_left = self.comparator(self.tree[v].key, \
+                self.tree[curr_root].key)
+
+        if curr_root is None:
+            return curr_root
+        return self.tree[curr_root].key
+
+    def lowest_common_ancestor(self, j, k, algorithm=1):
+
+        """
+        Computes the lowest common ancestor of two nodes.
+
+        Parameters
+        ==========
+
+        j: Node.key
+            Key of first node
+        k: Node.key
+            Key of second node
+        algorithm: int
+            The algorithm to be used for computing the
+            lowest common ancestor.
+            Optional, by default uses algorithm 1.
+
+            1 -> Determines the lowest common ancestor by finding
+                    the first intersection of the paths from v and w
+                    to the root.
+
+            2 -> Modifed version of the algorithm given in the
+                    following publication,
+                    D. Harel. A linear time algorithm for the
+                    lowest common ancestors problem. In 21s
+                    Annual Symposium On Foundations of
+                    Computer Science, pages 308-319, 1980.
+
+        Returns
+        =======
+
+        Node.key
+            The key of the lowest common ancestor in the tree.
+            if both the nodes are present in the tree.
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/Lowest_common_ancestor
+
+        .. [2] https://pdfs.semanticscholar.org/e75b/386cc554214aa0ebd6bd6dbdd0e490da3739.pdf
+
+        """
+        return getattr(self, "_lca_"+str(algorithm))(j, k)
+
+class SelfBalancingBinaryTree(BinarySearchTree):
+    """
+    Represents Base class for all rotation based balancing trees like AVL tree, Red Black tree, Splay Tree.
+    """
+    def _right_rotate(self, j, k):
+        y = self.tree[k].right
+        if y is not None:
+            self.tree[y].parent = j
+        self.tree[j].left = y
+        self.tree[k].parent = self.tree[j].parent
+        if self.tree[k].parent is not None:
+            if self.tree[self.tree[k].parent].left == j:
+                self.tree[self.tree[k].parent].left = k
+            else:
+                self.tree[self.tree[k].parent].right = k
+        self.tree[j].parent = k
+        self.tree[k].right = j
+        kp = self.tree[k].parent
+        if kp is None:
+            self.root_idx = k
+
+    def _left_right_rotate(self, j, k):
+        i = self.tree[k].right
+        v, w = self.tree[i].left, self.tree[i].right
+        self.tree[k].right, self.tree[j].left = v, w
+        if v is not None:
+            self.tree[v].parent = k
+        if w is not None:
+            self.tree[w].parent = j
+        self.tree[i].left, self.tree[i].right, self.tree[i].parent = \
+            k, j, self.tree[j].parent
+        self.tree[k].parent, self.tree[j].parent = i, i
+        ip = self.tree[i].parent
+        if ip is not None:
+            if self.tree[ip].left == j:
+                self.tree[ip].left = i
+            else:
+                self.tree[ip].right = i
+        else:
+            self.root_idx = i
+
+    def _right_left_rotate(self, j, k):
+        i = self.tree[k].left
+        v, w = self.tree[i].left, self.tree[i].right
+        self.tree[k].left, self.tree[j].right = w, v
+        if v is not None:
+            self.tree[v].parent = j
+        if w is not None:
+            self.tree[w].parent = k
+        self.tree[i].right, self.tree[i].left, self.tree[i].parent = \
+            k, j, self.tree[j].parent
+        self.tree[k].parent, self.tree[j].parent = i, i
+        ip = self.tree[i].parent
+        if ip is not None:
+            if self.tree[ip].left == j:
+                self.tree[ip].left = i
+            else:
+                self.tree[ip].right = i
+        else:
+            self.root_idx = i
+
+    def _left_rotate(self, j, k):
+        y = self.tree[k].left
+        if y is not None:
+            self.tree[y].parent = j
+        self.tree[j].right = y
+        self.tree[k].parent = self.tree[j].parent
+        if self.tree[k].parent is not None:
+            if self.tree[self.tree[k].parent].left == j:
+                self.tree[self.tree[k].parent].left = k
+            else:
+                self.tree[self.tree[k].parent].right = k
+        self.tree[j].parent = k
+        self.tree[k].left = j
+        kp = self.tree[k].parent
+        if kp is None:
+            self.root_idx = k
+
+class AVLTree(SelfBalancingBinaryTree):
     """
     Represents AVL trees.
 
@@ -439,47 +656,19 @@ class AVLTree(BinarySearchTree):
                                         self.left_height(node)
 
     def _right_rotate(self, j, k):
-        y = self.tree[k].right
-        if y is not None:
-            self.tree[y].parent = j
-        self.tree[j].left = y
-        self.tree[k].parent = self.tree[j].parent
-        if self.tree[k].parent is not None:
-            self.tree[self.tree[k].parent].left = k
-        self.tree[j].parent = k
-        self.tree[k].right = j
+        super(AVLTree, self)._right_rotate(j, k)
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
-        kp = self.tree[k].parent
-        if kp is None:
-            self.root_idx = k
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
 
     def _left_right_rotate(self, j, k):
-        i = self.tree[k].right
-        v, w = self.tree[i].left, self.tree[i].right
-        self.tree[k].right, self.tree[j].left = v, w
-        if v is not None:
-            self.tree[v].parent = k
-        if w is not None:
-            self.tree[w].parent = j
-        self.tree[i].left, self.tree[i].right, self.tree[i].parent = \
-            k, j, self.tree[j].parent
-        self.tree[k].parent, self.tree[j].parent = i, i
+        super(AVLTree, self)._left_right_rotate(j, k)
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
         self.tree[k].height = max(self.left_height(self.tree[k]),
                                     self.right_height(self.tree[k])) + 1
-        ip = self.tree[i].parent
-        if ip is not None:
-            if self.tree[ip].left == j:
-                self.tree[ip].left = i
-            else:
-                self.tree[ip].right = i
-        else:
-            self.root_idx = i
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
@@ -487,28 +676,11 @@ class AVLTree(BinarySearchTree):
                                  self.right_size(self.tree[k]) + 1)
 
     def _right_left_rotate(self, j, k):
-        i = self.tree[k].left
-        v, w = self.tree[i].left, self.tree[i].right
-        self.tree[k].left, self.tree[j].right = w, v
-        if v is not None:
-            self.tree[v].parent = j
-        if w is not None:
-            self.tree[w].parent = k
-        self.tree[i].right, self.tree[i].left, self.tree[i].parent = \
-            k, j, self.tree[j].parent
-        self.tree[k].parent, self.tree[j].parent = i, i
+        super(AVLTree, self)._right_left_rotate(j, k)
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
         self.tree[k].height = max(self.left_height(self.tree[k]),
                                     self.right_height(self.tree[k])) + 1
-        ip = self.tree[i].parent
-        if ip is not None:
-            if self.tree[ip].left == j:
-                self.tree[ip].left = i
-            else:
-                self.tree[ip].right = i
-        else:
-            self.root_idx = i
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
@@ -516,22 +688,11 @@ class AVLTree(BinarySearchTree):
                                  self.right_size(self.tree[k]) + 1)
 
     def _left_rotate(self, j, k):
-        y = self.tree[k].left
-        if y is not None:
-            self.tree[y].parent = j
-        self.tree[j].right = y
-        self.tree[k].parent = self.tree[j].parent
-        if self.tree[k].parent is not None:
-            self.tree[self.tree[k].parent].right = k
-        self.tree[j].parent = k
-        self.tree[k].left = j
+        super(AVLTree, self)._left_rotate(j, k)
         self.tree[j].height = max(self.left_height(self.tree[j]),
                                   self.right_height(self.tree[j])) + 1
         self.tree[k].height = max(self.left_height(self.tree[k]),
                                     self.right_height(self.tree[k])) + 1
-        kp = self.tree[k].parent
-        if kp is None:
-            self.root_idx = k
         if self.is_order_statistic:
             self.tree[j].size = (self.left_size(self.tree[j]) +
                                  self.right_size(self.tree[j]) + 1)
@@ -562,7 +723,7 @@ class AVLTree(BinarySearchTree):
             path.append(walk), path.append(last)
             walk = self.tree[walk].parent
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         super(AVLTree, self).insert(key, data)
         self._balance_insertion(self.size - 1, self.tree[self.size-1].parent)
 
@@ -594,6 +755,139 @@ class AVLTree(BinarySearchTree):
         a = super(AVLTree, self).delete(key, balancing_info=True)
         self._balance_deletion(a, key)
         return True
+
+class SplayTree(SelfBalancingBinaryTree):
+    """
+    Represents Splay Trees.
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Splay_tree
+
+    """
+    def _zig(self, x, p):
+        if self.tree[p].left == x:
+            super(SplayTree, self)._right_rotate(p, x)
+        else:
+            super(SplayTree, self)._left_rotate(p, x)
+
+    def _zig_zig(self, x, p):
+        super(SplayTree, self)._right_rotate(self.tree[p].parent, p)
+        super(SplayTree, self)._right_rotate(p, x)
+
+    def _zig_zag(self, p):
+        super(SplayTree, self)._left_right_rotate(self.tree[p].parent, p)
+
+    def _zag_zag(self, x, p):
+        super(SplayTree, self)._left_rotate(self.tree[p].parent, p)
+        super(SplayTree, self)._left_rotate(p, x)
+
+    def _zag_zig(self, p):
+        super(SplayTree, self)._right_left_rotate(self.tree[p].parent, p)
+
+    def splay(self, x, p):
+        while self.tree[x].parent is not None:
+            if self.tree[p].parent is None:
+                self._zig(x, p)
+            elif self.tree[p].left == x and \
+                self.tree[self.tree[p].parent].left == p:
+                self._zig_zig(x, p)
+            elif self.tree[p].right == x and \
+                self.tree[self.tree[p].parent].right == p:
+                self._zag_zag(x, p)
+            elif self.tree[p].left == x and \
+                self.tree[self.tree[p].parent].right == p:
+                self._zag_zig(p)
+            else:
+                self._zig_zag(p)
+            p = self.tree[x].parent
+
+    def insert(self, key, x):
+        super(SelfBalancingBinaryTree, self).insert(key, x)
+        e, p = super(SelfBalancingBinaryTree, self).search(key, parent=True)
+        self.tree[self.size-1].parent = p
+        self.splay(e, p)
+
+    def delete(self, x):
+        e, p = super(SelfBalancingBinaryTree, self).search(x, parent=True)
+        if e is None:
+            return
+        self.splay(e, p)
+        status = super(SelfBalancingBinaryTree, self).delete(x)
+        return status
+
+    def join(self, other):
+        """
+        Joins two trees current and other such that all elements of
+        the current splay tree are smaller than the elements of the other tree.
+
+        Parameters
+        ==========
+
+        other: SplayTree
+            SplayTree which needs to be joined with the self tree.
+
+        """
+        maxm = self.root_idx
+        while self.tree[maxm].right is not None:
+            maxm = self.tree[maxm].right
+        minm = other.root_idx
+        while other.tree[minm].left is not None:
+            minm = other.tree[minm].left
+        if not self.comparator(self.tree[maxm].key,
+                                other.tree[minm].key):
+            raise ValueError("Elements of %s aren't less "
+                             "than that of %s"%(self, other))
+        self.splay(maxm, self.tree[maxm].parent)
+        idx_update = self.tree._size
+        for node in other.tree:
+            if node is not None:
+                node_copy = TreeNode(node.key, node.data)
+                if node.left is not None:
+                    node_copy.left = node.left + idx_update
+                if node.right is not None:
+                    node_copy.right = node.right + idx_update
+                self.tree.append(node_copy)
+            else:
+                self.tree.append(node)
+        self.tree[self.root_idx].right = \
+            other.root_idx + idx_update
+
+    def split(self, x):
+        """
+        Splits current splay tree into two trees such that one tree contains nodes
+        with key less than or equal to x and the other tree containing
+        nodes with key greater than x.
+
+        Parameters
+        ==========
+
+        x: key
+            Key of the element on the basis of which split is performed.
+
+        Returns
+        =======
+
+        other: SplayTree
+            SplayTree containing elements with key greater than x.
+
+        """
+        e, p = super(SelfBalancingBinaryTree, self).search(x, parent=True)
+        if e is None:
+            return
+        self.splay(e, p)
+        other = SplayTree(None, None)
+        if self.tree[self.root_idx].right is not None:
+            traverse = BinaryTreeTraversal(self)
+            elements = traverse.depth_first_search(order='pre_order', node=self.tree[self.root_idx].right)
+            for i in range(len(elements)):
+                super(SelfBalancingBinaryTree, other).insert(elements[i].key, elements[i].data)
+            for j in range(len(elements) - 1, -1, -1):
+                e, p = super(SelfBalancingBinaryTree, self).search(elements[j].key, parent=True)
+                self.tree[e] = None
+            self.tree[self.root_idx].right = None
+        return other
 
 class BinaryTreeTraversal(object):
     """
@@ -783,3 +1077,120 @@ class BinaryTreeTraversal(object):
             if tree[node].right is not None:
                 q.append(tree[node].right)
         return visit
+
+class BinaryIndexedTree(object):
+    """
+    Represents binary indexed trees
+    a.k.a fenwick trees.
+
+    Parameters
+    ==========
+
+    array: list/tuple
+        The array whose elements are to be
+        considered for the queries.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import BinaryIndexedTree
+    >>> bit = BinaryIndexedTree([1, 2, 3])
+    >>> bit.get_sum(0, 2)
+    6
+    >>> bit.update(0, 100)
+    >>> bit.get_sum(0, 2)
+    105
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Fenwick_tree
+    """
+
+    __slots__ = ['tree', 'array', 'flag']
+
+    def __new__(cls, array):
+
+        obj = object.__new__(cls)
+        obj.array = OneDimensionalArray(type(array[0]), array)
+        obj.tree = [0] * (obj.array._size + 2)
+        obj.flag = [0] * (obj.array._size)
+        for index in range(obj.array._size):
+            obj.update(index, array[index])
+        return obj
+
+    def update(self, index, value):
+        """
+        Updates value at the given index.
+
+        Parameters
+        ==========
+
+        index: int
+            Index of element to be updated.
+
+        value
+            The value to be inserted.
+        """
+        _index, _value = index, value
+        if self.flag[index] == 0:
+            self.flag[index] = 1
+            index += 1
+            while index < self.array._size + 1:
+                self.tree[index] += value
+                index = index + (index & (-index))
+        else:
+            value = value - self.array[index]
+            index += 1
+            while index < self.array._size + 1:
+                self.tree[index] += value
+                index = index + (index & (-index))
+        self.array[_index] = _value
+
+    def get_prefix_sum(self, index):
+        """
+        Computes sum of elements from index 0 to given index.
+
+        Parameters
+        ==========
+
+        index: int
+            Index till which sum has to be calculated.
+
+        Returns
+        =======
+
+        sum: int
+            The required sum.
+        """
+        index += 1
+        sum = 0
+        while index > 0:
+            sum += self.tree[index]
+            index = index - (index & (-index))
+        return sum
+
+    def get_sum(self, left_index, right_index):
+        """
+        Get sum of elements from left index to right index.
+
+        Parameters
+        ==========
+
+        left_index: int
+            Starting index from where sum has to be computed.
+
+        right_index: int
+            Ending index till where sum has to be computed.
+
+        Returns
+        =======
+
+        sum: int
+            The required sum
+        """
+        if left_index >= 1:
+            return self.get_prefix_sum(right_index) - \
+                   self.get_prefix_sum(left_index - 1)
+        else:
+            return self.get_prefix_sum(right_index)

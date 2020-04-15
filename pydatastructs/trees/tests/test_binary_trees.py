@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees)
+    ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
@@ -54,7 +54,38 @@ def test_BinarySearchTree():
     assert b.delete(-10) is True
     assert b.delete(-3) is True
     assert b.delete(-13) is None
-    raises(ValueError, lambda: BST(root_data=6))
+    bl = BST()
+    nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
+    for node in nodes:
+        bl.insert(node, node)
+
+    assert bl.lowest_common_ancestor(80, 55, 2) == 70
+    assert bl.lowest_common_ancestor(60, 70, 2) == 70
+    assert bl.lowest_common_ancestor(18, 18, 2) == 18
+    assert bl.lowest_common_ancestor(40, 90, 2) == 50
+
+    assert bl.lowest_common_ancestor(18, 10, 2) == 15
+    assert bl.lowest_common_ancestor(55, 100, 2) == 90
+    assert bl.lowest_common_ancestor(16, 80, 2) == 50
+    assert bl.lowest_common_ancestor(30, 55, 2) == 50
+
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 2))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 2))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 2))
+
+    assert bl.lowest_common_ancestor(80, 55, 1) == 70
+    assert bl.lowest_common_ancestor(60, 70, 1) == 70
+    assert bl.lowest_common_ancestor(18, 18, 1) == 18
+    assert bl.lowest_common_ancestor(40, 90, 1) == 50
+
+    assert bl.lowest_common_ancestor(18, 10, 1) == 15
+    assert bl.lowest_common_ancestor(55, 100, 1) == 90
+    assert bl.lowest_common_ancestor(16, 80, 1) == 50
+    assert bl.lowest_common_ancestor(30, 55, 1) == 50
+
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree
@@ -274,3 +305,80 @@ def test_AVLTree():
     test_select_rank([2])
     a5.delete(2)
     test_select_rank([])
+
+def test_BinaryIndexedTree():
+
+    FT = BinaryIndexedTree
+
+    t = FT([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+    assert t.get_sum(0, 2) == 6
+    assert t.get_sum(0, 4) == 15
+    assert t.get_sum(0, 9) == 55
+    t.update(0, 100)
+    assert t.get_sum(0, 2) == 105
+    assert t.get_sum(0, 4) == 114
+    assert t.get_sum(1, 9) == 54
+
+def test_issue_234():
+    """
+    https://github.com/codezonediitj/pydatastructs/issues/234
+    """
+    tree = SelfBalancingBinaryTree()
+    tree.insert(5, 5)
+    tree.insert(5.5, 5.5)
+    tree.insert(4.5, 4.5)
+    tree.insert(4.6, 4.6)
+    tree.insert(4.4, 4.4)
+    tree.insert(4.55, 4.55)
+    tree.insert(4.65, 4.65)
+    original_tree = str(tree)
+    tree._right_rotate(3, 5)
+    assert tree.tree[3].parent == 5
+    assert tree.tree[2].right != 3
+    assert tree.tree[tree.tree[5].parent].right == 5
+    assert str(tree) == ("[(2, 5, 5, 1), (None, 5.5, 5.5, None), "
+                         "(4, 4.5, 4.5, 5), (None, 4.6, 4.6, 6), "
+                         "(None, 4.4, 4.4, None), (None, 4.55, 4.55, 3), "
+                         "(None, 4.65, 4.65, None)]")
+    assert tree.tree[tree.tree[3].parent].right == 3
+    tree._left_rotate(5, 3)
+    assert str(tree) == original_tree
+    tree.insert(4.54, 4.54)
+    tree.insert(4.56, 4.56)
+    tree._left_rotate(5, 8)
+    assert tree.tree[tree.tree[8].parent].left == 8
+
+def test_SplayTree():
+    t = SplayTree(100, 100)
+    t.insert(50, 50)
+    t.insert(200, 200)
+    t.insert(40, 40)
+    t.insert(30, 30)
+    t.insert(20, 20)
+    t.insert(55, 55)
+
+    assert str(t) == ("[(None, 100, 100, None), (None, 50, 50, None), "
+                      "(0, 200, 200, None), (None, 40, 40, 1), (5, 30, 30, 3), "
+                      "(None, 20, 20, None), (4, 55, 55, 2)]")
+    t.delete(40)
+    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), "
+                      "(4, 50, 50, 6), (5, 30, 30, None), (None, 20, 20, None), "
+                      "(None, 55, 55, 2)]")
+    t.delete(150)
+    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), (4, 50, 50, 6), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (None, 55, 55, 2)]")
+
+    t1 = SplayTree(1000, 1000)
+    t1.insert(2000, 2000)
+    assert str(t1) == ("[(None, 1000, 1000, None), (0, 2000, 2000, None)]")
+
+    t.join(t1)
+    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, 8), (4, 50, 50, None), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), (None, 1000, 1000, None), "
+                      "(7, 2000, 2000, None), '']")
+
+    s = t.split(200)
+    assert str(s) == ("[(1, 2000, 2000, None), (None, 1000, 1000, None)]")
+    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, None), (4, 50, 50, None), "
+                      "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), '', '', '']")
