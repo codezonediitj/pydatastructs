@@ -145,16 +145,12 @@ class MultiDimensionalArray(Array):
 
         Raises
         ======
-
+        IndexError
+            Index goes out of boundaries
         ValueError
-            When the number of elements in the list do not
-            match with the size.
-            More than three parameters are passed as arguments.
-            Types of arguments is not as mentioned in the docstring.
-
-        Note
-        ====
-
+            When there's no dimensions or the dimension size is 0
+        TypeError
+            An argument is not what expected
 
         Examples
         ========
