@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees, BinaryIndexedTree)
+    ArrayForTrees, BinaryIndexedTree, CartesianTree, Treap)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
@@ -305,7 +305,7 @@ def test_AVLTree():
     test_select_rank([2])
     a5.delete(2)
     test_select_rank([])
-
+    
 def test_BinaryIndexedTree():
 
     FT = BinaryIndexedTree
@@ -319,3 +319,54 @@ def test_BinaryIndexedTree():
     assert t.get_sum(0, 2) == 105
     assert t.get_sum(0, 4) == 114
     assert t.get_sum(1, 9) == 54
+    
+def test_CartesianTree():
+    tree = CartesianTree()
+    tree.insert(3, 3, 1)
+    tree.insert(1, 1, 6)
+    tree.insert(0, 0, 9)
+    tree.insert(5, 5, 11)
+    tree.insert(4, 4, 14)
+    tree.insert(9, 9, 17)
+    tree.insert(7, 7, 22)
+    tree.insert(6, 6, 42)
+    tree.insert(8, 8, 49)
+    tree.insert(2, 2, 99)
+    assert str(tree) == \
+           ("[(1, 3, 1, 3, 3), (2, 1, 6, 1, 9), "
+            "(None, 0, 9, 0, None), (4, 5, 11, 5, 5), "
+            "(None, 4, 14, 4, None), (6, 9, 17, 9, None), "
+            "(7, 7, 22, 7, 8), (None, 6, 42, 6, None), "
+            "(None, 8, 49, 8, None), (None, 2, 99, 2, None)]")
+    tree.insert(1.5, 1.5, 4)
+    assert str(tree) == \
+           ("[(10, 3, 1, 3, 3), (2, 1, 6, 1, None), "
+            "(None, 0, 9, 0, None), (4, 5, 11, 5, 5), "
+            "(None, 4, 14, 4, None), (6, 9, 17, 9, None), "
+            "(7, 7, 22, 7, 8), (None, 6, 42, 6, None), "
+            "(None, 8, 49, 8, None), (None, 2, 99, 2, None), "
+            "(1, 1.5, 4, 1.5, 9)]")
+    k = tree.search(1.5)
+    assert tree.tree[tree.tree[k].parent].key == 3
+    tree.delete(1.5)
+    tree.tree[tree.tree[tree.root_idx].left].key == 1
+    tree.delete(8)
+    assert tree.search(8) == None
+    tree.delete(7)
+    assert tree.search(7) == None
+    tree.delete(3)
+    assert tree.search(3) == None
+    assert tree.delete(18) == None
+    
+def test_Treap():
+    tree = Treap()
+    tree.insert(7,7)
+    tree.insert(2,2)
+    tree.insert(3,3)
+    tree.insert(4,4)
+    tree.insert(5,5)
+    assert isinstance(tree.tree[0].priority, float)
+    tree.delete(1)
+    assert tree.search(1) == None
+    assert tree.search(2) == 1
+    assert tree.delete(1) == None
