@@ -14,7 +14,8 @@ from .binary_trees import (
     AVLTree,
     BinaryIndexedTree,
     CartesianTree,
-    Treap
+    Treap,
+    SplayTree
 )
 __all__.extend(binary_trees.__all__)
 

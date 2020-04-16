@@ -5,6 +5,8 @@ from pydatastructs.linear_data_structures import (
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 from collections import deque as Queue
 import random
+from copy import deepcopy
+
 
 __all__ = [
     'AVLTree',
@@ -13,7 +15,8 @@ __all__ = [
     'BinaryTreeTraversal',
     'BinaryIndexedTree',
     'CartesianTree',
-    'Treap'
+    'Treap',
+    'SplayTree'
 ]
 
 class BinaryTree(object):
@@ -64,7 +67,7 @@ class BinaryTree(object):
         obj.is_order_statistic = is_order_statistic
         return obj
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         """
         Inserts data by the passed key using iterative
         algorithm.
@@ -209,7 +212,7 @@ class BinarySearchTree(BinaryTree):
                     self.right_size(self.tree[walk]) + 1)
                 walk = self.tree[walk].parent
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         res = self.search(key)
         if res is not None:
             self.tree[res].data = data
@@ -566,7 +569,10 @@ class SelfBalancingBinaryTree(BinarySearchTree):
         self.tree[j].left = y
         self.tree[k].parent = self.tree[j].parent
         if self.tree[k].parent is not None:
-            self.tree[self.tree[k].parent].left = k
+            if self.tree[self.tree[k].parent].left == j:
+                self.tree[self.tree[k].parent].left = k
+            else:
+                self.tree[self.tree[k].parent].right = k
         self.tree[j].parent = k
         self.tree[k].right = j
         kp = self.tree[k].parent
@@ -620,7 +626,10 @@ class SelfBalancingBinaryTree(BinarySearchTree):
         self.tree[j].right = y
         self.tree[k].parent = self.tree[j].parent
         if self.tree[k].parent is not None:
-            self.tree[self.tree[k].parent].right = k
+            if self.tree[self.tree[k].parent].left == j:
+                self.tree[self.tree[k].parent].left = k
+            else:
+                self.tree[self.tree[k].parent].right = k
         self.tree[j].parent = k
         self.tree[k].left = j
         kp = self.tree[k].parent
@@ -867,7 +876,7 @@ class AVLTree(SelfBalancingBinaryTree):
             path.append(walk), path.append(last)
             walk = self.tree[walk].parent
 
-    def insert(self, key, data):
+    def insert(self, key, data=None):
         super(AVLTree, self).insert(key, data)
         self._balance_insertion(self.size - 1, self.tree[self.size-1].parent)
 
@@ -899,6 +908,139 @@ class AVLTree(SelfBalancingBinaryTree):
         a = super(AVLTree, self).delete(key, balancing_info=True)
         self._balance_deletion(a, key)
         return True
+
+class SplayTree(SelfBalancingBinaryTree):
+    """
+    Represents Splay Trees.
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Splay_tree
+
+    """
+    def _zig(self, x, p):
+        if self.tree[p].left == x:
+            super(SplayTree, self)._right_rotate(p, x)
+        else:
+            super(SplayTree, self)._left_rotate(p, x)
+
+    def _zig_zig(self, x, p):
+        super(SplayTree, self)._right_rotate(self.tree[p].parent, p)
+        super(SplayTree, self)._right_rotate(p, x)
+
+    def _zig_zag(self, p):
+        super(SplayTree, self)._left_right_rotate(self.tree[p].parent, p)
+
+    def _zag_zag(self, x, p):
+        super(SplayTree, self)._left_rotate(self.tree[p].parent, p)
+        super(SplayTree, self)._left_rotate(p, x)
+
+    def _zag_zig(self, p):
+        super(SplayTree, self)._right_left_rotate(self.tree[p].parent, p)
+
+    def splay(self, x, p):
+        while self.tree[x].parent is not None:
+            if self.tree[p].parent is None:
+                self._zig(x, p)
+            elif self.tree[p].left == x and \
+                self.tree[self.tree[p].parent].left == p:
+                self._zig_zig(x, p)
+            elif self.tree[p].right == x and \
+                self.tree[self.tree[p].parent].right == p:
+                self._zag_zag(x, p)
+            elif self.tree[p].left == x and \
+                self.tree[self.tree[p].parent].right == p:
+                self._zag_zig(p)
+            else:
+                self._zig_zag(p)
+            p = self.tree[x].parent
+
+    def insert(self, key, x):
+        super(SelfBalancingBinaryTree, self).insert(key, x)
+        e, p = super(SelfBalancingBinaryTree, self).search(key, parent=True)
+        self.tree[self.size-1].parent = p
+        self.splay(e, p)
+
+    def delete(self, x):
+        e, p = super(SelfBalancingBinaryTree, self).search(x, parent=True)
+        if e is None:
+            return
+        self.splay(e, p)
+        status = super(SelfBalancingBinaryTree, self).delete(x)
+        return status
+
+    def join(self, other):
+        """
+        Joins two trees current and other such that all elements of
+        the current splay tree are smaller than the elements of the other tree.
+
+        Parameters
+        ==========
+
+        other: SplayTree
+            SplayTree which needs to be joined with the self tree.
+
+        """
+        maxm = self.root_idx
+        while self.tree[maxm].right is not None:
+            maxm = self.tree[maxm].right
+        minm = other.root_idx
+        while other.tree[minm].left is not None:
+            minm = other.tree[minm].left
+        if not self.comparator(self.tree[maxm].key,
+                                other.tree[minm].key):
+            raise ValueError("Elements of %s aren't less "
+                             "than that of %s"%(self, other))
+        self.splay(maxm, self.tree[maxm].parent)
+        idx_update = self.tree._size
+        for node in other.tree:
+            if node is not None:
+                node_copy = TreeNode(node.key, node.data)
+                if node.left is not None:
+                    node_copy.left = node.left + idx_update
+                if node.right is not None:
+                    node_copy.right = node.right + idx_update
+                self.tree.append(node_copy)
+            else:
+                self.tree.append(node)
+        self.tree[self.root_idx].right = \
+            other.root_idx + idx_update
+
+    def split(self, x):
+        """
+        Splits current splay tree into two trees such that one tree contains nodes
+        with key less than or equal to x and the other tree containing
+        nodes with key greater than x.
+
+        Parameters
+        ==========
+
+        x: key
+            Key of the element on the basis of which split is performed.
+
+        Returns
+        =======
+
+        other: SplayTree
+            SplayTree containing elements with key greater than x.
+
+        """
+        e, p = super(SelfBalancingBinaryTree, self).search(x, parent=True)
+        if e is None:
+            return
+        self.splay(e, p)
+        other = SplayTree(None, None)
+        if self.tree[self.root_idx].right is not None:
+            traverse = BinaryTreeTraversal(self)
+            elements = traverse.depth_first_search(order='pre_order', node=self.tree[self.root_idx].right)
+            for i in range(len(elements)):
+                super(SelfBalancingBinaryTree, other).insert(elements[i].key, elements[i].data)
+            for j in range(len(elements) - 1, -1, -1):
+                e, p = super(SelfBalancingBinaryTree, self).search(elements[j].key, parent=True)
+                self.tree[e] = None
+            self.tree[self.root_idx].right = None
+        return other
 
 class BinaryTreeTraversal(object):
     """

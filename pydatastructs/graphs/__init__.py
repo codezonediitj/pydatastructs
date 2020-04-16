@@ -11,7 +11,9 @@ from .algorithms import (
     breadth_first_search,
     breadth_first_search_parallel,
     minimum_spanning_tree,
-    minimum_spanning_tree_parallel
+    minimum_spanning_tree_parallel,
+    strongly_connected_components,
+    depth_first_search
 )
 
 __all__.extend(algorithms.__all__)
