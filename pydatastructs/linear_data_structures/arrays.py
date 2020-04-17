@@ -181,8 +181,9 @@ class MultiDimensionalArray(Array):
         if dimensions[0] <= 1:
             raise ValueError("array cannot be created due to incorrect"
                              " number of dimensions.")
-        n_dimensions = len(dimensions)
+        n_dimensions = len(dimensions)-1
         d_sizes = []
+        dimensions.pop(0)
         while n_dimensions > 1:
             size = dimensions.pop(0)
             for dimension in dimensions:
@@ -190,10 +191,11 @@ class MultiDimensionalArray(Array):
             d_sizes.append(size)
             n_dimensions -= 1
         d_sizes.append(dimensions.pop(0))
+        d_sizes.append(1)
         obj = Array.__new__(cls)
         obj._dtype = dtype
         obj._sizes = d_sizes
-        obj._data = OneDimensionalArray(dtype, len(args)*obj._sizes[0], *kwargs)
+        obj._data = OneDimensionalArray(dtype, (len(args))*obj._sizes[0], *kwargs)
         return obj
 
     def __getitem__(self, dimensions):
