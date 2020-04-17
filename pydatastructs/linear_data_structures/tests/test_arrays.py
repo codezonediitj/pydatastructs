@@ -43,8 +43,8 @@ def test_MultiDimensionalArray():
     array[0, 0, 0] = 0
     array[0, 0, 1] = 0
     array[1, 0, 0] = 0
-    assert str(array._data._data) == '[0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1]'
-test_MultiDimensionalArray()
+    array[2, 1, 1] = 0
+    assert str(array._data._data) == '[0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0]'
 
 def test_DynamicOneDimensionalArray():
     DODA = DynamicOneDimensionalArray

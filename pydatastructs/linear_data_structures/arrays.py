@@ -195,7 +195,7 @@ class MultiDimensionalArray(Array):
         obj = Array.__new__(cls)
         obj._dtype = dtype
         obj._sizes = d_sizes
-        obj._data = OneDimensionalArray(dtype, (len(args))*obj._sizes[0], *kwargs)
+        obj._data = OneDimensionalArray(dtype, (args[0])*obj._sizes[0], *kwargs)
         return obj
 
     def __getitem__(self, dimensions):
