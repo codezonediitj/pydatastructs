@@ -151,6 +151,12 @@ class MAryTreeNode(TreeNode):
     def __str__(self):
         return str((self.key, self.data))
 
+class TrieNode(Node):
+
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+        self.ch = ''
 
 class LinkedListNode(Node):
     """

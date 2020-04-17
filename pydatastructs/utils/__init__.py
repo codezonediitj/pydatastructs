@@ -2,6 +2,7 @@ __all__ = []
 
 from . import misc_util
 from .misc_util import (
+    TrieNode,
     TreeNode,
     MAryTreeNode,
     LinkedListNode,

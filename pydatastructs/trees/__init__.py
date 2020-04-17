@@ -4,8 +4,7 @@ from . import (
     binary_trees,
     m_ary_trees,
     space_partitioning_trees,
-    heaps,
-    trie_structure
+    heaps
 )
 
 from .binary_trees import (
@@ -19,7 +18,9 @@ from .binary_trees import (
 __all__.extend(binary_trees.__all__)
 
 from .m_ary_trees import (
-    MAryTreeNode, MAryTree
+    MAryTreeNode,
+    MAryTree,
+    Trie
 )
 
 __all__.extend(m_ary_trees.__all__)
@@ -37,8 +38,3 @@ from .heaps import (
 )
 __all__.extend(heaps.__all__)
 
-from .trie_structure import (
-    Trie
-)
-
-__all__.extend(trie_structure.__all__)

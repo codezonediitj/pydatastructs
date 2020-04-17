@@ -1,8 +1,9 @@
-from pydatastructs.utils import MAryTreeNode
+from pydatastructs.utils import MAryTreeNode, TrieNode
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 
 __all__ = [
-    'MAryTree'
+    'MAryTree',
+    'Trie'
 ]
 
 class MAryTree(object):
@@ -160,3 +161,117 @@ class MAryTree(object):
                     if j is not None:
                         to_be_printed[i].append(j)
         return str(to_be_printed)
+
+
+class Trie:
+    """
+            Represents a trie data structure.
+
+            Parameters
+            ==========
+            dtype: type
+                A valid object type.
+            N: number of keys in trie
+            K: world inserting or searching
+            alphabet_size: size of alphabet *26
+
+            Examples
+            ========
+            >>> from pydatastructs import Trie
+            >>> keys = ["hi","bye"]
+            >>> new = Trie()
+            >>> for key in keys:
+            >>>     new.insert(key)
+            >>> new.search("bye")
+            "Present in trie"
+            >>> new.search("the")
+            False
+            >>> new.search(bie)
+            ["bye"]
+
+            References
+            ==========
+            .. [1] https://www.geeksforgeeks.org/trie-insert-and-search/
+            .. [2] https://gist.github.com/huseynlilkin/d512e7e57dce32cc7317754c3d9d9bce
+    """
+
+    def __init__(self):
+        self.root = self.get_node()
+
+    def get_node(self):
+        return TrieNode()
+
+    def insert(self, key):
+        '''
+        Notes to know about insertion in trie structure:
+        Every character of input key is inserted as an individual trie node.
+        The children is an array of pointers to next level trie nodes.
+        Key refers to the word that you are inserting or searching in the trie
+
+        Insert and search costs O(k) where k is length of key.
+        The memory requirements of trie is O(k*N) where N is number of keys in trie.
+
+
+        If not present, inserts key into trie
+        If the key is prefix of trie node, just marks leaf node
+        '''
+        current_node = self.root
+
+        for ch in key:
+            if ch not in current_node.children:
+                current_node.children[ch] = self.get_node()
+                current_node.children[ch].ch = ch
+            current_node = current_node.children[ch]
+
+        # marking last node as leaf:
+        current_node.is_end = True
+    def get_words(self, node):
+        if len(node.children) > 0:
+            words = []
+            if node.is_end:
+                words.append(node.ch)
+            for child in node.children:
+                for word in self.get_words(node.children[child]):
+                    words.append(node.ch + word)
+            return words
+        else:
+            return [node.ch]
+
+    def search(self, key):
+        '''
+        Notes to know about searching in trie structure:
+        While searching we only compare the characters and move down.
+        Search key in the trie .
+        Returning true if key presents in trie, else false.
+        The search can end because of end of a string, if the value field of last node is non-zero then the key exists in trie.
+        '''
+        current_node = self.root
+        similar_min = 2
+        prefix = ""
+        for ch in key:
+            if ch in current_node.children:
+                similar_min -=1
+                prefix = prefix + current_node.ch
+                current_node = current_node.children[ch]
+            elif similar_min <= 0:
+                words = []
+                for word in self.get_words(current_node):
+                    words.append(prefix + word)
+                return words
+            else:
+                return False
+        if current_node.is_end:
+            return True
+        else:
+            words = []
+            for word in self.get_words(current_node):
+                words.append(prefix + word)
+            return words
+
+    def delete(self, key):
+        pC = self.root
+
+        if self.search(key) == True:
+            for c in key:
+                pC = pC.children[c]
+            pC.isEndOfWord = False
