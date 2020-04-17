@@ -21,23 +21,30 @@ def test_OneDimensionalArray():
     assert raises(TypeError, lambda: ODA(int, set([1, 2, 3])))
     assert raises(ValueError, lambda: ODA(int, 3, [1]))
 
+
 def test_MultiDimensionalArray():
-    MDA = MultiDimensionalArray
-    A = MDA(int, 5, 9, 3, 8)
-    A.fill(5)
-    A[1][3][2][5] = 2.0
-    assert A
-    assert A[1][3][2][5] == 2.0
-    assert A[1][3][1][5] == 5
-    assert A[0][3][2][5] == 5
-    assert A[1][3][2][0] == 5
-    assert raises(IndexError, lambda: A[5])
-    assert raises(IndexError, lambda: A[4][10])
-    assert raises(IndexError, lambda: A[-1])
-    assert raises(ValueError, lambda: MDA())
-    assert raises(ValueError, lambda: MDA(int))
-    assert raises(ValueError, lambda: MDA(int, 0))
-    assert raises(TypeError, lambda: MDA(int, 5, 6, ""))
+    array = MultiDimensionalArray(int, 5, 9, 3, 8)
+    array.fill(5)
+    array[1, 3, 2, 5] = 2.0
+    assert array
+    assert array[1, 3, 2, 5] == 2.0
+    assert array[1, 3, 0, 5] == 5
+    assert array[1, 2, 2, 5] == 5
+    assert array[2, 3, 2, 5] == 5
+    assert raises(IndexError, lambda: array[5])
+    assert raises(IndexError, lambda: array[4, 10])
+    assert raises(IndexError, lambda: array[-1])
+    assert raises(ValueError, lambda: MultiDimensionalArray())
+    assert raises(ValueError, lambda: MultiDimensionalArray(int))
+    assert raises(ValueError, lambda: MultiDimensionalArray(int, 0))
+    assert raises(TypeError, lambda: MultiDimensionalArray(int, 5, 6, ""))
+    array = MultiDimensionalArray(int, 3, 2, 2)
+    array.fill(1)
+    array[0, 0, 0] = 0
+    array[0, 0, 1] = 0
+    array[1, 0, 0] = 0
+    assert str(array._data._data) == '[0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1]'
+test_MultiDimensionalArray()
 
 def test_DynamicOneDimensionalArray():
     DODA = DynamicOneDimensionalArray

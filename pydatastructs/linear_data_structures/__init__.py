@@ -8,8 +8,9 @@ from . import (
 
 from .arrays import (
     OneDimensionalArray,
-    MultiDimensionalArray,
-    DynamicOneDimensionalArray
+    DynamicOneDimensionalArray,
+    MultiDimensionalArray
+
 )
 __all__.extend(arrays.__all__)
 
