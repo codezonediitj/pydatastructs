@@ -143,27 +143,25 @@ class MultiDimensionalArray(Array):
 
         dtype: type
             A valid object type.
-        size: int
-            The number of elements in the array.
+        *args: int
+            The dimensions of the array.
 
         Raises
         ======
         IndexError
-            Index goes out of boundaries
+            Index goes out of boundaries, or the number of index given is not the same as the number of dimensions
         ValueError
             When there's no dimensions or the dimension size is 0
-        TypeError
-            An argument is not what expected
 
         Examples
         ========
         >>> from pydatastructs import MultiDimensionalArray as MDA
         >>> arr = MDA(int, 5, 6, 9)
         >>> arr.fill(32)
-        >>> arr[3][0][0]
+        >>> arr[3, 0, 0]
         32
-        >>> arr[3][0][0] = 7.2
-        >>> arr[3][0][0]
+        >>> arr[3, 0, 0] = 7
+        >>> arr[3, 0, 0]
         7
 
         References
@@ -171,7 +169,7 @@ class MultiDimensionalArray(Array):
 
         .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
         '''
-    __slots__ = ['_size', '_data', '_dtype']
+    __slots__ = ['_sizes', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype is NoneType or len(args) == (0):
