@@ -2,7 +2,8 @@ from pydatastructs.utils.misc_util import _check_type, NoneType
 
 __all__ = [
 'OneDimensionalArray',
-'DynamicOneDimensionalArray'
+'DynamicOneDimensionalArray',
+'MultiDimensionalArray'
 ]
 
 class Array(object):
@@ -73,7 +74,7 @@ class OneDimensionalArray(Array):
         obj._dtype = dtype
         if len(args) == 2:
             if _check_type(args[0], list) and \
-                _check_type(args[1], int):
+                    _check_type(args[1], int):
                 for i in range(len(args[0])):
                     if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
@@ -177,56 +178,44 @@ class MultiDimensionalArray(Array):
             raise ValueError("array cannot be created due to incorrect"
                              " information.")
         dimensions = list(args)
-        if dimensions[0] <= 0:
+        if dimensions[0] <= 1:
             raise ValueError("array cannot be created due to incorrect"
                              " number of dimensions.")
-        if len(dimensions) == 2:
-            obj = Array.__new__(cls)
-            obj._dtype = OneDimensionalArray
-            obj._size = dimensions.pop(0)
-            obj._data = [None] * obj._size
-            for i in range(obj._size):
-                obj._data[i] = MultiDimensionalArray(dtype, *dimensions)
-            return obj
-        elif len(dimensions) == 1:
-            return OneDimensionalArray(dtype, dimensions[0])
-        else:
-            obj = Array.__new__(cls)
-            obj._dtype = MultiDimensionalArray
-            obj._size = dimensions.pop(0)
-            obj._data = [None] * obj._size
-            for i in range(obj._size):
-                obj._data[i] = MultiDimensionalArray(dtype, *dimensions)
-            return obj
+        n_dimensions = len(dimensions)
+        d_sizes = []
+        while n_dimensions > 1:
+            size = dimensions.pop(0)
+            for dimension in dimensions:
+                size = size * dimension
+            d_sizes.append(size)
+            n_dimensions -= 1
+        d_sizes.append(dimensions.pop(0))
+        obj = Array.__new__(cls)
+        obj._dtype = dtype
+        obj._sizes = d_sizes
+        obj._data = OneDimensionalArray(dtype, len(args)*obj._sizes[0], *kwargs)
+        return obj
 
-    def __getitem__(self, idx):
-        if idx >= self._size or idx < 0:
-            raise IndexError("Index out of range.")
-        return self._data.__getitem__(idx)
+    def __getitem__(self, dimensions):
+        if type(dimensions) != tuple:
+            raise IndexError("Expected more than 1 dimension.")
+        if len(dimensions) != len(self._sizes):
+            raise IndexError("Number of dimensions not expected.")
+        position = 0
+        for i in range(0, len(dimensions)):
+            position += self._sizes[i] * dimensions[i]
+        return self._data.__getitem__(position)
 
-    def __setitem__(self, idx, element):
-        if idx >= self._size or idx < 0:
-            raise IndexError("Index out of range.")
-        if type(element) != self._data[0]._dtype:
-            raise TypeError("Unexpected item type.")
-        # Check the size of the element if it is, set it
-        if self.compare_size(element):
-            self._data[idx] = element
-        else:
-            raise TypeError("Unexpected item type.")
-
-    def compare_size(self, array):
-        if self._data[0]._size == array._size:
-            if array._dtype == MultiDimensionalArray:
-                return self._data[0].compare_size(array)
-            elif array._dtype == OneDimensionalArray:
-                if array[0]._dtype == self._data[0][0]._dtype:
-                    return True
-        return False
+    def __setitem__(self, dimensions, element):
+        if len(dimensions) != len(self._sizes):
+            raise IndexError("Number of dimensions not expected.")
+        position = 0
+        for i in range(0, len(dimensions)):
+            position += self._sizes[i] * dimensions[i]
+        self._data.__setitem__(position, element)
 
     def fill(self, element):
-        for i in range(self._size):
-            self._data[i].fill(element)
+        self._data.fill(element)
 
 class DynamicArray(Array):
     """
