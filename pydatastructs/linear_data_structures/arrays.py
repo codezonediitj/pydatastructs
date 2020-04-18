@@ -137,40 +137,46 @@ class OneDimensionalArray(Array):
         return str(self._data)
 
 class MultiDimensionalArray(Array):
-    '''
-        Represents a multi-dimensional array.
+    """
+    Represents a multi-dimensional array.
 
-        Parameters
-        ==========
+    Parameters
+    ==========
 
-        dtype: type
-            A valid object type.
-        *args: int
-            The dimensions of the array.
+    dtype: type
+        A valid object type.
+    *args: int
+        The dimensions of the array.
 
-        Raises
-        ======
-        IndexError
-            Index goes out of boundaries, or the number of index given is not the same as the number of dimensions
-        ValueError
-            When there's no dimensions or the dimension size is 0
+    Raises
+    ======
 
-        Examples
-        ========
-        >>> from pydatastructs import MultiDimensionalArray as MDA
-        >>> arr = MDA(int, 5, 6, 9)
-        >>> arr.fill(32)
-        >>> arr[3, 0, 0]
-        32
-        >>> arr[3, 0, 0] = 7
-        >>> arr[3, 0, 0]
-        7
+    IndexError
+        Index goes out of boundaries, or 
+        the number of index given is not 
+        the same as the number of dimensions.
+    ValueError
+        When there's no dimensions or the 
+        dimension size is 0.
 
-        References
-        ==========
+    Examples
+    ========
 
-        .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
-        '''
+    >>> from pydatastructs import MultiDimensionalArray as MDA
+    >>> arr = MDA(int, 5, 6, 9)
+    >>> arr.fill(32)
+    >>> arr[3, 0, 0]
+    32
+    >>> arr[3, 0, 0] = 7
+    >>> arr[3, 0, 0]
+    7
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
+    
+    """
     __slots__ = ['_sizes', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
