@@ -71,18 +71,18 @@ class OneDimensionalArray(Array):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype is NoneType or len(args) not in (1, 2):
             raise ValueError("1D array cannot be created due to incorrect"
-                             " information.")
+                                " information.")
         obj = Array.__new__(cls)
         obj._dtype = dtype
         if len(args) == 2:
             if _check_type(args[0], list) and \
-                    _check_type(args[1], int):
+                _check_type(args[1], int):
                 for i in range(len(args[0])):
                     if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 size, data = args[1], [arg for arg in args[0]]
             elif _check_type(args[1], list) and \
-                    _check_type(args[0], int):
+                _check_type(args[0], int):
                 for i in range(len(args[1])):
                     if _check_type(args[1][i], dtype) is False:
                         args[1][i] = dtype(args[1][i])
@@ -92,7 +92,7 @@ class OneDimensionalArray(Array):
                                 "expected type of data is list/tuple.")
             if size != len(data):
                 raise ValueError("Conflict in the size %s and length of data %s"
-                                 % (size, len(data)))
+                                 %(size, len(data)))
             obj._size, obj._data = size, data
 
         elif len(args) == 1:
@@ -105,7 +105,7 @@ class OneDimensionalArray(Array):
                     if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
-                                       [arg for arg in args[0]]
+                                      [arg for arg in args[0]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
