@@ -10,7 +10,6 @@ from .arrays import (
     OneDimensionalArray,
     DynamicOneDimensionalArray,
     MultiDimensionalArray
-
 )
 __all__.extend(arrays.__all__)
 
