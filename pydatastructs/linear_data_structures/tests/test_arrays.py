@@ -36,7 +36,6 @@ def test_MultiDimensionalArray():
     assert raises(IndexError, lambda: array[-1])
     assert raises(ValueError, lambda: MultiDimensionalArray())
     assert raises(ValueError, lambda: MultiDimensionalArray(int))
-    assert raises(ValueError, lambda: MultiDimensionalArray(int, 0))
     assert raises(TypeError, lambda: MultiDimensionalArray(int, 5, 6, ""))
     array = MultiDimensionalArray(int, 3, 2, 2)
     array.fill(1)
@@ -44,8 +43,12 @@ def test_MultiDimensionalArray():
     array[0, 0, 1] = 0
     array[1, 0, 0] = 0
     array[2, 1, 1] = 0
-    assert str(array._data._data) == '[0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0]'
-
+    assert str(array._data) == '[0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0]'
+    array = MultiDimensionalArray(int, 4)
+    array.fill(5)
+    array[3] = 3
+    assert array[3] == 3
+test_MultiDimensionalArray()
 def test_DynamicOneDimensionalArray():
     DODA = DynamicOneDimensionalArray
     A = DODA(int, 0)
