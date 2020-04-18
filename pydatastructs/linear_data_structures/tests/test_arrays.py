@@ -48,7 +48,7 @@ def test_MultiDimensionalArray():
     array.fill(5)
     array[3] = 3
     assert array[3] == 3
-test_MultiDimensionalArray()
+
 def test_DynamicOneDimensionalArray():
     DODA = DynamicOneDimensionalArray
     A = DODA(int, 0)
