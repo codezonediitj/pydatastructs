@@ -181,13 +181,13 @@ class MultiDimensionalArray(Array):
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype is NoneType or len(args) == (0):
-            raise ValueError("array cannot be created due to incorrect"
+            raise ValueError("Array cannot be created due to incorrect"
                              " information.")
         dimensions = list(args)
         if dimensions[0] <= 1:
-            raise ValueError("array cannot be created due to incorrect"
-                             " number of dimensions.")
-        n_dimensions = len(dimensions)-1
+            raise ValueError("Array cannot be created due to incorrect"
+                             " dimensions.")
+        n_dimensions = len(dimensions) - 1
         d_sizes = []
         dimensions.pop(0)
         while n_dimensions > 1:
@@ -374,7 +374,6 @@ class ArrayForTrees(DynamicOneDimensionalArray):
 
     pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
     """
-
     def _modify(self):
         if self._num / self._size < self._load_factor:
             new_indices = dict()
