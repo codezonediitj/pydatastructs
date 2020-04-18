@@ -105,7 +105,7 @@ class OneDimensionalArray(Array):
                     if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
-                                      [arg for arg in args[0]]
+                                        [arg for arg in args[0]]
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -183,47 +183,63 @@ class MultiDimensionalArray(Array):
         if dtype is NoneType or len(args) == (0):
             raise ValueError("Array cannot be created due to incorrect"
                              " information.")
-        dimensions = list(args)
-        if dimensions[0] <= 1:
-            raise ValueError("Array cannot be created due to incorrect"
-                             " dimensions.")
-        n_dimensions = len(dimensions) - 1
+        if len(args) == 1:
+            obj = Array.__new__(cls)
+            obj._dtype = dtype
+            obj._shape = [1]
+            obj._data = [None] * args[0]
+            return obj
+        dimensions = args
+        for dimension in dimensions:
+            if dimension < 1:
+                raise ValueError("Array cannot be created due to incorrect"
+                                 " dimensions.")
+        n_dimensions = len(dimensions)
         d_sizes = []
-        dimensions.pop(0)
+        index = 0
         while n_dimensions > 1:
-            size = dimensions.pop(0)
-            for dimension in dimensions:
+            size = dimensions[index]
+            for i in range(index,  len(dimensions) - 1):
                 size = size * dimension
             d_sizes.append(size)
             n_dimensions -= 1
-        d_sizes.append(dimensions.pop(0))
+            index += 1
+        d_sizes.append(dimensions[index])
         d_sizes.append(1)
         obj = Array.__new__(cls)
         obj._dtype = dtype
-        obj._sizes = d_sizes
-        obj._data = OneDimensionalArray(dtype, (args[0])*obj._sizes[0], *kwargs)
+        obj._shape = d_sizes
+        obj._data = [None] * obj._shape[1] * dimensions[0]
         return obj
 
-    def __getitem__(self, dimensions):
-        if type(dimensions) != tuple:
-            raise IndexError("Expected more than 1 dimension.")
-        if len(dimensions) != len(self._sizes):
-            raise IndexError("Number of dimensions not expected.")
+    def __getitem__(self, indices):
+        if type(indices) == int:
+            if len(self._shape) > 1:
+                raise IndexError("Shape mismatch, current shape is %s" % (self._shape))
+            else:
+                return self._data[indices]
+        if len(indices) != len(self._shape) - 1:
+            raise IndexError("Shape mismatch, current shape is %s"%(self._shape))
         position = 0
-        for i in range(0, len(dimensions)):
-            position += self._sizes[i] * dimensions[i]
-        return self._data.__getitem__(position)
+        for i in range(0, len(indices)):
+            position += self._shape[i+1] * indices[i]
+        return self._data[position]
 
-    def __setitem__(self, dimensions, element):
-        if len(dimensions) != len(self._sizes):
+    def __setitem__(self, indices, element):
+        if type(indices) == int:
+            self._data[indices] = element
+        elif len(indices) != len(self._shape) - 1:
             raise IndexError("Number of dimensions not expected.")
-        position = 0
-        for i in range(0, len(dimensions)):
-            position += self._sizes[i] * dimensions[i]
-        self._data.__setitem__(position, element)
+        else:
+            position = 0
+            for i in range(0, len(indices)):
+                position += self._shape[i+1] * indices[i]
+            self._data[position] = element
 
     def fill(self, element):
-        self._data.fill(element)
+        element = self._dtype(element)
+        for i in range(len(self._data)):
+            self._data[i] = element
 
 class DynamicArray(Array):
     """
@@ -344,7 +360,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
 
     def delete(self, idx):
         if idx <= self._last_pos_filled and idx >= 0 and \
-                self[idx] is not None:
+            self[idx] is not None:
             self[idx] = None
             self._num -= 1
             if self._last_pos_filled == idx:
@@ -377,7 +393,7 @@ class ArrayForTrees(DynamicOneDimensionalArray):
     def _modify(self):
         if self._num / self._size < self._load_factor:
             new_indices = dict()
-            arr_new = OneDimensionalArray(self._dtype, 2 * self._num + 1)
+            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
                 if self[i] is not None:
