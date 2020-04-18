@@ -13,7 +13,6 @@ class Array(object):
     '''
     pass
 
-
 class OneDimensionalArray(Array):
     '''
     Represents one dimensional arrays.
@@ -241,12 +240,12 @@ class MultiDimensionalArray(Array):
         for i in range(len(self._data)):
             self._data[i] = element
 
+
 class DynamicArray(Array):
     """
     Abstract class for dynamic arrays.
     """
     pass
-
 
 class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     """
@@ -370,6 +369,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     @property
     def size(self):
         return self._size
+
     def __str__(self):
         to_be_printed = ['' for i in range(self._last_pos_filled + 1)]
         for i in range(self._last_pos_filled + 1):
