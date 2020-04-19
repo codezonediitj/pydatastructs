@@ -38,3 +38,7 @@ def test_MAryTreeNode():
     m.add_children(*[i for i in range(2,10)])
     assert str(m) == "(1, 1)"
     assert str(m.children) == "['2', '3', '4', '5', '6', '7', '8', '9']"
+
+def test_CartesianTreeNode():
+    c = CartesianTreeNode(1,1,1)
+    assert str(c) == "(None, 1, 1, 1, None)"
