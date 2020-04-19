@@ -635,9 +635,8 @@ class SelfBalancingBinaryTree(BinarySearchTree):
         kp = self.tree[k].parent
         if kp is None:
             self.root_idx = k
-            
-class CartesianTree(SelfBalancingBinaryTree):
 
+class CartesianTree(SelfBalancingBinaryTree):
     """
     Represents cartesian trees.
 
@@ -674,30 +673,26 @@ class CartesianTree(SelfBalancingBinaryTree):
 
     pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
     """
-    
     def _bubble_up(self, node_idx):
         node = self.tree[node_idx]
         parent_idx = self.tree[node_idx].parent
         parent = self.tree[parent_idx]
         while (node.parent != None) and (parent.priority > node.priority):
             if parent.right == node_idx:
-                self._left_rotate(parent_idx, node_idx) 
-                
+                self._left_rotate(parent_idx, node_idx)
             else:
                 self._right_rotate(parent_idx, node_idx)
-                
-            node = self.tree[node_idx]   
+            node = self.tree[node_idx]
             parent_idx = self.tree[node_idx].parent
             if parent_idx != None:
                 parent = self.tree[parent_idx]
         if node.parent == None:
             self.tree[node_idx].is_root = True
-            
+
     def _trickle_down(self, node_idx):
         node = self.tree[node_idx]
         parent_idx = node.parent
         while node.left != None or node.right != None:
-
             if node.left == None:
                 self._left_rotate(node_idx, self.tree[node_idx].right)
             elif node.right == None:
@@ -706,11 +701,9 @@ class CartesianTree(SelfBalancingBinaryTree):
                 self._right_rotate(node_idx, self.tree[node_idx].left)
             else:
                 self._left_rotate(node_idx, self.tree[node_idx].right)
-                
             node = self.tree[node_idx]
             parent_idx = node.parent
-            
-        
+
     def insert(self, key, data, priority):
         super(CartesianTree, self).insert(key, data)
         node_idx = super(CartesianTree, self).search(key)
@@ -724,7 +717,7 @@ class CartesianTree(SelfBalancingBinaryTree):
             self.tree[node_idx].is_root = True
         else:
             self._bubble_up(node_idx)
-        
+
     def delete(self, key, **kwargs):
         node_idx = super(CartesianTree, self).search(key)
         if node_idx != None:
@@ -738,8 +731,6 @@ class CartesianTree(SelfBalancingBinaryTree):
                 node = self.tree[i]
                 to_be_printed[i] = (node.left, node.key, node.priority, node.data, node.right)
         return str(to_be_printed)
-
-    
 
 class Treap(CartesianTree):
     """
@@ -774,17 +765,14 @@ class Treap(CartesianTree):
     .. [1] https://en.wikipedia.org/wiki/Treap
 
     """
-    
     priorities = set()
-    
     def insert(self, key, data):
         priority = random.random()
         while priority in self.priorities:
             priority = random.random()
         self.priorities.add(priority)
         super(Treap, self).insert(key, data, priority)
-                
-    
+
 class AVLTree(SelfBalancingBinaryTree):
     """
     Represents AVL trees.
