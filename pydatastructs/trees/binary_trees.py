@@ -218,7 +218,7 @@ class BinarySearchTree(BinaryTree):
             self.tree[walk].key = key
             self.tree[walk].data = data
             return None
-        new_node, prev_node, flag = TreeNode(key, data), 0, True
+        new_node, prev_node, flag = TreeNode(key, data), self.root_idx, True
         while flag:
             if not self.comparator(key, self.tree[walk].key):
                 if self.tree[walk].right is None:
