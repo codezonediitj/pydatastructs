@@ -689,7 +689,9 @@ def random_walk(graph, start, path_length, operation, *args, **kwargs):
         curr_node = path[-1]
         next_nodes = graph.neighbors(curr_node)
         random.shuffle(next_nodes)
-        if len(next_nodes) != 0 and status:
+        if len(next_nodes):
             for next_node in next_nodes:
                     status = operation(next_node.name, *args)
+                    if status:
+                        break
     return None
