@@ -1,5 +1,5 @@
 from pydatastructs.utils import (AdjacencyListGraphNode, AdjacencyMatrixGraphNode,
-                                GraphEdge, BinomialTreeNode, MAryTreeNode)
+                                GraphEdge, BinomialTreeNode, MAryTreeNode, CartesianTreeNode)
 from pydatastructs.utils.raises_util import raises
 
 def test_AdjacencyListGraphNode():
