@@ -305,7 +305,7 @@ def test_AVLTree():
     test_select_rank([2])
     a5.delete(2)
     test_select_rank([])
-    
+
 def test_BinaryIndexedTree():
 
     FT = BinaryIndexedTree
