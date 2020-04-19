@@ -351,12 +351,12 @@ def test_CartesianTree():
     tree.delete(1.5)
     tree.tree[tree.tree[tree.root_idx].left].key == 1
     tree.delete(8)
-    assert tree.search(8) == None
+    assert tree.search(8) is None
     tree.delete(7)
-    assert tree.search(7) == None
+    assert tree.search(7) is None
     tree.delete(3)
-    assert tree.search(3) == None
-    assert tree.delete(18) == None
+    assert tree.search(3) is None
+    assert tree.delete(18) is None
 
 def test_Treap():
     tree = Treap()
@@ -367,9 +367,9 @@ def test_Treap():
     tree.insert(5,5)
     assert isinstance(tree.tree[0].priority, float)
     tree.delete(1)
-    assert tree.search(1) == None
+    assert tree.search(1) is None
     assert tree.search(2) == 1
-    assert tree.delete(1) == None
+    assert tree.delete(1) is None
 
 def test_issue_234():
     """
