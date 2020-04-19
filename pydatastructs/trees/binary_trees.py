@@ -719,10 +719,11 @@ class CartesianTree(SelfBalancingBinaryTree):
             self._bubble_up(node_idx)
 
     def delete(self, key, **kwargs):
+        balancing_info = kwargs.get('balancing_info', False)
         node_idx = super(CartesianTree, self).search(key)
         if node_idx is not None:
             self._trickle_down(node_idx)
-            return super(CartesianTree, self).delete(key, balancing_info = True)
+            return super(CartesianTree, self).delete(key, balancing_info = balancing_info)
 
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
