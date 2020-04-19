@@ -647,7 +647,7 @@ class CartesianTree(SelfBalancingBinaryTree):
     >>> c = CT()
     >>> c.insert(1, 1, 4)
     >>> c.insert(2, 2, 3)
-    >>> child = b.tree[b.root_idx].right
+    >>> child = c.tree[c.root_idx].left
     >>> c.tree[child].data
     1
     >>> c.search(1)
@@ -744,9 +744,6 @@ class Treap(CartesianTree):
     >>> t = T()
     >>> t.insert(1, 1)
     >>> t.insert(2, 2)
-    >>> child = t.tree[b.root_idx].right
-    >>> t.tree[child].data
-    1
     >>> t.search(1)
     0
     >>> t.search(-1) is None
