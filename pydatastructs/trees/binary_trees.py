@@ -677,25 +677,25 @@ class CartesianTree(SelfBalancingBinaryTree):
         node = self.tree[node_idx]
         parent_idx = self.tree[node_idx].parent
         parent = self.tree[parent_idx]
-        while (node.parent != None) and (parent.priority > node.priority):
+        while (node.parent is not None) and (parent.priority > node.priority):
             if parent.right == node_idx:
                 self._left_rotate(parent_idx, node_idx)
             else:
                 self._right_rotate(parent_idx, node_idx)
             node = self.tree[node_idx]
             parent_idx = self.tree[node_idx].parent
-            if parent_idx != None:
+            if parent_idx is not None:
                 parent = self.tree[parent_idx]
-        if node.parent == None:
+        if node.parent is None:
             self.tree[node_idx].is_root = True
 
     def _trickle_down(self, node_idx):
         node = self.tree[node_idx]
         parent_idx = node.parent
-        while node.left != None or node.right != None:
-            if node.left == None:
+        while node.left is not None or node.right is not None:
+            if node.left is None:
                 self._left_rotate(node_idx, self.tree[node_idx].right)
-            elif node.right == None:
+            elif node.right is None:
                 self._right_rotate(node_idx, self.tree[node_idx].left)
             elif self.tree[node.left].priority < self.tree[node.right].priority:
                 self._right_rotate(node_idx, self.tree[node_idx].left)
@@ -720,7 +720,7 @@ class CartesianTree(SelfBalancingBinaryTree):
 
     def delete(self, key, **kwargs):
         node_idx = super(CartesianTree, self).search(key)
-        if node_idx != None:
+        if node_idx is not None:
             self._trickle_down(node_idx)
             return super(CartesianTree, self).delete(key, balancing_info = True)
 
