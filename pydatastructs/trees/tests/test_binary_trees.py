@@ -319,7 +319,7 @@ def test_BinaryIndexedTree():
     assert t.get_sum(0, 2) == 105
     assert t.get_sum(0, 4) == 114
     assert t.get_sum(1, 9) == 54
-    
+
 def test_CartesianTree():
     tree = CartesianTree()
     tree.insert(3, 3, 1)
@@ -357,7 +357,7 @@ def test_CartesianTree():
     tree.delete(3)
     assert tree.search(3) == None
     assert tree.delete(18) == None
-    
+
 def test_Treap():
     tree = Treap()
     tree.insert(7,7)
@@ -370,7 +370,7 @@ def test_Treap():
     assert tree.search(1) == None
     assert tree.search(2) == 1
     assert tree.delete(1) == None
-    
+
 def test_issue_234():
     """
     https://github.com/codezonediitj/pydatastructs/issues/234
