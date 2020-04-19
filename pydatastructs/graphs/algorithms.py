@@ -640,7 +640,7 @@ def _depth_first_search_adjacency_list(
 
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
 
-def random_walk(graph, start, path_length, operation, seed=44, *args):
+def random_walk(graph, start, path_length, operation, *args, **kwargs):
     '''
     Executes random walk from the starting node and given graph.
 
@@ -682,22 +682,14 @@ def random_walk(graph, start, path_length, operation, seed=44, *args):
 
     '''
 
-
-    random.seed(seed)
+    random.seed(kwargs.get("seed", 44))
     path = args[0]
     path.append(start.name)
-    op_args = args
     for i in range(path_length - 1):
         curr_node = path[-1]
         next_nodes = graph.neighbors(curr_node)
         random.shuffle(next_nodes)
-        if len(next_nodes) != 0:
+        if len(next_nodes) != 0 and status:
             for next_node in next_nodes:
-                    status = operation(next_node.name, *op_args)
-                    if not status:
-                        continue
-                    else:
-                        break
-        else:
-            return None
+                    status = operation(next_node.name, *args)
     return None

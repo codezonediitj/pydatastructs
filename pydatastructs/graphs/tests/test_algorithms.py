@@ -298,7 +298,7 @@ def test_random_walk():
             return True
 
 
-        random_walk(G, V1, 5, walk, 44, path)
+        random_walk(G, V1, 5, walk, path, seed=44)
 
         assert path == ['0', '3', '7']
 
