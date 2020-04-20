@@ -67,6 +67,8 @@ That's it, 10 easy steps for your first contribution. For future contributions j
 
 See you soon with your first PR.
 
+It is recommended to go through the following links before you start working.
+
 - [Issue Policy](https://github.com/codezonediitj/pydatastructs/wiki/Issue-Policy)
 - [Pull Request Policy](https://github.com/codezonediitj/pydatastructs/wiki/Pull-Request-Policy)
 - [Plan of Action for the Projects](https://github.com/codezonediitj/pydatastructs/wiki/Plan-of-Action-for-the-Projects)
