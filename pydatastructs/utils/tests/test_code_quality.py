@@ -71,14 +71,45 @@ def test_presence_of_tabs():
                             "white spaces."%(line, file_path)
         file.close()
 
+def _apis():
+    import pydatastructs as pyds
+    return [
+    pyds.graphs.adjacency_list.AdjacencyList,
+    pyds.graphs.adjacency_matrix.AdjacencyMatrix,
+    pyds.DoublyLinkedList, pyds.SinglyLinkedList,
+    pyds.SinglyCircularLinkedList,
+    pyds.DoublyCircularLinkedList,
+    pyds.OneDimensionalArray,
+    pyds.DynamicOneDimensionalArray,
+    pyds.trees.BinaryTree, pyds.BinarySearchTree,
+    pyds.AVLTree, pyds.SplayTree, pyds.BinaryTreeTraversal,
+    pyds.DHeap, pyds.BinaryHeap, pyds.TernaryHeap, pyds.BinomialHeap,
+    pyds.MAryTree, pyds.OneDimensionalSegmentTree,
+    pyds.Queue, pyds.miscellaneous_data_structures.queue.ArrayQueue,
+    pyds.miscellaneous_data_structures.queue.LinkedListQueue,
+    pyds.PriorityQueue,
+    pyds.miscellaneous_data_structures.queue.LinkedListPriorityQueue,
+    pyds.miscellaneous_data_structures.queue.BinaryHeapPriorityQueue,
+    pyds.miscellaneous_data_structures.queue.BinomialHeapPriorityQueue,
+    pyds.Stack, pyds.miscellaneous_data_structures.stack.ArrayStack,
+    pyds.miscellaneous_data_structures.stack.LinkedListStack,
+    pyds.DisjointSetForest, pyds.BinomialTree, pyds.TreeNode, pyds.MAryTreeNode,
+    pyds.LinkedListNode, pyds.BinomialTreeNode, pyds.AdjacencyListGraphNode,
+    pyds.AdjacencyMatrixGraphNode, pyds.GraphEdge, pyds.Set, pyds.BinaryIndexedTree]
+
 def test_public_api():
     pyds = pydatastructs
-    public_api = dir(pydatastructs)
-    for name in public_api:
-        if inspect.isclass(getattr(pyds, name)):
-            _class = getattr(pyds, name)
+    apis = _apis()
+    for name in apis:
+        if inspect.isclass(name):
+            _class = name
             mro = _class.__mro__
             must_methods = _class.methods()
+            print("\n" + str(name))
+            print("Methods Implemented")
+            print(must_methods)
+            print("Parent Classes")
+            print(mro[1:])
             for supercls in mro:
                 if supercls != _class:
                     for method in must_methods:

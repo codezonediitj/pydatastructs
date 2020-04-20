@@ -58,6 +58,10 @@ class Stack(object):
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
 
+    @classmethod
+    def methods(cls):
+        return ['__new__']
+
     def push(self, *args, **kwargs):
         raise NotImplementedError(
             "This is an abstract method.")
@@ -88,6 +92,11 @@ class ArrayStack(Stack):
         obj = object.__new__(cls)
         obj.items = items
         return obj
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'push', 'pop', 'is_emtpy',
+        'peek', '__len__', '__str__']
 
     def push(self, x):
         if self.is_empty:
@@ -136,13 +145,18 @@ class LinkedListStack(Stack):
             raise TypeError("Expected type: list/tuple")
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'push', 'pop', 'is_emtpy',
+        'peek', '__len__', '__str__']
+
     def push(self, x):
-        self.stack.append_left(x)
+        self.stack.appendleft(x)
 
     def pop(self):
         if self.is_empty:
             raise IndexError("Stack is empty")
-        return self.stack.pop_left()
+        return self.stack.popleft()
 
     @property
     def is_empty(self):
