@@ -100,6 +100,8 @@ def _apis():
 def test_public_api():
     pyds = pydatastructs
     apis = _apis()
+    print("\n\nAPI Report")
+    print("==========")
     for name in apis:
         if inspect.isclass(name):
             _class = name
