@@ -6,9 +6,9 @@ def test_DoublyLinkedList():
     random.seed(1000)
     dll = DoublyLinkedList()
     assert raises(IndexError, lambda: dll[2])
-    dll.append_left(5)
+    dll.appendleft(5)
     dll.append(1)
-    dll.append_left(2)
+    dll.appendleft(2)
     dll.append(3)
     dll.insert_after(dll[-1], 4)
     dll.insert_after(dll[2], 6)
@@ -17,8 +17,8 @@ def test_DoublyLinkedList():
     dll.insert_at(0, 2)
     dll.insert_at(-1, 9)
     dll.extract(2)
-    assert dll.pop_left().key == 2
-    assert dll.pop_right().key == 4
+    assert dll.popleft().key == 2
+    assert dll.popright().key == 4
     assert dll.search(3) == dll[-2]
     assert dll.search(-1) is None
     dll[-2].key = 0
@@ -31,9 +31,9 @@ def test_DoublyLinkedList():
         dll_copy.append(dll[i])
     for i in range(len(dll)):
         if i%2 == 0:
-            dll.pop_left()
+            dll.popleft()
         else:
-            dll.pop_right()
+            dll.popright()
     assert str(dll) == "[]"
     for _ in range(len(dll_copy)):
         index = random.randint(0, len(dll_copy) - 1)
@@ -45,17 +45,17 @@ def test_SinglyLinkedList():
     random.seed(1000)
     sll = SinglyLinkedList()
     assert raises(IndexError, lambda: sll[2])
-    sll.append_left(5)
+    sll.appendleft(5)
     sll.append(1)
-    sll.append_left(2)
+    sll.appendleft(2)
     sll.append(3)
     sll.insert_after(sll[1], 4)
     sll.insert_after(sll[-1], 6)
     sll.insert_at(0, 2)
     sll.insert_at(-1, 9)
     sll.extract(2)
-    assert sll.pop_left().key == 2
-    assert sll.pop_right().key == 6
+    assert sll.popleft().key == 2
+    assert sll.popright().key == 6
     sll[-2].key = 0
     assert str(sll) == "['2', '4', '1', '0', '9']"
     assert len(sll) == 5
@@ -66,9 +66,9 @@ def test_SinglyLinkedList():
         sll_copy.append(sll[i])
     for i in range(len(sll)):
         if i%2 == 0:
-            sll.pop_left()
+            sll.popleft()
         else:
-            sll.pop_right()
+            sll.popright()
     assert str(sll) == "[]"
     for _ in range(len(sll_copy)):
         index = random.randint(0, len(sll_copy) - 1)
@@ -80,17 +80,17 @@ def test_SinglyCircularLinkedList():
     random.seed(1000)
     scll = SinglyCircularLinkedList()
     assert raises(IndexError, lambda: scll[2])
-    scll.append_left(5)
+    scll.appendleft(5)
     scll.append(1)
-    scll.append_left(2)
+    scll.appendleft(2)
     scll.append(3)
     scll.insert_after(scll[1], 4)
     scll.insert_after(scll[-1], 6)
     scll.insert_at(0, 2)
     scll.insert_at(-1, 9)
     scll.extract(2)
-    assert scll.pop_left().key == 2
-    assert scll.pop_right().key == 6
+    assert scll.popleft().key == 2
+    assert scll.popright().key == 6
     assert scll.search(-1) is None
     scll[-2].key = 0
     assert str(scll) == "['2', '4', '1', '0', '9']"
@@ -102,9 +102,9 @@ def test_SinglyCircularLinkedList():
         scll_copy.append(scll[i])
     for i in range(len(scll)):
         if i%2 == 0:
-            scll.pop_left()
+            scll.popleft()
         else:
-            scll.pop_right()
+            scll.popright()
     assert str(scll) == "[]"
     for _ in range(len(scll_copy)):
         index = random.randint(0, len(scll_copy) - 1)
@@ -116,9 +116,9 @@ def test_DoublyCircularLinkedList():
     random.seed(1000)
     dcll = DoublyCircularLinkedList()
     assert raises(IndexError, lambda: dcll[2])
-    dcll.append_left(5)
+    dcll.appendleft(5)
     dcll.append(1)
-    dcll.append_left(2)
+    dcll.appendleft(2)
     dcll.append(3)
     dcll.insert_after(dcll[-1], 4)
     dcll.insert_after(dcll[2], 6)
@@ -127,8 +127,8 @@ def test_DoublyCircularLinkedList():
     dcll.insert_at(0, 2)
     dcll.insert_at(-1, 9)
     dcll.extract(2)
-    assert dcll.pop_left().key == 2
-    assert dcll.pop_right().key == 4
+    assert dcll.popleft().key == 2
+    assert dcll.popright().key == 4
     dcll[-2].key = 0
     assert str(dcll) == "['7', '5', '1', '6', '1', '0', '9']"
     assert len(dcll) == 7
@@ -139,9 +139,9 @@ def test_DoublyCircularLinkedList():
         dcll_copy.append(dcll[i])
     for i in range(len(dcll)):
         if i%2 == 0:
-            dcll.pop_left()
+            dcll.popleft()
         else:
-            dcll.pop_right()
+            dcll.popright()
     assert str(dcll) == "[]"
     for _ in range(len(dcll_copy)):
         index = random.randint(0, len(dcll_copy) - 1)

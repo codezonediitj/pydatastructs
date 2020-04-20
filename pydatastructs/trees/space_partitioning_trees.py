@@ -56,6 +56,10 @@ class OneDimensionalSegmentTree(object):
         obj.tree, obj.root_idx, obj.cache = [], None, False
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['build', 'query', '__str__']
+
     def _union(self, i1, i2):
         """
         Helper function for taking union of two

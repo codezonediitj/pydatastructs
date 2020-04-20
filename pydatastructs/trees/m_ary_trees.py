@@ -59,6 +59,10 @@ class MAryTree(object):
         obj.is_order_statistic = is_order_statistic
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__str__']
+
     def insert(self, key, data=None):
         """
         Inserts data by the passed key using iterative

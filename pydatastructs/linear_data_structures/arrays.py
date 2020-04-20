@@ -109,6 +109,12 @@ class OneDimensionalArray(Array):
 
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__getitem__',
+        '__setitem__', 'fill', '__len__',
+        '__str__']
+
     def __getitem__(self, i):
         if i >= self._size or i < 0:
             raise IndexError("Index out of range.")
@@ -214,6 +220,12 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         obj._num = 0 if obj._size == 0 or obj[0] is None else obj._size
         obj._last_pos_filled = obj._num - 1
         return obj
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', '_modify',
+        'append', 'delete', 'size',
+        '__str__', '__reversed__']
 
     def _modify(self, force=False):
         """
