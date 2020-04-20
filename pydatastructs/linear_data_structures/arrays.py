@@ -151,11 +151,11 @@ class MultiDimensionalArray(Array):
     ======
 
     IndexError
-        Index goes out of boundaries, or 
-        the number of index given is not 
+        Index goes out of boundaries, or
+        the number of index given is not
         the same as the number of dimensions.
     ValueError
-        When there's no dimensions or the 
+        When there's no dimensions or the
         dimension size is 0.
 
     Examples
@@ -174,7 +174,7 @@ class MultiDimensionalArray(Array):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
-    
+
     """
     __slots__ = ['_sizes', '_data', '_dtype']
 
