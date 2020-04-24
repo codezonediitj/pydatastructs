@@ -67,6 +67,10 @@ class BinaryTree(object):
         obj.is_order_statistic = is_order_statistic
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__str__']
+
     def insert(self, key, data=None):
         """
         Inserts data by the passed key using iterative
@@ -198,6 +202,12 @@ class BinarySearchTree(BinaryTree):
 
     pydatastructs.trees.binary_tree.BinaryTree
     """
+
+    @classmethod
+    def methods(cls):
+        return ['insert', 'search', 'delete', 'select',
+        'rank', 'lowest_common_ancestor']
+
     left_size = lambda self, node: self.tree[node.left].size \
                                         if node.left is not None else 0
     right_size = lambda self, node: self.tree[node.right].size \
@@ -222,7 +232,7 @@ class BinarySearchTree(BinaryTree):
             self.tree[walk].key = key
             self.tree[walk].data = data
             return None
-        new_node, prev_node, flag = TreeNode(key, data), 0, True
+        new_node, prev_node, flag = TreeNode(key, data), self.root_idx, True
         while flag:
             if not self.comparator(key, self.tree[walk].key):
                 if self.tree[walk].right is None:
@@ -787,6 +797,11 @@ class AVLTree(SelfBalancingBinaryTree):
 
     pydatastructs.trees.binary_trees.BinaryTree
     """
+
+    @classmethod
+    def methods(cls):
+        return ['insert', 'delete']
+
     left_height = lambda self, node: self.tree[node.left].height \
                                         if node.left is not None else -1
     right_height = lambda self, node: self.tree[node.right].height \
@@ -905,6 +920,11 @@ class SplayTree(SelfBalancingBinaryTree):
     .. [1] https://en.wikipedia.org/wiki/Splay_tree
 
     """
+
+    @classmethod
+    def methods(cls):
+        return ['insert', 'delete', 'join', 'split']
+
     def _zig(self, x, p):
         if self.tree[p].left == x:
             super(SplayTree, self)._right_rotate(p, x)
@@ -1069,6 +1089,11 @@ class BinaryTreeTraversal(object):
 
     .. [1] https://en.wikipedia.org/wiki/Tree_traversal
     """
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'depth_first_search',
+                'breadth_first_search']
 
     __slots__ = ['tree']
 
@@ -1257,6 +1282,11 @@ class BinaryIndexedTree(object):
         for index in range(obj.array._size):
             obj.update(index, array[index])
         return obj
+
+    @classmethod
+    def methods(cls):
+        return ['update', 'get_prefix_sum',
+        'get_sum']
 
     def update(self, index, value):
         """
