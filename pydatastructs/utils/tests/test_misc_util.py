@@ -40,5 +40,5 @@ def test_MAryTreeNode():
     assert str(m.children) == "['2', '3', '4', '5', '6', '7', '8', '9']"
 
 def test_CartesianTreeNode():
-    c = CartesianTreeNode(1,1,1)
+    c = CartesianTreeNode(1, 1, 1)
     assert str(c) == "(None, 1, 1, 1, None)"
