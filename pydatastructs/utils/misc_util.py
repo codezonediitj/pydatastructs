@@ -69,6 +69,7 @@ class CartesianTreeNode(TreeNode):
 
     """
     __slots__ = ['key', 'data', 'priority']
+
     def __new__(cls, key, priority, data=None):
         obj = TreeNode.__new__(cls, key, data)
         obj.priority = priority
