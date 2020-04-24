@@ -339,7 +339,7 @@ def test_CartesianTree():
             "(None, 4, 14, 4, None), (6, 9, 17, 9, None), "
             "(7, 7, 22, 7, 8), (None, 6, 42, 6, None), "
             "(None, 8, 49, 8, None), (None, 2, 99, 2, None)]")
-    tree.insert(1.5, 1.5, 4)
+    tree.insert(1.5, 4, 1.5)
     assert str(tree) == \
            ("[(10, 3, 1, 3, 3), (2, 1, 6, 1, None), "
             "(None, 0, 9, 0, None), (4, 5, 11, 5, 5), "
