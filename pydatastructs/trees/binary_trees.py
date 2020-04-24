@@ -645,8 +645,8 @@ class CartesianTree(SelfBalancingBinaryTree):
 
     >>> from pydatastructs.trees import CartesianTree as CT
     >>> c = CT()
-    >>> c.insert(1, 1, 4)
-    >>> c.insert(2, 2, 3)
+    >>> c.insert(1, 4, 1)
+    >>> c.insert(2, 3, 2)
     >>> child = c.tree[c.root_idx].left
     >>> c.tree[child].data
     1
