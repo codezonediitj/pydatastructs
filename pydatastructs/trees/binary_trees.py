@@ -683,6 +683,11 @@ class CartesianTree(SelfBalancingBinaryTree):
 
     pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
     """
+
+    @classmethod
+    def methods(cls):
+        return ['__str__', 'insert', 'delete']
+
     def _bubble_up(self, node_idx):
         node = self.tree[node_idx]
         parent_idx = self.tree[node_idx].parent
@@ -701,7 +706,6 @@ class CartesianTree(SelfBalancingBinaryTree):
 
     def _trickle_down(self, node_idx):
         node = self.tree[node_idx]
-        parent_idx = node.parent
         while node.left is not None or node.right is not None:
             if node.left is None:
                 self._left_rotate(node_idx, self.tree[node_idx].right)
@@ -712,7 +716,6 @@ class CartesianTree(SelfBalancingBinaryTree):
             else:
                 self._left_rotate(node_idx, self.tree[node_idx].right)
             node = self.tree[node_idx]
-            parent_idx = node.parent
 
     def insert(self, key, priority, data=None):
         super(CartesianTree, self).insert(key, data)
@@ -773,12 +776,12 @@ class Treap(CartesianTree):
     .. [1] https://en.wikipedia.org/wiki/Treap
 
     """
-    priorities = set()
-    def insert(self, key, data = None):
+    @classmethod
+    def methods(cls):
+        return ['insert']
+
+    def insert(self, key, data=None):
         priority = random.random()
-        while priority in self.priorities:
-            priority = random.random()
-        self.priorities.add(priority)
         super(Treap, self).insert(key, priority, data)
 
 class AVLTree(SelfBalancingBinaryTree):
