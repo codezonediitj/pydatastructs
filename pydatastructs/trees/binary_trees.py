@@ -704,7 +704,7 @@ class CartesianTree(SelfBalancingBinaryTree):
             node = self.tree[node_idx]
             parent_idx = node.parent
 
-    def insert(self, key, data, priority):
+    def insert(self, key, priority, data=None):
         super(CartesianTree, self).insert(key, data)
         node_idx = super(CartesianTree, self).search(key)
         node = self.tree[node_idx]
@@ -764,12 +764,12 @@ class Treap(CartesianTree):
 
     """
     priorities = set()
-    def insert(self, key, data):
+    def insert(self, key, data = None):
         priority = random.random()
         while priority in self.priorities:
             priority = random.random()
         self.priorities.add(priority)
-        super(Treap, self).insert(key, data, priority)
+        super(Treap, self).insert(key, priority, data)
 
 class AVLTree(SelfBalancingBinaryTree):
     """
