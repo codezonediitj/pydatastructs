@@ -683,7 +683,6 @@ class CartesianTree(SelfBalancingBinaryTree):
 
     pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
     """
-
     @classmethod
     def methods(cls):
         return ['__str__', 'insert', 'delete']
