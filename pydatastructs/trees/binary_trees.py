@@ -7,7 +7,6 @@ from collections import deque as Queue
 import random
 from copy import deepcopy
 
-
 __all__ = [
     'AVLTree',
     'BinaryTree',
