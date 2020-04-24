@@ -360,6 +360,8 @@ def test_CartesianTree():
     assert tree.delete(18) is None
 
 def test_Treap():
+
+    random.seed(0)
     tree = Treap()
     tree.insert(7,7)
     tree.insert(2,2)
