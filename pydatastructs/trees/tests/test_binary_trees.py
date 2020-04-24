@@ -323,16 +323,16 @@ def test_BinaryIndexedTree():
 
 def test_CartesianTree():
     tree = CartesianTree()
-    tree.insert(3, 3, 1)
-    tree.insert(1, 1, 6)
-    tree.insert(0, 0, 9)
-    tree.insert(5, 5, 11)
-    tree.insert(4, 4, 14)
-    tree.insert(9, 9, 17)
-    tree.insert(7, 7, 22)
-    tree.insert(6, 6, 42)
-    tree.insert(8, 8, 49)
-    tree.insert(2, 2, 99)
+    tree.insert(3, 1, 3)
+    tree.insert(1, 6, 1)
+    tree.insert(0, 9, 0)
+    tree.insert(5, 11, 5)
+    tree.insert(4, 14, 4)
+    tree.insert(9, 17, 9)
+    tree.insert(7, 22, 7)
+    tree.insert(6, 42, 6)
+    tree.insert(8, 49, 8)
+    tree.insert(2, 99, 2)
     assert str(tree) == \
            ("[(1, 3, 1, 3, 3), (2, 1, 6, 1, 9), "
             "(None, 0, 9, 0, None), (4, 5, 11, 5, 5), "
