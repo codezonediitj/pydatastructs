@@ -363,11 +363,11 @@ def test_Treap():
 
     random.seed(0)
     tree = Treap()
-    tree.insert(7,7)
-    tree.insert(2,2)
-    tree.insert(3,3)
-    tree.insert(4,4)
-    tree.insert(5,5)
+    tree.insert(7, 7)
+    tree.insert(2, 2)
+    tree.insert(3, 3)
+    tree.insert(4, 4)
+    tree.insert(5, 5)
     assert isinstance(tree.tree[0].priority, float)
     tree.delete(1)
     assert tree.search(1) is None
