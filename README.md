@@ -38,7 +38,7 @@ For testing your patch locally follow the steps given below,
 For a good visualisation of the different data structures and algorithms, refer the following websites:
 - https://visualgo.net/
 - https://www.cs.usfca.edu/~galles/visualization/
-- [https://github.com/adavijit/BlogMan](https://github.com/adavijit/BlogMan)
+- [https://opendatastructures.org/ods-python.pdf](https://opendatastructures.org/ods-python.pdf)
 
 Why we use Python?
 ------------------
