@@ -6,7 +6,6 @@ __all__ = [
     'DynamicOneDimensionalArray'
 ]
 
-
 class Array(object):
     '''
     Abstract class for arrays in pydatastructs.
@@ -212,7 +211,7 @@ class MultiDimensionalArray(Array):
         return obj
 
     def __getitem__(self, indices):
-        if type(indices) == int:
+        if isinstance(indices, int):
             if len(self._shape) > 1:
                 raise IndexError("Shape mismatch, current shape is %s" % (self._shape))
             else:
@@ -225,10 +224,10 @@ class MultiDimensionalArray(Array):
         return self._data[position]
 
     def __setitem__(self, indices, element):
-        if type(indices) == int:
+        if isinstance(indices, int):
             self._data[indices] = element
         elif len(indices) != len(self._shape) - 1:
-            raise IndexError("Number of dimensions not expected.")
+            raise IndexError("Unexpected number of dimensions.")
         else:
             position = 0
             for i in range(0, len(indices)):
@@ -391,7 +390,7 @@ class ArrayForTrees(DynamicOneDimensionalArray):
     pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
     """
     def _modify(self):
-        if self._num / self._size < self._load_factor:
+        if self._num/self._size < self._load_factor:
             new_indices = dict()
             arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
