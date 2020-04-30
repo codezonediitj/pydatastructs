@@ -233,8 +233,7 @@ class MultiDimensionalArray(Array):
         if isinstance(indices, int):
             if len(self._shape) > 1:
                 raise IndexError("Shape mismatch, current shape is %s" % self._shape)
-            if indices > self._shape:
-                raise IndexError("Index out of range.")
+            return
         if len(indices) != len(self._shape) - 1:
             raise IndexError("Shape mismatch, current shape is %s" % self._shape)
         for i in range(len(indices)):
