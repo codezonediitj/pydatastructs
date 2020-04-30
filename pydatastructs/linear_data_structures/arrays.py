@@ -211,28 +211,35 @@ class MultiDimensionalArray(Array):
         return obj
 
     def __getitem__(self, indices):
+        self._compare_shape(indices)
         if isinstance(indices, int):
-            if len(self._shape) > 1:
-                raise IndexError("Shape mismatch, current shape is %s" % (self._shape))
-            else:
-                return self._data[indices]
-        if len(indices) != len(self._shape) - 1:
-            raise IndexError("Shape mismatch, current shape is %s"%(self._shape))
+            return self._data[indices]
         position = 0
         for i in range(0, len(indices)):
             position += self._shape[i+1] * indices[i]
         return self._data[position]
 
     def __setitem__(self, indices, element):
+        self._compare_shape(indices)
         if isinstance(indices, int):
             self._data[indices] = element
-        elif len(indices) != len(self._shape) - 1:
-            raise IndexError("Unexpected number of dimensions.")
         else:
             position = 0
             for i in range(0, len(indices)):
                 position += self._shape[i+1] * indices[i]
             self._data[position] = element
+
+    def _compare_shape(self, indices):
+        if isinstance(indices, int):
+            if len(self._shape) > 1:
+                raise IndexError("Shape mismatch, current shape is %s" % self._shape)
+            if indices > self._shape:
+                raise IndexError("Index out of range.")
+        if len(indices) != len(self._shape) - 1:
+            raise IndexError("Shape mismatch, current shape is %s" % self._shape)
+        for i in range(len(indices)):
+            if indices[i] > self._shape[i]:
+                raise IndexError("Index out of range.")
 
     def fill(self, element):
         element = self._dtype(element)
