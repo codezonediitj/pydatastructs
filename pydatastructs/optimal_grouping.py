@@ -1,21 +1,22 @@
 from types import *
+from typing import List
 
 
-def get_value(matrix, lookup_index):
+def get_value(matrix, lookup_index: List[int]):
     """
     gets a value
     """
     return matrix[lookup_index[0]][lookup_index[1]]
 
 
-def set_value(matrix, lookup_index, value):
+def set_value(matrix, lookup_index: List[int], value):
     """
     sets a value
     """
     matrix[lookup_index[0]][lookup_index[1]] = value
 
 
-def compare(maximize, value, compareWith=None):
+def compare(maximize: bool, value, compareWith=None):
     """
     compares a value with another. if compareWith is None then value is compared with Infinity or -Infinity
     parameters
@@ -31,7 +32,7 @@ def compare(maximize, value, compareWith=None):
     return value < compareWith
 
 
-def initialize_arrays(maximize, rows, columns):
+def initialize_arrays(maximize: bool, rows: int, columns: int):
     """
     returns a 2-d array of rows*columns size filled with either Infinity or -Infinity
     parameters:
@@ -48,7 +49,7 @@ def initialize_arrays(maximize, rows, columns):
     return [[value for a in range(0, columns+1)] for a in range(0, rows+1)]
 
 
-def optimal_grouping_rec(object_arr, cost_storage, solution_matrix, maximize_prob, min_compare_len, lookup_index, get_lookup_fn, cost_fn):
+def optimal_grouping_rec(object_arr, cost_storage: List[List[int]], solution_matrix: List[List[int]], maximize_prob: bool, min_compare_len: int, lookup_index: List[int], get_lookup_fn, cost_fn):
     """
     Helper function for optimal_grouping function
     """
@@ -74,18 +75,17 @@ def optimal_grouping_rec(object_arr, cost_storage, solution_matrix, maximize_pro
 
         # get indices for left recursion tree
         left_rec_indices = get_lookup_fn('before', lookup_index, i)
-        test_lookup_function(left_rec_indices,lookup_index)
+        test_lookup_function(left_rec_indices, lookup_index)
 
         cost = optimal_grouping_rec(object_arr, cost_storage, solution_matrix, maximize_prob,
                                     min_compare_len, left_rec_indices, get_lookup_fn, cost_fn)
 
         # get indices for right recursion tree
         right_rec_indices = get_lookup_fn('after', lookup_index, i)
-        test_lookup_function(right_rec_indices,lookup_index)
+        test_lookup_function(right_rec_indices, lookup_index)
 
         cost = cost+optimal_grouping_rec(object_arr, cost_storage, solution_matrix, maximize_prob,
                                          min_compare_len, right_rec_indices, get_lookup_fn, cost_fn)
-
 
         # get cost for present partition
         cost = cost+cost_fn(object_arr, lookup_index, i)
@@ -98,12 +98,13 @@ def optimal_grouping_rec(object_arr, cost_storage, solution_matrix, maximize_pro
 
     return present_value
 
-def test_lookup_function(lookup_index,input_index):
-    if lookup_index is None or type(lookup_index) is not ListType:
+
+def test_lookup_function(lookup_index: List[int], input_index: List[int]):
+    if lookup_index is None:
         raise TypeError(
             'Check lookup_function: returning wrong type should return an array of start and end index')
-    
-    if lookup_index.__len__ < 2 or type(lookup_index[0]) is not IntType or type(lookup_index[1]) is not IntType :
+
+    if lookup_index.__len__() < 2:
         raise ValueError(
             'Check lookup_function:lookup index should at least have 2 integer items, first specifying the start and second specifying the last indices')
 
@@ -112,7 +113,7 @@ def test_lookup_function(lookup_index,input_index):
             'Check lookup_function:verify get_lookup_fn giving same output as input which will lead to infinite loop')
 
 
-def optimal_grouping(process_objects, maximize_prob, min_compare_len, lookup_index, get_lookup_fn, cost_fn):
+def optimal_grouping(process_objects, maximize_prob: bool, min_compare_len: int, lookup_index: List[int], get_lookup_fn, cost_fn):
     """
     Description: Optimal Grouping groups given set of objects using the given cost function 
 
@@ -167,9 +168,9 @@ def optimal_grouping(process_objects, maximize_prob, min_compare_len, lookup_ind
 
 
         print(optimal_grouping({'p': p, 'q': q},  False, 1, [1, n], lookup, cost))
-      
-      
-      
+
+
+
       2.MATRIX CHAIN MULTIPLICATION
 
         def cost(matrix, endIndex, middle):
@@ -193,21 +194,21 @@ def optimal_grouping(process_objects, maximize_prob, min_compare_len, lookup_ind
     if process_objects is None:
         raise TypeError('process_objects cannot be none')
 
-    if maximize_prob is None or type(maximize_prob) is not BooleanType:
+    if maximize_prob is None:
         raise TypeError(
-            'maximize_prob cannot be none and should be of type boolean')
+            'maximize_prob cannot be none')
 
-    if min_compare_len is None or type(min_compare_len) is not IntType:
+    if min_compare_len is None:
         raise TypeError(
-            'min_compare_len cannot be none and should be of type int')
+            'min_compare_len cannot be none')
     if min_compare_len < 1:
         raise ValueError(
             'min_compare_len should be a positive integer')
 
-    if lookup_index is None or type(lookup_index) is not ListType:
+    if lookup_index is None:
         raise TypeError(
-            'lookup_index cannot be none and should be of type list')
-    if lookup_index.__len__ < 2 or type(lookup_index[0]) is not IntType or type(lookup_index[1]) is not IntType or lookup_index[0] > lookup_index[1]:
+            'lookup_index cannot be none')
+    if lookup_index.__len__() < 2 or lookup_index[0] > lookup_index[1]:
         raise ValueError(
             'lookup index should at least have 2 integer items, first specifying the start and second specifying the last indices')
 
@@ -229,9 +230,14 @@ def optimal_grouping(process_objects, maximize_prob, min_compare_len, lookup_ind
             'cost_fn cannot be none and should be a function with 3 arguments')
 
     test_result = cost_fn(process_objects, lookup_index, lookup_index[0])
-    if test_result is None or (type(test_result) is not IntType and type(test_result) is not FloatType and type(test_result) is not LongType):
-        raise RuntimeError(
+    try:
+        int(test_result)
+    except Exception:
+        raise TypeError(
             'output for cost function should be any type of number')
+    if test_result is None:
+        raise RuntimeError(
+            'output for cost function should be any type of number and cannot be None')
 
     #  end of edge cases
 
