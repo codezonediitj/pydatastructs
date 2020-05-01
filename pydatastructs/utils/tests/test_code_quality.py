@@ -95,7 +95,8 @@ def _apis():
     pyds.miscellaneous_data_structures.stack.LinkedListStack,
     pyds.DisjointSetForest, pyds.BinomialTree, pyds.TreeNode, pyds.MAryTreeNode,
     pyds.LinkedListNode, pyds.BinomialTreeNode, pyds.AdjacencyListGraphNode,
-    pyds.AdjacencyMatrixGraphNode, pyds.GraphEdge, pyds.Set, pyds.BinaryIndexedTree]
+    pyds.AdjacencyMatrixGraphNode, pyds.GraphEdge, pyds.Set, pyds.BinaryIndexedTree,
+    pyds.CartesianTree, pyds.CartesianTreeNode, pyds.Treap]
 
 def test_public_api():
     pyds = pydatastructs

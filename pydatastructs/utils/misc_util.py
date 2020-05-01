@@ -6,7 +6,8 @@ __all__ = [
     'AdjacencyListGraphNode',
     'AdjacencyMatrixGraphNode',
     'GraphEdge',
-    'Set'
+    'Set',
+    'CartesianTreeNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -55,6 +56,34 @@ class TreeNode(Node):
         Used for printing.
         """
         return str((self.left, self.key, self.data, self.right))
+
+class CartesianTreeNode(TreeNode):
+    """
+    Represents node in cartesian trees.
+
+    Parameters
+    ==========
+
+    data
+        Any valid data to be stored in the node.
+    key
+        Required for comparison operations.
+    priority: int
+        An integer value for heap property.
+
+    """
+    __slots__ = ['key', 'data', 'priority']
+
+    def __new__(cls, key, priority, data=None):
+        obj = TreeNode.__new__(cls, key, data)
+        obj.priority = priority
+        return obj
+
+    def __str__(self):
+        """
+        Used for printing.
+        """
+        return str((self.left, self.key, self.priority, self.data, self.right))
 
 class BinomialTreeNode(TreeNode):
     """
