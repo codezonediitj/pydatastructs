@@ -212,6 +212,9 @@ class MultiDimensionalArray(Array):
     @classmethod
     def methods(cls):
         return ['__new__', '__getitem__', '__setitem__', 'fill']
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__getitem__', '__setitem__', 'fill']
 
     def __getitem__(self, indices):
         self._compare_shape(indices)
