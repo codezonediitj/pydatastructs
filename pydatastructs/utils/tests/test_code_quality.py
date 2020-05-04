@@ -1,4 +1,4 @@
-import os, re, sys
+import os, re, sys, pydatastructs, inspect
 
 def _list_files():
     root_path = os.path.abspath(
@@ -70,3 +70,56 @@ def test_presence_of_tabs():
                             "Configure your editor to use " \
                             "white spaces."%(line, file_path)
         file.close()
+
+def _apis():
+    import pydatastructs as pyds
+    return [
+    pyds.graphs.adjacency_list.AdjacencyList,
+    pyds.graphs.adjacency_matrix.AdjacencyMatrix,
+    pyds.DoublyLinkedList, pyds.SinglyLinkedList,
+    pyds.SinglyCircularLinkedList,
+    pyds.DoublyCircularLinkedList,
+    pyds.OneDimensionalArray, pyds.MultiDimensionalArray,
+    pyds.DynamicOneDimensionalArray,
+    pyds.trees.BinaryTree, pyds.BinarySearchTree,
+    pyds.AVLTree, pyds.SplayTree, pyds.BinaryTreeTraversal,
+    pyds.DHeap, pyds.BinaryHeap, pyds.TernaryHeap, pyds.BinomialHeap,
+    pyds.MAryTree, pyds.OneDimensionalSegmentTree,
+    pyds.Queue, pyds.miscellaneous_data_structures.queue.ArrayQueue,
+    pyds.miscellaneous_data_structures.queue.LinkedListQueue,
+    pyds.PriorityQueue,
+    pyds.miscellaneous_data_structures.queue.LinkedListPriorityQueue,
+    pyds.miscellaneous_data_structures.queue.BinaryHeapPriorityQueue,
+    pyds.miscellaneous_data_structures.queue.BinomialHeapPriorityQueue,
+    pyds.Stack, pyds.miscellaneous_data_structures.stack.ArrayStack,
+    pyds.miscellaneous_data_structures.stack.LinkedListStack,
+    pyds.DisjointSetForest, pyds.BinomialTree, pyds.TreeNode, pyds.MAryTreeNode,
+    pyds.LinkedListNode, pyds.BinomialTreeNode, pyds.AdjacencyListGraphNode,
+    pyds.AdjacencyMatrixGraphNode, pyds.GraphEdge, pyds.Set, pyds.BinaryIndexedTree,
+    pyds.CartesianTree, pyds.CartesianTreeNode, pyds.Treap]
+
+def test_public_api():
+    pyds = pydatastructs
+    apis = _apis()
+    print("\n\nAPI Report")
+    print("==========")
+    for name in apis:
+        if inspect.isclass(name):
+            _class = name
+            mro = _class.__mro__
+            must_methods = _class.methods()
+            print("\n" + str(name))
+            print("Methods Implemented")
+            print(must_methods)
+            print("Parent Classes")
+            print(mro[1:])
+            for supercls in mro:
+                if supercls != _class:
+                    for method in must_methods:
+                        if hasattr(supercls, method) and \
+                            getattr(supercls, method) == \
+                            getattr(_class, method):
+                            assert False, ("%s class doesn't "
+                                "have %s method implemented."%(
+                                    _class, method
+                                ))
