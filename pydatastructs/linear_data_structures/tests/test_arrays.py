@@ -2,6 +2,7 @@ from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray, MultiDimensionalArray)
 from pydatastructs.utils.raises_util import raises
 
+
 def test_OneDimensionalArray():
     ODA = OneDimensionalArray
     A = ODA(int, 5, [1.0, 2, 3, 4, 5], init=6)
