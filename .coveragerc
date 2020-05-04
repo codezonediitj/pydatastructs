@@ -3,6 +3,7 @@ parallel = True
 source = pydatastructs
 omit =
     */tests/*
+    */setup.py
 
 [report]
 exclude_lines =

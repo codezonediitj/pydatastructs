@@ -30,6 +30,10 @@ class DisjointSetForest(object):
         obj.tree = dict()
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['make_set', '__new__', 'find_root', 'union']
+
     def make_set(self, key, data=None):
         """
         Adds a singleton set to the tree

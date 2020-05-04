@@ -1,9 +1,10 @@
-from pydatastructs.utils import TreeNode
+from pydatastructs.utils import TreeNode, CartesianTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 from collections import deque as Queue
+import random
 from copy import deepcopy
 
 __all__ = [
@@ -12,6 +13,8 @@ __all__ = [
     'BinarySearchTree',
     'BinaryTreeTraversal',
     'BinaryIndexedTree',
+    'CartesianTree',
+    'Treap',
     'SplayTree'
 ]
 
@@ -62,6 +65,10 @@ class BinaryTree(object):
                         if comp is None else comp
         obj.is_order_statistic = is_order_statistic
         return obj
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__str__']
 
     def insert(self, key, data=None):
         """
@@ -194,6 +201,12 @@ class BinarySearchTree(BinaryTree):
 
     pydatastructs.trees.binary_tree.BinaryTree
     """
+
+    @classmethod
+    def methods(cls):
+        return ['insert', 'search', 'delete', 'select',
+        'rank', 'lowest_common_ancestor']
+
     left_size = lambda self, node: self.tree[node.left].size \
                                         if node.left is not None else 0
     right_size = lambda self, node: self.tree[node.right].size \
@@ -218,7 +231,7 @@ class BinarySearchTree(BinaryTree):
             self.tree[walk].key = key
             self.tree[walk].data = data
             return None
-        new_node, prev_node, flag = TreeNode(key, data), 0, True
+        new_node, prev_node, flag = TreeNode(key, data), self.root_idx, True
         while flag:
             if not self.comparator(key, self.tree[walk].key):
                 if self.tree[walk].right is None:
@@ -632,6 +645,143 @@ class SelfBalancingBinaryTree(BinarySearchTree):
         if kp is None:
             self.root_idx = k
 
+class CartesianTree(SelfBalancingBinaryTree):
+    """
+    Represents cartesian trees.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.trees import CartesianTree as CT
+    >>> c = CT()
+    >>> c.insert(1, 4, 1)
+    >>> c.insert(2, 3, 2)
+    >>> child = c.tree[c.root_idx].left
+    >>> c.tree[child].data
+    1
+    >>> c.search(1)
+    0
+    >>> c.search(-1) is None
+    True
+    >>> c.delete(1) is True
+    True
+    >>> c.search(1) is None
+    True
+    >>> c.delete(2) is True
+    True
+    >>> c.search(2) is None
+    True
+
+    References
+    ==========
+
+    .. [1] https://www.cs.princeton.edu/courses/archive/spr09/cos423/Lectures/geo-st.pdf
+
+    See Also
+    ========
+
+    pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
+    """
+    @classmethod
+    def methods(cls):
+        return ['__str__', 'insert', 'delete']
+
+    def _bubble_up(self, node_idx):
+        node = self.tree[node_idx]
+        parent_idx = self.tree[node_idx].parent
+        parent = self.tree[parent_idx]
+        while (node.parent is not None) and (parent.priority > node.priority):
+            if parent.right == node_idx:
+                self._left_rotate(parent_idx, node_idx)
+            else:
+                self._right_rotate(parent_idx, node_idx)
+            node = self.tree[node_idx]
+            parent_idx = self.tree[node_idx].parent
+            if parent_idx is not None:
+                parent = self.tree[parent_idx]
+        if node.parent is None:
+            self.tree[node_idx].is_root = True
+
+    def _trickle_down(self, node_idx):
+        node = self.tree[node_idx]
+        while node.left is not None or node.right is not None:
+            if node.left is None:
+                self._left_rotate(node_idx, self.tree[node_idx].right)
+            elif node.right is None:
+                self._right_rotate(node_idx, self.tree[node_idx].left)
+            elif self.tree[node.left].priority < self.tree[node.right].priority:
+                self._right_rotate(node_idx, self.tree[node_idx].left)
+            else:
+                self._left_rotate(node_idx, self.tree[node_idx].right)
+            node = self.tree[node_idx]
+
+    def insert(self, key, priority, data=None):
+        super(CartesianTree, self).insert(key, data)
+        node_idx = super(CartesianTree, self).search(key)
+        node = self.tree[node_idx]
+        new_node = CartesianTreeNode(key, priority, data)
+        new_node.parent = node.parent
+        new_node.left = node.left
+        new_node.right = node.right
+        self.tree[node_idx] = new_node
+        if node.is_root:
+            self.tree[node_idx].is_root = True
+        else:
+            self._bubble_up(node_idx)
+
+    def delete(self, key, **kwargs):
+        balancing_info = kwargs.get('balancing_info', False)
+        node_idx = super(CartesianTree, self).search(key)
+        if node_idx is not None:
+            self._trickle_down(node_idx)
+            return super(CartesianTree, self).delete(key, balancing_info = balancing_info)
+
+    def __str__(self):
+        to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
+        for i in range(self.tree._last_pos_filled + 1):
+            if self.tree[i] is not None:
+                node = self.tree[i]
+                to_be_printed[i] = (node.left, node.key, node.priority, node.data, node.right)
+        return str(to_be_printed)
+
+class Treap(CartesianTree):
+    """
+    Represents treaps.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.trees import Treap as T
+    >>> t = T()
+    >>> t.insert(1, 1)
+    >>> t.insert(2, 2)
+    >>> t.search(1)
+    0
+    >>> t.search(-1) is None
+    True
+    >>> t.delete(1) is True
+    True
+    >>> t.search(1) is None
+    True
+    >>> t.delete(2) is True
+    True
+    >>> t.search(2) is None
+    True
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Treap
+
+    """
+    @classmethod
+    def methods(cls):
+        return ['insert']
+
+    def insert(self, key, data=None):
+        priority = random.random()
+        super(Treap, self).insert(key, priority, data)
+
 class AVLTree(SelfBalancingBinaryTree):
     """
     Represents AVL trees.
@@ -648,6 +798,11 @@ class AVLTree(SelfBalancingBinaryTree):
 
     pydatastructs.trees.binary_trees.BinaryTree
     """
+
+    @classmethod
+    def methods(cls):
+        return ['insert', 'delete']
+
     left_height = lambda self, node: self.tree[node.left].height \
                                         if node.left is not None else -1
     right_height = lambda self, node: self.tree[node.right].height \
@@ -766,6 +921,11 @@ class SplayTree(SelfBalancingBinaryTree):
     .. [1] https://en.wikipedia.org/wiki/Splay_tree
 
     """
+
+    @classmethod
+    def methods(cls):
+        return ['insert', 'delete', 'join', 'split']
+
     def _zig(self, x, p):
         if self.tree[p].left == x:
             super(SplayTree, self)._right_rotate(p, x)
@@ -930,6 +1090,11 @@ class BinaryTreeTraversal(object):
 
     .. [1] https://en.wikipedia.org/wiki/Tree_traversal
     """
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'depth_first_search',
+                'breadth_first_search']
 
     __slots__ = ['tree']
 
@@ -1118,6 +1283,11 @@ class BinaryIndexedTree(object):
         for index in range(obj.array._size):
             obj.update(index, array[index])
         return obj
+
+    @classmethod
+    def methods(cls):
+        return ['update', 'get_prefix_sum',
+        'get_sum']
 
     def update(self, index, value):
         """

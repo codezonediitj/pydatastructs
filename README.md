@@ -39,6 +39,9 @@ For a good visualisation of the different data structures and algorithms, refer 
 - https://visualgo.net/
 - https://www.cs.usfca.edu/~galles/visualization/
 
+You can use the examples given in the following book as tests for your code:
+- [https://opendatastructures.org/ods-python.pdf](https://opendatastructures.org/ods-python.pdf)
+
 Why we use Python?
 ------------------
 
@@ -66,6 +69,13 @@ Follow the steps given below,
 That's it, 10 easy steps for your first contribution. For future contributions just follow steps 5 to 10. Make sure that before starting work, always checkout to master and pull the recent changes using the remote `origin` and then start following steps 5 to 10.
 
 See you soon with your first PR.
+
+It is recommended to go through the following links before you start working.
+
+- [Issue Policy](https://github.com/codezonediitj/pydatastructs/wiki/Issue-Policy)
+- [Pull Request Policy](https://github.com/codezonediitj/pydatastructs/wiki/Pull-Request-Policy)
+- [Plan of Action for the Projects](https://github.com/codezonediitj/pydatastructs/wiki/Plan-of-Action-for-the-Projects)
+
 
 Guidelines
 ----------

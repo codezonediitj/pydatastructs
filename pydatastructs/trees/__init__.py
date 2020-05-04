@@ -13,6 +13,8 @@ from .binary_trees import (
     BinaryTreeTraversal,
     AVLTree,
     BinaryIndexedTree,
+    CartesianTree,
+    Treap,
     SplayTree
 )
 __all__.extend(binary_trees.__all__)
