@@ -181,10 +181,10 @@ class MultiDimensionalArray(Array):
     .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
 
     """
-    __slots__ = ['_sizes', '_data', '_dtype']
+    __slots__ = ['_shape', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
-        if dtype is NoneType or len(args) == (0):
+        if dtype is NoneType or not args:
             raise ValueError("Array cannot be created due to incorrect"
                              " information.")
         if len(args) == 1:
