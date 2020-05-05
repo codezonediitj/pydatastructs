@@ -9,7 +9,8 @@ __all__ = [
     'brick_sort',
     'brick_sort_parallel',
     'heapsort',
-    'matrix_multiply_parallel'
+    'matrix_multiply_parallel',
+    'quick_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -360,3 +361,73 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
                                           i, j).result()
 
     return C
+
+def _partition(array,low,high,comp):
+    pivot = array[low]
+    i = low+1
+    j = high
+    while i<=j:
+        while _comp(array[i],pivot,comp) and i<high:
+            i+=1
+        while not _comp(array[j],pivot,comp):
+            j-=1
+
+        if i<j:
+            array[i],array[j] = array[j],array[i]
+            i+=1
+            j-=1
+        else:
+            i+=1
+
+    array[low] = array[j]
+    array[j] = pivot
+    return j
+
+def quick_sort(array,**kwargs):
+    """
+    Implements Quicksort algorithm.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, quick_sort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> quick_sort(arr)
+    >>> [arr[0], arr[1], arr[2]]
+    [1, 2, 3]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Quicksort
+    .. [2] https://www.geeksforgeeks.org/quick-sort
+    """
+    start = kwargs.get("start",0)
+    end = kwargs.get("end",len(array)-1)
+    comp = kwargs.get("comp",lambda u,v:u<=v)
+    if start<end:
+        s = _partition(array,start,end,comp)
+        quick_sort(array,start=start,end=s)
+        quick_sort(array,start=s+1,end=end)
