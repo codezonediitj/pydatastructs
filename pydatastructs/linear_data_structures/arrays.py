@@ -252,6 +252,9 @@ class MultiDimensionalArray(Array):
             if indices[i] > self._shape[i]:
                 raise IndexError("Index out of range.")
 
+    def __str__(self):
+        return str(self._data)
+
     def fill(self, element):
         element = self._dtype(element)
         for i in range(len(self._data)):
