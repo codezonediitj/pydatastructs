@@ -257,6 +257,9 @@ class MultiDimensionalArray(Array):
         for i in range(len(self._data)):
             self._data[i] = element
 
+    @property
+    def shape(self):
+        return  self._shape
 
 class DynamicArray(Array):
     """
