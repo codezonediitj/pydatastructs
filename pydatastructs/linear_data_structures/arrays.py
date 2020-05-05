@@ -193,6 +193,8 @@ class MultiDimensionalArray(Array):
             obj._shape = [1]
             obj._data = [None] * args[0]
             return obj
+
+
         dimensions = args
         for dimension in dimensions:
             if dimension < 1:
