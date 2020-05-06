@@ -190,7 +190,7 @@ class MultiDimensionalArray(Array):
         if len(args) == 1:
             obj = Array.__new__(cls)
             obj._dtype = dtype
-            obj._shape = (1)
+            obj._shape = (1,)
             obj._data = [None] * args[0]
             return obj
 
