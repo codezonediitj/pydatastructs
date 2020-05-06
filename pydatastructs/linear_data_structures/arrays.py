@@ -190,10 +190,9 @@ class MultiDimensionalArray(Array):
         if len(args) == 1:
             obj = Array.__new__(cls)
             obj._dtype = dtype
-            obj._shape = [1]
+            obj._shape = (1)
             obj._data = [None] * args[0]
             return obj
-
 
         dimensions = args
         for dimension in dimensions:
@@ -214,7 +213,7 @@ class MultiDimensionalArray(Array):
         d_sizes.append(1)
         obj = Array.__new__(cls)
         obj._dtype = dtype
-        obj._shape = d_sizes
+        obj._shape = tuple(d_sizes)
         obj._data = [None] * obj._shape[1] * dimensions[0]
         return obj
 

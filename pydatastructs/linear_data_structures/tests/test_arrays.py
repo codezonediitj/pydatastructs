@@ -24,6 +24,7 @@ def test_OneDimensionalArray():
 
 def test_MultiDimensionalArray():
     array = MultiDimensionalArray(int, 5, 9, 3, 8)
+    assert array.shape == (5, 9, 3, 8)
     array.fill(5)
     array[1, 3, 2, 5] = 2.0
     assert array
@@ -43,7 +44,7 @@ def test_MultiDimensionalArray():
     array[0, 0, 1] = 0
     array[1, 0, 0] = 0
     array[2, 1, 1] = 0
-    assert str(array._data) == '[0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0]'
+    assert str(array) == '[0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0]'
     array = MultiDimensionalArray(int, 4)
     array.fill(5)
     array[3] = 3
