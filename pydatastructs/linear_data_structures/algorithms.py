@@ -1,5 +1,6 @@
 from pydatastructs.linear_data_structures.arrays import (
     OneDimensionalArray, DynamicArray)
+from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.utils.misc_util import _check_type, _comp
 from concurrent.futures import ThreadPoolExecutor
 from math import log, floor
@@ -427,7 +428,16 @@ def quick_sort(array,**kwargs):
     start = kwargs.get("start",0)
     end = kwargs.get("end",len(array)-1)
     comp = kwargs.get("comp",lambda u,v:u<=v)
-    if start<end:
+    stack = Stack()
+    stack.push(start)
+    stack.push(end)
+    while stack.is_empty is False:
+        end = stack.pop()
+        start = stack.pop()
         s = _partition(array,start,end,comp)
-        quick_sort(array,start=start,end=s)
-        quick_sort(array,start=s+1,end=end)
+        if s-1 > start:
+            stack.push(start)
+            stack.push(s-1)
+        if s+1<end:
+            stack.push(s+1)
+            stack.push(end)
