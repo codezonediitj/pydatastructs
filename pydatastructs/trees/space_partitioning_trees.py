@@ -187,6 +187,7 @@ class OneDimensionalSegmentTree(object):
 
         qx: int/float
             The query point
+
         init_node: int
             The index of the node from which the query process
             is to be started.

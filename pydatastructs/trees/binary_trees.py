@@ -25,19 +25,22 @@ class BinaryTree(object):
     Parameters
     ==========
 
+    key
+        Required if tree is to be instantiated with
+        root otherwise not needed.
+
     root_data
         Optional, the root node of the binary tree.
         If not of type TreeNode, it will consider
         root as data and a new root node will
         be created.
-    key
-        Required if tree is to be instantiated with
-        root otherwise not needed.
+
     comp: lambda/function
         Optional, A lambda function which will be used
         for comparison of keys. Should return a
         bool value. By default it implements less
         than operator.
+
     is_order_statistic: bool
         Set it to True, if you want to use the
         order statistic features of the tree.
@@ -80,6 +83,7 @@ class BinaryTree(object):
 
         key
             The key for comparison.
+
         data
             The data to be inserted.
 
@@ -101,6 +105,7 @@ class BinaryTree(object):
         key
             The key of the node which is
             to be deleted.
+
         balancing_info: bool
             Optional, by default, False
             The information needed for updating
@@ -135,6 +140,7 @@ class BinaryTree(object):
 
         key
             The key for searching.
+
         parent: bool
             If true then returns index of the
             parent of the node with the passed
@@ -532,8 +538,10 @@ class BinarySearchTree(BinaryTree):
 
         j: Node.key
             Key of first node
+
         k: Node.key
             Key of second node
+
         algorithm: int
             The algorithm to be used for computing the
             lowest common ancestor.
@@ -1213,12 +1221,13 @@ class BinaryTreeTraversal(object):
         Parameters
         ==========
 
-        strategy : str
-            The strategy using which the computation has to happen.
-            By default, it is set 'queue'.
         node : int
             The index of the node from where the traversal has to be instantiated.
             By default, set to, root index.
+
+        strategy : str
+            The strategy using which the computation has to happen.
+            By default, it is set 'queue'.
 
         Returns
         =======

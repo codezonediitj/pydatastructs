@@ -26,10 +26,10 @@ class TreeNode(Node):
     Parameters
     ==========
 
-    data
-        Any valid data to be stored in the node.
     key
         Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
     left: int
         Optional, index of the left child node.
     right: int
@@ -64,10 +64,10 @@ class CartesianTreeNode(TreeNode):
     Parameters
     ==========
 
-    data
-        Any valid data to be stored in the node.
     key
         Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
     priority: int
         An integer value for heap property.
 
@@ -92,10 +92,10 @@ class BinomialTreeNode(TreeNode):
     Parameters
     ==========
 
-    data
-        Any valid data to be stored in the node.
     key
         Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
 
     Note
     ====
@@ -150,10 +150,10 @@ class MAryTreeNode(TreeNode):
     Parameters
     ==========
 
-    data
-        Any valid data to be stored in the node.
     key
         Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
 
     Note
     ====
