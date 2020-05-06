@@ -1,6 +1,6 @@
 from pydatastructs.linear_data_structures.arrays import (
     OneDimensionalArray, DynamicArray)
-from pydatastructs.miscellaneous_data_structures import Stack
+from pydatastructs.miscellaneous_data_structures.stack import Stack
 from pydatastructs.utils.misc_util import _check_type, _comp
 from concurrent.futures import ThreadPoolExecutor
 from math import log, floor
