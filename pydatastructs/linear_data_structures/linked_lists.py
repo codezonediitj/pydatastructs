@@ -54,6 +54,10 @@ class LinkedList(object):
             The node after which the
             new node is to be inserted.
 
+        key
+            Any valid identifier to uniquely
+            identify the node in the linked list.
+
         data
             Any valid data to be stored in the node.
         """
@@ -68,6 +72,10 @@ class LinkedList(object):
 
         index: int
             An integer satisfying python indexing properties.
+
+        key
+            Any valid identifier to uniquely
+            identify the node in the linked list.
 
         data
             Any valid data to be stored in the node.
@@ -121,6 +129,10 @@ class LinkedList(object):
         Parameters
         ==========
 
+        key
+            Any valid identifier to uniquely
+            identify the node in the linked list.
+
         data
             Any valid data to be stored in the node.
         """
@@ -132,6 +144,10 @@ class LinkedList(object):
 
         Parameters
         ==========
+
+        key
+            Any valid identifier to uniquely
+            identify the node in the linked list.
 
         data
             Any valid data to be stored in the node.
@@ -148,6 +164,10 @@ class LinkedList(object):
         next_node: LinkedListNode
             The node before which the
             new node is to be inserted.
+
+        key
+            Any valid identifier to uniquely
+            identify the node in the linked list.
 
         data
             Any valid data to be stored in the node.
