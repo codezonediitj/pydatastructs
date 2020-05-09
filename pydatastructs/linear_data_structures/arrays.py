@@ -181,7 +181,7 @@ class MultiDimensionalArray(Array):
     .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
 
     """
-    __slots__ = ['_shape', '_data', '_dtype']
+    __slots__ = ['_sizes', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype is NoneType or not args:
@@ -190,7 +190,7 @@ class MultiDimensionalArray(Array):
         if len(args) == 1:
             obj = Array.__new__(cls)
             obj._dtype = dtype
-            obj._shape = (1,)
+            obj._sizes = [args[0], 1]
             obj._data = [None] * args[0]
             return obj
 
@@ -204,8 +204,8 @@ class MultiDimensionalArray(Array):
         index = 0
         while n_dimensions > 1:
             size = dimensions[index]
-            for i in range(index,  len(dimensions) - 1):
-                size = size * dimension
+            for i in range(index+1,  len(dimensions)):
+                size = size * dimensions[i]
             d_sizes.append(size)
             n_dimensions -= 1
             index += 1
@@ -213,8 +213,8 @@ class MultiDimensionalArray(Array):
         d_sizes.append(1)
         obj = Array.__new__(cls)
         obj._dtype = dtype
-        obj._shape = tuple(d_sizes)
-        obj._data = [None] * obj._shape[1] * dimensions[0]
+        obj._sizes = tuple(d_sizes)
+        obj._data = [None] * obj._sizes[1] * dimensions[0]
         return obj
 
     @classmethod
@@ -227,7 +227,7 @@ class MultiDimensionalArray(Array):
             return self._data[indices]
         position = 0
         for i in range(0, len(indices)):
-            position += self._shape[i+1] * indices[i]
+            position += self._sizes[i + 1] * indices[i]
         return self._data[position]
 
     def __setitem__(self, indices, element):
@@ -237,18 +237,18 @@ class MultiDimensionalArray(Array):
         else:
             position = 0
             for i in range(0, len(indices)):
-                position += self._shape[i+1] * indices[i]
+                position += self._sizes[i + 1] * indices[i]
             self._data[position] = element
 
     def _compare_shape(self, indices):
         if isinstance(indices, int):
-            if len(self._shape) > 1:
-                raise IndexError("Shape mismatch, current shape is %s" % self._shape)
+            if len(self._sizes) > 2:
+                raise IndexError("Shape mismatch, current shape is %s" % str(self.shape))
             return
-        if len(indices) != len(self._shape) - 1:
-            raise IndexError("Shape mismatch, current shape is %s" % self._shape)
+        if len(indices) != len(self._sizes) - 1:
+            raise IndexError("Shape mismatch, current shape is %s" % str(self.shape))
         for i in range(len(indices)):
-            if indices[i] > self._shape[i]:
+            if indices[i] > self._sizes[i]:
                 raise IndexError("Index out of range.")
 
     def __str__(self):
@@ -261,7 +261,13 @@ class MultiDimensionalArray(Array):
 
     @property
     def shape(self):
-        return  self._shape
+        shape = []
+        size = len(self._sizes)
+        if size == 1:
+            return self._sizes
+        for i in range(1, size):
+            shape.append(self._sizes[i-1]/self._sizes[i])
+        return shape
 
 class DynamicArray(Array):
     """
