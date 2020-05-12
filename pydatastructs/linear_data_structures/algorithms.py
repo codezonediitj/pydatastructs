@@ -422,7 +422,7 @@ def quick_sort(array,**kwargs):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Quicksort
-    .. [2] https://www.geeksforgeeks.org/quick-sort
+    .. [2] https://cs.stanford.edu/people/eroberts/courses/soco/projects/2008-09/tony-hoare/quicksort.html
     """
     start = kwargs.get("start",0)
     end = kwargs.get("end",len(array)-1)
