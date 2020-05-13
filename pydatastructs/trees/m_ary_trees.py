@@ -171,3 +171,4 @@ class MAryTree(object):
                     if j is not None:
                         to_be_printed[i].append(j)
         return str(to_be_printed)
+        
