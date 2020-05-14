@@ -380,31 +380,3 @@ def _comp(u, v, tcomp):
     elif u is None and v is None:
         return False
     return tcomp(u, v)
-
-class RedBlackTreeNode(TreeNode):
-    """
-    Represents node in red-black trees.
-
-    Parameters
-    ==========
-
-    key
-        Required for comparison operations.
-    data
-        Any valid data to be stored in the node.
-    color: 0 for black node and 1 for red node.
-        
-
-    """
-    __slots__ = ['key', 'data']
-
-    def __new__(cls, key, data=None):
-        obj = TreeNode.__new__(cls, key, data)
-        obj.color = 1
-        return obj
-
-    def __str__(self):
-        """
-        Used for printing.
-        """
-        return str((self.left, self.key, self.color, self.data, self.right))
