@@ -23,8 +23,10 @@ def test_OneDimensionalArray():
 
 
 def test_MultiDimensionalArray():
+    assert raises(ValueError, lambda: MultiDimensionalArray(int, 2, -1, 3))
+    assert MultiDimensionalArray(int, 10).shape == (10,)
     array = MultiDimensionalArray(int, 5, 9, 3, 8)
-    assert array.shape == [5, 9, 3, 8]
+    assert array.shape == (5, 9, 3, 8)
     array.fill(5)
     array[1, 3, 2, 5] = 2.0
     assert array
@@ -35,6 +37,7 @@ def test_MultiDimensionalArray():
     assert raises(IndexError, lambda: array[5])
     assert raises(IndexError, lambda: array[4, 10])
     assert raises(IndexError, lambda: array[-1])
+    assert raises(IndexError, lambda: array[2, 3, 2, 8])
     assert raises(ValueError, lambda: MultiDimensionalArray())
     assert raises(ValueError, lambda: MultiDimensionalArray(int))
     assert raises(TypeError, lambda: MultiDimensionalArray(int, 5, 6, ""))
@@ -46,7 +49,7 @@ def test_MultiDimensionalArray():
     array[2, 1, 1] = 0
     assert str(array) == '[0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0]'
     array = MultiDimensionalArray(int, 4)
-    assert array.shape == [4]
+    assert array.shape == (4,)
     array.fill(5)
     array[3] = 3
     assert array[3] == 3
