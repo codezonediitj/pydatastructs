@@ -250,7 +250,7 @@ class MultiDimensionalArray(Array):
             self._data[i] = element
 
     @property
-    def shape(self) -> list:
+    def shape(self) -> tuple:
         shape = []
         size = len(self._sizes)
         for i in range(1, size):
