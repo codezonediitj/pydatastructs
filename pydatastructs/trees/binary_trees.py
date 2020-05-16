@@ -16,6 +16,7 @@ __all__ = [
     'CartesianTree',
     'Treap',
     'SplayTree'
+    'Redblacktree'
 ]
 
 class BinaryTree(object):
@@ -1056,6 +1057,47 @@ class SplayTree(SelfBalancingBinaryTree):
                 self.tree[e] = None
             self.tree[self.root_idx].right = None
         return other
+
+class Redblacktree(SelfBalancingBinaryTree):
+
+    @classmethod
+    def methods(cls):
+        return ['__str__', 'insert', 'delete']
+
+    def _get_parent(self,node_idx):
+        return self.tree[node_idx].parent
+
+    def _get_grand_parent(self,node_idx):
+        parent_idx=self._get_parent(node_idx)
+        return self.tree[parent_idx].parent
+
+    def _get_sibling(self,node_idx):
+        parent_idx=self._get_parent(node_idx)
+        if parent_idx is None:
+            return None
+        node = self.tree[parent_idx]
+        if node_idx==node.left:
+            sibling_idx=node.right
+            return sibling_idx
+        else:
+            sibling_idx=node.left
+            return sibling_idx
+
+    def _get_uncle(self,node_idx):
+        parent_idx=self._get_parent(node_idx)
+        return self._get_sibling(parent_idx)
+
+
+
+    def __str__(self):
+        to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
+        for i in range(self.tree._last_pos_filled + 1):
+            if self.tree[i] is not None:
+                node = self.tree[i]
+                to_be_printed[i] = (node.left, node.key, node.priority, node.data, node.right)
+                return str(to_be_printed)
+
+
 
 class BinaryTreeTraversal(object):
     """
