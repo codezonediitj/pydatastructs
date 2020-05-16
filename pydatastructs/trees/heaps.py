@@ -142,6 +142,7 @@ class DHeap(Heap):
 
         key
             The key for comparison.
+
         data
             The data to be inserted.
 
@@ -174,6 +175,7 @@ class DHeap(Heap):
         root_element : TreeNode
             The TreeNode at the root of the heap,
             if the heap is not empty.
+
         None
             If the heap is empty.
         """
@@ -524,6 +526,7 @@ class BinomialHeap(Heap):
 
         node: BinomialTreeNode
             The node whose key is to be reduced.
+
         new_key
             The new key of the given node,
             should be less than the current key.

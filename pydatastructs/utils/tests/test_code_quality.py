@@ -79,7 +79,7 @@ def _apis():
     pyds.DoublyLinkedList, pyds.SinglyLinkedList,
     pyds.SinglyCircularLinkedList,
     pyds.DoublyCircularLinkedList,
-    pyds.OneDimensionalArray,
+    pyds.OneDimensionalArray, pyds.MultiDimensionalArray,
     pyds.DynamicOneDimensionalArray,
     pyds.trees.BinaryTree, pyds.BinarySearchTree,
     pyds.AVLTree, pyds.SplayTree, pyds.BinaryTreeTraversal,

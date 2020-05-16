@@ -1,15 +1,17 @@
 from pydatastructs.utils.misc_util import _check_type, NoneType
 
 __all__ = [
-'OneDimensionalArray',
-'DynamicOneDimensionalArray'
+    'OneDimensionalArray',
+    'MultiDimensionalArray',
+    'DynamicOneDimensionalArray'
 ]
 
 class Array(object):
     '''
     Abstract class for arrays in pydatastructs.
     '''
-    pass
+    def __str__(self) -> str:
+        return str(self._data)
 
 class OneDimensionalArray(Array):
     '''
@@ -112,8 +114,7 @@ class OneDimensionalArray(Array):
     @classmethod
     def methods(cls):
         return ['__new__', '__getitem__',
-        '__setitem__', 'fill', '__len__',
-        '__str__']
+        '__setitem__', 'fill', '__len__']
 
     def __getitem__(self, i):
         if i >= self._size or i < 0:
@@ -136,9 +137,125 @@ class OneDimensionalArray(Array):
     def __len__(self):
         return self._size
 
-    def __str__(self):
-        return str(self._data)
+class MultiDimensionalArray(Array):
+    """
+    Represents a multi-dimensional array.
 
+    Parameters
+    ==========
+
+    dtype: type
+        A valid object type.
+    *args: int
+        The dimensions of the array.
+
+    Raises
+    ======
+
+    IndexError
+        Index goes out of boundaries, or
+        the number of index given is not
+        the same as the number of dimensions.
+    ValueError
+        When there's no dimensions or the
+        dimension size is 0.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import MultiDimensionalArray as MDA
+    >>> arr = MDA(int, 5, 6, 9)
+    >>> arr.fill(32)
+    >>> arr[3, 0, 0]
+    32
+    >>> arr[3, 0, 0] = 7
+    >>> arr[3, 0, 0]
+    7
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Array_data_structure#Multidimensional_arrays
+
+    """
+    __slots__ = ['_sizes', '_data', '_dtype']
+
+    def __new__(cls, dtype: type = NoneType, *args, **kwargs):
+        if dtype is NoneType or not args:
+            raise ValueError("Array cannot be created due to incorrect"
+                             " information.")
+        if len(args) == 1:
+            obj = Array.__new__(cls)
+            obj._dtype = dtype
+            obj._sizes = (args[0], 1)
+            obj._data = [None] * args[0]
+            return obj
+
+        dimensions = args
+        for dimension in dimensions:
+            if dimension < 1:
+                raise ValueError("Array cannot be created due to incorrect"
+                                 " dimensions.")
+        n_dimensions = len(dimensions)
+        d_sizes = []
+        index = 0
+        while n_dimensions > 1:
+            size = dimensions[index]
+            for i in range(index+1,  len(dimensions)):
+                size = size * dimensions[i]
+            d_sizes.append(size)
+            n_dimensions -= 1
+            index += 1
+        d_sizes.append(dimensions[index])
+        d_sizes.append(1)
+        obj = Array.__new__(cls)
+        obj._dtype = dtype
+        obj._sizes = tuple(d_sizes)
+        obj._data = [None] * obj._sizes[1] * dimensions[0]
+        return obj
+
+    @classmethod
+    def methods(cls) -> list:
+        return ['__new__', '__getitem__', '__setitem__', 'fill', 'shape']
+
+    def __getitem__(self, indices):
+        self._compare_shape(indices)
+        if isinstance(indices, int):
+            return self._data[indices]
+        position = 0
+        for i in range(0, len(indices)):
+            position += self._sizes[i + 1] * indices[i]
+        return self._data[position]
+
+    def __setitem__(self, indices, element) -> None:
+        self._compare_shape(indices)
+        if isinstance(indices, int):
+            self._data[indices] = element
+        else:
+            position = 0
+            for i in range(0, len(indices)):
+                position += self._sizes[i + 1] * indices[i]
+            self._data[position] = element
+
+    def _compare_shape(self, indices) -> None:
+        indices = [indices] if isinstance(indices, int) else indices
+        if len(indices) != len(self._sizes) - 1:
+            raise IndexError("Shape mismatch, current shape is %s" % str(self.shape))
+        if any(indices[i] >= self._sizes[i] for i in range(len(indices))):
+            raise IndexError("Index out of range.")
+
+    def fill(self, element) -> None:
+        element = self._dtype(element)
+        for i in range(len(self._data)):
+            self._data[i] = element
+
+    @property
+    def shape(self) -> tuple:
+        shape = []
+        size = len(self._sizes)
+        for i in range(1, size):
+            shape.append(self._sizes[i-1]//self._sizes[i])
+        return tuple(shape)
 
 class DynamicArray(Array):
     """
