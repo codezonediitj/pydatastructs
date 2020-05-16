@@ -605,3 +605,4 @@ def optimal_grouping(process_objects, maximize_prob: bool, min_compare_len: int,
     _optimal_grouping_rec(process_objects, cost_storage, solution_matrix, maximize_prob,
                          min_compare_len, lookup_index, get_lookup_fn, cost_fn)
     return solution_matrix
+    
