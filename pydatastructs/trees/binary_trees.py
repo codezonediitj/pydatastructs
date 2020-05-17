@@ -1,4 +1,4 @@
-from pydatastructs.utils import TreeNode, CartesianTreeNode
+from pydatastructs.utils import TreeNode, CartesianTreeNode , Redblacktreenode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
@@ -15,7 +15,7 @@ __all__ = [
     'BinaryIndexedTree',
     'CartesianTree',
     'Treap',
-    'SplayTree'
+    'SplayTree',
     'Redblacktree'
 ]
 
@@ -1059,6 +1059,33 @@ class SplayTree(SelfBalancingBinaryTree):
         return other
 
 class Redblacktree(SelfBalancingBinaryTree):
+    """
+    Represents Red Black trees.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.trees import Redblacktree as RB
+    >>> b = RB()
+    >>> b.insert(1,1)
+    >>> b.insert(2,2)
+    >>> child = b.tree[c.root_idx].left
+    >>> b.tree[child].data
+    1
+    >>> b.search(1)
+    0
+
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
+
+    See Also
+    ========
+
+    pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
+    """
 
     @classmethod
     def methods(cls):
@@ -1087,15 +1114,66 @@ class Redblacktree(SelfBalancingBinaryTree):
         parent_idx=self._get_parent(node_idx)
         return self._get_sibling(parent_idx)
 
+    def _fix_insertion(self,node_idx):
 
+        if self.tree[node_idx].is_root:
+            self.tree[node_idx].color=0
+            return
+
+        else if self.tree[self.tree[node_idx].parent].color==0:
+            return
+
+        else if self._get_uncle(node_idx) is not None and self.tree[self._get_uncle(node_idx)].color==1:
+            parent_idx=self._get_parent(node_idx)
+            uncle_idx=self._get_uncle(node_idx)
+            self.tree[uncle_idx].color=0
+            self.tree[parent_idx].color=0
+            grand_parent_idx=self._get_grand_parent(node_idx)
+            self.tree[grand_parent_idx].color=1
+            self._fix_insertion(grand_parent_idx)
+
+        else:
+            self.tree[self.root_idx].is_root=False
+            parent_idx=self._get_parent(node_idx)
+            grand_parent_idx=self._get_grand_parent(node_idx)
+            if node_idx==self.tree[parent_idx].right and parent_idx == self.tree[grand_parent_idx].left:
+                self._left_rotate(parent_idx,node_idx)
+                node_idx=self.tree[node_idx].left
+            else:
+                if node_idx==self.tree[parent_idx].left and parent_idx==self.tree[grand_parent_idx].right:
+                    self._right_rotate(parent_idx,node_idx)
+                    node_idx=self.tree[node_idx].right
+            parent_idx=self._get_parent(node_idx)
+            grand_parent_idx=self._get_grand_parent(node_idx)
+            if node_idx==self.tree[parent_idx].left:
+                self._right_rotate(grand_parent_idx,parent_idx)
+            else:
+                self._left_rotate(grand_parent_idx,parent_idx)
+            self.tree[parent_idx].color=0
+            self.tree[grand_parent_idx].color=1
+        self.tree[self.root_idx].is_root=True
+        self.tree[self.root_idx].color=0
+
+    def insert(self, key, data=None):
+        super(Redblacktree, self).insert(key, data)
+        node_idx = super(Redblacktree, self).search(key)
+        node = self.tree[node_idx]
+        new_node = Redblacktreenode(key, data)
+        new_node.parent = node.parent
+        new_node.left = node.left
+        new_node.right = node.right
+        self.tree[node_idx] = new_node
+        if node.is_root:
+            self.tree[node_idx].is_root = True
+        self._fix_insertion(node_idx)
 
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
         for i in range(self.tree._last_pos_filled + 1):
             if self.tree[i] is not None:
                 node = self.tree[i]
-                to_be_printed[i] = (node.left, node.key, node.priority, node.data, node.right)
-                return str(to_be_printed)
+                to_be_printed[i] = (node.left, node.key, node.color, node.data, node.right)
+        return str(to_be_printed)
 
 
 
