@@ -1182,7 +1182,20 @@ class Redblacktree(SelfBalancingBinaryTree):
             self.tree[parent_idx].left = child_idx
         else:
             self.tree[parent_idx].right = child_idx
-        
+
+    def _get_children_count(self, node_idx):
+        if self.tree[node_idx] is None:
+            return
+        elif self.tree[node_idx].left is None and self.tree[node_idx].right is None:
+            return 0
+        elif self.tree[node_idx].left is not None and self.tree[node_idx].right is None:
+            return 1
+        elif self.tree[node_idx].left is None and self.tree[node_idx].right is not None:
+            return 1
+        else:
+            return 2
+
+    """def _fix_deletion(self, node_idx):"""
 
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
