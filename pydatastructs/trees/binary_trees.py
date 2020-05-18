@@ -1,4 +1,4 @@
-from pydatastructs.utils import TreeNode, CartesianTreeNode , Redblacktreenode
+from pydatastructs.utils import TreeNode, CartesianTreeNode, Redblacktreenode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
@@ -1120,10 +1120,10 @@ class Redblacktree(SelfBalancingBinaryTree):
             self.tree[node_idx].color=0
             return
 
-        else if self.tree[self.tree[node_idx].parent].color==0:
+        elif self.tree[self.tree[node_idx].parent].color==0:
             return
 
-        else if self._get_uncle(node_idx) is not None and self.tree[self._get_uncle(node_idx)].color==1:
+        elif self._get_uncle(node_idx) is not None and self.tree[self._get_uncle(node_idx)].color==1:
             parent_idx=self._get_parent(node_idx)
             uncle_idx=self._get_uncle(node_idx)
             self.tree[uncle_idx].color=0
@@ -1167,6 +1167,23 @@ class Redblacktree(SelfBalancingBinaryTree):
             self.tree[node_idx].is_root = True
         self._fix_insertion(node_idx)
 
+    def delete(self, key, **kwargs):
+        rbtree_property_info = kwargs.get('rbtree_property_info', False)
+        node_idx = super(Redblacktree, self).search(key)
+        if node_idx is not None:
+            status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
+            self._fix_deletion(node_idx)
+            return status
+
+    def replace_node(self, node_idx, child_idx):
+        self.tree[child_idx].parent = self.tree[node_idx].parent
+        parent_idx = self.tree[node_idx].parent
+        if node_idx == self.tree[parent_idx].left:
+            self.tree[parent_idx].left = child_idx
+        else:
+            self.tree[parent_idx].right = child_idx
+        
+
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
         for i in range(self.tree._last_pos_filled + 1):
@@ -1175,8 +1192,6 @@ class Redblacktree(SelfBalancingBinaryTree):
                 to_be_printed[i] = (node.left, node.key, node.color, node.data, node.right)
         return str(to_be_printed)
 
-    def delete(self, node_idx)
-    
 class BinaryTreeTraversal(object):
     """
     Represents the traversals possible in
