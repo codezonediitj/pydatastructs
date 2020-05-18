@@ -1175,7 +1175,7 @@ class Redblacktree(SelfBalancingBinaryTree):
                 to_be_printed[i] = (node.left, node.key, node.color, node.data, node.right)
         return str(to_be_printed)
 
-
+    def delete(self, node_idx)
 
 class BinaryTreeTraversal(object):
     """
