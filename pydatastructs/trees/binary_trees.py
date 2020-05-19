@@ -1171,8 +1171,8 @@ class Redblacktree(SelfBalancingBinaryTree):
         rbtree_property_info = kwargs.get('rbtree_property_info', False)
         node_idx = super(Redblacktree, self).search(key)
         if node_idx is not None:
-            status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
             self._fix_deletion(node_idx)
+            status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
             return status
 
     def replace_node(self, node_idx, child_idx):
