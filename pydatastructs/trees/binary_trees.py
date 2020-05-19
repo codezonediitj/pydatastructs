@@ -1202,8 +1202,18 @@ class Redblacktree(SelfBalancingBinaryTree):
                 if self.tree[child_idx].color ==1:
                     self.tree[child_idx].color = 0
                 else:
-                    return
+                    if self.tree[node_idx].parent is not None:
+                        parent_idx = self._get_parent(node_idx)
+                        sibling_idx = self._get_sibling(node_idx)
+                        if self.tree[sibling_idx].color == 1:
+                            self.tree[parent_idx].color = 1
+                            self.tree[sibling_idx].color = 0
+                            if self.tree[node_idx] == self.tree[parent_idx].left:
+                                self._left_rotate(parent_idx, node_idx)
+                            else:
+                                self._right_rotate(parent_idx, node_idx)
 
+                            
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
         for i in range(self.tree._last_pos_filled + 1):
