@@ -1169,33 +1169,56 @@ class Redblacktree(SelfBalancingBinaryTree):
 
     def delete(self, key, **kwargs):
         rbtree_property_info = kwargs.get('rbtree_property_info', False)
-        node_idx = super(Redblacktree, self).search(key)
-        if node_idx is not None:
-            self._fix_deletion(node_idx)
-            status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
-            return status
+        walk = super(Redblacktree, self).search(key)
+        if walk is not None:
+            par = self._get_parent(walk)
+            if self.tree[walk].is_root:
+                if self.tree[walk].left is None and self.tree[walk].right is None:
+                    status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
+                    return status
+            elif par is not None and self.tree[walk].left is None and self.tree[walk].right is None:
+                if self.tree[walk].color == 1:
+                    status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
+                    return status
+            else:
+                successor = self.walk._find_successor(walk)
+                successor_color = self.tree[successor].color
+                """sibling_idx = self._get_sibling(walk)
+                sibling_color = self.tree[sibling_idx].color"""
+                status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
+                self._fix_deletion(par)
+                return status
 
-    def replace_node(self, node_idx, child_idx):
-        self.tree[child_idx].parent = self.tree[node_idx].parent
-        parent_idx = self.tree[node_idx].parent
-        if node_idx == self.tree[parent_idx].left:
-            self.tree[parent_idx].left = child_idx
-        else:
-            self.tree[parent_idx].right = child_idx
 
-    def _get_children_count(self, node_idx):
-        if self.tree[node_idx] is None:
-            return None
-        elif self.tree[node_idx].left is None and self.tree[node_idx].right is None:
-            return None
-        elif self.tree[node_idx].left is not None and self.tree[node_idx].right is None:
-            return self.tree[node_idx].left
-        elif self.tree[node_idx].left is None and self.tree[node_idx].right is not None:
-            return self.tree[node_idx].right
-        else:
-            return None
 
-    def _fix_deletion(self, node_idx):
+
+    def _find_successor(self, node_idx):
+        twalk = self.tree[node_idx].right
+            par = node_idx
+            flag = False
+            while self.tree[twalk].left is not None:
+                flag = True
+                par = twalk
+                twalk = self.tree[twalk].left
+            return twalk
+
+
+                
+
+
+
+                    
+
+
+
+           
+
+    
+
+
+    
+
+    """def _fix_deletion(self, node_idx):
         if self._get_children_count(node_idx) is not None:
             child_idx = self._get_children_count(node_idx)
             self.replace_node(node_idx, child_idx)
@@ -1203,9 +1226,9 @@ class Redblacktree(SelfBalancingBinaryTree):
                 if self.tree[child_idx].color ==1:
                     self.tree[child_idx].color = 0
                 else:
+                    parent_idx = self._get_parent(node_idx)
+                    sibling_idx = self._get_sibling(node_idx)
                     if self.tree[node_idx].parent is not None:
-                        parent_idx = self._get_parent(node_idx)
-                        sibling_idx = self._get_sibling(node_idx)
                         if self.tree[sibling_idx].color == 1:
                             self.tree[parent_idx].color = 1
                             self.tree[sibling_idx].color = 0
@@ -1213,6 +1236,13 @@ class Redblacktree(SelfBalancingBinaryTree):
                                 self._left_rotate(parent_idx, node_idx)
                             else:
                                 self._right_rotate(parent_idx, node_idx)
+                        if self.tree[parent_idx].color == 0 and self.tree[sibling_idx].color == 0 and self.tree[sibling_idx].left.color == 0 and self.tree[sibling_idx].right.color ==0:
+                            self.tree[sibling_idx].color = 1
+                            self._fix_deletion(parent_idx)
+                        else:
+                            return"""
+                            
+                    
 
                             
     def __str__(self):
