@@ -5,7 +5,6 @@ from pydatastructs import (
 from pydatastructs.utils.raises_util import raises
 import random
 
-
 def _test_common_sort(sort, *args, **kwargs):
     random.seed(1000)
 
@@ -42,32 +41,25 @@ def _test_common_sort(sort, *args, **kwargs):
     sort(arr, *args, **kwargs, start=2, end=5)
     assert arr._data == expected_arr
 
-
 def test_merge_sort_parallel():
     _test_common_sort(merge_sort_parallel, num_threads=5)
-
 
 def test_brick_sort():
     _test_common_sort(brick_sort)
 
-
 def test_brick_sort_parallel():
     _test_common_sort(brick_sort_parallel, num_threads=3)
 
-
 def test_heapsort():
     _test_common_sort(heapsort)
-
 
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray
 
     expected_result = [[3, 3, 3], [1, 2, 1], [2, 2, 2]]
 
-    I = ODA(ODA, [ODA(int, [1, 1, 0]), ODA(
-        int, [0, 1, 0]), ODA(int, [0, 0, 1])])
-    J = ODA(ODA, [ODA(int, [2, 1, 2]), ODA(
-        int, [1, 2, 1]), ODA(int, [2, 2, 2])])
+    I = ODA(ODA, [ODA(int, [1, 1, 0]), ODA(int, [0, 1, 0]), ODA(int, [0, 0, 1])])
+    J = ODA(ODA, [ODA(int, [2, 1, 2]), ODA(int, [1, 2, 1]), ODA(int, [2, 2, 2])])
     output = matrix_multiply_parallel(I, J, num_threads=5)
     assert expected_result == output
 
@@ -78,14 +70,12 @@ def test_matrix_multiply_parallel():
 
     I = [[1, 1, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
-    assert raises(ValueError, lambda: matrix_multiply_parallel(
-        I, J, num_threads=5))
+    assert raises(ValueError, lambda: matrix_multiply_parallel(I, J, num_threads=5))
 
     I = [[1, 1, 0], [0, 1, 0], [0, 0, 1]]
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
     output = matrix_multiply_parallel(I, J, num_threads=1)
     assert expected_result == output
-
 
 def test_optimal_grouping():
     #test case1:
