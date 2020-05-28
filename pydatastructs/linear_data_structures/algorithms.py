@@ -349,7 +349,7 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
 
     if col_matrix_1 != row_matrix_2:
         raise ValueError("Matrix size mismatch: %s * %s" % (
-            (row_matrix_1, col_matrix_1), (row_matrix_2, col_matrix_2)))
+        (row_matrix_1, col_matrix_1), (row_matrix_2, col_matrix_2)))
 
     C = [[None for i in range(col_matrix_1)] for j in range(row_matrix_2)]
 
