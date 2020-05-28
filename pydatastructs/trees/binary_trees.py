@@ -1167,7 +1167,7 @@ class Redblacktree(SelfBalancingBinaryTree):
             self.tree[node_idx].is_root = True
         self._fix_insertion(node_idx)
 
-    def delete(self, key, **kwargs):
+    """def delete(self, key, **kwargs):
         rbtree_property_info = kwargs.get('rbtree_property_info', False)
         walk = super(Redblacktree, self).search(key)
         if walk is not None:
@@ -1183,24 +1183,42 @@ class Redblacktree(SelfBalancingBinaryTree):
             else:
                 successor = self.walk._find_successor(walk)
                 successor_color = self.tree[successor].color
-                """sibling_idx = self._get_sibling(walk)
-                sibling_color = self.tree[sibling_idx].color"""
+                successor_parent_idx = self._get_parent(successor)
+                sibling_idx = self._get_sibling(walk)
+                sibling_color = self.tree[sibling_idx].color
+                while succ
                 status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
-                self._fix_deletion(par)
-                return status
+                self._fix_deletion(successor_parent_idx, successor_color)
+                return status"""
+    """def _fix_deletion(self, parent_idx, successor_color):"""
 
 
 
 
-    def _find_successor(self, node_idx):
+
+
+
+
+    def __find_successor(self, node_idx):
         twalk = self.tree[node_idx].right
-            par = node_idx
-            flag = False
-            while self.tree[twalk].left is not None:
-                flag = True
-                par = twalk
-                twalk = self.tree[twalk].left
+        par = node_idx
+        flag = False
+        while self.tree[twalk].left is not None:
+            flag = True
+            par = twalk
+            twalk = self.tree[twalk].left
             return twalk
+    
+    def _Transplant(self, node_idx1, node_idx2):
+        if self.tree[node_idx1].parent == None: 
+            self.root_idx = node_idx2
+        elif node_idx1 == self.tree[self.tree[node_idx1].parent].left:
+            self.tree[self.tree[node_idx1].parent].left = node_idx2
+        else:
+            self.tree[self.tree[node_idx1].parent].right = node_idx2
+        self.tree[node_idx2].parent = self.tree[node_idx1].parent
+
+    
 
 
                 
