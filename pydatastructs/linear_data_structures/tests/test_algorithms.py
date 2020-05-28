@@ -1,7 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel)
+    heapsort, matrix_multiply_parallel, optimal_grouping)
 from pydatastructs.utils.raises_util import raises
 import random
 
@@ -76,3 +76,30 @@ def test_matrix_multiply_parallel():
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
     output = matrix_multiply_parallel(I, J, num_threads=1)
     assert expected_result == output
+
+def test_optimal_grouping():
+    #test case1:
+    def cost(matrix, endIndex, middle):
+
+        if endIndex[0] == endIndex[1]:
+            return 0
+        return matrix[endIndex[0]-1]*matrix[middle]*matrix[endIndex[1]]
+
+    def lookup(position, endIndex, middle):
+        if position is 'before':
+            return [endIndex[0], middle]
+        else:
+            return [middle+1, endIndex[1]]
+    expected_result = [[float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), float('inf')],
+                       [float('inf'), 1, 1, 1, 3, 3, 3, float('inf')],
+                       [float('inf'), float('inf'), 2, 2, 3, 3, 3, float('inf')],
+                       [float('inf'), float('inf'), float('inf'), 3, 3, 3, 3, float('inf')],
+                       [float('inf'), float('inf'), float('inf'), float('inf'), 4, 4, 5, float('inf')],
+                       [float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), 5, 5, float('inf')],
+                       [float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), 6, float('inf')],
+                       [float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), float('inf'), float('inf')]]
+    assert expected_result == optimal_grouping([30, 35, 15, 5, 10, 20, 25], False, 2, [1, 6], lookup, cost)
+
+    #test case2:
+    expected_result = [[0, float('inf'), float('inf')], [float('inf'), float('inf'), float('inf')], [float('inf'), float('inf'), float('inf')]]
+    assert expected_result == optimal_grouping([], False, 2, [0,0], lookup, cost)
