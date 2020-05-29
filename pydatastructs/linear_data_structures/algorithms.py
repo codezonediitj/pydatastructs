@@ -296,6 +296,46 @@ def heapsort(array, **kwargs):
         array._modify(force=True)
 
 def counting_sort(array: Array) -> Array:
+    """
+    Performs counting sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import DynamicOneDimensionalArray as DODA, counting_sort
+    >>> arr = DODA(int, [5, 78, 1, 0])
+    >>> out = counting_sort(arr)
+    >>> str(out)
+    "['0', '1', '5', '78']"
+    >>> arr.delete(2)
+    >>> out = counting_sort(arr)
+    >>> str(out)
+    "['0', '5', '78']"
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Counting_sort
+
+    Note
+    ====
+
+    Since, counting sort is a non-comparison sorting algorithm,
+    custom comparators aren't allowed.
+    The ouput array doesn't contain any `None` value.
+    """
     max_val, min_val = array[0], array[0]
     none_count = 0
     for i in range(len(array)):
