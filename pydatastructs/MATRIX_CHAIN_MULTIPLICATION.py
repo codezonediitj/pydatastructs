@@ -22,9 +22,9 @@ def MatrixChainOrder(p, n):
 	for L in range(1, n - 1): 
 		for i in range(n - L): 
 			dp[i][i + L] = min(dp[i + 1][i + L] +
-								p[i - 1] * p[i] * p[i + L], 
+							p[i - 1] * p[i] * p[i + L], 
 							dp[i][i + L - 1] +
-								p[i - 1] * p[i + L - 1] * p[i + L]) 
+							p[i - 1] * p[i + L - 1] * p[i + L]) 
 	
 	return dp[1][n - 1] 
 
