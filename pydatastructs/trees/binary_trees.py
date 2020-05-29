@@ -1251,7 +1251,21 @@ class Redblacktree(SelfBalancingBinaryTree):
             self._fix_deletion(self, walk2)
 
     def _fix_deletion(self, node_idx):
-        
+        color = self.tree[node_idx].color
+        parent_idx = self._get_parent(node_idx)
+        while node_idx!= self.root_idx and color = 0:
+            if node_idx == self.tree[parent_idx].left:
+                node_idx1 = self.tree[parent_idx].right
+                if self.tree[node_idx1].color = 1:
+                    self.tree[node_idx1].color = 0
+                    self.tree[parent_idx].color = 1
+                    self._left_rotate(parent_idx, node_idx1)
+                    node_idx1 = self.tree[parent_idx].right
+                if self.tree[node_idx1].color == 0 and self.tree[self.tree[node_idx1].right].color == 0:
+                    self.tree[node_idx1].color = 1
+                    node_idx = self.tree[node_idx].parent
+
+                
 
 
 
