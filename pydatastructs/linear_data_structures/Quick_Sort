@@ -1,41 +1,43 @@
+def quickSort(alist):
+  quickSortHelper(alist,0,len(alist)-1)
 
-def Parition(list, left, right):
-    pivot = list[left]
-    index = right
+def quickSortHelper(alist,first,last):
+  if first<last:
 
-    for j in range(right, left - 1, -1):
-        if list[j] > pivot:
-            list[index], list[j] = list[j], list[index]
-            index -= 1
+   splitpoint = partition(alist,first,last)
 
-    list[index], list[left] = list[left], list[index]
-    return index
-
-// Divide list into halves
-def Quick(list, left, right):
-    if left < right:
-        pivot = Parition(list, left, right)
-
-        Quick(list, left, pivot - 1)
-        Quick(list, pivot + 1, right)
-
-def Quick_Sort(list):
-    Quick(list, 0, len(list) - 1)
-
-// Function to print list
-def Print_list(list):
-    for i in range(0, len(list)):
-        print(list[i], end = " ")
-
-    print()
-
-list = [2, 4, 3, 1, 6, 8, 4]    // Input
-
-Quick_Sort(list)
-
-Print_list(list)
+   quickSortHelper(alist,first,splitpoint-1)
+   quickSortHelper(alist,splitpoint+1,last)
 
 
-''' Output
-1 2 3 4 4 6 8
-'''
+def partition(alist,first,last):
+  pivotvalue = alist[first]
+
+  leftmark = first+1
+  rightmark = last
+
+ done = False
+ while not done:
+
+   while leftmark <= rightmark and alist[leftmark] <= pivotvalue:
+     leftmark = leftmark + 1
+
+   while alist[rightmark] >= pivotvalue and rightmark >= leftmark:
+     rightmark = rightmark -1
+
+     if rightmark < leftmark:
+       done = True
+     else:
+       temp = alist[leftmark]
+       alist[leftmark] = alist[rightmark]
+       alist[rightmark] = temp
+
+ temp = alist[first]
+ alist[first] = alist[rightmark]
+ alist[rightmark] = temp
+
+return rightmark
+
+# alist = [54,26,93,17,77,31,44,55,20]
+# quickSort(alist)
+# print(alist)
