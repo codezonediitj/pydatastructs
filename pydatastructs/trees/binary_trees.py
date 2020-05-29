@@ -1207,72 +1207,115 @@ class Redblacktree(SelfBalancingBinaryTree):
             flag = True
             par = twalk
             twalk = self.tree[twalk].left
-            return twalk
+        return twalk
     
     def _Transplant(self, node_idx1, node_idx2):
+        self.tree[node_idx2].parent = self.tree[node_idx1].parent
         if self.tree[node_idx1].parent == None: 
             self.root_idx = node_idx2
         elif node_idx1 == self.tree[self.tree[node_idx1].parent].left:
             self.tree[self.tree[node_idx1].parent].left = node_idx2
         else:
             self.tree[self.tree[node_idx1].parent].right = node_idx2
-        self.tree[node_idx2].parent = self.tree[node_idx1].parent
+        
 
     def delete(self, key, **kwargs):
         rbtree_property_info = kwargs.get('rbtree_property_info', False)
         walk = super(Redblacktree, self).search(key)
-        walk1 = walk
-        right_idx = self.tree[walk].right
-        left_idx = self.tree[walk].left
-        walk1_original_color = self.tree[walk1].color
-        if self.tree[walk].left is None:
-            walk2 = self.tree[walk].right
-            self._Transplant(walk, right_idx)
-        elif self.tree[walk].right is None:
-            walk2 = self.tree[walk].left
-            self._Transplant(walk, left_idx)
-        else:
-            walk1 = self.__find_minimum(right_idx)
-            walk1_original_color = self.tree[walk1].color
-            walk2 = self.tree[walk1].right
-            if self.tree[walk1].parent == walk:
-                self.tree[walk2].parent = walk1
+        if walk is not None:
+            par = self._get_parent(walk)
+            if self.tree[walk].is_root:
+                if self.tree[walk].left is None and self.tree[walk].right is None:
+                    status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
+                    return status
+            elif par is not None and self.tree[walk].left is None and self.tree[walk].right is None:
+                if self.tree[walk].color == 1:
+                    status = super(Redblacktree, self).delete(key, rbtree_property_info = rbtree_property_info)
+                    return status
             else:
-                walk1_right_idx = self.tree[walk1].right
-                walk1_left_idx = self.tree[walk1].left
-                self._Transplant(walk1, walk1_right_idx)
-                walk1_right_idx = right_idx
-                self.tree[walk1_right_idx].parent = walk1
-            self._Transplant(walk, walk1)
-            walk1_left_idx = left_idx
-            self.tree[walk1_left_idx].parent = walk1
-            self.tree[walk1].color = self.tree[walk],color
-        if walk1_original_color == 0:
-            self._fix_deletion(self, walk2)
+                walk1 = walk
+                right_idx = self.tree[walk].right
+                left_idx = self.tree[walk].left
+                walk1_original_color = self.tree[walk1].color
+                if self.tree[walk].left is None and self.tree[walk].right is not None:
+                    walk2 = self.tree[walk].right
+                    self._Transplant(walk, right_idx)
+                elif self.tree[walk].right is None and self.tree[walk].left is not None:
+                    walk2 = self.tree[walk].left
+                    self._Transplant(walk, left_idx)
+                else:
+                    walk1 = self.__find_minimum(right_idx)
+                    walk1_original_color = self.tree[walk1].color
+                    walk2 = self.tree[walk1].right
+                    if self.tree[walk1].parent == walk:
+                        self.tree[walk2].parent = walk1
+                    else:
+                        walk1_right_idx = self.tree[walk1].right
+                        walk1_left_idx = self.tree[walk1].left
+                        self._Transplant(walk1, walk1_right_idx)
+                        walk1_right_idx = right_idx
+                        self.tree[walk1_right_idx].parent = walk1
+                self._Transplant(walk, walk1)
+                walk1_left_idx = left_idx
+                self.tree[walk1_left_idx].parent = walk1
+                self.tree[walk1].color = self.tree[walk],color
+            if walk1_original_color == 0:
+                self._fix_deletion(self, walk2)
+
+        
 
     def _fix_deletion(self, node_idx):
         color = self.tree[node_idx].color
         parent_idx = self._get_parent(node_idx)
-        while node_idx!= self.root_idx and color = 0:
+        while node_idx!= self.root_idx and color == 0:
             if node_idx == self.tree[parent_idx].left:
                 node_idx1 = self.tree[parent_idx].right
-                if self.tree[node_idx1].color = 1:
+                if self.tree[node_idx1].color == 1:
                     self.tree[node_idx1].color = 0
                     self.tree[parent_idx].color = 1
                     self._left_rotate(parent_idx, node_idx1)
                     node_idx1 = self.tree[parent_idx].right
-                if self.tree[node_idx1].color == 0 and self.tree[self.tree[node_idx1].right].color == 0:
+                if self.tree[self.tree[node_idx1].left].color == 0 and self.tree[self.tree[node_idx1].right].color == 0:
                     self.tree[node_idx1].color = 1
                     node_idx = self.tree[node_idx].parent
+                else:
+                    left_idx1 = self.tree[node_idx1].left
+                    right_idx1 = self.tree[node_idx1].right
+                    if self.tree[right_idx1].color ==0:
+                        self.tree[left_idx1].color = 0
+                        self.tree[node_idx1].color = 1
+                        self._right_rotate(node_idx1, left_idx1)
+                        node_idx1 = self.tree[parent_idx].right
+                    self.tree[node_idx1].color = self.tree[parent_idx].color
+                    self.tree[parent_idx].color = 0
+                    self.tree[right_idx1].color = 0
+                    self._left_rotate(parent_idx, node_idx1)
+                    node_idx = self.tree[root_idx]
+            else:
+                node_idx1 = self.tree[parent_idx].left
+                if self.tree[node_idx1].color == 1:
+                    self.tree[node_idx1].color = 0
+                    self.tree[parent_idx].color = 1
+                    self._right_rotate(parent_idx, node_idx1)
+                    node_idx1 = self.tree[parent_idx].left
+                if self.tree[self.tree[node_idx1].left].color == 0 and self.tree[self.tree[node_idx1].right].color == 0:
+                    self.tree[node_idx1].color = 1
+                    node_idx = self.tree[node_idx].parent
+                else:
+                    left_idx1 = self.tree[node_idx1].left
+                    right_idx1 = self.tree[node_idx1].right
+                    if self.tree[right_idx1].color ==0:
+                        self.tree[left_idx1].color = 0
+                        self.tree[node_idx1].color = 1
+                        self._left_rotate(node_idx1, left_idx1)
+                        node_idx1 = self.tree[parent_idx].left
+                    self.tree[node_idx1].color = self.tree[parent_idx].color
+                    self.tree[parent_idx].color = 0
+                    self.tree[right_idx1].color = 0
+                    self._right_rotate(parent_idx, node_idx1)
+                    node_idx = self.tree[root_idx]
+        self.tree[node_idx].color = 0
 
-                
-
-
-
-
-                    
-
-                            
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
         for i in range(self.tree._last_pos_filled + 1):
