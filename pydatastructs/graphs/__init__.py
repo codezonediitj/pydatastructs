@@ -13,7 +13,8 @@ from .algorithms import (
     minimum_spanning_tree,
     minimum_spanning_tree_parallel,
     strongly_connected_components,
-    depth_first_search
+    depth_first_search,
+    shortest_paths
 )
 
 __all__.extend(algorithms.__all__)

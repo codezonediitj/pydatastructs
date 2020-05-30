@@ -5,6 +5,7 @@ data structure.
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils import GraphEdge
+from pydatastructs.utils.misc_util import GraphNode
 from pydatastructs.utils.misc_util import _comp
 from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
@@ -17,7 +18,8 @@ __all__ = [
     'minimum_spanning_tree',
     'minimum_spanning_tree_parallel',
     'strongly_connected_components',
-    'depth_first_search'
+    'depth_first_search',
+    'shortest_paths'
 ]
 
 Stack = Queue = deque
@@ -637,3 +639,42 @@ def _depth_first_search_adjacency_list(
                 return None
 
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
+
+def shortest_paths(graph: Graph, algorithm: str,
+                   source: str, target: str="") -> tuple:
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "finding shortest paths in graphs."%(algorithm))
+    return getattr(algorithms, func)(graph, source, target)
+
+def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
+    distances, predecessor = dict(), dict()
+
+    for v in graph.vertices:
+        distances[v] = float('inf')
+        predecessor[v] = None
+    distances[source] = 0
+
+    edges = graph.edge_weights.values()
+    for _ in range(len(graph.vertices) - 1):
+        for edge in edges:
+            u, v = edge.source.name, edge.target.name
+            w = edge.value
+            if distances[u] + edge.value < distances[v]:
+                distances[v] = distances[u] + w
+                predecessor[v] = u
+
+    for edge in edges:
+        u, v = edge.source.name, edge.target.name
+        w = edge.value
+        if distances[u] + w < distances[v]:
+            raise ValueError("Graph contains a negative weight cycle.")
+
+    if target != "":
+        return (distances[target], predecessor)
+    return (distances, predecessor)
+
+_bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
