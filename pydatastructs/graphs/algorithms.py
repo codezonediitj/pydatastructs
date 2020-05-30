@@ -17,7 +17,8 @@ __all__ = [
     'minimum_spanning_tree',
     'minimum_spanning_tree_parallel',
     'strongly_connected_components',
-    'depth_first_search'
+    'depth_first_search',
+    'shortest_paths'
 ]
 
 Stack = Queue = deque
@@ -637,3 +638,90 @@ def _depth_first_search_adjacency_list(
                 return None
 
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
+
+def shortest_paths(graph: Graph, algorithm: str,
+                   source: str, target: str="") -> tuple:
+    """
+    Finds shortest paths in the given graph from a given source.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used. Currently, the following algorithms
+        are implemented,
+        'bellman_ford' -> Bellman-Ford algorithm as given in [1].
+    source: str
+        The name of the source the node.
+    target: str
+        The name of the target node.
+        Optional, by default, all pair shortest paths
+        are returned.
+
+    Returns
+    =======
+
+    (distances, predecessors): (dict, dict)
+        If target is not provided and algorithm used
+        is 'bellman_ford'.
+    (distances[target], predecessors): (float, dict)
+        If target is provided and algorithm used is
+        'bellman_ford'.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import shortest_paths
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V1, V2, V3)
+    >>> G.add_edge('V2', 'V3', 10)
+    >>> G.add_edge('V1', 'V2', 11)
+    >>> shortest_paths(G, 'bellman_ford', 'V1')
+    ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "finding shortest paths in graphs."%(algorithm))
+    return getattr(algorithms, func)(graph, source, target)
+
+def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
+    distances, predecessor = dict(), dict()
+
+    for v in graph.vertices:
+        distances[v] = float('inf')
+        predecessor[v] = None
+    distances[source] = 0
+
+    edges = graph.edge_weights.values()
+    for _ in range(len(graph.vertices) - 1):
+        for edge in edges:
+            u, v = edge.source.name, edge.target.name
+            w = edge.value
+            if distances[u] + edge.value < distances[v]:
+                distances[v] = distances[u] + w
+                predecessor[v] = u
+
+    for edge in edges:
+        u, v = edge.source.name, edge.target.name
+        w = edge.value
+        if distances[u] + w < distances[v]:
+            raise ValueError("Graph contains a negative weight cycle.")
+
+    if target != "":
+        return (distances[target], predecessor)
+    return (distances, predecessor)
+
+_bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
