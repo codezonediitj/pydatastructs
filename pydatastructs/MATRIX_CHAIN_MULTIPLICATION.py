@@ -18,7 +18,7 @@ def MatrixChainOrder(p, n):
 	for i in range(1, n): 
 		dp[i][i] = 0
 
-	// Simply following above recursive formula. 
+// Simply following above recursive formula. 
 	for L in range(1, n - 1): 
 		for i in range(n - L): 
 			dp[i][i + L] = min(dp[i + 1][i + L] +
