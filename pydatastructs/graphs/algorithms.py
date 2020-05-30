@@ -728,6 +728,41 @@ def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tupl
 _bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
 
 def topological_sort(graph: Graph, algorithm: str) -> list:
+    """
+    Performs topological sort on the given graph using given algorithm.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used.
+        Currently, following are supported,
+        'kahn' -> Kahn's algorithm as given in [1].
+
+    Returns
+    =======
+
+    list
+        The list of topologically sorted vertices.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, topological_sort
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> graph = Graph(v_1, v_2)
+    >>> graph.add_edge('v_1', 'v_2')
+    >>> topological_sort(graph, 'kahn')
+    ['v_1', 'v_2']
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
+    """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
