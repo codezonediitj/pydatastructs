@@ -5,7 +5,6 @@ data structure.
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils import GraphEdge
-from pydatastructs.utils.misc_util import GraphNode
 from pydatastructs.utils.misc_util import _comp
 from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
