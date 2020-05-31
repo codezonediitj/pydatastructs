@@ -19,7 +19,8 @@ __all__ = [
     'strongly_connected_components',
     'depth_first_search',
     'shortest_paths',
-    'topological_sort'
+    'topological_sort',
+    'topological_sort_parallel'
 ]
 
 Stack = Queue = deque
@@ -772,27 +773,69 @@ def topological_sort(graph: Graph, algorithm: str) -> list:
     return getattr(algorithms, func)(graph)
 
 def _kahn_adjacency_list(graph: Graph) -> list:
-    S = set(graph.vertices)
-    in_degree = dict()
+    S = Queue()
+    in_degree = {u: 0 for u in graph.vertices}
     for u in graph.vertices:
         for v in graph.neighbors(u):
-            if v.name not in in_degree:
-                in_degree[v.name] = 0
             in_degree[v.name] += 1
-            if v.name in S:
-                S.remove(v.name)
+    for u in graph.vertices:
+        if in_degree[u] == 0:
+            S.append(u)
+            in_degree.pop(u)
 
     L = []
     while S:
-        n = S.pop()
+        n = S.popleft()
         L.append(n)
         for m in graph.neighbors(n):
             graph.remove_edge(n, m.name)
             in_degree[m.name] -= 1
             if in_degree[m.name] == 0:
-                S.add(m.name)
+                S.append(m.name)
                 in_degree.pop(m.name)
 
     if in_degree:
+        raise ValueError("Graph is not acyclic.")
+    return L
+
+def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int) -> list:
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl + '_parallel'
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "performing topological sort on %s graphs."%(algorithm, graph._impl))
+    return getattr(algorithms, func)(graph, num_threads)
+
+def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
+    num_vertices = len(graph.vertices)
+
+    def _collect_source_nodes(graph: Graph) -> list:
+        S = []
+        in_degree = {u: 0 for u in graph.vertices}
+        for u in graph.vertices:
+            for v in graph.neighbors(u):
+                in_degree[v.name] += 1
+        for u in in_degree:
+            if in_degree[u] == 0:
+                S.append(u)
+        return list(S)
+
+    def _job(graph: Graph, u: str):
+        for v in graph.neighbors(u):
+            graph.remove_edge(u, v.name)
+
+    L = []
+    source_nodes = _collect_source_nodes(graph)
+    while source_nodes:
+        with ThreadPoolExecutor(max_workers=num_threads) as Executor:
+            for node in source_nodes:
+                L.append(node)
+                Executor.submit(_job, graph, node)
+        for node in source_nodes:
+            graph.remove_vertex(node)
+        source_nodes = _collect_source_nodes(graph)
+
+    if len(L) != num_vertices:
         raise ValueError("Graph is not acyclic.")
     return L
