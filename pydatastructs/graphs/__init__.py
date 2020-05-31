@@ -14,7 +14,8 @@ from .algorithms import (
     minimum_spanning_tree_parallel,
     strongly_connected_components,
     depth_first_search,
-    shortest_paths
+    shortest_paths,
+    topological_sort
 )
 
 __all__.extend(algorithms.__all__)

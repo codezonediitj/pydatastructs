@@ -1,5 +1,5 @@
 """
-Contains all the algorithms associated with graph
+Contains algorithms associated with graph
 data structure.
 """
 from collections import deque
@@ -18,7 +18,8 @@ __all__ = [
     'minimum_spanning_tree_parallel',
     'strongly_connected_components',
     'depth_first_search',
-    'shortest_paths'
+    'shortest_paths',
+    'topological_sort'
 ]
 
 Stack = Queue = deque
@@ -725,3 +726,73 @@ def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tupl
     return (distances, predecessor)
 
 _bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
+
+def topological_sort(graph: Graph, algorithm: str) -> list:
+    """
+    Performs topological sort on the given graph using given algorithm.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used.
+        Currently, following are supported,
+        'kahn' -> Kahn's algorithm as given in [1].
+
+    Returns
+    =======
+
+    list
+        The list of topologically sorted vertices.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, topological_sort
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> graph = Graph(v_1, v_2)
+    >>> graph.add_edge('v_1', 'v_2')
+    >>> topological_sort(graph, 'kahn')
+    ['v_1', 'v_2']
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "performing topological sort on %s graphs."%(algorithm, graph._impl))
+    return getattr(algorithms, func)(graph)
+
+def _kahn_adjacency_list(graph: Graph) -> list:
+    S = set(graph.vertices)
+    in_degree = dict()
+    for u in graph.vertices:
+        for v in graph.neighbors(u):
+            if v.name not in in_degree:
+                in_degree[v.name] = 0
+            in_degree[v.name] += 1
+            if v.name in S:
+                S.remove(v.name)
+
+    L = []
+    while S:
+        n = S.pop()
+        L.append(n)
+        for m in graph.neighbors(n):
+            graph.remove_edge(n, m.name)
+            in_degree[m.name] -= 1
+            if in_degree[m.name] == 0:
+                S.add(m.name)
+                in_degree.pop(m.name)
+
+    if in_degree:
+        raise ValueError("Graph is not acyclic.")
+    return L
