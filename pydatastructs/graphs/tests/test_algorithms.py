@@ -1,7 +1,8 @@
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
-depth_first_search, shortest_paths, topological_sort)
+depth_first_search, shortest_paths, topological_sort,
+topological_sort_parallel)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -292,7 +293,7 @@ def test_shortest_paths():
 
 def test_topological_sort():
 
-    def _test_topological_sort(ds, algorithm):
+    def _test_topological_sort(func, ds, algorithm, threads=None):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
         vertices = [GraphNode('2'), GraphNode('3'), GraphNode('5'),
@@ -309,7 +310,13 @@ def test_topological_sort():
         graph.add_edge('11', '9')
         graph.add_edge('11', '10')
         graph.add_edge('8', '9')
-        l = topological_sort(graph, algorithm)
+        if threads is not None:
+            l = func(graph, algorithm, threads)
+        else:
+            l = func(graph, algorithm)
         assert all([(l1 in l[0:3]) for l1 in ('3', '5', '7')] +
                    [(l2 in l[3:5]) for l2 in ('8', '11')] +
                    [(l3 in l[5:]) for l3 in ('10', '9', '2')])
+
+    _test_topological_sort(topological_sort, "List", "kahn")
+    _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)
