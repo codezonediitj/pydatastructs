@@ -799,6 +799,44 @@ def _kahn_adjacency_list(graph: Graph) -> list:
     return L
 
 def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int) -> list:
+    """
+    Performs topological sort on the given graph using given algorithm using
+    given number of threads.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used.
+        Currently, following are supported,
+        'kahn' -> Kahn's algorithm as given in [1].
+    num_threads: int
+        The maximum number of threads to be used.
+
+    Returns
+    =======
+
+    list
+        The list of topologically sorted vertices.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, topological_sort_parallel
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> graph = Graph(v_1, v_2)
+    >>> graph.add_edge('v_1', 'v_2')
+    >>> topological_sort_parallel(graph, 'kahn', 1)
+    ['v_1', 'v_2']
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
+    """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl + '_parallel'
     if not hasattr(algorithms, func):
