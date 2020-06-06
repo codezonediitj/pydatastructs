@@ -1,2 +1,5 @@
 venv
-.vscode
+# Editor Files 
+**/.vscode/
+# Scripting Files
+run.py

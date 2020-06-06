@@ -1,4 +1,4 @@
-from pydatastructs.utils import TreeNode, CartesianTreeNode , Redblacktreenode
+from pydatastructs.utils import TreeNode, CartesianTreeNode, Redblacktreenode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
@@ -1336,6 +1336,7 @@ class Redblacktree(SelfBalancingBinaryTree):
                     else:
                         self.tree[self.tree[node_idx].parent].color=0
                         return ret_node_idx
+
 
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
