@@ -85,12 +85,11 @@ class OneDimensionalArray(Array):
                         args[1][i] = dtype(args[1][i])
                 size, data = args[0], [arg for arg in args[1]]
             else:
-                raise TypeError("Expected type of size is int and "
-                                "expected type of data is list/tuple.")
-            if size != len(data):
-                raise ValueError("Conflict in the size %s and length of data %s"
-                                 %(size, len(data)))
-            obj._size, obj._data = size, data
+                raise TypeError("Expected type of size is int and expected type of data is list/tuple.")
+                if i >= self._size or i < 0:
+                    if size != len(data):
+                        raise ValueError("Conflict in the size %s and length of data %s" %(size, len(data)))
+                        obj._size, obj._data = size, data
 
         elif len(args) == 1:
             if _check_type(args[0], int):
