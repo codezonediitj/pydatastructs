@@ -1,5 +1,5 @@
-venv
+**/venv/
 # Editor Files 
 **/.vscode/
 # Scripting Files
-run.py
+**/run.py
