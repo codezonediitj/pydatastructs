@@ -1168,14 +1168,12 @@ class Redblacktree(SelfBalancingBinaryTree):
     
     def _find_successor(self, node_idx):
         temp = node_idx
-        flag = False
         par = temp
         if temp is not None:
             while self.tree[temp].left is not None:
-                flag = True
                 par = temp
                 temp = self.tree[temp].left
-            return temp, par, flag
+            return temp, par
         else:
             return None
     
@@ -1206,21 +1204,21 @@ class Redblacktree(SelfBalancingBinaryTree):
         else:
             return False
     
-    def _is_onLeft(self, node_idx):
+    def _is_onleft(self, node_idx):
         parent = self._get_parent(node_idx)
         if self.tree[parent].left == node_idx:
             return True
         else:
             False
 
-    def _is_onRight(self, node_idx):
+    def _is_onright(self, node_idx):
         parent = self._get_parent(node_idx)
-        if self._is_onLeft(node_idx) is False:
+        if self._is_onleft(node_idx) is False:
             return True
         else:
             return False
     
-    def _has_red_Child(self, node_idx):
+    def _has_red_child(self, node_idx):
         left_idx = self.tree[node_idx].left
         right_idx = self.tree[node_idx].right
         if (left_idx is not None and self.tree[left_idx].color == 1) or \
@@ -1241,13 +1239,13 @@ class Redblacktree(SelfBalancingBinaryTree):
         else:
             return self._find_successor(self.tree[node_idx].right)
 
-    def _walk1_walk_isBlack(self, color, node_idx1):
+    def _walk1_walk_isblack(self, color, node_idx1):
         if (node_idx1 is None or self.tree[node_idx1].color == 0) and (color == 0):
             return True
         else:
             return False
 
-    def _left_left_siblingCase(self, node_idx):
+    def _left_left_siblingcase(self, node_idx):
         left_idx = self.tree[node_idx].left
         parent = self._get_parent(node_idx)
         parent_color = self.tree[parent].color
@@ -1255,7 +1253,7 @@ class Redblacktree(SelfBalancingBinaryTree):
         self.tree[node_idx].color = parent_color
         self._right_rotate(parent, node_idx)
     
-    def _right_left_siblingCase(self, node_idx):
+    def _right_left_siblingcase(self, node_idx):
         left_idx = self.tree[node_idx].left
         parent = self._get_parent(node_idx)
         parent_color = self.tree[parent].color
@@ -1264,7 +1262,7 @@ class Redblacktree(SelfBalancingBinaryTree):
         self._right_rotate(node_idx, child)
         self._left_rotate(parent, node_idx)
  
-    def _left__right_siblingCase(self, node_idx):
+    def _left__right_siblingcase(self, node_idx):
         right_idx = self.tree[node_idx].right
         parent = self._get_parent(node_idx)
         parent_color = self.tree[parent].color
@@ -1273,7 +1271,7 @@ class Redblacktree(SelfBalancingBinaryTree):
         self._left_rotate(node_idx, child)
         self._right_rotate(parent, node_idx)
 
-    def _right_right_siblingCase(self, node_idx):
+    def _right_right_siblingcase(self, node_idx):
         right_idx = self.tree[node_idx].right
         parent = self._get_parent(node_idx)
         parent_color = self.tree[parent].color
@@ -1294,25 +1292,25 @@ class Redblacktree(SelfBalancingBinaryTree):
                 if self.tree[sibling_idx].color == 1:
                     self.tree[parent_idx].color = 1
                     self.tree[sibling_idx].color = 0
-                    if self._is_onLeft(sibling_idx):
+                    if self._is_onleft(sibling_idx):
                         self._right_rotate(parent_idx, sibling_idx)
                     else:
                         self._left_rotate(parent_idx, sibling_idx)
                     continue
                 else:
-                    if self._has_red_Child(sibling_idx):
+                    if self._has_red_child(sibling_idx):
                         left_idx = self.tree[sibling_idx].left
                         if self.tree[sibling_idx].left is not None and \
                             self.tree[left_idx].color == 1:
                             if self._is_onLeft(sibling_idx):
-                                self._left_left_siblingCase(sibling_idx)
+                                self._left_left_siblingcase(sibling_idx)
                             else:
-                                self._right__left_siblingCase(sibling_idx)
+                                self._right__left_siblingcase(sibling_idx)
                         else:
                             if self._is_onLeft(sibling_idx):
-                                self._left__right_siblingCase(sibling_idx)
+                                self._left__right_siblingcase(sibling_idx)
                             else:
-                                self._right_right_siblingCase(sibling_idx)
+                                self._right_right_siblingcase(sibling_idx)
                         self.tree[parent_idx].color = 0
                     else:
                         self.tree[sibling_idx].color = 1
@@ -1345,15 +1343,14 @@ class Redblacktree(SelfBalancingBinaryTree):
             else:
                 pass
         self._update_size(a)
-        return a
-    
-    def _delete_root(self, node_idx, child):
+
+    def _delete_root(self, node_idx, node_idx1):
         if self._is_leaf(node_idx):
             self.tree[self.root_idx].data = None
             self.tree[self.root_idx].key = None
         elif self._has_one_child(node_idx):
-            root_key = self._transplant_values(node_idx, child)
-            new_indices = self.tree.delete(child)
+            root_key = self._transplant_values(node_idx, node_idx1)
+            new_indices = self.tree.delete(node_idx1)
             if new_indices is not None:
                 self.root_idx = new_indices[root_key]
             return print("deleted successfully")
@@ -1364,24 +1361,22 @@ class Redblacktree(SelfBalancingBinaryTree):
         walk = node_idx
         walk1 = node_idx1
         parent = self._get_parent(node_idx)
-        child = walk1
         color = self.tree[walk].color
         if parent is None:
-            self._delete_root(walk, child)
+            self._delete_root(walk, walk1)
         else:
-            if self._walk1_walk_isBlack(color, walk1):
+            if self._walk1_walk_isblack(color, walk1):
                 self._fix_deletion(walk)
             else:
                 sibling_idx = self._get_sibling(walk)
                 if sibling_idx is not None:
                     self.tree[sibling_idx].color = 1
-            if self._is_onLeft(walk):
+            if self._is_onleft(walk):
                 self.tree[parent].left = None
             else:
                 self.tree[parent].right = None
-            a = self._remove_node(walk)
+            self._remove_node(walk)
             print("Node deleted successfully, leaf_case")
-            return a
             
     def _one_child_case(self, node_idx, node_idx1):
         walk = node_idx
@@ -1391,44 +1386,39 @@ class Redblacktree(SelfBalancingBinaryTree):
         if parent is None:
             self._delete_root(walk, walk1)
         else:
-            if self._is_onLeft(walk):
+            if self._is_onleft(walk):
                 self.tree[parent].left = walk1
             else:
                 self.tree[parent].right = walk1
             self.tree[walk1].parent = parent
             a = self._remove_node(walk)
-            if self._walk1_walk_isBlack(walk_original_color, walk1):
+            if self._walk1_walk_isblack(walk_original_color, walk1):
                 self._fix_deletion(walk1)
             else:
                 self.tree[walk1].color = 0
         print("Node deleted successfully, one-child-case")
-        return a
         
     def _two_child_case(self, node_idx):
         walk = node_idx
-        successor, par, flag = self._replace_node(walk)
+        successor, par = self._replace_node(walk)
         self._transplant_values(walk, successor)
         walk = successor
         walk1 = self._replace_node(walk)
         return walk, walk1
 
     def delete(self, key, **kwargs):
-        balancing_info = kwargs.get('balancing_info', False)
         walk = super(Redblacktree, self).search(key)
-        a = None
         if walk is not None:
             walk1 = self._replace_node(walk)
             if self._has_two_child(walk):
                 walk, walk1 = self._two_child_case(walk)
             if self._is_leaf(walk):
-                a = self._leaf_case(walk, walk1)
+                self._leaf_case(walk, walk1)
             elif self._has_one_child(walk):
-                a = self._one_child_case(walk, walk1)
-            if kwargs.get("balancing_info", False) is not False:
-                return a    
+                self._one_child_case(walk, walk1) 
             return True
         else:
-            raise Exception("something went wrong")
+            return None
 
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
