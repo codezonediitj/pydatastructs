@@ -162,7 +162,6 @@ class BinaryTree(object):
         """
         raise NotImplementedError("This is an abstract method.")
 
-
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
         for i in range(self.tree._last_pos_filled + 1):
@@ -284,7 +283,6 @@ class BinarySearchTree(BinaryTree):
             if parent is None:
                 self.tree[self.root_idx].data = None
                 self.tree[self.root_idx].key = None
-
             else:
                 if self.tree[parent].left == walk:
                     self.tree[parent].left = None
@@ -293,7 +291,6 @@ class BinarySearchTree(BinaryTree):
                 a = parent
                 par_key, root_key = (self.tree[parent].key,
                                      self.tree[self.root_idx].key)
-
                 new_indices = self.tree.delete(walk)
                 if new_indices is not None:
                     a = new_indices[par_key]
@@ -1078,7 +1075,6 @@ class Redblacktree(SelfBalancingBinaryTree):
     >>> b.search(1)
     0
 
-
     References
     ==========
 
@@ -1136,17 +1132,14 @@ class Redblacktree(SelfBalancingBinaryTree):
                         self._right_rotate(parent_idx,node_idx)
                         node_idx=parent_idx
                         parent_idx=self._get_parent(node_idx)
-
                     node_idx=parent_idx
                     parent_idx=self._get_parent(node_idx)
                     self._left_rotate(parent_idx,node_idx)
-
                 elif self._is_onleft(parent_idx):
                     if self._is_onright(node_idx):
                         self._left_rotate(parent_idx,node_idx)
                         node_idx=parent_idx
                         parent_idx=self._get_parent(node_idx)
-
                     node_idx=parent_idx
                     parent_idx=self._get_parent(node_idx)
                     self._right_rotate(parent_idx,node_idx)
@@ -1171,7 +1164,6 @@ class Redblacktree(SelfBalancingBinaryTree):
             self.tree[node_idx].color=0
         elif  self.tree[node_idx].color==1 and self.tree[self.tree[node_idx].parent].color==1:
             self.__fix_insert(node_idx)
-        print(self.root_idx)
             
     def _find_successor(self, node_idx):
         node_idx
