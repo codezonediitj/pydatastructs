@@ -1108,7 +1108,6 @@ class Redblacktree(SelfBalancingBinaryTree):
             parent_idx=self._get_parent(node_idx)
             grand_parent_idx=self._get_grand_parent(node_idx)
             uncle_idx = self._get_uncle(node_idx) # uncle
-            print(bool(self._is_onright(node_idx)))
             if uncle_idx is not None and self.tree[uncle_idx].color == 1:
                 self.tree[uncle_idx].color = 0
                 self.tree[parent_idx].color = 0
@@ -1267,6 +1266,7 @@ class Redblacktree(SelfBalancingBinaryTree):
         while node_idx!= self.root_idx and color == 0:
             sibling_idx = self._get_sibling(node_idx)
             parent_idx = self._get_parent(node_idx)
+            print("node", self.tree[node_idx],sibling_idx)
             if sibling_idx is None:
                 node_idx = parent_idx
                 continue
