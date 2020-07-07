@@ -7,7 +7,8 @@ __all__ = [
     'AdjacencyMatrixGraphNode',
     'GraphEdge',
     'Set',
-    'CartesianTreeNode'
+    'CartesianTreeNode',
+    'Redblacktreenode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -84,6 +85,35 @@ class CartesianTreeNode(TreeNode):
         Used for printing.
         """
         return str((self.left, self.key, self.priority, self.data, self.right))
+
+class Redblacktreenode(TreeNode):
+    """
+    Represents node in red-black trees.
+
+    Parameters
+    ==========
+
+    key
+        Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
+    color: 0 or 1
+        0 for black and 1 for red.
+
+    """
+    __slots__ = ['key', 'data','color']
+
+    def __new__(cls, key, data=None):
+        obj = TreeNode.__new__(cls, key, data)
+        obj.color = 1
+        return obj
+
+    def __str__(self):
+        """
+        Used for printing.
+        """
+        return str((self.left, self.key, self.color, self.data, self.right))
+
 
 class BinomialTreeNode(TreeNode):
     """
