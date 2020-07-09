@@ -1077,7 +1077,7 @@ class Redblacktree(SelfBalancingBinaryTree):
 
     @classmethod
     def methods(cls):
-        return ['__str__', 'insert']
+        return ['__str__', 'insert', 'delete']
 
     def _get_parent(self,node_idx):
         return self.tree[node_idx].parent
@@ -1102,12 +1102,23 @@ class Redblacktree(SelfBalancingBinaryTree):
         parent_idx=self._get_parent(node_idx)
         return self._get_sibling(parent_idx)
 
+    def _is_onleft(self, node_idx):
+        parent = self._get_parent(node_idx)
+        if self.tree[parent].left == node_idx:
+            return True
+        return False
+
+    def _is_onright(self, node_idx):
+        if self._is_onleft(node_idx) is False:
+            return True
+        return False
+
     def __fix_insert(self,node_idx):
         while self._get_parent(node_idx) is not None and \
         self.tree[self._get_parent(node_idx)].color == 1 and self.tree[node_idx].color==1:
             parent_idx=self._get_parent(node_idx)
             grand_parent_idx=self._get_grand_parent(node_idx)
-            uncle_idx = self._get_uncle(node_idx) # uncle
+            uncle_idx = self._get_uncle(node_idx)
             if uncle_idx is not None and self.tree[uncle_idx].color == 1:
                 self.tree[uncle_idx].color = 0
                 self.tree[parent_idx].color = 0
@@ -1150,17 +1161,13 @@ class Redblacktree(SelfBalancingBinaryTree):
         if node.is_root:
             self.tree[node_idx].is_root = True
             self.tree[node_idx].color=0
-        elif  self.tree[node_idx].color==1 and self.tree[self.tree[node_idx].parent].color==1:
+        elif self.tree[self.tree[node_idx].parent].color==1:
             self.__fix_insert(node_idx)
 
     def _find_successor(self, node_idx):
-        node_idx
-        if node_idx is not None:
-            while self.tree[node_idx].left is not None:
-                node_idx = self.tree[node_idx].left
-            return node_idx
-        else:
-            return None
+        while self.tree[node_idx].left is not None:
+            node_idx = self.tree[node_idx].left
+        return node_idx
 
     def _transplant_values(self, node_idx1, node_idx2):
         parent = self.tree[node_idx1].parent
@@ -1187,17 +1194,6 @@ class Redblacktree(SelfBalancingBinaryTree):
 
     def _has_two_child(self, node_idx):
         if self.tree[node_idx].left is not None and self.tree[node_idx].right is not None:
-            return True
-        return False
-
-    def _is_onleft(self, node_idx):
-        parent = self._get_parent(node_idx)
-        if self.tree[parent].left == node_idx:
-            return True
-        return False
-
-    def _is_onright(self, node_idx):
-        if self._is_onleft(node_idx) is False:
             return True
         return False
 
@@ -1331,7 +1327,7 @@ class Redblacktree(SelfBalancingBinaryTree):
             new_indices = self.tree.delete(node_idx1)
             if new_indices is not None:
                 self.root_idx = new_indices[root_key]
-            return print("deleted successfully")
+        return
 
     def __leaf_case(self, node_idx, node_idx1):
         walk = node_idx
@@ -1352,7 +1348,6 @@ class Redblacktree(SelfBalancingBinaryTree):
             else:
                 self.tree[parent].right = None
             self._remove_node(walk)
-
 
     def __one_child_case(self, node_idx, node_idx1):
         walk = node_idx
@@ -1380,7 +1375,6 @@ class Redblacktree(SelfBalancingBinaryTree):
         walk = successor
         walk1 = self._replace_node(walk)
         return walk, walk1
-
 
     def delete(self, key, **kwargs):
         walk = super(Redblacktree, self).search(key)

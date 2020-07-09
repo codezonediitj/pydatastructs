@@ -540,3 +540,5 @@ def test_Redblacktree():
     tree.insert(5)
 
     tree.delete(50)
+    tree.delete(20)
+    tree.delete(30)
