@@ -1,5 +1,5 @@
 from pydatastructs.linear_data_structures.arrays import (
-    OneDimensionalArray, DynamicArray)
+    OneDimensionalArray, DynamicArray, Array)
 from pydatastructs.utils.misc_util import _check_type, _comp
 from concurrent.futures import ThreadPoolExecutor
 from math import log, floor
@@ -9,7 +9,8 @@ __all__ = [
     'brick_sort',
     'brick_sort_parallel',
     'heapsort',
-    'matrix_multiply_parallel'
+    'matrix_multiply_parallel',
+    'counting_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -293,6 +294,83 @@ def heapsort(array, **kwargs):
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
+
+def counting_sort(array: Array) -> Array:
+    """
+    Performs counting sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import DynamicOneDimensionalArray as DODA, counting_sort
+    >>> arr = DODA(int, [5, 78, 1, 0])
+    >>> out = counting_sort(arr)
+    >>> str(out)
+    "['0', '1', '5', '78']"
+    >>> arr.delete(2)
+    >>> out = counting_sort(arr)
+    >>> str(out)
+    "['0', '5', '78']"
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Counting_sort
+
+    Note
+    ====
+
+    Since, counting sort is a non-comparison sorting algorithm,
+    custom comparators aren't allowed.
+    The ouput array doesn't contain any `None` value.
+    """
+    max_val, min_val = array[0], array[0]
+    none_count = 0
+    for i in range(len(array)):
+        if array[i] is not None:
+            if max_val is None or max_val < array[i]:
+                max_val = array[i]
+            if min_val is None or array[i] < min_val:
+                min_val = array[i]
+        else:
+            none_count += 1
+    if min_val is None or max_val is None:
+        return array
+
+    count = [0 for _ in range(max_val - min_val + 1)]
+    for i in range(len(array)):
+        if array[i] is not None:
+            count[array[i] - min_val] += 1
+
+    total = 0
+    for i in range(max_val - min_val + 1):
+        count[i], total = total, count[i] +  total
+
+    output = type(array)(array._dtype,
+                        [array[i] for i in range(len(array))
+                         if array[i] is not None])
+    if _check_type(output, DynamicArray):
+        output._modify(force=True)
+
+    for i in range(len(array)):
+        x = array[i]
+        if x is not None:
+            output[count[x-min_val]] = x
+            count[x-min_val] += 1
+
+    return output
 
 def _matrix_multiply_helper(m1, m2, row, col):
     s = 0

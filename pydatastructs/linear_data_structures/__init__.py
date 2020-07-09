@@ -8,7 +8,8 @@ from . import (
 
 from .arrays import (
     OneDimensionalArray,
-    DynamicOneDimensionalArray
+    DynamicOneDimensionalArray,
+    MultiDimensionalArray
 )
 __all__.extend(arrays.__all__)
 
@@ -25,6 +26,7 @@ from .algorithms import (
     brick_sort,
     brick_sort_parallel,
     heapsort,
-    matrix_multiply_parallel
+    matrix_multiply_parallel,
+    counting_sort
 )
 __all__.extend(algorithms.__all__)
