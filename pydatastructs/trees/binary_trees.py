@@ -1063,6 +1063,10 @@ class Redblacktree(SelfBalancingBinaryTree):
     2
     >>> b.search(1)
     0
+    >>>b.delete(1)
+    True
+    >>>b.delete(2)
+    True
 
     References
     ==========
