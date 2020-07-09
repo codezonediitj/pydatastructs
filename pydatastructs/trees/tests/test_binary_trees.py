@@ -489,6 +489,7 @@ def test_Redblacktree():
     tree.delete(180)
     tree.delete(130)
     tree.delete(110)
+    tree.delete(190)
     assert str(tree) == \
         ("[(None, 10, 0, None, None), (0, 20, 0, None, 2), (None, 30, 0, None, None), (1, 40, 1, None, 5), (None, 50, 0, None, None),"
          " (4, 60, 0, None, 6), (None, 70, 0, None, None), (3, 80, 0, None, 11), (None, 90, 1, None, None), (8, 100, 0, None, None), '',"
@@ -529,3 +530,13 @@ def test_Redblacktree():
 
     tree.delete(160)
     assert str(tree) == ("[(None, None, 0, None, None)]")
+
+    tree = Redblacktree()
+    tree.insert(50)
+    tree.insert(40)
+    tree.insert(30)
+    tree.insert(20)
+    tree.insert(10)
+    tree.insert(5)
+
+    tree.delete(50)

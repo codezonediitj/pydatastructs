@@ -97,7 +97,7 @@ class Redblacktreenode(TreeNode):
         Required for comparison operations.
     data
         Any valid data to be stored in the node.
-    color: 0 or 1
+    color
         0 for black and 1 for red.
 
     """

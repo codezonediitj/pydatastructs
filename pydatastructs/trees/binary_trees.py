@@ -1320,13 +1320,6 @@ class Redblacktree(SelfBalancingBinaryTree):
             parent = self._get_parent(node_idx)
             par_key, root_key = (self.tree[parent].key, self.tree[self.root_idx].key)
             new_indices = self.tree.delete(node_idx)
-            if new_indices is not None:
-                parent = new_indices[par_key]
-                self.tree[child].parent = new_indices[par_key]
-                a = new_indices[par_key]
-                self.root_idx = new_indices[root_key]
-            else:
-                pass
         self._update_size(a)
 
     def _delete_root(self, node_idx, node_idx1):
@@ -1359,7 +1352,7 @@ class Redblacktree(SelfBalancingBinaryTree):
             else:
                 self.tree[parent].right = None
             self._remove_node(walk)
-            print("Node deleted successfully, leaf_case")
+
 
     def __one_child_case(self, node_idx, node_idx1):
         walk = node_idx
@@ -1379,8 +1372,6 @@ class Redblacktree(SelfBalancingBinaryTree):
                 self.__fix_deletion(walk1)
             else:
                 self.tree[walk1].color = 0
-        print(self.root_idx)
-        print("Node deleted successfully, one-child-case")
 
     def __two_child_case(self, node_idx):
         walk = node_idx
@@ -1389,7 +1380,7 @@ class Redblacktree(SelfBalancingBinaryTree):
         walk = successor
         walk1 = self._replace_node(walk)
         return walk, walk1
-        print("Two child case node will be changed to either one or leaf case")
+
 
     def delete(self, key, **kwargs):
         walk = super(Redblacktree, self).search(key)
