@@ -1,6 +1,6 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree, CartesianTree, Treap, Redblacktree)
+    ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree, CartesianTree, Treap, RedBlackTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
@@ -437,8 +437,8 @@ def test_SplayTree():
     assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, None), (4, 50, 50, None), "
                       "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), '', '', '']")
 
-def test_Redblacktree():
-    tree = Redblacktree()
+def test_RedBlackTree():
+    tree = RedBlackTree()
     tree.insert(10,10)
     tree.insert(18,18)
     tree.insert(7,7)
@@ -453,11 +453,11 @@ def test_Redblacktree():
     tree.insert(6,6)
 
     assert str(tree) == \
-        ("[(11, 10, 1, 10, 3), (10, 18, 0, 18, None), (None, 7, 1, 7, None), (None, 15, 0, 15, None),"
-        " (0, 16, 0, 16, 6), (None, 30, 1, 30, None), (1, 25, 1, 25, 7), (5, 40, 0, 40, 8),"
-        " (None, 60, 1, 60, None), (None, 2, 1, 2, None), (None, 17, 1, 17, None), (9, 6, 0, 6, 2)]")
+        ("[(11, 10, 10, 3), (10, 18, 18, None), (None, 7, 7, None), (None, 15, 15, None),"
+        " (0, 16, 16, 6), (None, 30, 30, None), (1, 25, 25, 7), (5, 40, 40, 8),"
+        " (None, 60, 60, None), (None, 2, 2, None), (None, 17, 17, None), (9, 6, 6, 2)]")
 
-    tree = Redblacktree()
+    tree = RedBlackTree()
     tree.insert(10)
     tree.insert(20)
     tree.insert(30)
@@ -480,58 +480,58 @@ def test_Redblacktree():
     assert tree._get_sibling(7) is None
 
     assert str(tree) == \
-        ("[(None, 10, 0, None, None), (0, 20, 0, None, 2), (None, 30, 0, None, None), (1, 40, 1, None, 5),"
-        " (None, 50, 0, None, None), (4, 60, 0, None, 6), (None, 70, 0, None, None), (3, 80, 0, None, 11),"
-        " (None, 90, 0, None, None), (8, 100, 0, None, 10), (None, 110, 0, None, None), (9, 120, 1, None, 13),"
-        " (None, 130, 0, None, None), (12, 140, 0, None, 15), (None, 150, 0, None, None), (14, 160, 1, None, 16),"
-        " (None, 170, 0, None, 17), (None, 180, 1, None, None)]")
+        ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5),"
+        " (None, 50, None, None), (4, 60, None, 6), (None, 70, None, None), (3, 80, None, 11),"
+        " (None, 90, None, None), (8, 100, None, 10), (None, 110, None, None), (9, 120, None, 13),"
+        " (None, 130, None, None), (12, 140, None, 15), (None, 150, None, None), (14, 160, None, 16),"
+        " (None, 170, None, 17), (None, 180, None, None)]")
 
     tree.delete(180)
     tree.delete(130)
     tree.delete(110)
     tree.delete(190)
     assert str(tree) == \
-        ("[(None, 10, 0, None, None), (0, 20, 0, None, 2), (None, 30, 0, None, None), (1, 40, 1, None, 5), (None, 50, 0, None, None),"
-         " (4, 60, 0, None, 6), (None, 70, 0, None, None), (3, 80, 0, None, 11), (None, 90, 1, None, None), (8, 100, 0, None, None), '',"
-         " (9, 120, 0, None, 15), '', (None, 140, 0, None, 14), (None, 150, 1, None, None), (13, 160, 1, None, 16), (None, 170, 0, None, None)]")
+        ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5), (None, 50, None, None),"
+         " (4, 60, None, 6), (None, 70, None, None), (3, 80, None, 11), (None, 90, None, None), (8, 100, None, None), '',"
+         " (9, 120, None, 15), '', (None, 140, None, 14), (None, 150, None, None), (13, 160, None, 16), (None, 170, None, None)]")
 
     tree.delete(170)
     tree.delete(100)
     tree.delete(60)
     assert str(tree) == \
-        ("[(None, 10, 0, None, None), (0, 20, 1, None, 2), (None, 30, 0, None, None), (1, 40, 0, None, 5), (None, 50, 1, None, None), (4, 70, 0, None, None),"
-         " '', (3, 80, 0, None, 11), (None, 90, 0, None, None), '', '', (8, 120, 0, None, 14), '', (None, 140, 0, None, None), (13, 150, 1, None, 15), (None, 160, 0, None, None)]")
+        ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5), (None, 50, None, None), (4, 70, None, None),"
+         " '', (3, 80, None, 11), (None, 90, None, None), '', '', (8, 120, None, 14), '', (None, 140, None, None), (13, 150, None, 15), (None, 160, None, None)]")
 
     tree.delete(70)
     tree.delete(140)
 
-    assert str(tree) == ("[(None, 10, 0, None, None), (0, 20, 1, None, 2), (None, 30, 0, None, None), (1, 40, 0, None, 4), (None, 50, 0, None, None), '', '', (3, 80, 0, None, 11),"
-                         " (None, 90, 0, None, None), '', '', (8, 120, 0, None, 14), '', '', (None, 150, 0, None, 15), (None, 160, 1, None, None)]")
+    assert str(tree) == ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 4), (None, 50, None, None), '', '', (3, 80, None, 11),"
+                         " (None, 90, None, None), '', '', (8, 120, None, 14), '', '', (None, 150, None, 15), (None, 160, None, None)]")
 
     tree.delete(150)
     tree.delete(120)
-    assert str(tree) == ("[(None, 10, 0, None, None), (0, 20, 0, None, 2), (None, 30, 0, None, None), (1, 40, 0, None, 7), (None, 50, 0, None, None), '', '', (4, 80, 0, None, 11),"
-                         " (None, 90, 1, None, None), '', '', (8, 160, 0, None, None), '', '', '']")
+    assert str(tree) == ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 7), (None, 50, None, None), '', '', (4, 80, None, 11),"
+                         " (None, 90, None, None), '', '', (8, 160, None, None), '', '', '']")
 
     tree.delete(50)
     tree.delete(80)
-    assert str(tree) == ("[(None, 10, 0, None, None), (0, 20, 1, None, 2), (None, 30, 0, None, None), (1, 40, 0, None, 5), '', (None, 90, 0, None, 6), (None, 160, 1, None, None)]")
+    assert str(tree) == ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5), '', (None, 90, None, 6), (None, 160, None, None)]")
 
     tree.delete(30)
     tree.delete(20)
-    assert str(tree) == ("[(None, 10, 0, None, None), '', '', (0, 40, 0, None, 5), '', (None, 90, 0, None, 6), (None, 160, 1, None, None)]")
+    assert str(tree) == ("[(None, 10, None, None), '', '', (0, 40, None, 5), '', (None, 90, None, 6), (None, 160, None, None)]")
 
     tree.delete(10)
-    assert str(tree) == ("[(None, 40, 0, None, None), (0, 90, 0, None, 2), (None, 160, 0, None, None)]")
+    assert str(tree) == ("[(None, 40, None, None), (0, 90, None, 2), (None, 160, None, None)]")
 
     tree.delete(40)
     tree.delete(90)
-    assert str(tree) == ("[(None, 160, 0, None, None)]")
+    assert str(tree) == ("[(None, 160, None, None)]")
 
     tree.delete(160)
-    assert str(tree) == ("[(None, None, 0, None, None)]")
+    assert str(tree) == ("[(None, None, None, None)]")
 
-    tree = Redblacktree()
+    tree = RedBlackTree()
     tree.insert(50)
     tree.insert(40)
     tree.insert(30)

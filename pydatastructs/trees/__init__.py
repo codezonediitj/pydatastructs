@@ -16,7 +16,7 @@ from .binary_trees import (
     CartesianTree,
     Treap,
     SplayTree,
-    Redblacktree
+    RedBlackTree
 )
 __all__.extend(binary_trees.__all__)
 

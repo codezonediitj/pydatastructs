@@ -1,5 +1,5 @@
 from pydatastructs.utils import (AdjacencyListGraphNode, AdjacencyMatrixGraphNode,
-                                GraphEdge, BinomialTreeNode, MAryTreeNode, CartesianTreeNode,Redblacktreenode)
+                                GraphEdge, BinomialTreeNode, MAryTreeNode, CartesianTreeNode,RedBlackTreeNode)
 from pydatastructs.utils.raises_util import raises
 
 def test_AdjacencyListGraphNode():
@@ -43,6 +43,6 @@ def test_CartesianTreeNode():
     c = CartesianTreeNode(1, 1, 1)
     assert str(c) == "(None, 1, 1, 1, None)"
 
-def test_Redblacktreenode():
-    c = Redblacktreenode(1,1)
+def test_RedBlackTreeNode():
+    c = RedBlackTreeNode(1,1)
     assert str(c) == "(None, 1, 1, 1, None)"

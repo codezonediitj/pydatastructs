@@ -93,6 +93,7 @@ class OneDimensionalArray(Array):
                 raise ValueError("Conflict in the size %s and length of data %s"
                                  %(size, len(data)))
             obj._size, obj._data = size, data
+
         elif len(args) == 1:
             if _check_type(args[0], int):
                 obj._size = args[0]

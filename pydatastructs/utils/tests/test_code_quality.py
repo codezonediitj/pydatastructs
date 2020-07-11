@@ -96,7 +96,7 @@ def _apis():
     pyds.DisjointSetForest, pyds.BinomialTree, pyds.TreeNode, pyds.MAryTreeNode,
     pyds.LinkedListNode, pyds.BinomialTreeNode, pyds.AdjacencyListGraphNode,
     pyds.AdjacencyMatrixGraphNode, pyds.GraphEdge, pyds.Set, pyds.BinaryIndexedTree,
-    pyds.CartesianTree, pyds.CartesianTreeNode, pyds.Treap,pyds.Redblacktreenode,pyds.Redblacktree]
+    pyds.CartesianTree, pyds.CartesianTreeNode, pyds.Treap,pyds.RedBlackTreeNode,pyds.RedBlackTree]
 
 def test_public_api():
     pyds = pydatastructs

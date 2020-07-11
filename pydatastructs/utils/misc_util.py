@@ -8,7 +8,7 @@ __all__ = [
     'GraphEdge',
     'Set',
     'CartesianTreeNode',
-    'Redblacktreenode'
+    'RedBlackTreeNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -86,7 +86,7 @@ class CartesianTreeNode(TreeNode):
         """
         return str((self.left, self.key, self.priority, self.data, self.right))
 
-class Redblacktreenode(TreeNode):
+class RedBlackTreeNode(TreeNode):
     """
     Represents node in red-black trees.
 

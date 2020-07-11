@@ -1,4 +1,4 @@
-from pydatastructs.utils import TreeNode, CartesianTreeNode, Redblacktreenode
+from pydatastructs.utils import TreeNode, CartesianTreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
@@ -16,7 +16,7 @@ __all__ = [
     'CartesianTree',
     'Treap',
     'SplayTree',
-    'Redblacktree'
+    'RedBlackTree'
 ]
 
 class BinaryTree(object):
@@ -162,6 +162,7 @@ class BinaryTree(object):
         """
         raise NotImplementedError("This is an abstract method.")
 
+
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
         for i in range(self.tree._last_pos_filled + 1):
@@ -264,7 +265,7 @@ class BinarySearchTree(BinaryTree):
         if self.tree[walk].key is None:
             return None
         while walk is not None:
-            if self.tree[walk].key==key:
+            if self.tree[walk].key == key:
                 break
             parent = walk
             if self.comparator(key, self.tree[walk].key):
@@ -296,6 +297,7 @@ class BinarySearchTree(BinaryTree):
                     a = new_indices[par_key]
                     self.root_idx = new_indices[root_key]
             self._update_size(a)
+
         elif self.tree[walk].left is not None and \
             self.tree[walk].right is not None:
             twalk = self.tree[walk].right
@@ -322,6 +324,7 @@ class BinarySearchTree(BinaryTree):
                     a = new_indices[par_key]
                     self.root_idx = new_indices[root_key]
             self._update_size(a)
+
         else:
             if self.tree[walk].left is not None:
                 child = self.tree[walk].left
@@ -347,13 +350,13 @@ class BinarySearchTree(BinaryTree):
                 par_key, root_key = (self.tree[parent].key,
                                      self.tree[self.root_idx].key)
                 new_indices = self.tree.delete(walk)
-                print("new indices", new_indices)
                 if new_indices is not None:
                     parent = new_indices[par_key]
                     self.tree[child].parent = new_indices[par_key]
                     a = new_indices[par_key]
                     self.root_idx = new_indices[root_key]
                 self._update_size(a)
+
         if kwargs.get("balancing_info", False) is not False:
             return a
         return True
@@ -454,6 +457,7 @@ class BinarySearchTree(BinaryTree):
         stack.push(root)
         path = []
         node_idx = -1
+
         while not stack.is_empty:
             node = stack.pop()
             if self.tree[node].key == key:
@@ -463,13 +467,16 @@ class BinarySearchTree(BinaryTree):
                 stack.push(self.tree[node].left)
             if self.tree[node].right:
                 stack.push(self.tree[node].right)
+
         if node_idx == -1:
             return path
+
         while node_idx != 0:
             path.append(node_idx)
             node_idx = self.tree[node_idx].parent
         path.append(0)
         path.reverse()
+
         return path
 
     def _lca_1(self, j, k):
@@ -479,6 +486,7 @@ class BinarySearchTree(BinaryTree):
         if not path1 or not path2:
             raise ValueError("One of two path doesn't exists. See %s, %s"
                              %(path1, path2))
+
         n, m = len(path1), len(path2)
         i = j = 0
         while i < n and j < m:
@@ -506,14 +514,17 @@ class BinarySearchTree(BinaryTree):
                 curr_root = self.tree[curr_root].left
             else:
                 curr_root = self.tree[curr_root].right
+
             if curr_root == u or curr_root == v:
                 if curr_root is None:
                     return None
                 return self.tree[curr_root].key
+
             u_left = self.comparator(self.tree[u].key, \
                 self.tree[curr_root].key)
             v_left = self.comparator(self.tree[v].key, \
                 self.tree[curr_root].key)
+
         if curr_root is None:
             return curr_root
         return self.tree[curr_root].key
@@ -1047,14 +1058,14 @@ class SplayTree(SelfBalancingBinaryTree):
             self.tree[self.root_idx].right = None
         return other
 
-class Redblacktree(SelfBalancingBinaryTree):
+class RedBlackTree(SelfBalancingBinaryTree):
     """
     Represents Red Black trees.
 
     Examples
     ========
 
-    >>> from pydatastructs.trees import Redblacktree as RB
+    >>> from pydatastructs.trees import RedBlackTree as RB
     >>> b = RB()
     >>> b.insert(1,1)
     >>> b.insert(2,2)
@@ -1063,9 +1074,9 @@ class Redblacktree(SelfBalancingBinaryTree):
     2
     >>> b.search(1)
     0
-    >>>b.delete(1)
+    >>> b.delete(1)
     True
-    >>>b.delete(2)
+    >>> b.delete(2)
     True
 
     References
@@ -1081,16 +1092,16 @@ class Redblacktree(SelfBalancingBinaryTree):
 
     @classmethod
     def methods(cls):
-        return ['__str__', 'insert', 'delete']
+        return ['insert', 'delete']
 
-    def _get_parent(self,node_idx):
+    def _get_parent(self, node_idx):
         return self.tree[node_idx].parent
 
-    def _get_grand_parent(self,node_idx):
+    def _get_grand_parent(self, node_idx):
         parent_idx=self._get_parent(node_idx)
         return self.tree[parent_idx].parent
 
-    def _get_sibling(self,node_idx):
+    def _get_sibling(self, node_idx):
         parent_idx=self._get_parent(node_idx)
         if parent_idx is None:
             return None
@@ -1102,7 +1113,7 @@ class Redblacktree(SelfBalancingBinaryTree):
             sibling_idx=node.left
             return sibling_idx
 
-    def _get_uncle(self,node_idx):
+    def _get_uncle(self, node_idx):
         parent_idx=self._get_parent(node_idx)
         return self._get_sibling(parent_idx)
 
@@ -1117,7 +1128,7 @@ class Redblacktree(SelfBalancingBinaryTree):
             return True
         return False
 
-    def __fix_insert(self,node_idx):
+    def __fix_insert(self, node_idx):
         while self._get_parent(node_idx) is not None and \
         self.tree[self._get_parent(node_idx)].color == 1 and self.tree[node_idx].color==1:
             parent_idx=self._get_parent(node_idx)
@@ -1132,20 +1143,20 @@ class Redblacktree(SelfBalancingBinaryTree):
                 self.tree[self.root_idx].is_root=False
                 if self._is_onright(parent_idx):
                     if self._is_onleft(node_idx):
-                        self._right_rotate(parent_idx,node_idx)
+                        self._right_rotate(parent_idx, node_idx)
                         node_idx=parent_idx
                         parent_idx=self._get_parent(node_idx)
                     node_idx=parent_idx
                     parent_idx=self._get_parent(node_idx)
-                    self._left_rotate(parent_idx,node_idx)
+                    self._left_rotate(parent_idx, node_idx)
                 elif self._is_onleft(parent_idx):
                     if self._is_onright(node_idx):
-                        self._left_rotate(parent_idx,node_idx)
+                        self._left_rotate(parent_idx, node_idx)
                         node_idx=parent_idx
                         parent_idx=self._get_parent(node_idx)
                     node_idx=parent_idx
                     parent_idx=self._get_parent(node_idx)
-                    self._right_rotate(parent_idx,node_idx)
+                    self._right_rotate(parent_idx, node_idx)
                 self.tree[node_idx].color = 0
                 self.tree[parent_idx].color = 1
                 self.tree[self.root_idx].is_root=True
@@ -1154,10 +1165,10 @@ class Redblacktree(SelfBalancingBinaryTree):
         self.tree[self.root_idx].color=0
 
     def insert(self, key, data=None):
-        super(Redblacktree, self).insert(key, data)
-        node_idx = super(Redblacktree, self).search(key)
+        super(RedBlackTree, self).insert(key, data)
+        node_idx = super(RedBlackTree, self).search(key)
         node = self.tree[node_idx]
-        new_node = Redblacktreenode(key,data)
+        new_node = RedBlackTreeNode(key, data)
         new_node.parent = node.parent
         new_node.left = node.left
         new_node.right = node.right
@@ -1381,7 +1392,7 @@ class Redblacktree(SelfBalancingBinaryTree):
         return walk, walk1
 
     def delete(self, key, **kwargs):
-        walk = super(Redblacktree, self).search(key)
+        walk = super(RedBlackTree, self).search(key)
         if walk is not None:
             walk1 = self._replace_node(walk)
             if self._has_two_child(walk):
@@ -1393,14 +1404,6 @@ class Redblacktree(SelfBalancingBinaryTree):
             return True
         else:
             return None
-
-    def __str__(self):
-        to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
-        for i in range(self.tree._last_pos_filled + 1):
-            if self.tree[i] is not None:
-                node = self.tree[i]
-                to_be_printed[i] = (node.left, node.key, node.color, node.data, node.right)
-        return str(to_be_printed)
 
 class BinaryTreeTraversal(object):
     """
@@ -1629,6 +1632,7 @@ class BinaryIndexedTree(object):
     __slots__ = ['tree', 'array', 'flag']
 
     def __new__(cls, array):
+
         obj = object.__new__(cls)
         obj.array = OneDimensionalArray(type(array[0]), array)
         obj.tree = [0] * (obj.array._size + 2)
