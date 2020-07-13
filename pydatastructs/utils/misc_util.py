@@ -101,19 +101,16 @@ class RedBlackTreeNode(TreeNode):
         0 for black and 1 for red.
 
     """
-    __slots__ = ['key', 'data','color']
+    __slots__ = ['key', 'data', 'color']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__']
 
     def __new__(cls, key, data=None):
         obj = TreeNode.__new__(cls, key, data)
         obj.color = 1
         return obj
-
-    def __str__(self):
-        """
-        Used for printing.
-        """
-        return str((self.left, self.key, self.color, self.data, self.right))
-
 
 class BinomialTreeNode(TreeNode):
     """

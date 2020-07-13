@@ -439,18 +439,18 @@ def test_SplayTree():
 
 def test_RedBlackTree():
     tree = RedBlackTree()
-    tree.insert(10,10)
-    tree.insert(18,18)
-    tree.insert(7,7)
-    tree.insert(15,15)
-    tree.insert(16,16)
-    tree.insert(30,30)
-    tree.insert(25,25)
-    tree.insert(40,40)
-    tree.insert(60,60)
-    tree.insert(2,2)
-    tree.insert(17,17)
-    tree.insert(6,6)
+    tree.insert(10, 10)
+    tree.insert(18, 18)
+    tree.insert(7, 7)
+    tree.insert(15, 15)
+    tree.insert(16, 16)
+    tree.insert(30, 30)
+    tree.insert(25, 25)
+    tree.insert(40, 40)
+    tree.insert(60, 60)
+    tree.insert(2, 2)
+    tree.insert(17, 17)
+    tree.insert(6, 6)
 
     assert str(tree) == \
         ("[(11, 10, 10, 3), (10, 18, 18, None), (None, 7, 7, None), (None, 15, 15, None),"
@@ -539,6 +539,11 @@ def test_RedBlackTree():
     tree.insert(10)
     tree.insert(5)
 
+    assert str(tree) == ("[(None, 50, None, None), (3, 40, None, 0), (None, 30, None, None), (4, 20, None, 2),"
+                        " (5, 10, None, None), (None, 5, None, None)]")
+
     tree.delete(50)
     tree.delete(20)
     tree.delete(30)
+
+    assert str(tree) == ("['', '', '', (None, 40, None, None), (5, 10, None, 3), (None, 5, None, None)]")

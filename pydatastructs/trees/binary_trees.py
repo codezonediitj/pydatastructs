@@ -1067,8 +1067,8 @@ class RedBlackTree(SelfBalancingBinaryTree):
 
     >>> from pydatastructs.trees import RedBlackTree as RB
     >>> b = RB()
-    >>> b.insert(1,1)
-    >>> b.insert(2,2)
+    >>> b.insert(1, 1)
+    >>> b.insert(2, 2)
     >>> child = b.tree[b.root_idx].right
     >>> b.tree[child].data
     2
@@ -1317,7 +1317,7 @@ class RedBlackTree(SelfBalancingBinaryTree):
                             self.tree[parent_idx].color = 0
             color = 1
 
-    def _remove_node(self,node_idx):
+    def _remove_node(self, node_idx):
         parent = self._get_parent(node_idx)
         a = parent
         if self._is_leaf(node_idx):

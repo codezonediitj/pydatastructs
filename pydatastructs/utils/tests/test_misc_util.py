@@ -44,5 +44,5 @@ def test_CartesianTreeNode():
     assert str(c) == "(None, 1, 1, 1, None)"
 
 def test_RedBlackTreeNode():
-    c = RedBlackTreeNode(1,1)
-    assert str(c) == "(None, 1, 1, 1, None)"
+    c = RedBlackTreeNode(1, 1)
+    assert str(c) == "(None, 1, 1, None)"
