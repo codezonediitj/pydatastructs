@@ -1388,7 +1388,6 @@ class RedBlackTree(SelfBalancingBinaryTree):
         return walk, walk1
 
     def delete(self, key, **kwargs):
-        print("            ")
         walk = super(RedBlackTree, self).search(key)
         if walk is not None:
             walk1 = self._replace_node(walk)
