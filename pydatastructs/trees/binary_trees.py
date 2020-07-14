@@ -1074,10 +1074,6 @@ class RedBlackTree(SelfBalancingBinaryTree):
     2
     >>> b.search(1)
     0
-    >>> b.delete(1)
-    True
-    >>> b.delete(2)
-    True
 
     References
     ==========
@@ -1179,9 +1175,9 @@ class RedBlackTree(SelfBalancingBinaryTree):
         elif self.tree[self.tree[node_idx].parent].color==1:
             self.__fix_insert(node_idx)
 
-    def _find_successor(self, node_idx):
-        while self.tree[node_idx].left is not None:
-            node_idx = self.tree[node_idx].left
+    def _find_predecessor(self, node_idx):
+        while self.tree[node_idx].right is not None:
+            node_idx = self.tree[node_idx].right
         return node_idx
 
     def _transplant_values(self, node_idx1, node_idx2):
@@ -1230,7 +1226,7 @@ class RedBlackTree(SelfBalancingBinaryTree):
                 child = self.tree[node_idx].right
             return child
         else:
-            return self._find_successor(self.tree[node_idx].right)
+            return self._find_predecessor(self.tree[node_idx].left)
 
     def __walk1_walk_isblack(self, color, node_idx1):
         if (node_idx1 is None or self.tree[node_idx1].color == 0) and (color == 0):
@@ -1392,6 +1388,7 @@ class RedBlackTree(SelfBalancingBinaryTree):
         return walk, walk1
 
     def delete(self, key, **kwargs):
+        print("            ")
         walk = super(RedBlackTree, self).search(key)
         if walk is not None:
             walk1 = self._replace_node(walk)
