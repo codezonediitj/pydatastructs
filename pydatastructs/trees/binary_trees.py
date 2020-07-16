@@ -1,4 +1,4 @@
-from pydatastructs.utils import TreeNode, CartesianTreeNode
+from pydatastructs.utils import TreeNode, CartesianTreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray)
@@ -15,7 +15,8 @@ __all__ = [
     'BinaryIndexedTree',
     'CartesianTree',
     'Treap',
-    'SplayTree'
+    'SplayTree',
+    'RedBlackTree'
 ]
 
 class BinaryTree(object):
@@ -1056,6 +1057,349 @@ class SplayTree(SelfBalancingBinaryTree):
                 self.tree[e] = None
             self.tree[self.root_idx].right = None
         return other
+
+class RedBlackTree(SelfBalancingBinaryTree):
+    """
+    Represents Red Black trees.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.trees import RedBlackTree as RB
+    >>> b = RB()
+    >>> b.insert(1, 1)
+    >>> b.insert(2, 2)
+    >>> child = b.tree[b.root_idx].right
+    >>> b.tree[child].data
+    2
+    >>> b.search(1)
+    0
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
+
+    See Also
+    ========
+
+    pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
+    """
+
+    @classmethod
+    def methods(cls):
+        return ['insert', 'delete']
+
+    def _get_parent(self, node_idx):
+        return self.tree[node_idx].parent
+
+    def _get_grand_parent(self, node_idx):
+        parent_idx=self._get_parent(node_idx)
+        return self.tree[parent_idx].parent
+
+    def _get_sibling(self, node_idx):
+        parent_idx=self._get_parent(node_idx)
+        if parent_idx is None:
+            return None
+        node = self.tree[parent_idx]
+        if node_idx==node.left:
+            sibling_idx=node.right
+            return sibling_idx
+        else:
+            sibling_idx=node.left
+            return sibling_idx
+
+    def _get_uncle(self, node_idx):
+        parent_idx=self._get_parent(node_idx)
+        return self._get_sibling(parent_idx)
+
+    def _is_onleft(self, node_idx):
+        parent = self._get_parent(node_idx)
+        if self.tree[parent].left == node_idx:
+            return True
+        return False
+
+    def _is_onright(self, node_idx):
+        if self._is_onleft(node_idx) is False:
+            return True
+        return False
+
+    def __fix_insert(self, node_idx):
+        while self._get_parent(node_idx) is not None and \
+        self.tree[self._get_parent(node_idx)].color == 1 and self.tree[node_idx].color==1:
+            parent_idx=self._get_parent(node_idx)
+            grand_parent_idx=self._get_grand_parent(node_idx)
+            uncle_idx = self._get_uncle(node_idx)
+            if uncle_idx is not None and self.tree[uncle_idx].color == 1:
+                self.tree[uncle_idx].color = 0
+                self.tree[parent_idx].color = 0
+                self.tree[grand_parent_idx].color = 1
+                node_idx= grand_parent_idx
+            else:
+                self.tree[self.root_idx].is_root=False
+                if self._is_onright(parent_idx):
+                    if self._is_onleft(node_idx):
+                        self._right_rotate(parent_idx, node_idx)
+                        node_idx=parent_idx
+                        parent_idx=self._get_parent(node_idx)
+                    node_idx=parent_idx
+                    parent_idx=self._get_parent(node_idx)
+                    self._left_rotate(parent_idx, node_idx)
+                elif self._is_onleft(parent_idx):
+                    if self._is_onright(node_idx):
+                        self._left_rotate(parent_idx, node_idx)
+                        node_idx=parent_idx
+                        parent_idx=self._get_parent(node_idx)
+                    node_idx=parent_idx
+                    parent_idx=self._get_parent(node_idx)
+                    self._right_rotate(parent_idx, node_idx)
+                self.tree[node_idx].color = 0
+                self.tree[parent_idx].color = 1
+                self.tree[self.root_idx].is_root=True
+            if self.tree[node_idx].is_root:
+                break
+        self.tree[self.root_idx].color=0
+
+    def insert(self, key, data=None):
+        super(RedBlackTree, self).insert(key, data)
+        node_idx = super(RedBlackTree, self).search(key)
+        node = self.tree[node_idx]
+        new_node = RedBlackTreeNode(key, data)
+        new_node.parent = node.parent
+        new_node.left = node.left
+        new_node.right = node.right
+        self.tree[node_idx] = new_node
+        if node.is_root:
+            self.tree[node_idx].is_root = True
+            self.tree[node_idx].color=0
+        elif self.tree[self.tree[node_idx].parent].color==1:
+            self.__fix_insert(node_idx)
+
+    def _find_predecessor(self, node_idx):
+        while self.tree[node_idx].right is not None:
+            node_idx = self.tree[node_idx].right
+        return node_idx
+
+    def _transplant_values(self, node_idx1, node_idx2):
+        parent = self.tree[node_idx1].parent
+        if self.tree[node_idx1].is_root and self._has_one_child(node_idx1):
+            self.tree[self.root_idx].key = self.tree[node_idx2].key
+            self.tree[self.root_idx].data = self.tree[node_idx2].data
+            self.tree[self.root_idx].left = self.tree[node_idx2].left
+            self.tree[self.root_idx].right = self.tree[node_idx2].right
+            self.tree[node_idx1].parent = None
+            return self.tree[self.root_idx].key
+        else:
+            self.tree[node_idx1].key = self.tree[node_idx2].key
+            self.tree[node_idx1].data = self.tree[node_idx2].data
+
+    def _has_one_child(self, node_idx):
+        if self._is_leaf(node_idx) is False and self._has_two_child(node_idx) is False:
+            return True
+        return False
+
+    def _is_leaf(self, node_idx):
+        if self.tree[node_idx].left is None and self.tree[node_idx].right is None:
+            return True
+        return False
+
+    def _has_two_child(self, node_idx):
+        if self.tree[node_idx].left is not None and self.tree[node_idx].right is not None:
+            return True
+        return False
+
+    def __has_red_child(self, node_idx):
+        left_idx = self.tree[node_idx].left
+        right_idx = self.tree[node_idx].right
+        if (left_idx is not None and self.tree[left_idx].color == 1) or \
+            (right_idx is not None and self.tree[right_idx].color == 1):
+            return True
+        return False
+
+    def _replace_node(self, node_idx):
+        if self._is_leaf(node_idx):
+            return None
+        elif self._has_one_child(node_idx):
+            if self.tree[node_idx].left is not None:
+                child = self.tree[node_idx].left
+            else:
+                child = self.tree[node_idx].right
+            return child
+        else:
+            return self._find_predecessor(self.tree[node_idx].left)
+
+    def __walk1_walk_isblack(self, color, node_idx1):
+        if (node_idx1 is None or self.tree[node_idx1].color == 0) and (color == 0):
+            return True
+        return False
+
+    def __left_left_siblingcase(self, node_idx):
+        left_idx = self.tree[node_idx].left
+        parent = self._get_parent(node_idx)
+        parent_color = self.tree[parent].color
+        self.tree[left_idx].color = self.tree[node_idx].color
+        self.tree[node_idx].color = parent_color
+        self._right_rotate(parent, node_idx)
+
+    def __right_left_siblingcase(self, node_idx):
+        left_idx = self.tree[node_idx].left
+        parent = self._get_parent(node_idx)
+        parent_color = self.tree[parent].color
+        self.tree[left_idx].color = parent_color
+        self._right_rotate(node_idx, left_idx)
+        child = self._get_parent(node_idx)
+        self._left_rotate(parent, child)
+
+    def __left_right_siblingcase(self, node_idx):
+        right_idx = self.tree[node_idx].right
+        parent = self._get_parent(node_idx)
+        parent_color = self.tree[parent].color
+        self.tree[right_idx].color = parent_color
+        self._left_rotate(node_idx, right_idx)
+        child = self._get_parent(node_idx)
+        self._right_rotate(parent, child)
+
+    def __right_right_siblingcase(self, node_idx):
+        right_idx = self.tree[node_idx].right
+        parent = self._get_parent(node_idx)
+        parent_color = self.tree[parent].color
+        self.tree[right_idx].color = self.tree[node_idx].color
+        self.tree[node_idx].color = parent_color
+        self._left_rotate(parent, node_idx)
+
+    def __fix_deletion(self, node_idx):
+        node = self.tree[node_idx]
+        color = node.color
+        while node_idx!= self.root_idx and color == 0:
+            sibling_idx = self._get_sibling(node_idx)
+            parent_idx = self._get_parent(node_idx)
+            if sibling_idx is None:
+                node_idx = parent_idx
+                continue
+            else:
+                if self.tree[sibling_idx].color == 1:
+                    self.tree[self.root_idx].is_root = False
+                    self.tree[parent_idx].color = 1
+                    self.tree[sibling_idx].color = 0
+                    if self._is_onleft(sibling_idx):
+                        self._right_rotate(parent_idx, sibling_idx)
+                    else:
+                        self._left_rotate(parent_idx, sibling_idx)
+                    self.tree[self.root_idx].is_root = True
+                    continue
+                else:
+                    if self.__has_red_child(sibling_idx):
+                        self.tree[self.root_idx].is_root = False
+                        left_idx = self.tree[sibling_idx].left
+                        if self.tree[sibling_idx].left is not None and \
+                            self.tree[left_idx].color == 1:
+                            if self._is_onleft(sibling_idx):
+                                self.__left_left_siblingcase(sibling_idx)
+                            else:
+                                self.__right_left_siblingcase(sibling_idx)
+                        else:
+                            if self._is_onleft(sibling_idx):
+                                self.__left_right_siblingcase(sibling_idx)
+                            else:
+                                self.__right_right_siblingcase(sibling_idx)
+                        self.tree[self.root_idx].is_root = True
+                        self.tree[parent_idx].color = 0
+                    else:
+                        self.tree[sibling_idx].color = 1
+                        if self.tree[parent_idx].color == 0:
+                            node_idx = parent_idx
+                            continue
+                        else:
+                            self.tree[parent_idx].color = 0
+            color = 1
+
+    def _remove_node(self, node_idx):
+        parent = self._get_parent(node_idx)
+        a = parent
+        if self._is_leaf(node_idx):
+            par_key, root_key = (self.tree[parent].key, self.tree[self.root_idx].key)
+            new_indices = self.tree.delete(node_idx)
+            if new_indices is not None:
+                a = new_indices[par_key]
+                self.root_idx = new_indices[root_key]
+        elif self._has_one_child(node_idx):
+            child = self._replace_node(node_idx)
+            parent = self._get_parent(node_idx)
+            par_key, root_key = (self.tree[parent].key, self.tree[self.root_idx].key)
+            new_indices = self.tree.delete(node_idx)
+        self._update_size(a)
+
+    def _delete_root(self, node_idx, node_idx1):
+        if self._is_leaf(node_idx):
+            self.tree[self.root_idx].data = None
+            self.tree[self.root_idx].key = None
+        elif self._has_one_child(node_idx):
+            root_key = self._transplant_values(node_idx, node_idx1)
+            new_indices = self.tree.delete(node_idx1)
+            if new_indices is not None:
+                self.root_idx = new_indices[root_key]
+        return
+
+    def __leaf_case(self, node_idx, node_idx1):
+        walk = node_idx
+        walk1 = node_idx1
+        parent = self._get_parent(node_idx)
+        color = self.tree[walk].color
+        if parent is None:
+            self._delete_root(walk, walk1)
+        else:
+            if self.__walk1_walk_isblack(color, walk1):
+                self.__fix_deletion(walk)
+            else:
+                sibling_idx = self._get_sibling(walk)
+                if sibling_idx is not None:
+                    self.tree[sibling_idx].color = 1
+            if self._is_onleft(walk):
+                self.tree[parent].left = None
+            else:
+                self.tree[parent].right = None
+            self._remove_node(walk)
+
+    def __one_child_case(self, node_idx, node_idx1):
+        walk = node_idx
+        walk1 = node_idx1
+        walk_original_color = self.tree[walk].color
+        parent = self._get_parent(node_idx)
+        if parent is None:
+            self._delete_root(walk, walk1)
+        else:
+            if self._is_onleft(walk):
+                self.tree[parent].left = walk1
+            else:
+                self.tree[parent].right = walk1
+            self.tree[walk1].parent = parent
+            a = self._remove_node(walk)
+            if self.__walk1_walk_isblack(walk_original_color, walk1):
+                self.__fix_deletion(walk1)
+            else:
+                self.tree[walk1].color = 0
+
+    def __two_child_case(self, node_idx):
+        walk = node_idx
+        successor = self._replace_node(walk)
+        self._transplant_values(walk, successor)
+        walk = successor
+        walk1 = self._replace_node(walk)
+        return walk, walk1
+
+    def delete(self, key, **kwargs):
+        walk = super(RedBlackTree, self).search(key)
+        if walk is not None:
+            walk1 = self._replace_node(walk)
+            if self._has_two_child(walk):
+                walk, walk1 = self.__two_child_case(walk)
+            if self._is_leaf(walk):
+                self.__leaf_case(walk, walk1)
+            elif self._has_one_child(walk):
+                self.__one_child_case(walk, walk1)
+            return True
+        else:
+            return None
 
 class BinaryTreeTraversal(object):
     """
