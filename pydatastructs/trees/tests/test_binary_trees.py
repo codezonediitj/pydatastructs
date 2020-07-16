@@ -452,10 +452,11 @@ def test_RedBlackTree():
     tree.insert(17, 17)
     tree.insert(6, 6)
 
-    assert str(tree) == \
-        ("[(11, 10, 10, 3), (10, 18, 18, None), (None, 7, 7, None), (None, 15, 15, None),"
-        " (0, 16, 16, 6), (None, 30, 30, None), (1, 25, 25, 7), (5, 40, 40, 8),"
-        " (None, 60, 60, None), (None, 2, 2, None), (None, 17, 17, None), (9, 6, 6, 2)]")
+    trav = BinaryTreeTraversal(tree)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [2, 6, 7, 10, 15, 16, 17, 18, 25, 30, 40, 60]
+    assert [node.key for node in pre_order] == [16, 10, 6, 2, 7, 15, 25, 18, 17, 40, 30, 60]
 
     tree = RedBlackTree()
     tree.insert(10)
@@ -479,59 +480,80 @@ def test_RedBlackTree():
 
     assert tree._get_sibling(7) is None
 
-    assert str(tree) == \
-        ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5),"
-        " (None, 50, None, None), (4, 60, None, 6), (None, 70, None, None), (3, 80, None, 11),"
-        " (None, 90, None, None), (8, 100, None, 10), (None, 110, None, None), (9, 120, None, 13),"
-        " (None, 130, None, None), (12, 140, None, 15), (None, 150, None, None), (14, 160, None, 16),"
-        " (None, 170, None, 17), (None, 180, None, None)]")
+    trav = BinaryTreeTraversal(tree)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 20, 30, 40, 50, 60, 70, 80, 90,
+                                               100, 110, 120, 130, 140, 150, 160, 170, 180]
+    assert [node.key for node in pre_order] == [80, 40, 20, 10, 30, 60, 50, 70, 120, 100,
+                                                90, 110, 140, 130, 160, 150, 170, 180]
 
     tree.delete(180)
     tree.delete(130)
     tree.delete(110)
     tree.delete(190)
-    assert str(tree) == \
-        ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5), (None, 50, None, None),"
-         " (4, 60, None, 6), (None, 70, None, None), (3, 80, None, 11), (None, 90, None, None), (8, 100, None, None), '',"
-         " (9, 120, None, 15), '', (None, 140, None, 14), (None, 150, None, None), (13, 160, None, 16), (None, 170, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 20, 30, 40, 50, 60, 70, 80, 90, 100,
+                                               120, 140, 150, 160, 170]
+    assert [node.key for node in pre_order] == [80, 40, 20, 10, 30, 60, 50, 70, 120, 100,
+                                                90, 160, 140, 150, 170]
 
     tree.delete(170)
     tree.delete(100)
     tree.delete(60)
-    assert str(tree) == \
-        ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5), '', (None, 50, None, 6),"
-         " (None, 70, None, None), (3, 80, None, 11), (None, 90, None, None), '', '', (8, 120, None, 14), '', (None, 140, None, None),"
-         " (13, 150, None, 15), (None, 160, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 20, 30, 40, 50, 70, 80, 90, 120, 140, 150, 160]
+    assert [node.key for node in pre_order] == [80, 40, 20, 10, 30, 50, 70, 120, 90, 150, 140, 160]
 
     tree.delete(70)
     tree.delete(140)
 
-    assert str(tree) == ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5), '', (None, 50, None, None),"
-                         " '', (3, 80, None, 11), (None, 90, None, None), '', '', (8, 120, None, 14), '', '',"
-                         " (None, 150, None, 15), (None, 160, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 20, 30, 40, 50, 80, 90, 120, 150, 160]
+    assert [node.key for node in pre_order] == [80, 40, 20, 10, 30, 50, 120, 90, 150, 160]
 
     tree.delete(150)
     tree.delete(120)
-    assert str(tree) == ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 7), '', (None, 50, None, None), '',"
-                         " (5, 80, None, 11), '', '', '', (None, 90, None, 15), '', '', '', (None, 160, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 20, 30, 40, 50, 80, 90, 160]
+    assert [node.key for node in pre_order] == [40, 20, 10, 30, 80, 50, 90, 160]
 
     tree.delete(50)
     tree.delete(80)
-    assert str(tree) == ("[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5), '', (None, 90, None, 6), (None, 160, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 20, 30, 40, 90, 160]
+    assert [node.key for node in pre_order] == [40, 20, 10, 30, 90, 160]
 
     tree.delete(30)
     tree.delete(20)
-    assert str(tree) == ("[(None, 10, None, None), '', '', (0, 40, None, 5), '', (None, 90, None, 6), (None, 160, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 40, 90, 160]
+    assert [node.key for node in pre_order] == [40, 10, 90, 160]
 
     tree.delete(10)
-    assert str(tree) == ("[(None, 40, None, None), (0, 90, None, 2), (None, 160, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [40, 90, 160]
+    assert [node.key for node in pre_order] == [90, 40, 160]
 
     tree.delete(40)
     tree.delete(90)
-    assert str(tree) == ("[(None, 160, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [160]
+    assert [node.key for node in pre_order] == [160]
 
     tree.delete(160)
-    assert str(tree) == ("[(None, None, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order if node.key is not None] == []
+    assert [node.key for node in pre_order if node.key is not None] == []
 
     tree = RedBlackTree()
     tree.insert(50)
@@ -541,14 +563,20 @@ def test_RedBlackTree():
     tree.insert(10)
     tree.insert(5)
 
-    assert str(tree) == ("[(None, 50, None, None), (3, 40, None, 0), (None, 30, None, None), (4, 20, None, 2),"
-                        " (5, 10, None, None), (None, 5, None, None)]")
+    trav = BinaryTreeTraversal(tree)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [5, 10, 20, 30, 40, 50]
+    assert [node.key for node in pre_order] == [40, 20, 10, 5, 30, 50]
 
     tree.delete(50)
     tree.delete(20)
     tree.delete(30)
 
-    assert str(tree) == ("['', (None, 40, None, None), '', (5, 10, None, 1), '', (None, 5, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [5, 10, 40]
+    assert [node.key for node in pre_order] == [10, 5, 40]
 
     tree = RedBlackTree()
     tree.insert(10)
@@ -556,11 +584,18 @@ def test_RedBlackTree():
     tree.insert(20)
     tree.insert(15)
 
-    assert str(tree) == ("[(1, 10, None, 2), (None, 5, None, None), (3, 20, None, None), (None, 15, None, None)]")
+    trav = BinaryTreeTraversal(tree)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [5, 10, 15, 20]
+    assert [node.key for node in pre_order] == [10, 5, 20, 15]
 
     tree.delete(5)
 
-    assert str(tree) == ("[(None, 10, None, None), '', (None, 20, None, None), (0, 15, None, 2)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 15, 20]
+    assert [node.key for node in pre_order] == [15, 10, 20]
 
     tree = RedBlackTree()
     tree.insert(10)
@@ -570,10 +605,15 @@ def test_RedBlackTree():
     tree.insert(2)
     tree.insert(6)
 
-    assert str(tree) == ("[(1, 10, None, 2), (4, 5, None, 5), (3, 20, None, None), (None, 15, None, None),"
-                         " (None, 2, None, None), (None, 6, None, None)]")
+    trav = BinaryTreeTraversal(tree)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [2, 5, 6, 10, 15, 20]
+    assert [node.key for node in pre_order] == [10, 5, 2, 6, 20, 15]
 
     tree.delete(10)
 
-    assert str(tree) == ("[(1, 6, None, 2), (4, 5, None, None), (3, 20, None, None), (None, 15, None, None),"
-                         " (None, 2, None, None)]")
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [2, 5, 6, 15, 20]
+    assert [node.key for node in pre_order] == [6, 5, 2, 20, 15]
