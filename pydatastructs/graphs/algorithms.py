@@ -2,6 +2,7 @@
 Contains algorithms associated with graph
 data structure.
 """
+
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils import GraphEdge
@@ -10,6 +11,7 @@ from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
+from copy import deepcopy
 
 __all__ = [
     'breadth_first_search',
@@ -655,6 +657,7 @@ def shortest_paths(graph: Graph, algorithm: str,
         The algorithm to be used. Currently, the following algorithms
         are implemented,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
+        'floyd_warshall' -> Floyd-Warshall algorithm as given in [2] and [3].
     source: str
         The name of the source the node.
     target: str
@@ -667,10 +670,10 @@ def shortest_paths(graph: Graph, algorithm: str,
 
     (distances, predecessors): (dict, dict)
         If target is not provided and algorithm used
-        is 'bellman_ford'.
+        is 'bellman_ford' or 'floyd_warshall.
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
-        'bellman_ford'.
+        'bellman_ford' or 'floyd_warshall.
 
     Examples
     ========
@@ -690,6 +693,8 @@ def shortest_paths(graph: Graph, algorithm: str,
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    .. [3] http://masc.cs.gmu.edu/wiki/FloydWarshall
     """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
@@ -727,6 +732,100 @@ def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tupl
     return (distances, predecessor)
 
 _bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
+
+def _floyd_warshall_adjacency_list(
+        graph: Graph, source: str, target: str) -> tuple:
+    """
+    Finds shortest path in the given graph using Floyd-Warshall algorithm.
+    
+    Parameters
+    ==========
+    
+    graph: Graph
+        The graph under consideration.
+    source: str
+        The name of the source the node.
+    target: str
+        The name of the target node.
+
+    Returns
+    =======
+
+    (distances, predecessors): (float, dict)
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import shortest_paths
+    >>> V0 = AdjacencyListGraphNode("V0")
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V0, V1, V2, V3)
+    >>> G.add_edge('V0', 'V2', -2)
+    >>> G.add_edge('V1', 'V0', 4)
+    >>> G.add_edge('V1', 'V2', 3)
+    >>> G.add_edge('V2', 'V3', 2)
+    >>> G.add_edge('V3', 'V1', -1)
+    >>> dist, pred = _floyd_warshall_adjacency_list(G, 'V0', 'V1')
+    >>> shortest_path_construction(pred, 'V0', 'V1')
+    ['V0', 'V2', 'V3', 'V1']
+    """
+    dist = dict()
+    predecessors = dict()
+    dist_temp = dict()
+    predecessors_temp = dict()
+    nodes = graph.vertices
+    
+    for node in nodes:
+        dist_temp[node] = float('inf')
+        predecessors_temp[node] = None
+
+    for node in nodes:
+        dist[node] = deepcopy(dist_temp)
+        predecessors[node] = deepcopy(predecessors_temp)
+    
+    edges = graph.edge_weights.values()
+    for edge in edges:
+        dist[edge.source.name][edge.target.name] = edge.value
+        predecessors[edge.source.name][edge.target.name] = edge.source.name
+    for node in nodes:
+        dist[node][node] = 0
+
+    for k in nodes:
+        for i in nodes:
+            for j in nodes:
+                if dist[i][j] > dist[i][k]+dist[k][j]:
+                    dist[i][j] = dist[i][k]+dist[k][j]
+                    predecessors[i][j] = predecessors[k][j]
+
+    if source != "":
+        if target != "":
+            return (dist[source][target], predecessors[source])
+        return (dist[source], predecessors[source])
+    return (dist, predecessors)
+
+_floyd_warshall_adjacency_matrix = _floyd_warshall_adjacency_list
+
+def shortest_path_construction(
+        predecessors: dict(), source: str, target: str) -> list:
+    if isinstance(list(predecessors.values())[0], dict):
+        predecessor = predecessors[source]
+    else:
+        predecessor = predecessors
+    
+    if predecessor[target] is None:
+        return []
+    
+    path = [target]
+    node = predecessor[target]
+    while node is not source:
+        path.append(node)
+        node = predecessor[node]
+    path.append(source)
+    path.reverse()
+    return path
 
 def topological_sort(graph: Graph, algorithm: str) -> list:
     """
