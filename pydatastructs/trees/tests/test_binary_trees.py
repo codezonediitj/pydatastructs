@@ -19,10 +19,24 @@ def test_BinarySearchTree():
     b.insert(7, 7)
     b.insert(14, 14)
     b.insert(13, 13)
+
     assert str(b) == \
     ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
+
+    trav = BinaryTreeTraversal(b)
+    inorder = trav.depth_first_search()
+    assert ['(None, 1, 1, None)', '(3, 3, 3, 4)', '(None, 4, 4, None)',
+            '(5, 6, 6, 6)', '(None, 7, 7, None)',
+            '(1, 8, 8, 2)', '(None, 10, 10, 7)',
+            '(None, 13, 13, None)', '(8, 14, 14, None)'] == [str(x) for x in inorder]
+
+    postorder = trav.depth_first_search(order="post_order")
+    assert ['(None, 1, 1, None)', '(None, 4, 4, None)',
+            '(None, 7, 7, None)', '(5, 6, 6, 6)', '(3, 3, 3, 4)', '(None, 13, 13, None)',
+            '(8, 14, 14, None)','(None, 10, 10, 7)','(1, 8, 8, 2)'] == [str(x) for x in postorder]
+
     assert b.search(10) == 2
     assert b.search(-1) is None
     assert b.delete(13) is True
