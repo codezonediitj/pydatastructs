@@ -6,7 +6,9 @@ __all__ = [
     'AdjacencyListGraphNode',
     'AdjacencyMatrixGraphNode',
     'GraphEdge',
-    'Set'
+    'Set',
+    'CartesianTreeNode',
+    'RedBlackTreeNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -25,10 +27,10 @@ class TreeNode(Node):
     Parameters
     ==========
 
-    data
-        Any valid data to be stored in the node.
     key
         Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
     left: int
         Optional, index of the left child node.
     right: int
@@ -37,6 +39,10 @@ class TreeNode(Node):
 
     __slots__ = ['key', 'data', 'left', 'right', 'is_root',
                  'height', 'parent', 'size']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__str__']
 
     def __new__(cls, key, data=None):
         obj = Node.__new__(cls)
@@ -52,6 +58,60 @@ class TreeNode(Node):
         """
         return str((self.left, self.key, self.data, self.right))
 
+class CartesianTreeNode(TreeNode):
+    """
+    Represents node in cartesian trees.
+
+    Parameters
+    ==========
+
+    key
+        Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
+    priority: int
+        An integer value for heap property.
+
+    """
+    __slots__ = ['key', 'data', 'priority']
+
+    def __new__(cls, key, priority, data=None):
+        obj = TreeNode.__new__(cls, key, data)
+        obj.priority = priority
+        return obj
+
+    def __str__(self):
+        """
+        Used for printing.
+        """
+        return str((self.left, self.key, self.priority, self.data, self.right))
+
+class RedBlackTreeNode(TreeNode):
+    """
+    Represents node in red-black trees.
+
+    Parameters
+    ==========
+
+    key
+        Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
+    color
+        0 for black and 1 for red.
+
+    """
+    __slots__ = ['key', 'data', 'color']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__']
+
+    def __new__(cls, key, data=None):
+        obj = TreeNode.__new__(cls, key, data)
+        obj.color = 1
+        return obj
+
 class BinomialTreeNode(TreeNode):
     """
     Represents node in binomial trees.
@@ -59,10 +119,10 @@ class BinomialTreeNode(TreeNode):
     Parameters
     ==========
 
-    data
-        Any valid data to be stored in the node.
     key
         Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
 
     Note
     ====
@@ -80,6 +140,10 @@ class BinomialTreeNode(TreeNode):
         set it to True otherwise False.
     """
     __slots__ = ['parent', 'key', 'children', 'data', 'is_root']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'add_children', '__str__']
 
     def __new__(cls, key, data=None):
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
@@ -113,10 +177,10 @@ class MAryTreeNode(TreeNode):
     Parameters
     ==========
 
-    data
-        Any valid data to be stored in the node.
     key
         Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
 
     Note
     ====
@@ -131,6 +195,10 @@ class MAryTreeNode(TreeNode):
         set it to True otherwise False.
     """
     __slots__ = ['key', 'children', 'data', 'is_root']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'add_children', '__str__']
 
     def __new__(cls, key, data=None):
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
@@ -169,6 +237,10 @@ class LinkedListNode(Node):
     addrs
         List of address of nodes to be assigned to each of the attributes in links.
     """
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__str__']
+
     def __new__(cls, key, data=None, links=['next'], addrs=[None]):
         obj = Node.__new__(cls)
         obj.key = key
@@ -206,6 +278,11 @@ class AdjacencyListGraphNode(GraphNode):
         nodes of the current node.
         Optional, by default, None
     """
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'add_adjacent_node',
+                'remove_adjacent_node']
+
     def __new__(cls, name, data=None, adjacency_list=None):
         obj = GraphNode.__new__(cls)
         obj.name, obj.data = str(name), data
@@ -254,6 +331,10 @@ class AdjacencyMatrixGraphNode(GraphNode):
     """
     __slots__ = ['name', 'data']
 
+    @classmethod
+    def methods(cls):
+        return ['__new__']
+
     def __new__(cls, name, data=None):
         obj = GraphNode.__new__(cls)
         obj.name, obj.data, obj.is_connected = \
@@ -273,6 +354,10 @@ class GraphEdge(object):
     node2: GraphNode or it's child classes
         The target node of the edge.
     """
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__str__']
+
     def __new__(cls, node1, node2, value=None):
         obj = object.__new__(cls)
         obj.source, obj.target = node1, node2
@@ -297,6 +382,10 @@ class Set(object):
     """
 
     __slots__ = ['parent', 'size', 'key', 'data']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__']
 
     def __new__(cls, key, data=None):
         obj = object.__new__(cls)

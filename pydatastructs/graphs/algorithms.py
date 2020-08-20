@@ -1,5 +1,5 @@
 """
-Contains all the algorithms associated with graph
+Contains algorithms associated with graph
 data structure.
 """
 from collections import deque
@@ -17,7 +17,10 @@ __all__ = [
     'minimum_spanning_tree',
     'minimum_spanning_tree_parallel',
     'strongly_connected_components',
-    'depth_first_search'
+    'depth_first_search',
+    'shortest_paths',
+    'topological_sort',
+    'topological_sort_parallel'
 ]
 
 Stack = Queue = deque
@@ -637,3 +640,240 @@ def _depth_first_search_adjacency_list(
                 return None
 
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
+
+def shortest_paths(graph: Graph, algorithm: str,
+                   source: str, target: str="") -> tuple:
+    """
+    Finds shortest paths in the given graph from a given source.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used. Currently, the following algorithms
+        are implemented,
+        'bellman_ford' -> Bellman-Ford algorithm as given in [1].
+    source: str
+        The name of the source the node.
+    target: str
+        The name of the target node.
+        Optional, by default, all pair shortest paths
+        are returned.
+
+    Returns
+    =======
+
+    (distances, predecessors): (dict, dict)
+        If target is not provided and algorithm used
+        is 'bellman_ford'.
+    (distances[target], predecessors): (float, dict)
+        If target is provided and algorithm used is
+        'bellman_ford'.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import shortest_paths
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V1, V2, V3)
+    >>> G.add_edge('V2', 'V3', 10)
+    >>> G.add_edge('V1', 'V2', 11)
+    >>> shortest_paths(G, 'bellman_ford', 'V1')
+    ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "finding shortest paths in graphs."%(algorithm))
+    return getattr(algorithms, func)(graph, source, target)
+
+def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
+    distances, predecessor = dict(), dict()
+
+    for v in graph.vertices:
+        distances[v] = float('inf')
+        predecessor[v] = None
+    distances[source] = 0
+
+    edges = graph.edge_weights.values()
+    for _ in range(len(graph.vertices) - 1):
+        for edge in edges:
+            u, v = edge.source.name, edge.target.name
+            w = edge.value
+            if distances[u] + edge.value < distances[v]:
+                distances[v] = distances[u] + w
+                predecessor[v] = u
+
+    for edge in edges:
+        u, v = edge.source.name, edge.target.name
+        w = edge.value
+        if distances[u] + w < distances[v]:
+            raise ValueError("Graph contains a negative weight cycle.")
+
+    if target != "":
+        return (distances[target], predecessor)
+    return (distances, predecessor)
+
+_bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
+
+def topological_sort(graph: Graph, algorithm: str) -> list:
+    """
+    Performs topological sort on the given graph using given algorithm.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used.
+        Currently, following are supported,
+        'kahn' -> Kahn's algorithm as given in [1].
+
+    Returns
+    =======
+
+    list
+        The list of topologically sorted vertices.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, topological_sort
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> graph = Graph(v_1, v_2)
+    >>> graph.add_edge('v_1', 'v_2')
+    >>> topological_sort(graph, 'kahn')
+    ['v_1', 'v_2']
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "performing topological sort on %s graphs."%(algorithm, graph._impl))
+    return getattr(algorithms, func)(graph)
+
+def _kahn_adjacency_list(graph: Graph) -> list:
+    S = Queue()
+    in_degree = {u: 0 for u in graph.vertices}
+    for u in graph.vertices:
+        for v in graph.neighbors(u):
+            in_degree[v.name] += 1
+    for u in graph.vertices:
+        if in_degree[u] == 0:
+            S.append(u)
+            in_degree.pop(u)
+
+    L = []
+    while S:
+        n = S.popleft()
+        L.append(n)
+        for m in graph.neighbors(n):
+            graph.remove_edge(n, m.name)
+            in_degree[m.name] -= 1
+            if in_degree[m.name] == 0:
+                S.append(m.name)
+                in_degree.pop(m.name)
+
+    if in_degree:
+        raise ValueError("Graph is not acyclic.")
+    return L
+
+def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int) -> list:
+    """
+    Performs topological sort on the given graph using given algorithm using
+    given number of threads.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used.
+        Currently, following are supported,
+        'kahn' -> Kahn's algorithm as given in [1].
+    num_threads: int
+        The maximum number of threads to be used.
+
+    Returns
+    =======
+
+    list
+        The list of topologically sorted vertices.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, topological_sort_parallel
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> graph = Graph(v_1, v_2)
+    >>> graph.add_edge('v_1', 'v_2')
+    >>> topological_sort_parallel(graph, 'kahn', 1)
+    ['v_1', 'v_2']
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl + '_parallel'
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "performing topological sort on %s graphs."%(algorithm, graph._impl))
+    return getattr(algorithms, func)(graph, num_threads)
+
+def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
+    num_vertices = len(graph.vertices)
+
+    def _collect_source_nodes(graph: Graph) -> list:
+        S = []
+        in_degree = {u: 0 for u in graph.vertices}
+        for u in graph.vertices:
+            for v in graph.neighbors(u):
+                in_degree[v.name] += 1
+        for u in in_degree:
+            if in_degree[u] == 0:
+                S.append(u)
+        return list(S)
+
+    def _job(graph: Graph, u: str):
+        for v in graph.neighbors(u):
+            graph.remove_edge(u, v.name)
+
+    L = []
+    source_nodes = _collect_source_nodes(graph)
+    while source_nodes:
+        with ThreadPoolExecutor(max_workers=num_threads) as Executor:
+            for node in source_nodes:
+                L.append(node)
+                Executor.submit(_job, graph, node)
+        for node in source_nodes:
+            graph.remove_vertex(node)
+        source_nodes = _collect_source_nodes(graph)
+
+    if len(L) != num_vertices:
+        raise ValueError("Graph is not acyclic.")
+    return L

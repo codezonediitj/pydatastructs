@@ -49,6 +49,10 @@ class BinomialTree(object):
         obj.order = order
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['add_sub_tree', '__new__', 'is_empty']
+
     def add_sub_tree(self, other_tree):
         """
         Adds a sub tree to current tree.

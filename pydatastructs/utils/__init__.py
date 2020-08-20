@@ -9,6 +9,8 @@ from .misc_util import (
     AdjacencyListGraphNode,
     AdjacencyMatrixGraphNode,
     GraphEdge,
-    Set
+    Set,
+    CartesianTreeNode,
+    RedBlackTreeNode
 )
 __all__.extend(misc_util.__all__)

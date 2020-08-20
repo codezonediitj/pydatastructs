@@ -55,6 +55,10 @@ class Queue(object):
         raise NotImplementedError(
                 "%s hasn't been implemented yet."%(implementation))
 
+    @classmethod
+    def methods(cls):
+        return ['__new__']
+
     def append(self, *args, **kwargs):
         raise NotImplementedError(
             "This is an abstract method.")
@@ -86,6 +90,11 @@ class ArrayQueue(Queue):
         else:
             obj.front = 0
         return obj
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'append', 'popleft', 'rear',
+        'is_empty', '__len__', '__str__']
 
     def append(self, x):
         if self.is_empty:
@@ -143,13 +152,18 @@ class LinkedListQueue(Queue):
             raise TypeError("Expected type: list/tuple")
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'append', 'popleft', 'rear',
+        'is_empty', '__len__', '__str__', 'front', 'size']
+
     def append(self, x):
         self.queue.append(x)
 
     def popleft(self):
         if self.is_empty:
             raise IndexError("Queue is empty.")
-        return_value = self.queue.pop_left()
+        return_value = self.queue.popleft()
         return return_value
 
     @property
@@ -234,6 +248,10 @@ class PriorityQueue(object):
                 "%s implementation is not currently supported "
                 "by priority queue.")
 
+    @classmethod
+    def methods(cls):
+        return ['__new__']
+
     def push(self, value, priority):
         """
         Pushes the value to the priority queue
@@ -274,6 +292,10 @@ class PriorityQueue(object):
 class LinkedListPriorityQueue(PriorityQueue):
 
     __slots__ = ['items', 'comp']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'push', 'pop', 'peek', 'is_empty']
 
     def __new__(cls, comp):
         obj = object.__new__(cls)
@@ -317,6 +339,10 @@ class BinaryHeapPriorityQueue(PriorityQueue):
 
     __slots__ = ['items']
 
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'push', 'pop', 'peek', 'is_empty']
+
     def __new__(cls, comp):
         obj = object.__new__(cls)
         obj.items = BinaryHeap()
@@ -343,6 +369,10 @@ class BinaryHeapPriorityQueue(PriorityQueue):
 class BinomialHeapPriorityQueue(PriorityQueue):
 
     __slots__ = ['items']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'push', 'pop', 'peek', 'is_empty']
 
     def __new__(cls):
         obj = object.__new__(cls)

@@ -26,6 +26,12 @@ class AdjacencyMatrix(Graph):
         obj.edge_weights = dict()
         return obj
 
+    @classmethod
+    def methods(self):
+        return ['is_adjacent', 'neighbors',
+        'add_edge', 'get_edge', 'remove_edge',
+        '__new__']
+
     def is_adjacent(self, node1, node2):
         node1, node2 = str(node1), str(node2)
         row = self.matrix.get(node1, dict())

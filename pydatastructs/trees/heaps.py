@@ -95,6 +95,10 @@ class DHeap(Heap):
         obj._build()
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'insert', 'extract', '__str__', 'is_empty']
+
     def _build(self):
         for i in range(self._last_pos_filled + 1):
             self.heap[i]._leftmost, self.heap[i]._rightmost = \
@@ -138,6 +142,7 @@ class DHeap(Heap):
 
         key
             The key for comparison.
+
         data
             The data to be inserted.
 
@@ -170,6 +175,7 @@ class DHeap(Heap):
         root_element : TreeNode
             The TreeNode at the root of the heap,
             if the heap is not empty.
+
         None
             If the heap is empty.
         """
@@ -261,6 +267,10 @@ class BinaryHeap(DHeap):
         obj = DHeap.__new__(cls, elements, heap_property, 2)
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['__new__']
+
 
 class TernaryHeap(DHeap):
     """
@@ -321,6 +331,10 @@ class TernaryHeap(DHeap):
         obj = DHeap.__new__(cls, elements, heap_property, 3)
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['__new__']
+
 
 class BinomialHeap(Heap):
     """
@@ -361,6 +375,12 @@ class BinomialHeap(Heap):
         obj = Heap.__new__(cls)
         obj.root_list = root_list
         return obj
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'merge_tree', 'merge', 'insert',
+        'find_minimum', 'is_emtpy', 'decrease_key', 'delete',
+        'delete_minimum']
 
     def merge_tree(self, tree1, tree2):
         """
@@ -495,7 +515,7 @@ class BinomialHeap(Heap):
 
     @property
     def is_empty(self):
-        return len(self.root_list) == 0
+        return not self.root_list
 
     def decrease_key(self, node, new_key):
         """
@@ -506,6 +526,7 @@ class BinomialHeap(Heap):
 
         node: BinomialTreeNode
             The node whose key is to be reduced.
+
         new_key
             The new key of the given node,
             should be less than the current key.

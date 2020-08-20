@@ -1,8 +1,9 @@
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
-depth_first_search)
-
+depth_first_search, shortest_paths, topological_sort,
+topological_sort_parallel)
+from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
 
@@ -258,3 +259,64 @@ def test_depth_first_search():
 
     _test_depth_first_search("List")
     _test_depth_first_search("Matrix")
+
+def test_shortest_paths():
+
+    def _test_shortest_paths(ds, algorithm):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        vertices = [GraphNode('S'), GraphNode('C'),
+                    GraphNode('SLC'), GraphNode('SF'),
+                    GraphNode('D')]
+
+        graph = Graph(*vertices)
+        graph.add_edge('S', 'SLC', 2)
+        graph.add_edge('C', 'S', 4)
+        graph.add_edge('C', 'D', 2)
+        graph.add_edge('SLC', 'C', 2)
+        graph.add_edge('SLC', 'D', 3)
+        graph.add_edge('SF', 'SLC', 2)
+        graph.add_edge('SF', 'S', 2)
+        graph.add_edge('D', 'SF', 3)
+        dist, pred = shortest_paths(graph, algorithm, 'SLC')
+        assert dist == {'S': 6, 'C': 2, 'SLC': 0, 'SF': 6, 'D': 3}
+        assert pred == {'S': 'C', 'C': 'SLC', 'SLC': None, 'SF': 'D', 'D': 'SLC'}
+        dist, pred = shortest_paths(graph, algorithm, 'SLC', 'SF')
+        assert dist == 6
+        assert pred == {'S': 'C', 'C': 'SLC', 'SLC': None, 'SF': 'D', 'D': 'SLC'}
+        graph.remove_edge('SLC', 'D')
+        graph.add_edge('D', 'SLC', -10)
+        assert raises(ValueError, lambda: shortest_paths(graph, 'bellman_ford', 'SLC'))
+
+    _test_shortest_paths("List", 'bellman_ford')
+    _test_shortest_paths("Matrix", 'bellman_ford')
+
+def test_topological_sort():
+
+    def _test_topological_sort(func, ds, algorithm, threads=None):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        vertices = [GraphNode('2'), GraphNode('3'), GraphNode('5'),
+                    GraphNode('7'), GraphNode('8'), GraphNode('10'),
+                    GraphNode('11'), GraphNode('9')]
+
+        graph = Graph(*vertices)
+        graph.add_edge('5', '11')
+        graph.add_edge('7', '11')
+        graph.add_edge('7', '8')
+        graph.add_edge('3', '8')
+        graph.add_edge('3', '10')
+        graph.add_edge('11', '2')
+        graph.add_edge('11', '9')
+        graph.add_edge('11', '10')
+        graph.add_edge('8', '9')
+        if threads is not None:
+            l = func(graph, algorithm, threads)
+        else:
+            l = func(graph, algorithm)
+        assert all([(l1 in l[0:3]) for l1 in ('3', '5', '7')] +
+                   [(l2 in l[3:5]) for l2 in ('8', '11')] +
+                   [(l3 in l[5:]) for l3 in ('10', '9', '2')])
+
+    _test_topological_sort(topological_sort, "List", "kahn")
+    _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)

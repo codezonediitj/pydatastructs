@@ -23,6 +23,12 @@ class AdjacencyList(Graph):
         obj.edge_weights = dict()
         return obj
 
+    @classmethod
+    def methods(self):
+        return ['is_adjacent', 'neighbors',
+        'add_vertex', 'remove_vertex', 'add_edge',
+        'get_edge', 'remove_edge', '__new__']
+
     def is_adjacent(self, node1, node2):
         node1 = self.__getattribute__(node1)
         return hasattr(node1, node2)
