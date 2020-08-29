@@ -9,8 +9,37 @@ __all__ = [
 Stack = Queue = deque
 
 class Trie(object):
+    """
+    Represents the trie data structure for storing strings.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Trie
+    >>> trie = Trie()
+    >>> trie.insert("a")
+    >>> trie.insert("aa")
+    >>> trie.strings_with_prefix("a")
+    ['a', 'aa']
+    >>> trie.is_present("aa")
+    True
+    >>> trie.delete("aa")
+    True
+    >>> trie.is_present("aa")
+    False
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Trie
+    """
 
     __slots__ = ['root']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'insert', 'is_present', 'delete',
+                'strings_with_prefix']
 
     def __new__(cls):
         obj = object.__new__(cls)
@@ -18,6 +47,19 @@ class Trie(object):
         return obj
 
     def insert(self, string: str) -> None:
+        """
+        Inserts the given string into the trie.
+
+        Parameters
+        ==========
+
+        string: str
+
+        Returns
+        =======
+
+        None
+        """
         walk = self.root
         for char in string:
             if walk.get_child(char) is None:
@@ -29,6 +71,20 @@ class Trie(object):
         walk.is_terminal = True
 
     def is_present(self, string: str) -> bool:
+        """
+        Checks if the given string is present as a prefix in the trie.
+
+        Parameters
+        ==========
+
+        string: str
+
+        Returns
+        =======
+
+        True if the given string is present as a prefix;
+        False in all other cases.
+        """
         walk = self.root
         for char in string:
             if walk.get_child(char) is None:
@@ -36,7 +92,21 @@ class Trie(object):
             walk = walk.get_child(char)
         return True
 
-    def delete(self, string: str):
+    def delete(self, string: str) -> bool:
+        """
+        Deletes the given string from the trie.
+
+        Parameters
+        ==========
+
+        string: str
+
+        Returns
+        =======
+
+        True if successfully deleted;
+        None if the string is not present in the trie.
+        """
         path = []
         walk = self.root
         size = len(string)
@@ -57,6 +127,20 @@ class Trie(object):
         return True
 
     def strings_with_prefix(self, string: str) -> list:
+        """
+        Generates a list of all strings with the given prefix.
+
+        Parameters
+        ==========
+
+        string: str
+
+        Returns
+        =======
+
+        strings: list
+            The list of strings with the given prefix.
+        """
 
         def _collect(prefix: str, node: TrieNode, strings: list) -> str:
             TrieNode_stack = Stack()

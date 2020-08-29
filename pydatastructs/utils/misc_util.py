@@ -396,8 +396,21 @@ class Set(object):
         return obj
 
 class TrieNode(Node):
+    """
+    Represents nodes in the trie data structure.
+
+    Parameters
+    ==========
+
+    char: The character stored in the current node.
+          Optional, by default None.
+    """
 
     __slots__ = ['char', '_children', 'is_terminal']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'add_child', 'get_child', 'remove_child']
 
     def __new__(cls, char=None):
         obj = Node.__new__(cls)
