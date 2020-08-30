@@ -11,6 +11,7 @@ from .misc_util import (
     GraphEdge,
     Set,
     CartesianTreeNode,
-    RedBlackTreeNode
+    RedBlackTreeNode,
+    TrieNode
 )
 __all__.extend(misc_util.__all__)

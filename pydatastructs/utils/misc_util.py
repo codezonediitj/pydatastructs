@@ -8,7 +8,8 @@ __all__ = [
     'GraphEdge',
     'Set',
     'CartesianTreeNode',
-    'RedBlackTreeNode'
+    'RedBlackTreeNode',
+    'TrieNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -393,6 +394,39 @@ class Set(object):
         obj.data = data
         obj.parent, obj.size = [None]*2
         return obj
+
+class TrieNode(Node):
+    """
+    Represents nodes in the trie data structure.
+
+    Parameters
+    ==========
+
+    char: The character stored in the current node.
+          Optional, by default None.
+    """
+
+    __slots__ = ['char', '_children', 'is_terminal']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'add_child', 'get_child', 'remove_child']
+
+    def __new__(cls, char=None):
+        obj = Node.__new__(cls)
+        obj.char = char
+        obj._children = dict()
+        obj.is_terminal = False
+        return obj
+
+    def add_child(self, trie_node) -> None:
+        self._children[trie_node.char] = trie_node
+
+    def get_child(self, char: str):
+        return self._children.get(char, None)
+
+    def remove_child(self, char: str) -> None:
+        self._children.pop(char)
 
 def _comp(u, v, tcomp):
     """
