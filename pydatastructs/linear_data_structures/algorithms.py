@@ -1,5 +1,5 @@
 from pydatastructs.linear_data_structures.arrays import (
-    OneDimensionalArray, DynamicArray, Array)
+    OneDimensionalArray, DynamicArray, Array, DynamicOneDimensionalArray)
 from pydatastructs.utils.misc_util import _check_type, _comp
 from concurrent.futures import ThreadPoolExecutor
 from math import log, floor
@@ -10,7 +10,8 @@ __all__ = [
     'brick_sort_parallel',
     'heapsort',
     'matrix_multiply_parallel',
-    'counting_sort'
+    'counting_sort',
+    'bucket_sort',
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -438,3 +439,99 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
                                           i, j).result()
 
     return C
+
+def _bucket_sort_helper(bucket: Array) -> Array:
+    for i in range(1, len(bucket)):
+        key = bucket[i]
+        j = i - 1
+        while j >= 0 and bucket[j] > key:
+            bucket[j + 1] = bucket[j]
+            j -= 1
+        bucket[j + 1] = key
+    return bucket
+
+def bucket_sort(array: Array) -> Array:
+    """
+    Performs bucket sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import DynamicOneDimensionalArray as DODA, bucket_sort
+    >>> arr = DODA(int, [5, 78, 1, 0])
+    >>> out = bucket_sort(arr)
+    >>> str(out)
+    "['0', '1', '5', '78']"
+    >>> arr.delete(2)
+    >>> out = bucket_sort(arr)
+    >>> str(out)
+    "['0', '5', '78']"
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bucket_sort
+
+    Note
+    ====
+
+    This function does not support custom comparators as is the case with
+    other sorting functions in this file.
+    The ouput array doesn't contain any `None` value.
+    """
+    '''
+    Find maximum value in the list and use length of the list to determine which value in the list
+    goes into which bucket
+    '''
+    max_value = None
+    for i in range(len(array)):
+        if array[i] is not None:
+            max_value = array[i]
+
+    count = 0
+    for i in range(len(array)):
+        if array[i] is not None:
+            count += 1
+            if array[i] > max_value:
+                max_value = array[i]
+
+
+    size = max_value / count
+
+    # Create n empty buckets where n is equal to the length of the input list
+    buckets_list = []
+    for x in range(count):
+        buckets_list.append([])
+
+    # Put list elements into different buckets based on the size
+    for i in range(len(array)):
+        if array[i] is not None:
+            j = int(array[i] / size)
+            if j is not count:
+                buckets_list[j].append(array[i])
+            else:
+                buckets_list[count - 1].append(array[i])
+
+    # Sort elements within the buckets using Insertion Sort
+    for z in range(count):
+        _bucket_sort_helper(buckets_list[z])
+
+    # Concatenate buckets with sorted elements into a single array
+    final_output = []
+    for x in range(count):
+        final_output = final_output + buckets_list[x]
+    final_output = DynamicOneDimensionalArray(int, final_output)
+    return final_output
