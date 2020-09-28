@@ -103,4 +103,6 @@ def test_bucket_sort():
 
     expected_arr = [102, 134, 228, 247, 362, 373, 448,
                     480, 548, 686, 688, 696, 779]
-    assert counting_sort(arr)._data == expected_arr
+    print(bucket_sort(arr)._data)
+    print(expected_arr)
+    assert bucket_sort(arr)._data == expected_arr
