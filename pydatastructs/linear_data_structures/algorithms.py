@@ -487,7 +487,7 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     >>> arr.delete(2)
     >>> out = bucket_sort(arr)
     >>> str(out)
-    "['0', '5', '78']"
+    "['0', '1', '78']"
 
     References
     ==========
