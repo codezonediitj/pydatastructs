@@ -93,4 +93,3 @@ def test_matrix_multiply_parallel():
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
     output = matrix_multiply_parallel(I, J, num_threads=1)
     assert expected_result == output
-
