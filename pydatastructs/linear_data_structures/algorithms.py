@@ -445,9 +445,9 @@ def _bucket_sort_helper(bucket: Array) -> Array:
         key = bucket[i]
         j = i - 1
         while j >= 0 and bucket[j] > key:
-            bucket[j + 1] = bucket[j]
+            bucket[j+1] = bucket[j]
             j -= 1
-        bucket[j + 1] = key
+        bucket[j+1] = key
     return bucket
 
 def bucket_sort(array: Array, **kwargs) -> Array:
@@ -537,7 +537,7 @@ def bucket_sort(array: Array, **kwargs) -> Array:
 
     # Concatenate buckets with sorted elements into a single array
     sorted_list = []
-    for _ in range(count):
+    for x in range(count):
         sorted_list.extend(buckets_list[x])
     for i in range(end, end - number_of_null_values, -1):
         array[i] = None
