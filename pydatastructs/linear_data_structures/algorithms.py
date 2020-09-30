@@ -469,7 +469,6 @@ def bucket_sort(array: Array, **kwargs) -> Array:
         Optional, by default the index
         of the last position filled.
 
-
     Returns
     =======
 
@@ -517,16 +516,14 @@ def bucket_sort(array: Array, **kwargs) -> Array:
             if array[i] > max_value:
                 max_value = array[i]
 
-    NumberOfNullValues = end-start+1-count
+    number_of_null_values = end - start + 1 - count
     size = max_value // count
 
     # Create n empty buckets where n is equal to the length of the input list
-    buckets_list = []
-    for x in range(count):
-        buckets_list.append([])
+    buckets_list = [[] for _ in range(count)]
 
     # Put list elements into different buckets based on the size
-    for i in range(start, end+1):
+    for i in range(start, end + 1):
         if array[i] is not None:
             j = array[i] // size
             if j is not count:
@@ -540,11 +537,11 @@ def bucket_sort(array: Array, **kwargs) -> Array:
 
     # Concatenate buckets with sorted elements into a single array
     sorted_list = []
-    for x in range(count):
-        sorted_list += buckets_list[x]
-    for i in range(end, end-NumberOfNullValues, -1):
+    for _ in range(count):
+        sorted_list.extend(buckets_list[x])
+    for i in range(end, end - number_of_null_values, -1):
         array[i] = None
-    for i in range(start, end-NumberOfNullValues+1):
+    for i in range(start, end - number_of_null_values + 1):
         array[i] = sorted_list[i-start]
     if _check_type(array, DynamicArray):
         array._modify(force=True)
