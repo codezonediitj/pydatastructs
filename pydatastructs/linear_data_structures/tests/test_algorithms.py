@@ -1,7 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort)
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort)
 from pydatastructs.utils.raises_util import raises
 import random
 
@@ -52,6 +52,9 @@ def test_brick_sort_parallel():
 
 def test_heapsort():
     _test_common_sort(heapsort)
+
+def test_bucket_sort():
+    _test_common_sort(bucket_sort)
 
 def test_counting_sort():
     random.seed(1000)

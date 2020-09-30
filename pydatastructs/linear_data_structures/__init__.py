@@ -27,6 +27,7 @@ from .algorithms import (
     brick_sort_parallel,
     heapsort,
     matrix_multiply_parallel,
-    counting_sort
+    counting_sort,
+    bucket_sort
 )
 __all__.extend(algorithms.__all__)
