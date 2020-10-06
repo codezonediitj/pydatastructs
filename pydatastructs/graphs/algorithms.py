@@ -948,5 +948,5 @@ def dijkstra_algorithm(graph: Graph,start: str):
     L={}
     for node in graph.vertices:
         L[node]=dist[node]
-
+   
     return L
