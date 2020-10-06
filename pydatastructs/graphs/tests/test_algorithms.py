@@ -323,6 +323,7 @@ def test_topological_sort():
 
 
 def test_dijkstra_algorithm():
+    
     def _test_dijkstra_algorithm(ds, algorithm):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
