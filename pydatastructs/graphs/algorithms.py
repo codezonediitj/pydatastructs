@@ -881,18 +881,14 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
         raise ValueError("Graph is not acyclic.")
     return L
     
-
-def minDistance(graph: Graph,dist,visited,source): 
-  
-        min = sys.maxsize
-        min_index=source
-        for v in graph.vertices: 
-            if dist[v] < min and visited[v] == False: 
-                min = dist[v] 
-                min_index = v 
-  
-        return min_index 
-
+def minDistance(graph: Graph,dist,visited,source):
+    min = sys.maxsize
+    min_index=source
+    for v in graph.vertices:
+        if dist[v] < min and visited[v] is False:
+            min = dist[v] 
+            min_index = v 
+    return min_index 
         
 def dijkstra_algorithm(graph: Graph,start: str):
     """
@@ -930,7 +926,6 @@ def dijkstra_algorithm(graph: Graph,start: str):
 
     .. [1] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#:~:text=Dijkstra's
     """
-    
     V=len(graph.vertices)
     visited={}
     dist={}
@@ -945,7 +940,7 @@ def dijkstra_algorithm(graph: Graph,start: str):
         visited[u] = True
         for v in graph.vertices: 
             try:
-                if graph.edge_weights[u+"_"+v].value> 0 and visited[v] == False and dist[v] > dist[u] + graph.edge_weights[u+"_"+v].value:
+                if graph.edge_weights[u+"_"+v].value> 0 and visited[v] is False and dist[v] > dist[u] + graph.edge_weights[u+"_"+v].value:
                     dist[v] = dist[u] + graph.edge_weights[u+"_"+v].value
             except:
                 pass
@@ -953,5 +948,5 @@ def dijkstra_algorithm(graph: Graph,start: str):
     L={}
     for node in graph.vertices:
         L[node]=dist[node]
-    
+
     return L

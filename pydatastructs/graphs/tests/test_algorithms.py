@@ -342,3 +342,4 @@ def test_dijkstra_algorithm():
         dijkstra_algorithm(graph,'SLC')
     _test_dijkstra_algorithm("Matrix","Dijkstra")
     _test_dijkstra_algorithm("List","Dijkstra")
+    
