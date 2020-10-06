@@ -1,4 +1,3 @@
-
 __all__ = [
     'Graph'
 ]
@@ -122,3 +121,4 @@ class Graph(object):
         """
         raise NotImplementedError(
             "This is an abstract method.")
+        

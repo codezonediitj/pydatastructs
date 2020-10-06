@@ -10,6 +10,8 @@ from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
+import sys
+
 
 __all__ = [
     'breadth_first_search',
@@ -20,7 +22,8 @@ __all__ = [
     'depth_first_search',
     'shortest_paths',
     'topological_sort',
-    'topological_sort_parallel'
+    'topological_sort_parallel',
+    'dijkstra_algorithm'
 ]
 
 Stack = Queue = deque
@@ -876,4 +879,79 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
 
     if len(L) != num_vertices:
         raise ValueError("Graph is not acyclic.")
+    return L
+    
+
+def minDistance(graph: Graph,dist,visited,source): 
+  
+        min = sys.maxsize
+        min_index=source
+        for v in graph.vertices: 
+            if dist[v] < min and visited[v] == False: 
+                min = dist[v] 
+                min_index = v 
+  
+        return min_index 
+
+        
+def dijkstra_algorithm(graph: Graph,start: str):
+    """
+    Finds shortest path distance in the given graph from a given source to all vertex.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    start: str
+        The name of the source the node.
+    
+    Returns
+    =======
+
+    Displays Vertex and Distance from Source as a Key value pair
+    
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import shortest_paths
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V1, V2, V3)
+    >>> G.add_edge('V2', 'V3', 14)
+    >>> G.add_edge('V1', 'V2', 12)
+    >>> dijkstra_algorithm(G,'V1')
+    {'V1': 0, 'V2': 12, 'V3': 26}
+    
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#:~:text=Dijkstra's
+    """
+    
+    V=len(graph.vertices)
+    visited={}
+    dist={}
+    for v in graph.vertices:
+        visited[v]=False
+        if v!=start:
+            dist[v] =sys.maxsize
+    dist[start] = 0
+        
+    for cout in range(V):
+        u = minDistance(graph,dist,visited,start) 
+        visited[u] = True
+        for v in graph.vertices: 
+            try:
+                if graph.edge_weights[u+"_"+v].value> 0 and visited[v] == False and dist[v] > dist[u] + graph.edge_weights[u+"_"+v].value:
+                    dist[v] = dist[u] + graph.edge_weights[u+"_"+v].value
+            except:
+                pass
+    
+    L={}
+    for node in graph.vertices:
+        L[node]=dist[node]
+    
     return L
