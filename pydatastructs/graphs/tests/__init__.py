@@ -1,2 +1,0 @@
-from pydatastructs.graphs.tests.test_algorithms import test_dijkstra_algorithm
-test_dijkstra_algorithm()
