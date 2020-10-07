@@ -924,12 +924,9 @@ def dijkstra_algorithm(graph: Graph,start: str):
         if v != start:
             dist[v] = float('inf')
     dist[start] = 0
-    
     pq = PriorityQueue(implementation='binomial_heap')
-    
     for vertex in dist:
         pq.push(vertex, dist[vertex])
-    
     for cout in range(V):
         u = pq.pop()        
         visited[u] = True
@@ -939,10 +936,9 @@ def dijkstra_algorithm(graph: Graph,start: str):
                 visited[v] is False and dist[v] > dist[u] + graph.edge_weights[edge_str].value):
                 dist[v] = dist[u] + graph.edge_weights[edge_str].value
                 pq.push(v, dist[v])
-        
-                
+
+
     L = {}
     for node in graph.vertices:
         L[node] = dist[node]
-   
     return L
