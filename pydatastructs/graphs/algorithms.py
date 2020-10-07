@@ -12,7 +12,6 @@ from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 import sys
 
-
 __all__ = [
     'breadth_first_search',
     'breadth_first_search_parallel',
