@@ -925,7 +925,7 @@ def dijkstra_algorithm(graph: Graph,start: str):
             dist[v] = float('inf')
     dist[start] = 0
     
-    pq = PriorityQueue()
+    pq = PriorityQueue(implementation='binomial_heap')
     
     for vertex in dist:
         pq.push(vertex, dist[vertex])
