@@ -879,7 +879,6 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
     if len(L) != num_vertices:
         raise ValueError("Graph is not acyclic.")
     return L
-        
 def dijkstra_algorithm(graph: Graph,start: str):
     """
     Finds shortest path distance in the given graph from a given source to all vertex.
