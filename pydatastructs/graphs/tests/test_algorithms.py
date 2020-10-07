@@ -321,12 +321,12 @@ def test_topological_sort():
     _test_topological_sort(topological_sort, "List", "kahn")
     _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)
 
-
 def test_dijkstra_algorithm():
     
-    def _test_dijkstra_algorithm(ds, algorithm):
+    def _test_dijkstra_algorithm(ds):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+
         vertices = [GraphNode('S'), GraphNode('C'),
                     GraphNode('SLC'), GraphNode('SF'),
                     GraphNode('D')]
@@ -340,6 +340,8 @@ def test_dijkstra_algorithm():
         graph.add_edge('SF', 'SLC', 2)
         graph.add_edge('SF', 'S', 2)
         graph.add_edge('D', 'SF', 3)
-        dijkstra_algorithm(graph,'SLC')
-    _test_dijkstra_algorithm("Matrix","Dijkstra")
-    _test_dijkstra_algorithm("List","Dijkstra")
+        dist=dijkstra_algorithm(graph,'SLC')
+        assert dist == {'S': 6, 'C': 2, 'SLC': 0, 'SF': 6, 'D': 3}
+        
+    _test_dijkstra_algorithm("Matrix")
+    _test_dijkstra_algorithm("List")
