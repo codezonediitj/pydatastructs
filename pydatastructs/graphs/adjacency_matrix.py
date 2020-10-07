@@ -63,7 +63,7 @@ class AdjacencyMatrix(Graph):
                 GraphEdge(self.__getattribute__(source),
                           self.__getattribute__(target),
                           cost)
-            
+                
     def get_edge(self, source, target):
         return self.edge_weights.get(
             str(source) + "_" + str(target),

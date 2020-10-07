@@ -340,7 +340,7 @@ def test_dijkstra_algorithm():
         graph.add_edge('SF', 'SLC', 2)
         graph.add_edge('SF', 'S', 2)
         graph.add_edge('D', 'SF', 3)
-        dist=dijkstra_algorithm(graph,'SLC')
+        dist = dijkstra_algorithm(graph, 'SLC')
         assert dist == {'S': 6, 'C': 2, 'SLC': 0, 'SF': 6, 'D': 3}
         
     _test_dijkstra_algorithm("Matrix")

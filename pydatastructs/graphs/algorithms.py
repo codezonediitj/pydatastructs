@@ -10,7 +10,7 @@ from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
-import sys
+from pydatastructs import PriorityQueue
 
 __all__ = [
     'breadth_first_search',
@@ -879,15 +879,6 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
     if len(L) != num_vertices:
         raise ValueError("Graph is not acyclic.")
     return L
-    
-def minDistance(graph: Graph,dist,visited,source):
-    min = sys.maxsize
-    min_index=source
-    for v in graph.vertices:
-        if dist[v] < min and visited[v] is False:
-            min = dist[v] 
-            min_index = v 
-    return min_index 
         
 def dijkstra_algorithm(graph: Graph,start: str):
     """
@@ -899,7 +890,7 @@ def dijkstra_algorithm(graph: Graph,start: str):
     graph: Graph
         The graph under consideration.
     start: str
-        The name of the source the node.
+        The name of the source node.
     
     Returns
     =======
@@ -925,27 +916,33 @@ def dijkstra_algorithm(graph: Graph,start: str):
 
     .. [1] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#:~:text=Dijkstra's
     """
-    V=len(graph.vertices)
-    visited={}
-    dist={}
+    V = len(graph.vertices)
+    visited = {}
+    dist = {} 
     for v in graph.vertices:
-        visited[v]=False
-        if v!=start:
-            dist[v] =sys.maxsize
+        visited[v] = False
+        if v != start:
+            dist[v] = float('inf')
     dist[start] = 0
-        
-    for cout in range(V):
-        u = minDistance(graph,dist,visited,start) 
-        visited[u] = True
-        for v in graph.vertices: 
-            try:
-                if graph.edge_weights[u+"_"+v].value> 0 and visited[v] is False and dist[v] > dist[u] + graph.edge_weights[u+"_"+v].value:
-                    dist[v] = dist[u] + graph.edge_weights[u+"_"+v].value
-            except:
-                pass
     
-    L={}
+    pq = PriorityQueue()
+    
+    for vertex in dist:
+        pq.push(vertex, dist[vertex])
+    
+    for cout in range(V):
+        u = pq.pop()        
+        visited[u] = True
+        for v in graph.vertices:
+            edge_str = u + '_' + v
+            if (edge_str in graph.edge_weights and graph.edge_weights[edge_str].value > 0 and 
+                visited[v] is False and dist[v] > dist[u] + graph.edge_weights[edge_str].value):
+                dist[v] = dist[u] + graph.edge_weights[edge_str].value
+                pq.push(v, dist[v])
+        
+                
+    L = {}
     for node in graph.vertices:
-        L[node]=dist[node]
+        L[node] = dist[node]
    
     return L
