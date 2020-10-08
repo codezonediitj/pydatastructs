@@ -879,8 +879,8 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
     if len(L) != num_vertices:
         raise ValueError("Graph is not acyclic.")
     return L
-        
-def dijkstra_algorithm(graph: Graph,start: str):
+
+def dijkstra_algorithm(graph: Graph, start: str):
     """
     Finds shortest path distance in the given graph from a given source to all vertex.
 
@@ -891,12 +891,12 @@ def dijkstra_algorithm(graph: Graph,start: str):
         The graph under consideration.
     start: str
         The name of the source node.
-    
+
     Returns
     =======
 
     Displays Vertex and Distance from Source as a Key value pair
-    
+
     Examples
     ========
 
@@ -910,7 +910,7 @@ def dijkstra_algorithm(graph: Graph,start: str):
     >>> G.add_edge('V1', 'V2', 12)
     >>> dijkstra_algorithm(G,'V1')
     {'V1': 0, 'V2': 12, 'V3': 26}
-    
+
     References
     ==========
 
@@ -918,31 +918,31 @@ def dijkstra_algorithm(graph: Graph,start: str):
     """
     V = len(graph.vertices)
     visited = {}
-    dist = {} 
+    dist = {}
     for v in graph.vertices:
         visited[v] = False
         if v != start:
             dist[v] = float('inf')
     dist[start] = 0
-    
-    pq = PriorityQueue()
-    
+
+    pq = PriorityQueue(implementation='binomial_heap')
+
     for vertex in dist:
         pq.push(vertex, dist[vertex])
-    
+
     for cout in range(V):
-        u = pq.pop()        
+        u = pq.pop()
         visited[u] = True
         for v in graph.vertices:
             edge_str = u + '_' + v
-            if (edge_str in graph.edge_weights and graph.edge_weights[edge_str].value > 0 and 
+            if (edge_str in graph.edge_weights and graph.edge_weights[edge_str].value > 0 and
                 visited[v] is False and dist[v] > dist[u] + graph.edge_weights[edge_str].value):
                 dist[v] = dist[u] + graph.edge_weights[edge_str].value
                 pq.push(v, dist[v])
-        
-                
+
+
     L = {}
     for node in graph.vertices:
         L[node] = dist[node]
-   
+
     return L
