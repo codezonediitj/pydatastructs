@@ -21,8 +21,7 @@ __all__ = [
     'depth_first_search',
     'shortest_paths',
     'topological_sort',
-    'topological_sort_parallel',
-    'dijkstra_algorithm'
+    'topological_sort_parallel'
 ]
 
 Stack = Queue = deque
@@ -657,6 +656,7 @@ def shortest_paths(graph: Graph, algorithm: str,
         The algorithm to be used. Currently, the following algorithms
         are implemented,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
+        'dijkstra' -> Dijkstra algorithm as given in [2].
     source: str
         The name of the source the node.
     target: str
@@ -669,7 +669,7 @@ def shortest_paths(graph: Graph, algorithm: str,
 
     (distances, predecessors): (dict, dict)
         If target is not provided and algorithm used
-        is 'bellman_ford'.
+        is 'bellman_ford' or 'di'.
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
         'bellman_ford'.
@@ -687,11 +687,14 @@ def shortest_paths(graph: Graph, algorithm: str,
     >>> G.add_edge('V1', 'V2', 11)
     >>> shortest_paths(G, 'bellman_ford', 'V1')
     ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+    >>> shortest_paths(G, 'dijkstra', 'V1')
+    ({'V2': 11, 'V3': 21, 'V1': 0}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
 
     References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
     """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
@@ -729,6 +732,36 @@ def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tupl
     return (distances, predecessor)
 
 _bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
+
+def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
+    V = len(graph.vertices)
+    visited, dist, pred = dict(), dict(), dict()
+    for v in graph.vertices:
+        visited[v] = False
+        pred[v] = None
+        if v != start:
+            dist[v] = float('inf')
+    dist[start] = 0
+    pq = PriorityQueue(implementation='binomial_heap')
+    for vertex in dist:
+        pq.push(vertex, dist[vertex])
+    for _ in range(V):
+        u = pq.pop()
+        visited[u] = True
+        for v in graph.vertices:
+            edge_str = u + '_' + v
+            if (edge_str in graph.edge_weights and graph.edge_weights[edge_str].value > 0 and
+                visited[v] is False and dist[v] > dist[u] + graph.edge_weights[edge_str].value):
+                dist[v] = dist[u] + graph.edge_weights[edge_str].value
+                pred[v] = u
+                pq.push(v, dist[v])
+
+    if target != "":
+        return (dist[target], pred)
+    return dist, pred
+
+_dijkstra_adjacency_matrix = _dijkstra_adjacency_list
+
 
 def topological_sort(graph: Graph, algorithm: str) -> list:
     """
@@ -878,67 +911,4 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
 
     if len(L) != num_vertices:
         raise ValueError("Graph is not acyclic.")
-    return L
-
-def dijkstra_algorithm(graph: Graph,start: str):
-    """
-    Finds shortest path distance in the given graph from a given source to all vertex.
-
-    Parameters
-    ==========
-
-    graph: Graph
-        The graph under consideration.
-    start: str
-        The name of the source node.
-    
-    Returns
-    =======
-
-    Displays Vertex and Distance from Source as a Key value pair
-    
-    Examples
-    ========
-
-    >>> from pydatastructs import Graph, AdjacencyListGraphNode
-    >>> from pydatastructs import shortest_paths
-    >>> V1 = AdjacencyListGraphNode("V1")
-    >>> V2 = AdjacencyListGraphNode("V2")
-    >>> V3 = AdjacencyListGraphNode("V3")
-    >>> G = Graph(V1, V2, V3)
-    >>> G.add_edge('V2', 'V3', 14)
-    >>> G.add_edge('V1', 'V2', 12)
-    >>> dijkstra_algorithm(G,'V1')
-    {'V1': 0, 'V2': 12, 'V3': 26}
-    
-    References
-    ==========
-
-    .. [1] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#:~:text=Dijkstra's
-    """
-    V = len(graph.vertices)
-    visited = {}
-    dist = {} 
-    for v in graph.vertices:
-        visited[v] = False
-        if v != start:
-            dist[v] = float('inf')
-    dist[start] = 0
-    pq = PriorityQueue(implementation='binomial_heap')
-    for vertex in dist:
-        pq.push(vertex, dist[vertex])
-    for cout in range(V):
-        u = pq.pop()        
-        visited[u] = True
-        for v in graph.vertices:
-            edge_str = u + '_' + v
-            if (edge_str in graph.edge_weights and graph.edge_weights[edge_str].value > 0 and 
-                visited[v] is False and dist[v] > dist[u] + graph.edge_weights[edge_str].value):
-                dist[v] = dist[u] + graph.edge_weights[edge_str].value
-                pq.push(v, dist[v])
-
-
-    L = {}
-    for node in graph.vertices:
-        L[node] = dist[node]
     return L
