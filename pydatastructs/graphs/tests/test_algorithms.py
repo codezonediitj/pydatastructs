@@ -290,6 +290,8 @@ def test_shortest_paths():
 
     _test_shortest_paths("List", 'bellman_ford')
     _test_shortest_paths("Matrix", 'bellman_ford')
+    _test_shortest_paths("List", 'dijkstra')
+    _test_shortest_paths("Matrix", 'dijkstra')
 
 def test_topological_sort():
 

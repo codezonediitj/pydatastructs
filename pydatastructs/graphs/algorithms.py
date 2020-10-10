@@ -10,6 +10,7 @@ from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
+from pydatastructs import PriorityQueue
 
 __all__ = [
     'breadth_first_search',
@@ -655,6 +656,7 @@ def shortest_paths(graph: Graph, algorithm: str,
         The algorithm to be used. Currently, the following algorithms
         are implemented,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
+        'dijkstra' -> Dijkstra algorithm as given in [2].
     source: str
         The name of the source the node.
     target: str
@@ -667,7 +669,7 @@ def shortest_paths(graph: Graph, algorithm: str,
 
     (distances, predecessors): (dict, dict)
         If target is not provided and algorithm used
-        is 'bellman_ford'.
+        is 'bellman_ford'/'dijkstra'.
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
         'bellman_ford'.
@@ -685,11 +687,14 @@ def shortest_paths(graph: Graph, algorithm: str,
     >>> G.add_edge('V1', 'V2', 11)
     >>> shortest_paths(G, 'bellman_ford', 'V1')
     ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+    >>> shortest_paths(G, 'dijkstra', 'V1')
+    ({'V2': 11, 'V3': 21, 'V1': 0}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
 
     References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
     """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
@@ -727,6 +732,36 @@ def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tupl
     return (distances, predecessor)
 
 _bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
+
+def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
+    V = len(graph.vertices)
+    visited, dist, pred = dict(), dict(), dict()
+    for v in graph.vertices:
+        visited[v] = False
+        pred[v] = None
+        if v != start:
+            dist[v] = float('inf')
+    dist[start] = 0
+    pq = PriorityQueue(implementation='binomial_heap')
+    for vertex in dist:
+        pq.push(vertex, dist[vertex])
+    for _ in range(V):
+        u = pq.pop()
+        visited[u] = True
+        for v in graph.vertices:
+            edge_str = u + '_' + v
+            if (edge_str in graph.edge_weights and graph.edge_weights[edge_str].value > 0 and
+                visited[v] is False and dist[v] > dist[u] + graph.edge_weights[edge_str].value):
+                dist[v] = dist[u] + graph.edge_weights[edge_str].value
+                pred[v] = u
+                pq.push(v, dist[v])
+
+    if target != "":
+        return (dist[target], pred)
+    return dist, pred
+
+_dijkstra_adjacency_matrix = _dijkstra_adjacency_list
+
 
 def topological_sort(graph: Graph, algorithm: str) -> list:
     """
