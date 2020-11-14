@@ -2,7 +2,7 @@ from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths, topological_sort,
-topological_sort_parallel,dijkstra_algorithm)
+topological_sort_parallel)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -290,6 +290,10 @@ def test_shortest_paths():
 
     _test_shortest_paths("List", 'bellman_ford')
     _test_shortest_paths("Matrix", 'bellman_ford')
+    _test_shortest_paths("List", 'dijkstra')
+    _test_shortest_paths("Matrix", 'dijkstra')
+    _test_shortest_paths("List", 'floyd_warshall')
+    _test_shortest_paths("Matrix", 'floyd_warshall')
 
 def test_topological_sort():
 
@@ -320,28 +324,3 @@ def test_topological_sort():
 
     _test_topological_sort(topological_sort, "List", "kahn")
     _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)
-
-def test_dijkstra_algorithm():
-
-    def _test_dijkstra_algorithm(ds):
-        import pydatastructs.utils.misc_util as utils
-        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
-
-        vertices = [GraphNode('S'), GraphNode('C'),
-                    GraphNode('SLC'), GraphNode('SF'),
-                    GraphNode('D')]
-
-        graph = Graph(*vertices)
-        graph.add_edge('S', 'SLC', 2)
-        graph.add_edge('C', 'S', 4)
-        graph.add_edge('C', 'D', 2)
-        graph.add_edge('SLC', 'C', 2)
-        graph.add_edge('SLC', 'D', 3)
-        graph.add_edge('SF', 'SLC', 2)
-        graph.add_edge('SF', 'S', 2)
-        graph.add_edge('D', 'SF', 3)
-        dist = dijkstra_algorithm(graph, 'SLC')
-        assert dist == {'S': 6, 'C': 2, 'SLC': 0, 'SF': 6, 'D': 3}
-
-    _test_dijkstra_algorithm("Matrix")
-    _test_dijkstra_algorithm("List")

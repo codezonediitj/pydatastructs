@@ -16,8 +16,7 @@ from .algorithms import (
     depth_first_search,
     shortest_paths,
     topological_sort,
-    topological_sort_parallel,
-    dijkstra_algorithm
+    topological_sort_parallel
 )
 
 __all__.extend(algorithms.__all__)
