@@ -671,6 +671,7 @@ def shortest_paths(graph: Graph, algorithm: str,
     (distances, predecessors): (dict, dict)
         If target is not provided and algorithm used
         is 'bellman_ford'/'dijkstra'/'floyd_warshall'.
+        is 'bellman_ford'/'dijkstra'.
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
         'bellman_ford' or 'floyd_warshall'.
