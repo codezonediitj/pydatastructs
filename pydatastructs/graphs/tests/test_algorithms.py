@@ -262,7 +262,7 @@ def test_depth_first_search():
 
 def test_shortest_paths():
 
-    def _test_shortest_paths(ds, algorithm):
+    def _test_shortest_paths_positive_edges(ds, algorithm):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
         vertices = [GraphNode('S'), GraphNode('C'),
@@ -288,12 +288,57 @@ def test_shortest_paths():
         graph.add_edge('D', 'SLC', -10)
         assert raises(ValueError, lambda: shortest_paths(graph, 'bellman_ford', 'SLC'))
 
-    _test_shortest_paths("List", 'bellman_ford')
-    _test_shortest_paths("Matrix", 'bellman_ford')
-    _test_shortest_paths("List", 'dijkstra')
-    _test_shortest_paths("Matrix", 'dijkstra')
-    _test_shortest_paths("List", 'floyd_warshall')
-    _test_shortest_paths("Matrix", 'floyd_warshall')
+    def _test_shortest_paths_negative_edges(ds, algorithm):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        vertices = [GraphNode('s'), GraphNode('a'),
+                    GraphNode('b'), GraphNode('c'),
+                    GraphNode('d')]
+
+        graph = Graph(*vertices)
+        graph.add_edge('s', 'a', 3)
+        graph.add_edge('s', 'b', 2)
+        graph.add_edge('a', 'c', 1)
+        graph.add_edge('b', 'd', 1)
+        graph.add_edge('b', 'a', -2)
+        graph.add_edge('c', 'd', 1)
+        dist, pred = shortest_paths(graph, algorithm, 's')
+        assert dist == {'s': 0, 'a': 0, 'b': 2, 'c': 1, 'd': 2}
+        assert pred == {'s': None, 'a': 'b', 'b': 's', 'c': 'a', 'd': 'c'}
+        dist, pred = shortest_paths(graph, algorithm, 's', 'd')
+        assert dist == 2
+        assert pred == {'s': None, 'a': 'b', 'b': 's', 'c': 'a', 'd': 'c'}
+
+    _test_shortest_paths_positive_edges("List", 'bellman_ford')
+    _test_shortest_paths_positive_edges("Matrix", 'bellman_ford')
+    _test_shortest_paths_negative_edges("List", 'bellman_ford')
+    _test_shortest_paths_negative_edges("Matrix", 'bellman_ford')
+    _test_shortest_paths_positive_edges("List", 'dijkstra')
+    _test_shortest_paths_positive_edges("Matrix", 'dijkstra')
+
+def test_all_pair_shortest_paths():
+
+    def _test_shortest_paths_negative_edges(ds, algorithm):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        vertices = [GraphNode('1'), GraphNode('2'),
+                    GraphNode('3'), GraphNode('4')]
+
+        graph = Graph(*vertices)
+        graph.add_edge('1', '3', -2)
+        graph.add_edge('2', '1', 4)
+        graph.add_edge('2', '3', 3)
+        graph.add_edge('3', '4', 2)
+        graph.add_edge('4', '2', -1)
+        dist, next_v = shortest_paths(graph, algorithm, 's')
+        assert dist == {'1': {'3': -2, '1': 0, '4': 0, '2': -1},
+                        '2': {'1': 4, '3': 2, '2': 0, '4': 4},
+                        '3': {'4': 2, '3': 0, '1': 5, '2': 1},
+                        '4': {'2': -1, '4': 0, '1': 3, '3': 1}}
+        assert next_v == {'1': {'3': '1', '1': '1', '4': None, '2': None},
+                          '2': {'1': '2', '3': None, '2': '2', '4': None},
+                          '3': {'4': '3', '3': '3', '1': None, '2': None},
+                          '4': {'2': '4', '4': '4', '1': None, '3': None}}
 
 def test_topological_sort():
 

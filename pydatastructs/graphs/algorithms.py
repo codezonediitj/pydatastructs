@@ -20,6 +20,7 @@ __all__ = [
     'strongly_connected_components',
     'depth_first_search',
     'shortest_paths',
+    'all_pair_shortest_paths',
     'topological_sort',
     'topological_sort_parallel'
 ]
@@ -657,7 +658,6 @@ def shortest_paths(graph: Graph, algorithm: str,
         are implemented,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
         'dijkstra' -> Dijkstra algorithm as given in [2].
-        'floyd_warshall' -> Floyd-Warshall algorithm as given in [3].
     source: str
         The name of the source the node.
     target: str
@@ -670,11 +670,10 @@ def shortest_paths(graph: Graph, algorithm: str,
 
     (distances, predecessors): (dict, dict)
         If target is not provided and algorithm used
-        is 'bellman_ford'/'dijkstra'/'floyd_warshall'.
         is 'bellman_ford'/'dijkstra'.
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
-        'bellman_ford' or 'floyd_warshall'.
+        'bellman_ford'/'dijkstra'.
 
     Examples
     ========
@@ -691,15 +690,12 @@ def shortest_paths(graph: Graph, algorithm: str,
     ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
     >>> shortest_paths(G, 'dijkstra', 'V1')
     ({'V2': 11, 'V3': 21, 'V1': 0}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
-    >>> shortest_paths(G, 'floyd_warshall', 'V1')
-    ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
 
     References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
     .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-    .. [3] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
     """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
@@ -767,38 +763,84 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
 
 _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
 
-def _floyd_warshall_adjacency_list(graph: Graph, source: str, target: str):
-    dist, predecessor, dist_temp, pred_temp = dict(), dict(), dict(), dict()
-    V = graph.vertices
+def all_pair_shortest_paths(graph: Graph, algorithm: str) -> tuple:
+    """
+    Finds shortest paths between all pairs of vertices in the given graph.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used. Currently, the following algorithms
+        are implemented,
+        'floyd_warshall' -> Floyd Warshall algorithm as given in [1].
+
+    Returns
+    =======
+
+    (distances, predecessors): (dict, dict)
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import all_pair_shortest_paths
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V1, V2, V3)
+    >>> G.add_edge('V2', 'V3', 10)
+    >>> G.add_edge('V1', 'V2', 11)
+    >>> G.add_edge('V3', 'V1', 5)
+    >>> dist, _ = all_pair_shortest_paths(G, 'floyd_warshall')
+    >>> dist['V1']['V3']
+    21
+    >>> dist['V3']['V1']
+    5
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "finding shortest paths in graphs."%(algorithm))
+    return getattr(algorithms, func)(graph)
+
+def _floyd_warshall_adjacency_list(graph: Graph):
+    dist, next_vertex = dict(), dict()
+    V, E = graph.vertices, graph.edge_weights
 
     for v in V:
-        dist_temp[v] = float('inf')
-        pred_temp[v] = None
+        dist[v] = dict()
+        next_vertex[v] = dict()
 
-    for v in V:
-        dist[v] = dist_temp.copy()
-        predecessor[v] = pred_temp.copy()
-
-    E = graph.edge_weights.values()
-    for e in E:
-        dist[e.source.name][e.target.name] = e.value
-        predecessor[e.source.name][e.target.name] = e.source.name
+    for name, edge in E.items():
+        dist[edge.source.name][edge.target.name] = edge.value
+        next_vertex[edge.source.name][edge.target.name] = edge.source.name
 
     for v in V:
         dist[v][v] = 0
+        next_vertex[v][v] = v
 
     for k in V:
         for i in V:
             for j in V:
-                if (dist[i][k] is not float('inf') and dist[k][j] is not float('inf') and dist[i][j] > dist[i][k]+dist[k][j]):
-                    dist[i][j] = dist[i][k]+dist[k][j]
-                    predecessor[i][j] = predecessor[k][j]
+                dist_i_j = dist.get(i, dict()).get(j, float('inf'))
+                dist_i_k = dist.get(i, dict()).get(k, float('inf'))
+                dist_k_j = dist.get(k, dict()).get(j, float('inf'))
+                next_i_k = next_vertex.get(i + '_' + k, None)
+                if dist_i_j > dist_i_k + dist_k_j:
+                    dist[i][j] = dist_i_k + dist_k_j
+                    next_vertex[i][j] = next_i_k
 
-    if source != "":
-        if target != "":
-            return (dist[source][target], predecessor[source])
-        return (dist[source], predecessor[source])
-    return (dist, predecessor)
+    return (dist, next_vertex)
 
 _floyd_warshall_adjacency_matrix = _floyd_warshall_adjacency_list
 

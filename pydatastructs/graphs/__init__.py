@@ -15,6 +15,7 @@ from .algorithms import (
     strongly_connected_components,
     depth_first_search,
     shortest_paths,
+    all_pair_shortest_paths,
     topological_sort,
     topological_sort_parallel
 )
