@@ -20,6 +20,7 @@ __all__ = [
     'strongly_connected_components',
     'depth_first_search',
     'shortest_paths',
+    'all_pair_shortest_paths',
     'topological_sort',
     'topological_sort_parallel'
 ]
@@ -672,7 +673,7 @@ def shortest_paths(graph: Graph, algorithm: str,
         is 'bellman_ford'/'dijkstra'.
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
-        'bellman_ford'.
+        'bellman_ford'/'dijkstra'.
 
     Examples
     ========
@@ -762,6 +763,86 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
 
 _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
 
+def all_pair_shortest_paths(graph: Graph, algorithm: str) -> tuple:
+    """
+    Finds shortest paths between all pairs of vertices in the given graph.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used. Currently, the following algorithms
+        are implemented,
+        'floyd_warshall' -> Floyd Warshall algorithm as given in [1].
+
+    Returns
+    =======
+
+    (distances, predecessors): (dict, dict)
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import all_pair_shortest_paths
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V1, V2, V3)
+    >>> G.add_edge('V2', 'V3', 10)
+    >>> G.add_edge('V1', 'V2', 11)
+    >>> G.add_edge('V3', 'V1', 5)
+    >>> dist, _ = all_pair_shortest_paths(G, 'floyd_warshall')
+    >>> dist['V1']['V3']
+    21
+    >>> dist['V3']['V1']
+    5
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "finding shortest paths in graphs."%(algorithm))
+    return getattr(algorithms, func)(graph)
+
+def _floyd_warshall_adjacency_list(graph: Graph):
+    dist, next_vertex = dict(), dict()
+    V, E = graph.vertices, graph.edge_weights
+
+    for v in V:
+        dist[v] = dict()
+        next_vertex[v] = dict()
+
+    for name, edge in E.items():
+        dist[edge.source.name][edge.target.name] = edge.value
+        next_vertex[edge.source.name][edge.target.name] = edge.source.name
+
+    for v in V:
+        dist[v][v] = 0
+        next_vertex[v][v] = v
+
+    for k in V:
+        for i in V:
+            for j in V:
+                dist_i_j = dist.get(i, dict()).get(j, float('inf'))
+                dist_i_k = dist.get(i, dict()).get(k, float('inf'))
+                dist_k_j = dist.get(k, dict()).get(j, float('inf'))
+                next_i_k = next_vertex.get(i + '_' + k, None)
+                if dist_i_j > dist_i_k + dist_k_j:
+                    dist[i][j] = dist_i_k + dist_k_j
+                    next_vertex[i][j] = next_i_k
+
+    return (dist, next_vertex)
+
+_floyd_warshall_adjacency_matrix = _floyd_warshall_adjacency_list
 
 def topological_sort(graph: Graph, algorithm: str) -> list:
     """
