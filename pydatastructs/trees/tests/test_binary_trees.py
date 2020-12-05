@@ -19,10 +19,13 @@ def test_BinarySearchTree():
     b.insert(7, 7)
     b.insert(14, 14)
     b.insert(13, 13)
-    assert str(b) == \
-    ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
-    "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
-    "(None, 13, 13, None)]")
+
+    trav = BinaryTreeTraversal(b)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1, 3, 4, 6, 7, 8, 10, 13, 14]
+    assert [node.key for node in pre_order] == [8, 3, 1, 6, 4, 7, 10, 14, 13]
+
     assert b.search(10) == 2
     assert b.search(-1) is None
     assert b.delete(13) is True
@@ -32,16 +35,25 @@ def test_BinarySearchTree():
     assert b.delete(3) is True
     assert b.search(3) is None
     assert b.delete(13) is None
-    assert str(b) == \
-    ("[(1, 8, 8, 7), (3, 4, 4, 4), '', (None, 1, 1, None), "
-    "(None, 6, 6, 6), '', (None, 7, 7, None), (None, 14, 14, None)]")
+
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1, 4, 6, 7, 8, 14]
+    assert [node.key for node in pre_order] == [8, 4, 1, 6, 7, 14]
+
     b.delete(7)
     b.delete(6)
     b.delete(1)
     b.delete(4)
-    assert str(b) == "[(None, 8, 8, 2), '', (None, 14, 14, None)]"
+
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [8, 14]
+    assert [node.key for node in pre_order] == [8, 14]
+
     bc = BST(1, 1)
     assert bc.insert(1, 2) is None
+
     b = BST(-8, 8)
     b.insert(-3, 3)
     b.insert(-10, 10)
@@ -102,32 +114,20 @@ def test_BinaryTreeTraversal():
     b.insert('H', 'H')
     trav = BTT(b)
     pre = trav.depth_first_search(order='pre_order')
-    assert [str(n) for n in pre] == \
-    ["(1, 'F', 'F', 3)", "(2, 'B', 'B', 4)", "(None, 'A', 'A', None)",
-     "(5, 'D', 'D', 6)", "(None, 'C', 'C', None)", "(None, 'E', 'E', None)",
-     "(None, 'G', 'G', 7)", "(8, 'I', 'I', None)", "(None, 'H', 'H', None)"]
+    assert [node.key for node in pre] == ['F', 'B', 'A', 'D', 'C', 'E', 'G', 'I', 'H']
+
     ino = trav.depth_first_search()
-    assert [str(n) for n in ino] == \
-    ["(None, 'A', 'A', None)", "(2, 'B', 'B', 4)", "(None, 'C', 'C', None)",
-     "(5, 'D', 'D', 6)", "(None, 'E', 'E', None)", "(1, 'F', 'F', 3)",
-     "(None, 'G', 'G', 7)", "(None, 'H', 'H', None)", "(8, 'I', 'I', None)"]
+    assert [node.key for node in ino] == ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+
     out = trav.depth_first_search(order='out_order')
-    assert [str(n) for n in out] == \
-    ["(8, 'I', 'I', None)", "(None, 'H', 'H', None)", "(None, 'G', 'G', 7)",
-     "(1, 'F', 'F', 3)", "(None, 'E', 'E', None)", "(5, 'D', 'D', 6)",
-     "(None, 'C', 'C', None)", "(2, 'B', 'B', 4)", "(None, 'A', 'A', None)"]
+    assert [node.key for node in out] == ['I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
+
     post = trav.depth_first_search(order='post_order')
-    assert [str(n) for n in post] == \
-    ["(None, 'A', 'A', None)", "(None, 'C', 'C', None)",
-     "(None, 'E', 'E', None)", "(5, 'D', 'D', 6)", "(2, 'B', 'B', 4)",
-     "(None, 'H', 'H', None)", "(8, 'I', 'I', None)", "(None, 'G', 'G', 7)",
-     "(1, 'F', 'F', 3)"]
+    assert [node.key for node in post] == ['A', 'C', 'E', 'D', 'B', 'H', 'I', 'G', 'F']
+
     bfs = trav.breadth_first_search()
-    assert [str(n) for n in bfs] == \
-        ["(1, 'F', 'F', 3)", "(2, 'B', 'B', 4)", "(None, 'G', 'G', 7)",
-         "(None, 'A', 'A', None)", "(5, 'D', 'D', 6)", "(8, 'I', 'I', None)",
-         "(None, 'C', 'C', None)", "(None, 'E', 'E', None)",
-         "(None, 'H', 'H', None)"]
+    assert [node.key for node in bfs] == ['F', 'B', 'G', 'A', 'D', 'I', 'C', 'E', 'H']
+
     assert raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
     assert raises(TypeError, lambda: BTT(1))
@@ -143,11 +143,13 @@ def test_AVLTree():
     a.insert('H', 'H')
     a.insert('I', 'I')
     a.insert('A', 'A')
-    assert str(a) == ("[(None, 'M', 'M', None), (8, 'N', 'N', 6), "
-                      "(None, 'O', 'O', None), (4, 'L', 'L', 0), "
-                      "(None, 'K', 'K', None), (None, 'Q', 'Q', None), "
-                      "(2, 'P', 'P', 5), (9, 'H', 'H', None), "
-                      "(7, 'I', 'I', 3), (None, 'A', 'A', None)]")
+
+    trav = BinaryTreeTraversal(a)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == ['A', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q']
+    assert [node.key for node in pre_order] == ['N', 'I', 'H', 'A', 'L', 'K', 'M', 'P', 'O', 'Q']
+
     assert [a.balance_factor(n) for n in a.tree if n is not None] == \
         [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
     a1 = AVLTree(1, 1)
@@ -155,20 +157,35 @@ def test_AVLTree():
     a1.insert(3, 3)
     a1.insert(4, 4)
     a1.insert(5, 5)
-    assert str(a1) == ("[(None, 1, 1, None), (0, 2, 2, 3), (None, 3, 3, None), "
-                      "(2, 4, 4, 4), (None, 5, 5, None)]")
+
+    trav = BinaryTreeTraversal(a1)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1, 2, 3, 4, 5]
+    assert [node.key for node in pre_order] == [2, 1, 4, 3, 5]
+
     a3 = AVLTree(-1, 1)
     a3.insert(-2, 2)
     a3.insert(-3, 3)
     a3.insert(-4, 4)
     a3.insert(-5, 5)
-    assert str(a3) == ("[(None, -1, 1, None), (3, -2, 2, 0), "
-                       "(None, -3, 3, None), (4, -4, 4, 2), "
-                       "(None, -5, 5, None)]")
+
+    trav = BinaryTreeTraversal(a3)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [-5, -4, -3, -2, -1]
+    assert [node.key for node in pre_order] == [-2, -4, -5, -3, -1]
+
     a2 = AVLTree()
     a2.insert(1, 1)
     a2.insert(1, 1)
-    assert str(a2) == "[(None, 1, 1, None)]"
+
+    trav = BinaryTreeTraversal(a2)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1]
+    assert [node.key for node in pre_order] == [1]
+
     a3 = AVLTree()
     a3.tree = ArrayForTrees(TreeNode, 0)
     for i in range(7):
@@ -180,9 +197,13 @@ def test_AVLTree():
     a3.tree[2].left = 3
     a3.tree[2].right = 4
     a3._left_right_rotate(0, 1)
-    assert str(a3) == ("[(4, 0, 0, 6), (5, 1, 1, 3), (1, 2, 2, 0), "
-                       "(None, 3, 3, None), (None, 4, 4, None), "
-                       "(None, 5, 5, None), (None, 6, 6, None)]")
+
+    trav = BinaryTreeTraversal(a3)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [5, 1, 3, 2, 4, 0, 6]
+    assert [node.key for node in pre_order] == [2, 1, 5, 3, 0, 4, 6]
+
     a4 = AVLTree()
     a4.tree = ArrayForTrees(TreeNode, 0)
     for i in range(7):
@@ -194,9 +215,12 @@ def test_AVLTree():
     a4.tree[3].left = 5
     a4.tree[3].right = 6
     a4._right_left_rotate(0, 2)
-    assert str(a4) == ("[(1, 0, 0, 5), (None, 1, 1, None), (6, 2, 2, 4), "
-                      "(0, 3, 3, 2), (None, 4, 4, None), (None, 5, 5, None), "
-                      "(None, 6, 6, None)]")
+
+    trav = BinaryTreeTraversal(a4)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1, 0, 5, 3, 6, 2, 4]
+    assert [node.key for node in pre_order] == [3,0,1,5,2,6,4]
 
     a5 = AVLTree(is_order_statistic=True)
     a5.tree = ArrayForTrees(TreeNode, [
@@ -280,11 +304,13 @@ def test_AVLTree():
     a5.delete(9)
     a5.delete(13)
     a5.delete(20)
-    assert str(a5) == ("[(7, 10, 10, 5), (None, 5, 5, None), "
-                       "(0, 17, 17, 6), (None, 2, 2, None), '', "
-                       "(8, 12, 12, 9), (10, 30, 30, 13), (3, 3, 3, 1), "
-                       "(None, 11, 11, None), (None, 15, 15, None), "
-                       "(None, 18, 18, None), '', '', (None, 33, 33, None)]")
+
+    trav = BinaryTreeTraversal(a5)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [2, 3, 5, 10, 11, 12, 15, 17, 18, 30, 33]
+    assert [node.key for node in pre_order] == [17, 10, 3, 2, 5, 12, 11, 15, 30, 18, 33]
+
     test_select_rank([2, 3, 5, 10, 11, 12, 15, 17, 18, 30, 33])
     a5.delete(10)
     a5.delete(17)
@@ -333,20 +359,20 @@ def test_CartesianTree():
     tree.insert(6, 42, 6)
     tree.insert(8, 49, 8)
     tree.insert(2, 99, 2)
-    assert str(tree) == \
-           ("[(1, 3, 1, 3, 3), (2, 1, 6, 1, 9), "
-            "(None, 0, 9, 0, None), (4, 5, 11, 5, 5), "
-            "(None, 4, 14, 4, None), (6, 9, 17, 9, None), "
-            "(7, 7, 22, 7, 8), (None, 6, 42, 6, None), "
-            "(None, 8, 49, 8, None), (None, 2, 99, 2, None)]")
+
+    trav = BinaryTreeTraversal(tree)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert [node.key for node in pre_order] == [3, 1, 0, 2, 5, 4, 9, 7, 6, 8]
+
     tree.insert(1.5, 4, 1.5)
-    assert str(tree) == \
-           ("[(10, 3, 1, 3, 3), (2, 1, 6, 1, None), "
-            "(None, 0, 9, 0, None), (4, 5, 11, 5, 5), "
-            "(None, 4, 14, 4, None), (6, 9, 17, 9, None), "
-            "(7, 7, 22, 7, 8), (None, 6, 42, 6, None), "
-            "(None, 8, 49, 8, None), (None, 2, 99, 2, None), "
-            "(1, 1.5, 4, 1.5, 9)]")
+
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [0, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert [node.key for node in pre_order] == [3, 1.5, 1, 0, 2, 5, 4, 9, 7, 6, 8]
+
     k = tree.search(1.5)
     assert tree.tree[tree.tree[k].parent].key == 3
     tree.delete(1.5)
@@ -391,10 +417,13 @@ def test_issue_234():
     assert tree.tree[3].parent == 5
     assert tree.tree[2].right != 3
     assert tree.tree[tree.tree[5].parent].right == 5
-    assert str(tree) == ("[(2, 5, 5, 1), (None, 5.5, 5.5, None), "
-                         "(4, 4.5, 4.5, 5), (None, 4.6, 4.6, 6), "
-                         "(None, 4.4, 4.4, None), (None, 4.55, 4.55, 3), "
-                         "(None, 4.65, 4.65, None)]")
+
+    trav = BinaryTreeTraversal(tree)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [4.4, 4.5, 4.55, 4.6, 4.65, 5, 5.5]
+    assert [node.key for node in pre_order] == [5, 4.5, 4.4, 4.55, 4.6, 4.65, 5.5]
+
     assert tree.tree[tree.tree[3].parent].right == 3
     tree._left_rotate(5, 3)
     assert str(tree) == original_tree
@@ -412,30 +441,56 @@ def test_SplayTree():
     t.insert(20, 20)
     t.insert(55, 55)
 
-    assert str(t) == ("[(None, 100, 100, None), (None, 50, 50, None), "
-                      "(0, 200, 200, None), (None, 40, 40, 1), (5, 30, 30, 3), "
-                      "(None, 20, 20, None), (4, 55, 55, 2)]")
+    trav = BinaryTreeTraversal(t)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [20, 30, 40, 50, 55, 100, 200]
+    assert [node.key for node in pre_order] == [55, 30, 20, 40, 50, 200, 100]
+
     t.delete(40)
-    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), "
-                      "(4, 50, 50, 6), (5, 30, 30, None), (None, 20, 20, None), "
-                      "(None, 55, 55, 2)]")
+
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200]
+    assert [node.key for node in pre_order] == [50, 30, 20, 55, 200, 100]
+
     t.delete(150)
-    assert str(t) == ("[(None, 100, 100, None), '', (0, 200, 200, None), (4, 50, 50, 6), "
-                      "(5, 30, 30, None), (None, 20, 20, None), (None, 55, 55, 2)]")
+
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200]
+    assert [node.key for node in pre_order] == [50, 30, 20, 55, 200, 100]
 
     t1 = SplayTree(1000, 1000)
     t1.insert(2000, 2000)
-    assert str(t1) == ("[(None, 1000, 1000, None), (0, 2000, 2000, None)]")
+
+    trav = BinaryTreeTraversal(t1)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1000, 2000]
+    assert [node.key for node in pre_order] == [2000, 1000]
 
     t.join(t1)
-    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, 8), (4, 50, 50, None), "
-                      "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), (None, 1000, 1000, None), "
-                      "(7, 2000, 2000, None), '']")
+
+    trav = BinaryTreeTraversal(t)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200, 1000, 2000]
+    assert [node.key for node in pre_order] == [200, 55, 50, 30, 20, 100, 2000, 1000]
 
     s = t.split(200)
-    assert str(s) == ("[(1, 2000, 2000, None), (None, 1000, 1000, None)]")
-    assert str(t) == ("[(None, 100, 100, None), '', (6, 200, 200, None), (4, 50, 50, None), "
-                      "(5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), '', '', '']")
+
+    trav = BinaryTreeTraversal(s)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1000, 2000]
+    assert [node.key for node in pre_order] == [2000, 1000]
+
+    trav = BinaryTreeTraversal(t)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200]
+    assert [node.key for node in pre_order] == [200, 55, 50, 30, 20, 100]
 
 def test_RedBlackTree():
     tree = RedBlackTree()
