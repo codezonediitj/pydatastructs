@@ -19,6 +19,11 @@ def test_BinarySearchTree():
     b.insert(7, 7)
     b.insert(14, 14)
     b.insert(13, 13)
+    # Explicit check for the __str__ method of Binary Trees Class
+    assert str(b) == \
+    ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
+    "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
+    "(None, 13, 13, None)]")
 
     trav = BinaryTreeTraversal(b)
     in_order = trav.depth_first_search(order='in_order')
@@ -359,6 +364,13 @@ def test_CartesianTree():
     tree.insert(6, 42, 6)
     tree.insert(8, 49, 8)
     tree.insert(2, 99, 2)
+    # Explicit check for the redefined __str__ method of Cartesian Trees Class
+    assert str(tree) == \
+           ("[(1, 3, 1, 3, 3), (2, 1, 6, 1, 9), "
+            "(None, 0, 9, 0, None), (4, 5, 11, 5, 5), "
+            "(None, 4, 14, 4, None), (6, 9, 17, 9, None), "
+            "(7, 7, 22, 7, 8), (None, 6, 42, 6, None), "
+            "(None, 8, 49, 8, None), (None, 2, 99, 2, None)]")
 
     trav = BinaryTreeTraversal(tree)
     in_order = trav.depth_first_search(order='in_order')
