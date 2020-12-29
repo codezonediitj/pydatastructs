@@ -570,7 +570,7 @@ def LCS(string1,string2):
     row=lengs1
     col=lengs2
     stack=[]
-    while(row!=0 or col!=0):
+    while(row!=0 and col!=0):
         if(matrix[row][col]==matrix[row][col-1]):
             
             col=col-1
