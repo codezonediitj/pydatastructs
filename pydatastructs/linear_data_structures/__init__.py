@@ -28,6 +28,7 @@ from .algorithms import (
     heapsort,
     matrix_multiply_parallel,
     counting_sort,
-    bucket_sort
+    bucket_sort,
+    LCS
 )
 __all__.extend(algorithms.__all__)
