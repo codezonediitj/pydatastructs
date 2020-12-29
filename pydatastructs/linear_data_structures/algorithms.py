@@ -12,6 +12,7 @@ __all__ = [
     'matrix_multiply_parallel',
     'counting_sort',
     'bucket_sort',
+    'LCS'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -546,3 +547,41 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     if _check_type(array, DynamicArray):
         array._modify(force=True)
     return array
+
+def LCS(string1,string2):
+    """
+    >from pydatastructs.linear_data_structures import algorithms
+    >algorithms.LCS("APPLE","APPPLLE")
+    Output
+     (Length of LCS,LCS)
+    >(5, ['A', 'P', 'P', 'L', 'E'])
+    """
+    lengs1=len(string1)
+    lengs2=len(string2)
+    matrix=[[0 for i in range(lengs2+1)]for j in range(lengs1+1)]
+    for i in range(lengs1):
+        for j in range(lengs2):
+            if(string1[i]==string2[j]):
+                matrix[i+1][j+1]=matrix[i][j]+1
+            else:
+                matrix[i+1][j+1]=max(matrix[i+1][j],matrix[i][j+1])
+    
+    lengthLCS=matrix[lengs1][lengs2]
+    row=lengs1
+    col=lengs2
+    stack=[]
+    while(row!=0 or col!=0):
+        if(matrix[row][col]==matrix[row][col-1]):
+            
+            col=col-1
+        elif(matrix[row][col]==matrix[row-1][col]):
+            
+            row=row-1
+        else:
+            stack.append(string1[row-1])
+            
+            row=row-1
+            col=col-1
+            
+    return lengthLCS,stack[::-1]
+    

@@ -1,7 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort)
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,LCS)
 from pydatastructs.utils.raises_util import raises
 import random
 
@@ -93,3 +93,23 @@ def test_matrix_multiply_parallel():
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
     output = matrix_multiply_parallel(I, J, num_threads=1)
     assert expected_result == output
+def test_LCS():
+    expected_result=(4, [['M'], ['N'], ['O'], ['M']])
+    output=LCS([["M"],["L"],["N"],["O"],["M"]],[["M"],["N"],["O"],["M"]])
+    assert expected_result==output
+    
+    expected_result=(4, ['M', 'N', 'O', 'M'])
+    output=LCS("MLNOM","MNOM")
+    assert expected_result==output
+    
+    expected_result=(4, ['M', 'N', 'O', 'M'])
+    output=LCS(["M","L","N","O","M"],["M","N","O","M"])
+    assert expected_result==output
+    
+    expected_result=(4, [1, 3, 10, 100])
+    output=LCS([1,2,3,10,100],[1,3,10,200,100])
+    assert expected_result==output
+    
+    
+    
+    
