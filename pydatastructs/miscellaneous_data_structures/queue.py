@@ -5,7 +5,8 @@ from copy import deepcopy as dc
 
 __all__ = [
     'Queue',
-    'PriorityQueue'
+    'PriorityQueue',
+    'CircularQueue'
 ]
 
 class Queue(object):
@@ -394,3 +395,6 @@ class BinomialHeapPriorityQueue(PriorityQueue):
     @property
     def is_empty(self):
         return self.items.is_empty
+
+class CircularQueue:
+    
