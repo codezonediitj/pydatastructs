@@ -61,7 +61,16 @@ class LinkedList(object):
         data
             Any valid data to be stored in the node.
         """
-        raise NotImplementedError('This is an abstract method')
+        elements = []
+        current_node = self.head
+        while current_node!=prev_node:
+            current_node = current_node.next
+            if current_node == self.head:
+                raise Exception("The element is not found")
+        next_node=current_node.next
+        current_node.next=key
+        key.next=next_node
+        return
 
     def insert_at(self, index, key, data=None):
         """
