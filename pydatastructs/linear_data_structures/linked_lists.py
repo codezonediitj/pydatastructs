@@ -64,7 +64,7 @@ class LinkedList(object):
         new_node=__new__(key, data)
         current_node = self.head
         if isempty(self):
-            raise Excpetion("The linked list is empty")
+            raise Excpetion("The linked list is empty!")
         while current_node!=prev_node:
             current_node = current_node.next
             if current_node == self.head or current_node is None:
