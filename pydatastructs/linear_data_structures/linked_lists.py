@@ -61,7 +61,7 @@ class LinkedList(object):
         data
             Any valid data to be stored in the node.
         """
-        new_node=__new__(key,data)
+        new_node=__new__(key, data)
         current_node = self.head
         if isempty(self):
             raise Excpetion("The linked list is empty")
