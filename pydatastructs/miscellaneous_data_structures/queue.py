@@ -394,4 +394,3 @@ class BinomialHeapPriorityQueue(PriorityQueue):
     @property
     def is_empty(self):
         return self.items.is_empty
-
