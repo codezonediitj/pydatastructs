@@ -61,15 +61,16 @@ class LinkedList(object):
         data
             Any valid data to be stored in the node.
         """
-        elements = []
+        new_node=__new__(key,data)
         current_node = self.head
         while current_node!=prev_node:
             current_node = current_node.next
             if current_node == self.head:
                 raise Exception("The element is not found in the LinkedList")
         next_node=current_node.next
-        current_node.next=key
+        current_node.next=new_node
         key.next=next_node
+        print("Successfully added a node")
         return
 
     def insert_at(self, index, key, data=None):
