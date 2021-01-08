@@ -66,7 +66,7 @@ class LinkedList(object):
         while current_node!=prev_node:
             current_node = current_node.next
             if current_node == self.head:
-                raise Exception("The element is not found")
+                raise Exception("The element is not found in the LinkedList")
         next_node=current_node.next
         current_node.next=key
         key.next=next_node
