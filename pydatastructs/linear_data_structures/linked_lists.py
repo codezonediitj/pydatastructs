@@ -64,11 +64,13 @@ class LinkedList(object):
         new_node=__new__(key, data)
         current_node = self.head
         if isempty(self):
-            raise Excpetion("The linked list is empty!")
+            print("The linked list is empty!")
+            return
         while current_node!=prev_node:
             current_node = current_node.next
             if current_node == self.head or current_node is None:
-                raise Exception("The element is not found in the LinkedList")
+                print("The element is not found in the LinkedList")
+                return
         next_node=current_node.next
         current_node.next=new_node
         key.next=next_node
