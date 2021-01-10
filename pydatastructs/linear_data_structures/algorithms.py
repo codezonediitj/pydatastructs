@@ -572,7 +572,6 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
     >>> out = cocktail_sort(arr)
     >>> str(out)
     '[0, 1, 5, 78]'
-    >>> arr.delete(2)
     >>> arr = ODA(int, [21, 37, 5])
     >>> out = cocktail_sort(arr)
     >>> str(out)
