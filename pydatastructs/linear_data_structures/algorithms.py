@@ -12,6 +12,7 @@ __all__ = [
     'matrix_multiply_parallel',
     'counting_sort',
     'bucket_sort',
+    'cocktail_sort
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -546,3 +547,45 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     if _check_type(array, DynamicArray):
         array._modify(force=True)
     return array
+
+def cocktail_sort():
+    """
+    Performs cocktail sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import DynamicOneDimensionalArray as DODA, cocktail_sort
+    >>> arr = DODA(int, [5, 78, 1, 0])
+    >>> out = cocktail_sort(arr)
+    >>> str(out)
+    "['0', '1', '5', '78']"
+    >>> arr.delete(2)
+    >>> out = cocktail_sort(arr)
+    >>> str(out)
+    "['0', '5', '78']"
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Cocktail_shaker_sort
+
+    Note
+    ====
+
+    Since, counting sort is a non-comparison sorting algorithm,
+    custom comparators aren't allowed.
+    The ouput array doesn't contain any `None` value.
+    """
