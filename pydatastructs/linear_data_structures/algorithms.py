@@ -552,20 +552,20 @@ def LCS(data_A,data_B):
     """
     Implements LongestCommonSubsequence
     Parameters
-	=========
-	data_A: string or list
-	data_B: string or list
+    =========
+    data_A: string or list
+    data_B: string or list
 
-	Returns
+    Returns
 	=======
-	output: tuple
-       (length of LCS,common sequence)
+    output: tuple
+    (length of LCS,common sequence)
 
-	Examples
-	========
+    Examples
+    ========
     >>> from pydatastructs.linear_data_structures import algorithms
     >>> algorithms.LCS("APPLE","APPPLLE")
-    "(5, ['A', 'P', 'P', 'L', 'E'])"
+    (5, ['A', 'P', 'P', 'L', 'E'])
 
     References
     ==========
