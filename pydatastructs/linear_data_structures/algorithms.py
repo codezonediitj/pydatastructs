@@ -548,20 +548,44 @@ def bucket_sort(array: Array, **kwargs) -> Array:
         array._modify(force=True)
     return array
 
-def LCS(string1,string2):
+def LCS(data_A,data_B):
     """
-    >from pydatastructs.linear_data_structures import algorithms
-    >algorithms.LCS("APPLE","APPPLLE")
-    Output
-     (Length of LCS,LCS)
-    >(5, ['A', 'P', 'P', 'L', 'E'])
+	Implements Longest Common Subsequence
+
+
+	Parameters
+    ==========
+
+	data_A: string or list
+	        data_A can be string or list
+	data_B: string or list
+            data_B can be string or list
+
+    Input:
+        data_A="APPLE"
+        data_B="APPPLLE"
+
+	Output:
+        (length of LCS,LCS)->(5,['A', 'P', 'P', 'L', 'E'])
+
+	Examples
+	========
+
+	>>>from pydatastructs.linear_data_structures import algorithms
+    >>>algorithms.LCS("APPLE","APPPLLE")
+    >>>(5, ['A', 'P', 'P', 'L', 'E'])
+
+	References
+    ==========
+    .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+
     """
-    lengs1=len(string1)
-    lengs2=len(string2)
+    lengs1=len(data_A)
+    lengs2=len(data_B)
     matrix=[[0 for i in range(lengs2+1)]for j in range(lengs1+1)]
     for i in range(lengs1):
         for j in range(lengs2):
-            if(string1[i]==string2[j]):
+            if(data_A[i]==data_B[j]):
                 matrix[i+1][j+1]=matrix[i][j]+1
             else:
                 matrix[i+1][j+1]=max(matrix[i+1][j],matrix[i][j+1])
@@ -578,7 +602,7 @@ def LCS(string1,string2):
 
             row=row-1
         else:
-            stack.append(string1[row-1])
+            stack.append(data_A[row-1])
 
             row=row-1
             col=col-1
