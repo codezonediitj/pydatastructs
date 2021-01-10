@@ -550,8 +550,8 @@ def bucket_sort(array: Array, **kwargs) -> Array:
 
 def LCS(data_A,data_B):
     """
-	Implements LongestCommonSubsequence
-	Parameters
+    Implements LongestCommonSubsequence
+    Parameters
 	=========
 	data_A: string or list
 	data_B: string or list
@@ -559,15 +559,15 @@ def LCS(data_A,data_B):
 	Returns
 	=======
 	output: tuple
-	        (length of LCS,common sequence)
+       (length of LCS,common sequence)
 
 	Examples
 	========
     >>> from pydatastructs.linear_data_structures import algorithms
     >>> algorithms.LCS("APPLE","APPPLLE")
-    >>> (5, ['A', 'P', 'P', 'L', 'E'])
+    "(5, ['A', 'P', 'P', 'L', 'E'])"
 
-	References
+    References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
