@@ -595,7 +595,7 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
     swapping = False
-    while (not swap and upper - lower > 1):
+    while (not swapping and upper - lower > 1):
         swapping = True
         for j in range(lower, upper):
             if array[j + 1] < array[j]:
