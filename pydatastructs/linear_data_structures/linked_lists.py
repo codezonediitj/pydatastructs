@@ -61,21 +61,7 @@ class LinkedList(object):
         data
             Any valid data to be stored in the node.
         """
-        new_node=__new__(key, data)
-        current_node = self.head
-        if isempty(self):
-            print("The linked list is empty!")
-            return
-        while current_node!=prev_node:
-            current_node = current_node.next
-            if current_node == self.head or current_node is None:
-                print("The element is not found in the LinkedList")
-                return
-        next_node=current_node.next
-        current_node.next=new_node
-        key.next=next_node
-        print("Successfully added a node")
-        return
+        raise NotImplementedError('This is an abstract method')
 
     def insert_at(self, index, key, data=None):
         """
