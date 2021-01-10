@@ -567,15 +567,16 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
     Examples
     ========
 
-    >>> from pydatastructs import DynamicOneDimensionalArray as DODA, cocktail_sort
-    >>> arr = DODA(int, [5, 78, 1, 0])
+    >>> from pydatastructs import OneDimensionalArray as ODA, cocktail_sort
+    >>> arr = ODA(int, [5, 78, 1, 0])
     >>> out = cocktail_sort(arr)
     >>> str(out)
     "['0', '1', '5', '78']"
     >>> arr.delete(2)
+    >>> arr = ODA(int, [21, 37, 5])
     >>> out = cocktail_sort(arr)
     >>> str(out)
-    "['0', '5', '78']"
+    "['5', '21', '37']"
 
     References
     ==========
@@ -585,8 +586,8 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
     Note
     ====
 
-    Since, cocktail sort is a non-comparison sorting algorithm,
-    custom comparators aren't allowed.
+    Since, cocktail sort is a comparison sorting algorithm,
+    custom comparators are allowed.
     The ouput array doesn't contain any `None` value.
     """
     def swap(i, j):
