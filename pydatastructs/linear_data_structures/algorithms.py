@@ -548,7 +548,7 @@ def bucket_sort(array: Array, **kwargs) -> Array:
         array._modify(force=True)
     return array
 
-def cocktail_sort():
+def cocktail_sort(array: Array, **kwargs) -> Array:
     """
     Performs cocktail sort on the given array.
 
@@ -589,3 +589,23 @@ def cocktail_sort():
     custom comparators aren't allowed.
     The ouput array doesn't contain any `None` value.
     """
+    def swap(i, j):
+        array[i], array[j] = array[j], array[i]
+     
+    lower = kwargs.get('start', 0)
+    upper = kwargs.get('end', len(array) - 1)
+    swapping = False
+    while (not swap and upper - lower > 1):
+        swapping = True
+        for j in range(lower, upper):
+            if array[j + 1] < array[j]:
+                swap(j + 1, j)
+                swapping = False
+        upper = upper - 1
+ 
+        for j in range(upper, lower, -1):
+            if array[j - 1] > array[j]:
+                swap(j - 1, j)
+                swapping = False
+        lower = lower + 1
+    return array
