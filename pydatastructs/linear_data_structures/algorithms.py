@@ -565,22 +565,22 @@ def LCS(string1,string2):
                 matrix[i+1][j+1]=matrix[i][j]+1
             else:
                 matrix[i+1][j+1]=max(matrix[i+1][j],matrix[i][j+1])
-    
+
     lengthLCS=matrix[lengs1][lengs2]
     row=lengs1
     col=lengs2
     stack=[]
     while(row!=0 and col!=0):
         if(matrix[row][col]==matrix[row][col-1]):
-            
+
             col=col-1
         elif(matrix[row][col]==matrix[row-1][col]):
-            
+
             row=row-1
         else:
             stack.append(string1[row-1])
-            
+
             row=row-1
             col=col-1
-            
+
     return lengthLCS,stack[::-1]

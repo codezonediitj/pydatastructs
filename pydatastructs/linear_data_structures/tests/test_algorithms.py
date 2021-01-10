@@ -95,16 +95,15 @@ def test_LCS():
     expected_result=(4, [['M'], ['N'], ['O'], ['M']])
     output=LCS([["M"],["L"],["N"],["O"],["M"]],[["M"],["N"],["O"],["M"]])
     assert expected_result==output
-    
+
     expected_result=(4, ['M', 'N', 'O', 'M'])
     output=LCS("MLNOM","MNOM")
     assert expected_result==output
-    
+
     expected_result=(4, ['M', 'N', 'O', 'M'])
     output=LCS(["M","L","N","O","M"],["M","N","O","M"])
     assert expected_result==output
-    
+
     expected_result=(4, [1, 3, 10, 100])
     output=LCS([1,2,3,10,100],[1,3,10,200,100])
     assert expected_result==output
-        
