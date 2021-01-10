@@ -552,33 +552,14 @@ def LCS(data_A,data_B):
     """
 	Implements Longest Common Subsequence
 
-
 	Parameters
     ==========
 
-	data_A: string or list
-	        data_A can be string or list
-	data_B: string or list
-            data_B can be string or list
-
-    Input:
-        data_A="APPLE"
-        data_B="APPPLLE"
-
-	Output:
-        (length of LCS,LCS)->(5,['A', 'P', 'P', 'L', 'E'])
-
-	Examples
-	========
-
-	>>>from pydatastructs.linear_data_structures import algorithms
-    >>>algorithms.LCS("APPLE","APPPLLE")
-    >>>(5, ['A', 'P', 'P', 'L', 'E'])
-
-	References
-    ==========
-    .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
-
+    >from pydatastructs.linear_data_structures import algorithms
+    >algorithms.LCS("APPLE","APPPLLE")
+    Output
+     (Length of LCS,LCS)
+    >(5, ['A', 'P', 'P', 'L', 'E'])
     """
     lengs1=len(data_A)
     lengs2=len(data_B)
