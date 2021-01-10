@@ -12,7 +12,7 @@ __all__ = [
     'matrix_multiply_parallel',
     'counting_sort',
     'bucket_sort',
-    'cocktail_sort
+    'cocktail_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -585,7 +585,7 @@ def cocktail_sort():
     Note
     ====
 
-    Since, counting sort is a non-comparison sorting algorithm,
+    Since, cocktail sort is a non-comparison sorting algorithm,
     custom comparators aren't allowed.
     The ouput array doesn't contain any `None` value.
     """
