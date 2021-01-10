@@ -35,9 +35,7 @@ def _test_common_sort(sort, *args, **kwargs):
     arr = OneDimensionalArray(int, n)
     for i in range(n):
         arr[i] = random.randint(1, 1000)
-    expected_arr = [42, 695, 147, 500, 768,
-                    998, 473, 732, 728, 426,
-                    709, 910]
+    expected_arr = [42, 695, 147, 500, 768,998, 473, 732, 728, 426,709, 910]
     sort(arr, *args, **kwargs, start=2, end=5)
     assert arr._data == expected_arr
 
@@ -109,7 +107,4 @@ def test_LCS():
     expected_result=(4, [1, 3, 10, 100])
     output=LCS([1,2,3,10,100],[1,3,10,200,100])
     assert expected_result==output
-    
-    
-    
-    
+        

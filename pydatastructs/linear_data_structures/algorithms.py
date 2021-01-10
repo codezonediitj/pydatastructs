@@ -584,4 +584,3 @@ def LCS(string1,string2):
             col=col-1
             
     return lengthLCS,stack[::-1]
-    
