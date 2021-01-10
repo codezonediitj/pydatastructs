@@ -564,6 +564,8 @@ def LCS(data_A,data_B):
     >>> from pydatastructs.linear_data_structures import algorithms
     >>> algorithms.LCS("APPLE","APPPLLE")
     (5, ['A', 'P', 'P', 'L', 'E'])
+
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
