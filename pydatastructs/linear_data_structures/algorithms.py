@@ -586,8 +586,7 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
     ====
 
     Since, cocktail sort is a comparison sorting algorithm,
-    custom comparators are allowed.
-    The ouput array doesn't contain any `None` value.
+    custom comparators aren't allowed.
     """
     def swap(i, j):
         array[i], array[j] = array[j], array[i]
@@ -597,17 +596,17 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
     while (not swapping and upper - lower >= 1):
         swapping = True
         for j in range(lower, upper):
-            if array[j] is None or array[j+1] is None:
-                if arr[j] is None:
-                    swap(j+1,j)
+            if array[j] is None or array[j + 1] is None:
+                if array[j] is None:
+                    swap(j + 1, j)
             elif array[j + 1] < array[j]:
                 swap(j + 1, j)
                 swapping = False
         upper = upper - 1
         for j in range(upper, lower, -1):
-            if array[j] is None or array[j+1] is None:
-                if arr[j-1] is None:
-                    swap(j-1,j)
+            if array[j] is None or array[j - 1] is None:
+                if array[j - 1] is None:
+                    swap(j - 1, j)
             elif array[j - 1] > array[j]:
                 swap(j - 1, j)
                 swapping = False
