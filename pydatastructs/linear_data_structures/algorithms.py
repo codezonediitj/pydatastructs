@@ -597,7 +597,7 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
     while (not swapping and upper - lower >= 1):
         swapping = True
         for j in range(lower, upper):
-            if None in array[j:j+2]:
+            if array[j] is None or array[j+1] is None:
                 if arr[j] is None:
                     swap(j+1,j)
             elif array[j + 1] < array[j]:
@@ -605,7 +605,7 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
                 swapping = False
         upper = upper - 1
         for j in range(upper, lower, -1):
-            if None in array[j-1:j+1]:
+            if array[j] is None or array[j+1] is None:
                 if arr[j-1] is None:
                     swap(j-1,j)
             elif array[j - 1] > array[j]:
