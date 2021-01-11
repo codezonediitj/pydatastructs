@@ -587,6 +587,7 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
 
     Since, cocktail sort is a comparison sorting algorithm,
     custom comparators aren't allowed.
+    The ouput array doesn't contain any `None` value.
     """
     def swap(i, j):
         array[i], array[j] = array[j], array[i]
