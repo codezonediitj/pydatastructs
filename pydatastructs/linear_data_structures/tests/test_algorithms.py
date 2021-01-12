@@ -82,7 +82,7 @@ def test_cocktail_sort():
 
     expected_arr = [102, 134, 228, 247, 362, 373, 448,
                     480, 548, 686, 688, 696, 779]
-    assert counting_sort(arr)._data == expected_arr
+    assert cocktail_sort(arr)._data == expected_arr
 
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray
