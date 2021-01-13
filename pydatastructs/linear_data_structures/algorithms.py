@@ -675,12 +675,12 @@ def quick_sort(array: Array, **kwargs) -> Array:
     """
     def partition(low, high):
         i = (low - 1)
-        x = arr[high]
+        x = array[high]
         for j in range(l , high):
-            if arr[j] <= x:
+            if array[j] <= x:
                 i = i + 1
-                arr[i],arr[j] = arr[j],arr[i]
-        arr[i + 1],arr[high] = arr[high],arr[i + 1]
+                array[i], array[j] = array[j], array[i]
+        array[i + 1], array[high] = array[high], array[i + 1]
         return (i + 1)
     
     lower = kwargs.get('start', 0)
@@ -708,3 +708,4 @@ def quick_sort(array: Array, **kwargs) -> Array:
             stack[top] = p + 1
             top += 1
             stack[top] = h
+    return array
