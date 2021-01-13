@@ -701,7 +701,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
         p = partition(low, high)
         if p - 1 > low:
             top += 1
-            stack[top] = l
+            stack[top] = low
             top += 1
             stack[top] = p - 1
         if p + 1 < high:
