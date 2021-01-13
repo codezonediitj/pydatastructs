@@ -499,7 +499,6 @@ def bucket_sort(array: Array, **kwargs) -> Array:
 
     This function does not support custom comparators as is the case with
     other sorting functions in this file.
-    The ouput array doesn't contain any `None` value.
     """
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
@@ -557,6 +556,22 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
 
     array: Array
         The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
 
     Returns
     =======
@@ -581,37 +596,28 @@ def cocktail_sort(array: Array, **kwargs) -> Array:
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Cocktail_shaker_sort
-
-    Note
-    ====
-
-    Since, cocktail sort is a comparison sorting algorithm,
-    custom comparators aren't allowed.
-    The ouput array does contain `None` value. But the iteration will be less than or equalt to o(n//2)
     """
     def swap(i, j):
         array[i], array[j] = array[j], array[i]
+
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+
     swapping = False
     while (not swapping and upper - lower >= 1):
+
         swapping = True
         for j in range(lower, upper):
-            if array[j] is None and array[j + 1] is not None:
-                swap(j + 1, j)
-            elif array[j + 1] is None or array[j] is None:
-                continue
-            elif array[j + 1] < array[j]:
+            if _comp(array[j], array[j+1], comp) is False:
                 swap(j + 1, j)
                 swapping = False
+
         upper = upper - 1
         for j in range(upper, lower, -1):
-            if array[j - 1] is None and array[j] is not None:
-                swap(j, j - 1)
-            elif array[j] is None or array[j - 1] is None:
-                continue
-            elif array[j - 1] > array[j]:
+            if _comp(array[j-1], array[j], comp) is False:
                 swap(j, j - 1)
                 swapping = False
         lower = lower + 1
+
     return array
