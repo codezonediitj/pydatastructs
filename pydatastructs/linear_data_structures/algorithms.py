@@ -709,4 +709,8 @@ def quick_sort(array: Array, **kwargs) -> Array:
             stack[top] = p + 1
             top += 1
             stack[top] = high
+            
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
     return array
