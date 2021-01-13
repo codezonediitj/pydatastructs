@@ -29,6 +29,7 @@ def _test_common_sort(sort, *args, **kwargs):
                     None, None, None, None, None,
                     None, None, None, None, None, None, None]
     assert arr._data == expected_arr
+    assert (arr._last_pos_filled, arr._num, arr._size) == (12, 13, 31)
 
     n = random.randint(10, 20)
     arr = OneDimensionalArray(int, n)
