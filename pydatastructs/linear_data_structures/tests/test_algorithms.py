@@ -1,7 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort)
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort)
 from pydatastructs.utils.raises_util import raises
 import random
 
@@ -29,7 +29,6 @@ def _test_common_sort(sort, *args, **kwargs):
                     None, None, None, None, None,
                     None, None, None, None, None, None, None]
     assert arr._data == expected_arr
-    assert (arr._last_pos_filled, arr._num, arr._size) == (12, 13, 31)
 
     n = random.randint(10, 20)
     arr = OneDimensionalArray(int, n)
@@ -69,6 +68,9 @@ def test_counting_sort():
     expected_arr = [102, 134, 228, 247, 362, 373, 448,
                     480, 548, 686, 688, 696, 779]
     assert counting_sort(arr)._data == expected_arr
+
+def test_cocktail_shaker_sort():
+    _test_common_sort(cocktail_shaker_sort)
 
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray

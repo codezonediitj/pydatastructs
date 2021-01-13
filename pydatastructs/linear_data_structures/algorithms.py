@@ -12,6 +12,7 @@ __all__ = [
     'matrix_multiply_parallel',
     'counting_sort',
     'bucket_sort',
+    'cocktail_shaker_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -498,7 +499,6 @@ def bucket_sort(array: Array, **kwargs) -> Array:
 
     This function does not support custom comparators as is the case with
     other sorting functions in this file.
-    The ouput array doesn't contain any `None` value.
     """
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
@@ -545,4 +545,79 @@ def bucket_sort(array: Array, **kwargs) -> Array:
         array[i] = sorted_list[i-start]
     if _check_type(array, DynamicArray):
         array._modify(force=True)
+    return array
+
+def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
+    """
+    Performs cocktail sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray as ODA, cocktail_shaker_sort
+    >>> arr = ODA(int, [5, 78, 1, 0])
+    >>> out = cocktail_shaker_sort(arr)
+    >>> str(out)
+    '[0, 1, 5, 78]'
+    >>> arr = ODA(int, [21, 37, 5])
+    >>> out = cocktail_shaker_sort(arr)
+    >>> str(out)
+    '[5, 21, 37]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Cocktail_shaker_sort
+    """
+    def swap(i, j):
+        array[i], array[j] = array[j], array[i]
+
+    lower = kwargs.get('start', 0)
+    upper = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+
+    swapping = False
+    while (not swapping and upper - lower >= 1):
+
+        swapping = True
+        for j in range(lower, upper):
+            if _comp(array[j], array[j+1], comp) is False:
+                swap(j + 1, j)
+                swapping = False
+
+        upper = upper - 1
+        for j in range(upper, lower, -1):
+            if _comp(array[j-1], array[j], comp) is False:
+                swap(j, j - 1)
+                swapping = False
+        lower = lower + 1
+
     return array
