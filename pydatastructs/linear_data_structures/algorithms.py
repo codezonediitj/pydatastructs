@@ -676,18 +676,18 @@ def quick_sort(array: Array, **kwargs) -> Array:
     def partition(low, high):
         i = (low - 1)
         x = array[high]
-        for j in range(l , high):
+        for j in range(low , high):
             if array[j] <= x:
                 i = i + 1
                 array[i], array[j] = array[j], array[i]
         array[i + 1], array[high] = array[high], array[i + 1]
         return (i + 1)
-    
+
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
     stack, top = [0] * (upper - lower + 1), -1
-    
+
     top += 1
     stack[top] = lower
     top += 1
