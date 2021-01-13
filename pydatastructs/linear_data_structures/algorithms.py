@@ -679,7 +679,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
         i = (low - 1)
         x = array[high]
         for j in range(low , high):
-            if _comp(array[j], x, comp) is False:
+            if _comp(array[j], x, comp) is True:
                 i = i + 1
                 array[i], array[j] = array[j], array[i]
         array[i + 1], array[high] = array[high], array[i + 1]
