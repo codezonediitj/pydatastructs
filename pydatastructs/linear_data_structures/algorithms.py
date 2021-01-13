@@ -707,5 +707,5 @@ def quick_sort(array: Array, **kwargs) -> Array:
             top += 1
             stack[top] = p + 1
             top += 1
-            stack[top] = h
+            stack[top] = high
     return array
