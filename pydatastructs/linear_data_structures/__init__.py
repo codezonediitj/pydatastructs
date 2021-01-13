@@ -29,6 +29,6 @@ from .algorithms import (
     matrix_multiply_parallel,
     counting_sort,
     bucket_sort,
-    cocktail_sort
+    cocktail_shaker_sort
 )
 __all__.extend(algorithms.__all__)
