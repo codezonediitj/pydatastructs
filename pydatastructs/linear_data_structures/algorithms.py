@@ -673,35 +673,37 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     .. [1] https://en.wikipedia.org/wiki/Quicksort
     """
-    def partition(arr,l,h):
-        i = ( l - 1 )
-        x = arr[h]
-        for j in range(l , h):
+    def partition(low, high):
+        i = (low - 1)
+        x = arr[high]
+        for j in range(l , high):
             if arr[j] <= x:
-                i = i+1
+                i = i + 1
                 arr[i],arr[j] = arr[j],arr[i]
-        arr[i+1],arr[h] = arr[h],arr[i+1]
-        return (i+1)
+        arr[i + 1],arr[high] = arr[high],arr[i + 1]
+        return (i + 1)
     
-    size = h - l + 1
-    stack = [0] * (size)
-    top = -1
+    lower = kwargs.get('start', 0)
+    upper = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    stack, top = [0] * (upper - lower + 1), -1
+    
     top += 1
-    stack[top] = l
+    stack[top] = lower
     top += 1
-    stack[top] = h
+    stack[top] = upper
     while top >= 0:
         h = stack[top]
         top -= 1
         l = stack[top]
         top -= 1
-        p = partition( arr, l, h )
-        if p - 1 > l:
+        p = partition(arr, lower, upper)
+        if p - 1 > lower:
             top += 1
             stack[top] = l
             top += 1
             stack[top] = p - 1
-        if p + 1 < h:
+        if p + 1 < upper:
             top += 1
             stack[top] = p + 1
             top += 1
