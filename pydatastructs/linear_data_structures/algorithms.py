@@ -12,7 +12,8 @@ __all__ = [
     'matrix_multiply_parallel',
     'counting_sort',
     'bucket_sort',
-    'cocktail_shaker_sort'
+    'cocktail_shaker_sort',
+    'quick_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -621,3 +622,54 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
         lower = lower + 1
 
     return array
+
+def quick_sort(array: Array, **kwargs) -> Array:
+    """
+    Performs quick sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray as ODA, quick_sort
+    >>> arr = ODA(int, [5, 78, 1, 0])
+    >>> out = quick_sort(arr)
+    >>> str(out)
+    '[0, 1, 5, 78]'
+    >>> arr = ODA(int, [21, 37, 5])
+    >>> out = quick_sort(arr)
+    >>> str(out)
+    '[5, 21, 37]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Quicksort
+    """
