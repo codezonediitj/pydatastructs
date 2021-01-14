@@ -673,6 +673,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     .. [1] https://en.wikipedia.org/wiki/Quicksort
     """
+    from pydatastructs import Stack
     comp = kwargs.get("comp", lambda u, v: u <= v)
 
     def partition(low, high):
