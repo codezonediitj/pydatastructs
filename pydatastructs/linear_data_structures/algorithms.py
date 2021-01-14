@@ -693,7 +693,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
     stack.push(lower)
     stack.push(upper)
 
-    while stack.is_empty:
+    while stack.is_empty==False:
         high = stack.pop()
         low = stack.pop()
         p = partition(low, high)
