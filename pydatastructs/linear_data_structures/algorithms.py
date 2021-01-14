@@ -688,28 +688,21 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
-    stack, top = [0] * (upper - lower + 1), -1
+    stack, top = Stack(), -1
 
-    top += 1
-    stack[top] = lower
-    top += 1
-    stack[top] = upper
-    while top >= 0:
-        high = stack[top]
-        top -= 1
-        low = stack[top]
-        top -= 1
+    stack.push(lower)
+    stack.push(upper)
+
+    while stack.is_empty():
+        high = stack.pop()
+        low = stack.pop()
         p = partition(low, high)
         if p - 1 > low:
-            top += 1
-            stack[top] = low
-            top += 1
-            stack[top] = p - 1
+            stack.push(low)
+            stack.push(p - 1)
         if p + 1 < high:
-            top += 1
-            stack[top] = p + 1
-            top += 1
-            stack[top] = high
+            stack.push(p + 1)
+            stack.push(high)
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
