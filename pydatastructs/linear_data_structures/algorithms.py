@@ -621,6 +621,9 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
                 swapping = False
         lower = lower + 1
 
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
     return array
 
 def quick_sort(array: Array, **kwargs) -> Array:
