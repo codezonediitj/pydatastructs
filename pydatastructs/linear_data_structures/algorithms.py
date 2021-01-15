@@ -689,6 +689,11 @@ def quick_sort(array: Array, **kwargs) -> Array:
         array[i + 1], array[high] = array[high], array[i + 1]
         return (i + 1)
 
+    def pivotselect(low, high):
+        pivot=kwargs.get('pick_pivot_element',high)
+        array[high], array[pivot] = array[pivot], array[high]
+        return partition(low, high)
+
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
     stack, top = Stack(), -1
@@ -699,7 +704,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
     while stack.is_empty is False:
         high = stack.pop()
         low = stack.pop()
-        p = partition(low, high)
+        p = pivotselect(low, high)
         if p - 1 > low:
             stack.push(low)
             stack.push(p - 1)
