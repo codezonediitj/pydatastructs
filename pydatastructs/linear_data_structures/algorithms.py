@@ -731,8 +731,8 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
     Parameters
     ========
 
-    seq1: string or list
-    seq2: string or list
+    seq1: String or List or Tuple
+    seq2: String or List or Tuple
 
     Returns
     =======
@@ -757,7 +757,8 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
 
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
     """
-
+    if type(seq1) != str or type(seq1) != tuple or type(seq1) != list or type(seq2) != str or type(seq2) != tuple or type(seq2) != list:
+        raise TypeError("Only Strings, Tuple and List are allowed")
     row, col = len(seq1), len(seq2)
     check_mat = [[0 for _ in range(col+1)] for x in range(row+1)]
     for i in range(row):
@@ -780,4 +781,6 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
 
     if(type(seq1) == str):
         lcseq = ''.join(lcseq)
+    if(type(seq1) == tuple):
+        lcseq = tuple(lcseq)
     return (lclen, lcseq[::-1])
