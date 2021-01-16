@@ -739,7 +739,7 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
 
     output: tuple
     (Length of LCS, Common Sequence)
-    Common Sequence will be of the same data type is the seq1.
+    Common Sequence will be of the same data type as seq1.
 
     Examples
     ========
@@ -757,8 +757,11 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
 
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
     """
-    if type(seq1) != str and type(seq1) != tuple and type(seq1) != list or type(seq2) != str and type(seq2) != tuple and type(seq2) != list:
+    if type(seq1) != str and type(seq1) != tuple and type(seq1) != list:
         raise TypeError("Only Strings, Tuple and List are allowed")
+    if type(seq2) != str and type(seq2) != tuple and type(seq2) != list:
+        raise TypeError("Only Strings, Tuple and List are allowed")
+
     row, col = len(seq1), len(seq2)
     check_mat = [[0 for _ in range(col+1)] for x in range(row+1)]
     for i in range(row):
