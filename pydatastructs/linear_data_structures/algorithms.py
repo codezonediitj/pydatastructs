@@ -12,7 +12,8 @@ __all__ = [
     'matrix_multiply_parallel',
     'counting_sort',
     'bucket_sort',
-    'cocktail_shaker_sort'
+    'cocktail_shaker_sort',
+    'quick_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -619,6 +620,103 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
                 swap(j, j - 1)
                 swapping = False
         lower = lower + 1
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
+    return array
+
+def quick_sort(array: Array, **kwargs) -> Array:
+    """
+    Performs quick sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    pick_pivot_element: lambda/function
+        The function implementing the pivot picking
+        logic for quick sort. Should accept, `low`,
+        `high`, and `array` in this order, where `low`
+        represents the left end of the current partition,
+        `high` represents the right end, and `array` is
+        the original input array to `quick_sort` function.
+        Optional, by default, picks the element at `high`
+        index of the current partition as pivot.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray as ODA, quick_sort
+    >>> arr = ODA(int, [5, 78, 1, 0])
+    >>> out = quick_sort(arr)
+    >>> str(out)
+    '[0, 1, 5, 78]'
+    >>> arr = ODA(int, [21, 37, 5])
+    >>> out = quick_sort(arr)
+    >>> str(out)
+    '[5, 21, 37]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Quicksort
+    """
+    from pydatastructs import Stack
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    pick_pivot_element = kwargs.get("pick_pivot_element",
+                                    lambda low, high, array: array[high])
+
+    def partition(low, high, pick_pivot_element):
+        i = (low - 1)
+        x = pick_pivot_element(low, high, array)
+        for j in range(low , high):
+            if _comp(array[j], x, comp) is True:
+                i = i + 1
+                array[i], array[j] = array[j], array[i]
+        array[i + 1], array[high] = array[high], array[i + 1]
+        return (i + 1)
+
+    lower = kwargs.get('start', 0)
+    upper = kwargs.get('end', len(array) - 1)
+    stack = Stack()
+
+    stack.push(lower)
+    stack.push(upper)
+
+    while stack.is_empty is False:
+        high = stack.pop()
+        low = stack.pop()
+        p = partition(low, high, pick_pivot_element)
+        if p - 1 > low:
+            stack.push(low)
+            stack.push(p - 1)
+        if p + 1 < high:
+            stack.push(p + 1)
+            stack.push(high)
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)

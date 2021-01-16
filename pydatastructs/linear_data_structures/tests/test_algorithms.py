@@ -1,7 +1,8 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort)
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort)
+
 from pydatastructs.utils.raises_util import raises
 import random
 
@@ -72,6 +73,9 @@ def test_counting_sort():
 
 def test_cocktail_shaker_sort():
     _test_common_sort(cocktail_shaker_sort)
+
+def test_quick_sort():
+    _test_common_sort(quick_sort)
 
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray
