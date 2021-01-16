@@ -1,7 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort)
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -99,4 +99,17 @@ def test_matrix_multiply_parallel():
     I = [[1, 1, 0], [0, 1, 0], [0, 0, 1]]
     J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
     output = matrix_multiply_parallel(I, J, num_threads=1)
+    assert expected_result == output
+
+def test_longest_common_sequence():
+    expected_result = (5, 'ASCII')
+
+    str1, str2 = 'AASCCII', 'ASSCIIII'
+    output = longest_common_subsequence(str1, str2)
+    assert expected_result == output
+
+    expected_result = (3, ['O', 'V', 'A'])
+
+    I, J = ['O', 'V', 'A', 'L'], ['F', 'O', 'R', 'V', 'A', 'E', 'W']
+    output = longest_common_subsequence(I, J)
     assert expected_result == output

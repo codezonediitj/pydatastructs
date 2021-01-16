@@ -13,7 +13,8 @@ __all__ = [
     'counting_sort',
     'bucket_sort',
     'cocktail_shaker_sort',
-    'quick_sort'
+    'quick_sort',
+    'longest_common_subsequence'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -722,3 +723,61 @@ def quick_sort(array: Array, **kwargs) -> Array:
         array._modify(force=True)
 
     return array
+
+def longest_common_subsequence(seq1, seq2) -> tuple:
+    """
+    Implements Longest Common Subsequence
+
+    Parameters
+    ========
+
+    seq1: string or list
+    seq2: string or list
+
+    Returns
+    =======
+
+    output: tuple
+    (Length of LCS, Common Sequence)
+    Common Sequence will be of the same data type is the seq1.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import longest_common_subsequence as LCS
+    >>> LCS("ABCDEF", "ABBCDDDE")
+    (5, 'ABCDE')
+    >>> arr1 = ['A', 'P', 'P']
+    >>> arr2 = ['A', 'p', 'P', 'S', 'P']
+    >>> LCS(arr1, arr2)
+    (3, ['A', 'P', 'P'])
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+    """
+
+    row, col = len(seq1), len(seq2)
+    check_mat = [[0 for _ in range(col+1)] for x in range(row+1)]
+    for i in range(row):
+        for j in range(col):
+            if (seq1[i] == seq2[j]):
+                check_mat[i+1][j+1] = check_mat[i][j]+1
+            else:
+                check_mat[i+1][j+1] = max(check_mat[i+1][j], check_mat[i][j+1])
+
+    lcseq, lclen = [], check_mat[row][col]
+    while(row > 0  and col > 0):
+        if(check_mat[row][col] == check_mat[row][col-1]):
+            col -= 1
+        elif(check_mat[row][col] == check_mat[row-1][col]):
+            row -= 1
+        else:
+            lcseq.append(seq1[row-1])
+            row -= 1
+            col -= 1
+
+    if(type(seq1) == str):
+        lcseq = ''.join(lcseq)
+    return (lclen, lcseq[::-1])

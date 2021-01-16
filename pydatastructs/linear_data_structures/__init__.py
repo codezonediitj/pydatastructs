@@ -30,6 +30,7 @@ from .algorithms import (
     counting_sort,
     bucket_sort,
     cocktail_shaker_sort,
-    quick_sort
+    quick_sort,
+    longest_common_subsequence
 )
 __all__.extend(algorithms.__all__)
