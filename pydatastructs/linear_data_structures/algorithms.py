@@ -757,9 +757,9 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
 
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
     """
-    if not(isinstance(seq1, (str, tuple, list))):
+    if not isinstance(seq1, (str, tuple, list)):
         raise TypeError("Only Strings, Tuple and List are allowed")
-    if not(isinstance(seq2, (str, tuple, list))):
+    if not isinstance(seq2, (str, tuple, list)):
         raise TypeError("Only Strings, Tuple and List are allowed")
 
     row, col = len(seq1), len(seq2)
