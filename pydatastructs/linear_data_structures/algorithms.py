@@ -739,7 +739,7 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
 
     output: tuple
     (Length of LCS, Common Sequence)
-    Common Sequence will be of the same data type is the seq1.
+    Common Sequence will be of the same data type as seq1.
 
     Examples
     ========
