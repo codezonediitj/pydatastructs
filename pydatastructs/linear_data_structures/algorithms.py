@@ -651,6 +651,15 @@ def quick_sort(array: Array, **kwargs) -> Array:
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    pick_pivot_element: lambda/function
+        The function implementing the pivot picking
+        logic for quick sort. Should accept, `low`,
+        `high`, and `array` in this order, where `low`
+        represents the left end of the current partition,
+        `high` represents the right end, and `array` is
+        the original input array to `quick_sort` function.
+        Optional, by default, picks the element at `high`
+        index of the current partition as pivot.
 
     Returns
     =======
@@ -678,10 +687,12 @@ def quick_sort(array: Array, **kwargs) -> Array:
     """
     from pydatastructs import Stack
     comp = kwargs.get("comp", lambda u, v: u <= v)
+    pick_pivot_element = kwargs.get("pick_pivot_element",
+                                    lambda low, high, array: array[high])
 
-    def partition(low, high):
+    def partition(low, high, pick_pivot_element):
         i = (low - 1)
-        x = array[high]
+        x = pick_pivot_element(low, high, array)
         for j in range(low , high):
             if _comp(array[j], x, comp) is True:
                 i = i + 1
@@ -689,14 +700,9 @@ def quick_sort(array: Array, **kwargs) -> Array:
         array[i + 1], array[high] = array[high], array[i + 1]
         return (i + 1)
 
-    def pivotselect(low, high):
-        pivot=kwargs.get('pick_pivot_element',high)
-        array[high], array[pivot] = array[pivot], array[high]
-        return partition(low, high)
-
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
-    stack, top = Stack(), -1
+    stack = Stack()
 
     stack.push(lower)
     stack.push(upper)
@@ -704,7 +710,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
     while stack.is_empty is False:
         high = stack.pop()
         low = stack.pop()
-        p = pivotselect(low, high)
+        p = partition(low, high, pick_pivot_element)
         if p - 1 > low:
             stack.push(low)
             stack.push(p - 1)
