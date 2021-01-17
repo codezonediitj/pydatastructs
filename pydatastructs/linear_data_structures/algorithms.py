@@ -731,15 +731,16 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
     Parameters
     ========
 
-    seq1: String or List or Tuple
-    seq2: String or List or Tuple
+    seq1: Any 1D data structure that can be indexed (like list, tuple, string)
+    seq2: Any 1D data structure that can be indexed (like list, tuple, string)
 
     Returns
     =======
 
     output: tuple
-    (Length of LCS, Common Sequence)
-    Common Sequence will be of the same data type as seq1.
+        The first element of the tuple represents the length of longest common subsequence and
+        the second element is the longest common subsequence itself.
+        Common subsequence will be of the same data type as that of input sequences.
 
     Examples
     ========
@@ -757,14 +758,10 @@ def longest_common_subsequence(seq1, seq2) -> tuple:
 
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
     """
-    if not isinstance(seq1, (str, tuple, list)):
-        raise TypeError("Only Strings, Tuple and List are allowed")
-    if not isinstance(seq2, (str, tuple, list)):
-        raise TypeError("Only Strings, Tuple and List are allowed")
-
     row, col = len(seq1), len(seq2)
-    check_mat = [[0 for _ in range(col+1)] for x in range(row+1)]
+    check_mat = {0:[0 for _ in range(col+1)]}
     for i in range(row):
+        check_mat[i+1]=[0 for _ in range(col+1)]
         for j in range(col):
             if (seq1[i] == seq2[j]):
                 check_mat[i+1][j+1] = check_mat[i][j]+1
