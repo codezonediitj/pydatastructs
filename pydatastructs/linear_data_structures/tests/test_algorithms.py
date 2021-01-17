@@ -114,3 +114,9 @@ def test_longest_common_sequence():
     I, J = ['O', 'V', 'A', 'L'], ['F', 'O', 'R', 'V', 'A', 'E', 'W']
     output = longest_common_subsequence(I, J)
     assert expected_result == output
+
+    expected_result = (2, ('O', 't'))
+
+    I, J = ('K', 'O', 't', 'H', 'E'), ('L', 'O', 'C', 't')
+    output = longest_common_subsequence(I, J)
+    assert expected_result == output
