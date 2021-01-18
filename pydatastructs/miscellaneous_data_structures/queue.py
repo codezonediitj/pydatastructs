@@ -48,7 +48,7 @@ class Queue(object):
             return ArrayQueue(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
-        elif implementation == 'linked_list':
+        if implementation == 'linked_list':
             return LinkedListQueue(
                 kwargs.get('items', None)
             )
@@ -239,14 +239,14 @@ class PriorityQueue(object):
         comp = kwargs.get("comp", lambda u, v: u < v)
         if implementation == 'linked_list':
             return LinkedListPriorityQueue(comp)
-        elif implementation == 'binary_heap':
+        if implementation == 'binary_heap':
             return BinaryHeapPriorityQueue(comp)
-        elif implementation == 'binomial_heap':
+        if implementation == 'binomial_heap':
             return BinomialHeapPriorityQueue()
-        else:
-            raise NotImplementedError(
-                "%s implementation is not currently supported "
-                "by priority queue.")
+        
+        raise NotImplementedError(
+            "%s implementation is not currently supported "
+            "by priority queue.")
 
     @classmethod
     def methods(cls):

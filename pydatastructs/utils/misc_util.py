@@ -440,8 +440,8 @@ def _comp(u, v, tcomp):
     """
     if u is None and v is not None:
         return False
-    elif u is not None and v is None:
+    if u is not None and v is None:
         return True
-    elif u is None and v is None:
+    if u is None and v is None:
         return False
     return tcomp(u, v)

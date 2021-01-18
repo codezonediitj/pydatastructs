@@ -161,9 +161,8 @@ class DHeap(Heap):
             parent = (i - 1)//self.d
             if i == 0 or self._comp(self.heap[parent].key, self.heap[i].key):
                 break
-            else:
-                self._swap(i, parent)
-                i = parent
+            self._swap(i, parent)
+            i = parent
 
     def extract(self):
         """
