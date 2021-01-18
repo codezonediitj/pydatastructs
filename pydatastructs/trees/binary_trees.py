@@ -1338,7 +1338,6 @@ class RedBlackTree(SelfBalancingBinaryTree):
             new_indices = self.tree.delete(node_idx1)
             if new_indices is not None:
                 self.root_idx = new_indices[root_key]
-        return
 
     def __leaf_case(self, node_idx, node_idx1):
         walk = node_idx
