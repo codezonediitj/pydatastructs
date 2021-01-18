@@ -724,63 +724,61 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     return array
 
-def longest_common_subsequence(seq1, seq2) -> tuple:
+def longest_common_subsequence(seq1: Array, seq2: Array, **kwargs) -> Array:
     """
     Implements Longest Common Subsequence
 
     Parameters
     ========
 
-    seq1: Any 1D data structure that can be indexed (like list, tuple, string)
-    seq2: Any 1D data structure that can be indexed (like list, tuple, string)
+    seq1: Array
+        The array which is to be sorted.
+    seq2: Array
+        The array which is to be sorted.
 
     Returns
     =======
 
-    output: tuple
-        The first element of the tuple represents the length of longest common subsequence and
-        the second element is the longest common subsequence itself.
-        Common subsequence will be of the same data type as that of input sequences.
+    output: Array
+        Array is the longest common subsequence.
 
     Examples
     ========
 
-    >>> from pydatastructs import longest_common_subsequence as LCS
-    >>> LCS("ABCDEF", "ABBCDDDE")
-    (5, 'ABCDE')
-    >>> arr1 = ['A', 'P', 'P']
-    >>> arr2 = ['A', 'p', 'P', 'S', 'P']
-    >>> LCS(arr1, arr2)
-    (3, ['A', 'P', 'P'])
+    >>> from pydatastructs import longest_common_subsequence as LCS, OneDimensionalArray as ODA
+    >>> arr1 = ODA(str, ['A', 'B', 'C', 'D', 'E'])
+    >>> arr2 = ODA(str, ['A', 'B', 'C', 'G' ,'D', 'E', 'F'])
+    >>> lcs = LCS(arr1, arr2)
+    >>> str(lcs)
+    "['A', 'B', 'C', 'D', 'E']"
+    >>> arr1 = ODA(str, ['A', 'P', 'P'])
+    >>> arr2 = ODA(str, ['A', 'p', 'P', 'S', 'P'])
+    >>> lcs = LCS(arr1, arr2)
+    >>> str(lcs)
+    "['A', 'P', 'P']"
 
     References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
     """
-    row, col = len(seq1), len(seq2)
-    check_mat = {0:[0 for _ in range(col+1)]}
-    for i in range(row):
-        check_mat[i+1]=[0 for _ in range(col+1)]
-        for j in range(col):
-            if (seq1[i] == seq2[j]):
-                check_mat[i+1][j+1] = check_mat[i][j]+1
+    from pydatastructs import OneDimensionalArray as ODA
+    row = kwargs.get('end', len(seq1))
+    col = kwargs.get('end', len(seq2))
+    check_mat = {0:[(0, []) for _ in range(col + 1)]}
+
+    for i in range(1, row + 1):
+        check_mat[i] = [(0, []) for _ in range(col + 1)]
+        for j in range(1, col + 1):
+            if seq1[i-1] == seq2[j-1]:
+                temp = check_mat[i-1][j-1][1][:]
+                temp.append(seq1[i-1])
+                check_mat[i][j] = (check_mat[i-1][j-1][0] + 1, temp)
             else:
-                check_mat[i+1][j+1] = max(check_mat[i+1][j], check_mat[i][j+1])
+                if check_mat[i-1][j][0] > check_mat[i][j-1][0]:
+                    check_mat[i][j] = check_mat[i-1][j]
+                else:
+                    check_mat[i][j] = check_mat[i][j-1]
 
-    lcseq, lclen = [], check_mat[row][col]
-    while(row > 0  and col > 0):
-        if(check_mat[row][col] == check_mat[row][col-1]):
-            col -= 1
-        elif(check_mat[row][col] == check_mat[row-1][col]):
-            row -= 1
-        else:
-            lcseq.append(seq1[row-1])
-            row -= 1
-            col -= 1
-
-    if(type(seq1) == str):
-        lcseq = ''.join(lcseq)
-    if(type(seq1) == tuple):
-        lcseq = tuple(lcseq)
-    return (lclen, lcseq[::-1])
+    lcseq = ODA(str, check_mat[row][col][-1])
+    return lcseq

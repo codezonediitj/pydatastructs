@@ -103,20 +103,17 @@ def test_matrix_multiply_parallel():
     assert expected_result == output
 
 def test_longest_common_sequence():
-    expected_result = (5, 'ASCII')
+    ODA = OneDimensionalArray
+    expected_result = "['A', 'S', 'C', 'I', 'I']"
 
-    str1, str2 = 'AASCCII', 'ASSCIIII'
+    str1 = ODA(str, ['A', 'A', 'S', 'C', 'C', 'I', 'I'])
+    str2 = ODA(str, ['A', 'S', 'S', 'C', 'I', 'I', 'I', 'I'])
     output = longest_common_subsequence(str1, str2)
-    assert expected_result == output
+    assert expected_result == str(output)
 
-    expected_result = (3, ['O', 'V', 'A'])
+    expected_result = "['O', 'V', 'A']"
 
-    I, J = ['O', 'V', 'A', 'L'], ['F', 'O', 'R', 'V', 'A', 'E', 'W']
+    I = ODA(str, ['O', 'V', 'A', 'L'])
+    J = ODA(str, ['F', 'O', 'R', 'V', 'A', 'E', 'W'])
     output = longest_common_subsequence(I, J)
-    assert expected_result == output
-
-    expected_result = (2, ('O', 't'))
-
-    I, J = ('K', 'O', 't', 'H', 'E'), ('L', 'O', 'C', 't')
-    output = longest_common_subsequence(I, J)
-    assert expected_result == output
+    assert expected_result == str(output)
