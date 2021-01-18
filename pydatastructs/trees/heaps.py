@@ -367,7 +367,9 @@ class BinomialHeap(Heap):
     """
     __slots__ = ['root_list']
 
-    def __new__(cls, root_list=[]):
+    def __new__(cls, root_list=None):
+        if root_list is None:
+            root_list = []
         if not all((_check_type(root, BinomialTree))
                 for root in root_list):
                     raise TypeError("The root_list should contain "

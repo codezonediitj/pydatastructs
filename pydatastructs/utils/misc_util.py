@@ -242,7 +242,11 @@ class LinkedListNode(Node):
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, key, data=None, links=['next'], addrs=[None]):
+    def __new__(cls, key, data=None, links=None, addrs=None):
+        if links is None:
+            links = ['next']
+        if addrs is None:
+            addrs = [None]
         obj = Node.__new__(cls)
         obj.key = key
         obj.data = data
