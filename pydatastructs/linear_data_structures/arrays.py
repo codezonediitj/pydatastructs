@@ -79,13 +79,13 @@ class OneDimensionalArray(Array):
                 for i in range(len(args[0])):
                     if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
-                size, data = args[1], [arg for arg in args[0]]
+                size, data = args[1], list(args[0])
             elif _check_type(args[1], list) and \
                 _check_type(args[0], int):
                 for i in range(len(args[1])):
                     if _check_type(args[1][i], dtype) is False:
                         args[1][i] = dtype(args[1][i])
-                size, data = args[0], [arg for arg in args[1]]
+                size, data = args[0], list(args[1])
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -104,7 +104,7 @@ class OneDimensionalArray(Array):
                     if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 obj._size, obj._data = len(args[0]), \
-                                        [arg for arg in args[0]]
+                                        list(args[0])
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")

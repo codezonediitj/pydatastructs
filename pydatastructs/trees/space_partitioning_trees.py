@@ -52,7 +52,7 @@ class OneDimensionalSegmentTree(object):
         for i in range(len(segs)):
             segs[i] = list(segs[i])
             segs[i].sort()
-        obj.segments = [seg for seg in segs]
+        obj.segments = list(segs)
         obj.tree, obj.root_idx, obj.cache = [], None, False
         return obj
 

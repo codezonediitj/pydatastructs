@@ -194,9 +194,9 @@ class DHeap(Heap):
             node = self.heap[i]
             if node._leftmost <= self._last_pos_filled:
                 if node._rightmost <= self._last_pos_filled:
-                    children = [x for x in range(node._leftmost, node._rightmost + 1)]
+                    children = list(range(node._leftmost, node._rightmost + 1))
                 else:
-                    children = [x for x in range(node._leftmost, self._last_pos_filled + 1)]
+                    children = list(range(node._leftmost, self._last_pos_filled + 1))
             else:
                 children = []
             to_be_printed[i] = (node.key, node.data, children)
