@@ -419,7 +419,7 @@ class TrieNode(Node):
     def __new__(cls, char=None):
         obj = Node.__new__(cls)
         obj.char = char
-        obj._children = dict()
+        obj._children = {}
         obj.is_terminal = False
         return obj
 

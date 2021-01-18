@@ -414,7 +414,7 @@ class ArrayForTrees(DynamicOneDimensionalArray):
     """
     def _modify(self):
         if self._num/self._size < self._load_factor:
-            new_indices = dict()
+            new_indices = {}
             arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
