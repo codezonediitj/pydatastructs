@@ -55,14 +55,14 @@ class Graph(object):
             obj = AdjacencyList(*args)
             obj._impl = implementation
             return obj
-        if implementation is 'adjacency_matrix':
+        elif implementation is 'adjacency_matrix':
             from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
             obj = AdjacencyMatrix(*args)
             obj._impl = implementation
             return obj
-
-        raise NotImplementedError("%s implementation is not a part "
-                                    "of the library currently."%(implementation))
+        else:
+            raise NotImplementedError("%s implementation is not a part "
+                                        "of the library currently."%(implementation))
 
     def is_adjacent(self, node1, node2):
         """
