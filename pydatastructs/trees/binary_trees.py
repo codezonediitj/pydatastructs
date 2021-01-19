@@ -515,7 +515,7 @@ class BinarySearchTree(BinaryTree):
             else:
                 curr_root = self.tree[curr_root].right
 
-            if curr_root in (u, v):
+            if curr_root == u or curr_root == v:
                 if curr_root is None:
                     return None
                 return self.tree[curr_root].key
