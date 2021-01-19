@@ -109,11 +109,20 @@ def test_longest_common_sequence():
     str1 = ODA(str, ['A', 'A', 'S', 'C', 'C', 'I', 'I'])
     str2 = ODA(str, ['A', 'S', 'S', 'C', 'I', 'I', 'I', 'I'])
     output = longest_common_subsequence(str1, str2)
-    assert expected_result == str(output)
+    assert str(output) == expected_result
 
     expected_result = "['O', 'V', 'A']"
 
     I = ODA(str, ['O', 'V', 'A', 'L'])
     J = ODA(str, ['F', 'O', 'R', 'V', 'A', 'E', 'W'])
     output = longest_common_subsequence(I, J)
-    assert expected_result == str(output)
+    assert str(output) == expected_result
+
+    X = ODA(int, [1, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2, 1])
+    Y = ODA(int, [1, 2, 3, 4, 4, 3, 2, 1])
+    output = longest_common_subsequence(X, Y)
+    assert str(output) == '[1, 2, 3, 4, 4, 3, 2, 1]'
+
+    Z = ODA(int, [])
+    output = longest_common_subsequence(Y, Z)
+    assert str(output) == '[]'

@@ -724,23 +724,24 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     return array
 
-def longest_common_subsequence(seq1: Array, seq2: Array, **kwargs) -> Array:
+def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalArray) -> OneDimensionalArray:
     """
-    Implements Longest Common Subsequence
+    Finds the longest common subsequence between the
+    two given sequences.
 
     Parameters
     ========
 
     seq1: Array
-        The array which is to be sorted.
+        The first sequence.
     seq2: Array
-        The array which is to be sorted.
+        The second sequence.
 
     Returns
     =======
 
     output: Array
-        Array is the longest common subsequence.
+        The longest common subsequence.
 
     Examples
     ========
@@ -761,11 +762,16 @@ def longest_common_subsequence(seq1: Array, seq2: Array, **kwargs) -> Array:
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+
+    Note
+    ====
+
+    The data types of elements across both the sequences
+    should be same.
     """
-    from pydatastructs import OneDimensionalArray as ODA
-    row = kwargs.get('end', len(seq1))
-    col = kwargs.get('end', len(seq2))
-    check_mat = {0:[(0, []) for _ in range(col + 1)]}
+    row = len(seq1)
+    col = len(seq2)
+    check_mat = {0: [(0, []) for _ in range(col + 1)]}
 
     for i in range(1, row + 1):
         check_mat[i] = [(0, []) for _ in range(col + 1)]
@@ -780,5 +786,4 @@ def longest_common_subsequence(seq1: Array, seq2: Array, **kwargs) -> Array:
                 else:
                     check_mat[i][j] = check_mat[i][j-1]
 
-    lcseq = ODA(str, check_mat[row][col][-1])
-    return lcseq
+    return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
