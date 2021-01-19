@@ -239,14 +239,14 @@ class PriorityQueue(object):
         comp = kwargs.get("comp", lambda u, v: u < v)
         if implementation == 'linked_list':
             return LinkedListPriorityQueue(comp)
-        if implementation == 'binary_heap':
+        elif implementation == 'binary_heap':
             return BinaryHeapPriorityQueue(comp)
-        if implementation == 'binomial_heap':
+        elif implementation == 'binomial_heap':
             return BinomialHeapPriorityQueue()
-        
-        raise NotImplementedError(
-            "%s implementation is not currently supported "
-            "by priority queue.")
+        else:
+            raise NotImplementedError(
+                "%s implementation is not currently supported "
+                "by priority queue.")
 
     @classmethod
     def methods(cls):
