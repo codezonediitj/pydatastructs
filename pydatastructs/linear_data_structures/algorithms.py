@@ -13,7 +13,8 @@ __all__ = [
     'counting_sort',
     'bucket_sort',
     'cocktail_shaker_sort',
-    'quick_sort'
+    'quick_sort',
+    'longest_common_subsequence'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -722,3 +723,67 @@ def quick_sort(array: Array, **kwargs) -> Array:
         array._modify(force=True)
 
     return array
+
+def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalArray) -> OneDimensionalArray:
+    """
+    Finds the longest common subsequence between the
+    two given sequences.
+
+    Parameters
+    ========
+
+    seq1: OneDimensionalArray
+        The first sequence.
+    seq2: OneDimensionalArray
+        The second sequence.
+
+    Returns
+    =======
+
+    output: OneDimensionalArray
+        The longest common subsequence.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import longest_common_subsequence as LCS, OneDimensionalArray as ODA
+    >>> arr1 = ODA(str, ['A', 'B', 'C', 'D', 'E'])
+    >>> arr2 = ODA(str, ['A', 'B', 'C', 'G' ,'D', 'E', 'F'])
+    >>> lcs = LCS(arr1, arr2)
+    >>> str(lcs)
+    "['A', 'B', 'C', 'D', 'E']"
+    >>> arr1 = ODA(str, ['A', 'P', 'P'])
+    >>> arr2 = ODA(str, ['A', 'p', 'P', 'S', 'P'])
+    >>> lcs = LCS(arr1, arr2)
+    >>> str(lcs)
+    "['A', 'P', 'P']"
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+
+    Note
+    ====
+
+    The data types of elements across both the sequences
+    should be same and should be comparable.
+    """
+    row = len(seq1)
+    col = len(seq2)
+    check_mat = {0: [(0, []) for _ in range(col + 1)]}
+
+    for i in range(1, row + 1):
+        check_mat[i] = [(0, []) for _ in range(col + 1)]
+        for j in range(1, col + 1):
+            if seq1[i-1] == seq2[j-1]:
+                temp = check_mat[i-1][j-1][1][:]
+                temp.append(seq1[i-1])
+                check_mat[i][j] = (check_mat[i-1][j-1][0] + 1, temp)
+            else:
+                if check_mat[i-1][j][0] > check_mat[i][j-1][0]:
+                    check_mat[i][j] = check_mat[i-1][j]
+                else:
+                    check_mat[i][j] = check_mat[i][j-1]
+
+    return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
