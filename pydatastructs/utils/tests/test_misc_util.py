@@ -35,7 +35,7 @@ def test_BinomialTreeNode():
 
 def test_MAryTreeNode():
     m = MAryTreeNode(1, 1)
-    m.add_children(*list(range(2,10)))
+    m.add_children(*list(range(2, 10)))
     assert str(m) == "(1, 1)"
     assert str(m.children) == "['2', '3', '4', '5', '6', '7', '8', '9']"
 
