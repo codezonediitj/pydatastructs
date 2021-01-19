@@ -48,12 +48,13 @@ class Queue(object):
             return ArrayQueue(
                 kwargs.get('items', None),
                 kwargs.get('dtype', int))
-        if implementation == 'linked_list':
+        elif implementation == 'linked_list':
             return LinkedListQueue(
                 kwargs.get('items', None)
             )
-        raise NotImplementedError(
-                "%s hasn't been implemented yet."%(implementation))
+        else:
+            raise NotImplementedError(
+                    "%s hasn't been implemented yet."%(implementation))
 
     @classmethod
     def methods(cls):
