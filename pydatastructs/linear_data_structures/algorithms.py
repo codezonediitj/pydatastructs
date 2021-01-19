@@ -732,15 +732,15 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
     Parameters
     ========
 
-    seq1: Array
+    seq1: OneDimensionalArray
         The first sequence.
-    seq2: Array
+    seq2: OneDimensionalArray
         The second sequence.
 
     Returns
     =======
 
-    output: Array
+    output: OneDimensionalArray
         The longest common subsequence.
 
     Examples
@@ -767,7 +767,7 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
     ====
 
     The data types of elements across both the sequences
-    should be same.
+    should be same and should be comparable.
     """
     row = len(seq1)
     col = len(seq2)
