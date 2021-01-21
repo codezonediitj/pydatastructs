@@ -62,7 +62,7 @@ class Graph(object):
             return obj
         else:
             raise NotImplementedError("%s implementation is not a part "
-                                        "of the library currently."%(implementation))
+                                      "of the library currently."%(implementation))
 
     def is_adjacent(self, node1, node2):
         """
