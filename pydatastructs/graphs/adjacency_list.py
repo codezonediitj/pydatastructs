@@ -20,7 +20,7 @@ class AdjacencyList(Graph):
         for vertex in vertices:
             obj.__setattr__(vertex.name, vertex)
         obj.vertices = [vertex.name for vertex in vertices]
-        obj.edge_weights = dict()
+        obj.edge_weights = {}
         return obj
 
     @classmethod

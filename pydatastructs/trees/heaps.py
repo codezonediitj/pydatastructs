@@ -195,9 +195,9 @@ class DHeap(Heap):
             node = self.heap[i]
             if node._leftmost <= self._last_pos_filled:
                 if node._rightmost <= self._last_pos_filled:
-                    children = [x for x in range(node._leftmost, node._rightmost + 1)]
+                    children = list(range(node._leftmost, node._rightmost + 1))
                 else:
-                    children = [x for x in range(node._leftmost, self._last_pos_filled + 1)]
+                    children = list(range(node._leftmost, self._last_pos_filled + 1))
             else:
                 children = []
             to_be_printed[i] = (node.key, node.data, children)
@@ -367,7 +367,9 @@ class BinomialHeap(Heap):
     """
     __slots__ = ['root_list']
 
-    def __new__(cls, root_list=[]):
+    def __new__(cls, root_list=None):
+        if root_list is None:
+            root_list = []
         if not all((_check_type(root, BinomialTree))
                 for root in root_list):
                     raise TypeError("The root_list should contain "

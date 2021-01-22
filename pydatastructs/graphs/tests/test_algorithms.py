@@ -26,7 +26,7 @@ def test_breadth_first_search():
         for edge in edges:
             G1.add_edge(*edge)
 
-        parent = dict()
+        parent = {}
         def bfs_tree(curr_node, next_node, parent):
             if next_node != "":
                 parent[next_node] = curr_node
@@ -110,7 +110,7 @@ def test_breadth_first_search_parallel():
         for edge in edges:
             G1.add_edge(*edge)
 
-        parent = dict()
+        parent = {}
         def bfs_tree(curr_node, next_node, parent):
             if next_node != "":
                 parent[next_node] = curr_node
@@ -209,7 +209,7 @@ def test_depth_first_search():
         for edge in edges:
             G1.add_edge(*edge)
 
-        parent = dict()
+        parent = {}
         def dfs_tree(curr_node, next_node, parent):
             if next_node != "":
                 parent[next_node] = curr_node

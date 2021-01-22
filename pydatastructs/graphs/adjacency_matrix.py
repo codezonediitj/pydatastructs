@@ -20,10 +20,10 @@ class AdjacencyMatrix(Graph):
         obj.vertices = [vertex.name for vertex in vertices]
         for vertex in vertices:
             obj.__setattr__(vertex.name, vertex)
-        obj.matrix = dict()
+        obj.matrix = {}
         for vertex in vertices:
-            obj.matrix[vertex.name] = dict()
-        obj.edge_weights = dict()
+            obj.matrix[vertex.name] = {}
+        obj.edge_weights = {}
         return obj
 
     @classmethod
@@ -34,13 +34,13 @@ class AdjacencyMatrix(Graph):
 
     def is_adjacent(self, node1, node2):
         node1, node2 = str(node1), str(node2)
-        row = self.matrix.get(node1, dict())
+        row = self.matrix.get(node1, {})
         return row.get(node2, False) is not False
 
     def neighbors(self, node):
         node = str(node)
         neighbors = []
-        row = self.matrix.get(node, dict())
+        row = self.matrix.get(node, {})
         for node, presence in row.items():
             if presence:
                 neighbors.append(self.__getattribute__(

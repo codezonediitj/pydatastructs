@@ -242,7 +242,11 @@ class LinkedListNode(Node):
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, key, data=None, links=['next'], addrs=[None]):
+    def __new__(cls, key, data=None, links=None, addrs=None):
+        if links is None:
+            links = ['next']
+        if addrs is None:
+            addrs = [None]
         obj = Node.__new__(cls)
         obj.key = key
         obj.data = data
@@ -415,7 +419,7 @@ class TrieNode(Node):
     def __new__(cls, char=None):
         obj = Node.__new__(cls)
         obj.char = char
-        obj._children = dict()
+        obj._children = {}
         obj.is_terminal = False
         return obj
 
@@ -440,4 +444,5 @@ def _comp(u, v, tcomp):
         return True
     elif u is None and v is None:
         return False
-    return tcomp(u, v)
+    else:
+        return tcomp(u, v)

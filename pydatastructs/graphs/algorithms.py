@@ -87,7 +87,7 @@ def breadth_first_search(
 def _breadth_first_search_adjacency_list(
     graph, source_node, operation, *args, **kwargs):
     bfs_queue = Queue()
-    visited = dict()
+    visited = {}
     bfs_queue.append(source_node)
     visited[source_node] = True
     while len(bfs_queue) != 0:
@@ -184,7 +184,7 @@ def _generate_layer(**kwargs):
 
 def _breadth_first_search_parallel_adjacency_list(
     graph, source_node, num_threads, operation, *args, **kwargs):
-    visited, layers = dict(), dict()
+    visited, layers = {}, {}
     layers[0] = set()
     layers[0].add(source_node)
     visited[source_node] = True
@@ -235,7 +235,7 @@ _minimum_spanning_tree_kruskal_adjacency_matrix = \
 
 def _minimum_spanning_tree_prim_adjacency_list(graph):
     q = PriorityQueue(implementation='binomial_heap')
-    e = dict()
+    e = {}
     mst = Graph(implementation='adjacency_list')
     q.push(next(iter(graph.vertices)), 0)
     while not q.is_empty:
@@ -345,8 +345,8 @@ def _find_min(q, v, i):
 
 def _minimum_spanning_tree_parallel_prim_adjacency_list(graph, num_threads):
     q = [PriorityQueue(implementation='binomial_heap') for _ in range(num_threads)]
-    e = [dict() for _ in range(num_threads)]
-    v2q = dict()
+    e = [{} for _ in range(num_threads)]
+    v2q = {}
     mst = Graph(implementation='adjacency_list')
 
     itr = iter(graph.vertices)
@@ -484,12 +484,12 @@ def _assign(graph, u, incoming, assigned, component):
             stack.pop()
 
 def _strongly_connected_components_kosaraju_adjacency_list(graph):
-    visited, incoming, L = dict(), dict(), []
+    visited, incoming, L = {}, {}, []
     for u in graph.vertices:
         if not visited.get(u, False):
             _visit(graph, u, visited, incoming, L)
 
-    assigned = dict()
+    assigned = {}
     components = []
     for i in range(-1, -len(L) - 1, -1):
         comp = set()
@@ -622,7 +622,7 @@ def depth_first_search(
 def _depth_first_search_adjacency_list(
     graph, source_node, operation, *args, **kwargs):
     dfs_stack = Stack()
-    visited = dict()
+    visited = {}
     dfs_stack.append(source_node)
     visited[source_node] = True
     while len(dfs_stack) != 0:
@@ -706,7 +706,7 @@ def shortest_paths(graph: Graph, algorithm: str,
     return getattr(algorithms, func)(graph, source, target)
 
 def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
-    distances, predecessor = dict(), dict()
+    distances, predecessor = {}, {}
 
     for v in graph.vertices:
         distances[v] = float('inf')
@@ -736,7 +736,7 @@ _bellman_ford_adjacency_matrix = _bellman_ford_adjacency_list
 
 def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
     V = len(graph.vertices)
-    visited, dist, pred = dict(), dict(), dict()
+    visited, dist, pred = {}, {}, {}
     for v in graph.vertices:
         visited[v] = False
         pred[v] = None
@@ -814,12 +814,12 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str) -> tuple:
     return getattr(algorithms, func)(graph)
 
 def _floyd_warshall_adjacency_list(graph: Graph):
-    dist, next_vertex = dict(), dict()
+    dist, next_vertex = {}, {}
     V, E = graph.vertices, graph.edge_weights
 
     for v in V:
-        dist[v] = dict()
-        next_vertex[v] = dict()
+        dist[v] = {}
+        next_vertex[v] = {}
 
     for name, edge in E.items():
         dist[edge.source.name][edge.target.name] = edge.value
@@ -832,9 +832,9 @@ def _floyd_warshall_adjacency_list(graph: Graph):
     for k in V:
         for i in V:
             for j in V:
-                dist_i_j = dist.get(i, dict()).get(j, float('inf'))
-                dist_i_k = dist.get(i, dict()).get(k, float('inf'))
-                dist_k_j = dist.get(k, dict()).get(j, float('inf'))
+                dist_i_j = dist.get(i, {}).get(j, float('inf'))
+                dist_i_k = dist.get(i, {}).get(k, float('inf'))
+                dist_k_j = dist.get(k, {}).get(j, float('inf'))
                 next_i_k = next_vertex.get(i + '_' + k, None)
                 if dist_i_j > dist_i_k + dist_k_j:
                     dist[i][j] = dist_i_k + dist_k_j
