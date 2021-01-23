@@ -38,8 +38,9 @@ class AdjacencyList(Graph):
         return [self.__getattribute__(name) for name in node.adjacent]
 
     def add_vertex(self, node):
-        self.vertices.append(node.name)
-        self.__setattr__(node.name, node)
+        if not hasattr(self, node.name):
+            self.vertices.append(node.name)
+            self.__setattr__(node.name, node)
 
     def remove_vertex(self, name):
         delattr(self, name)
