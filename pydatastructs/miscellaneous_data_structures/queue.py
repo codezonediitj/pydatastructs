@@ -5,7 +5,8 @@ from copy import deepcopy as dc
 
 __all__ = [
     'Queue',
-    'PriorityQueue'
+    'PriorityQueue',
+    'Deque'
 ]
 
 class Queue(object):
@@ -395,3 +396,163 @@ class BinomialHeapPriorityQueue(PriorityQueue):
     @property
     def is_empty(self):
         return self.items.is_empty
+
+class Deque(object):
+    """
+    Represents the concept of Double-ended queue.
+
+    Parameters
+    ==========
+
+    implementation : str
+        Implementation to be used for queue.
+        By default, 'array'
+    items : list/tuple
+        Optional, by default, None
+        The inital items in the queue.
+    dtype : A valid python type
+        Optional, by default NoneType if item
+        is None.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Deque
+    >>> q = Deque()
+    >>> q.append(1)
+    >>> q.appendleft(2)
+    >>> q.append(3)
+    >>> q.popleft()
+    2
+    >>> len(q)
+    2
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Double-ended_queue
+    """
+
+    def __new__(cls, implementation='array', **kwargs):
+        if implementation == 'array':
+            return ArrayDeque(
+                kwargs.get('items', None),
+                kwargs.get('dtype', int))
+        raise NotImplementedError(
+                "%s hasn't been implemented yet."%(implementation))
+
+    @classmethod
+    def methods(cls):
+        return ['__new__']
+
+    def append(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def appendleft(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def pop(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def popleft(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    @property
+    def is_empty(self):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+class ArrayDeque(Queue):
+    __slots__ = ['front', 'rear']
+
+    def __new__(cls, items=None, dtype=NoneType):
+        if items is None:
+            items = DynamicOneDimensionalArray(dtype, 0)
+        else:
+            dtype = type(items[0])
+            items = DynamicOneDimensionalArray(dtype, items)
+        obj = object.__new__(cls)
+        obj.items, obj.front = items, -1
+        if items.size == 0:
+            obj.front = -1
+            obj.rear = -1
+        else:
+            obj.front = 0
+            obj.rear = items._num - 1
+        return obj
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'append', 'appendleft', 'pop', 'popleft', 'rear',
+        'is_empty', '__len__', '__str__']
+
+    def append(self, x):
+        if self.is_empty:
+            self.front = 0
+            self.rear = -1
+            self.items._dtype = type(x)
+        self.items.append(x)
+        self.rear += 1
+
+    def appendleft(self, x):
+        temp = []
+        if self.is_empty:
+            self.front = 0
+            self.rear = -1
+            self.items._dtype = type(x)
+        temp.append(x)
+        for i in range(self.front, self.rear + 1):
+            temp.append(self.items._data[i])
+        self.items = DynamicOneDimensionalArray(type(temp[0]), temp)
+        self.rear += 1
+
+    def popleft(self):
+        if self.is_empty:
+            raise IndexError("Queue is empty.")
+        return_value = dc(self.items[self.front])
+        front_temp = self.front
+        if self.front == self.rear:
+            self.front = -1
+            self.rear = -1
+        else:
+            if (self.items._num - 1)/self.items._size < \
+                self.items._load_factor:
+                self.front = 0
+            else:
+                self.front += 1
+        self.items.delete(front_temp)
+        return return_value
+
+    def pop(self):
+        if self.is_empty:
+            raise IndexError("Queue is empty.")
+        return_value = dc(self.items[self.rear])
+        rear_temp = self.rear
+        if self.front == self.rear:
+            self.front = -1
+            self.rear = -1
+        else:
+            if (self.items._num - 1)/self.items._size < \
+                self.items._load_factor:
+                self.front = 0
+            else:
+                self.rear -= 1
+        self.items.delete(rear_temp)
+        return return_value
+
+    @property
+    def is_empty(self):
+        return self.__len__() == 0
+
+    def __len__(self):
+        return self.items._num
+
+    def __str__(self):
+        _data = []
+        for i in range(self.front, self.rear + 1):
+            _data.append(self.items._data[i])
+        return str(_data)
