@@ -48,7 +48,7 @@ class Queue(object):
         if implementation == 'array':
             return ArrayQueue(
                 kwargs.get('items', None),
-                kwargs.get('dtype', int))
+                kwargs.get('dtype', int), kwargs.get('double_ended', bool))
         elif implementation == 'linked_list':
             return LinkedListQueue(
                 kwargs.get('items', None)
@@ -77,9 +77,9 @@ class Queue(object):
 
 class ArrayQueue(Queue):
 
-    __slots__ = ['front']
+    __slots__ = ['front', 'rear', 'deque']
 
-    def __new__(cls, items=None, dtype=NoneType):
+    def __new__(cls, items=None, dtype=NoneType, double_ended=False):
         if items is None:
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
@@ -89,20 +89,40 @@ class ArrayQueue(Queue):
         obj.items, obj.front = items, -1
         if items.size == 0:
             obj.front = -1
+            obj.rear = -1
         else:
             obj.front = 0
+            obj.rear = items._num - 1
+        obj.deque = double_ended
         return obj
 
     @classmethod
     def methods(cls):
-        return ['__new__', 'append', 'popleft', 'rear',
-        'is_empty', '__len__', '__str__']
+        if cls.deque is True:
+            return ['__new__', 'append', 'appendleft', 'popleft', 'pop', 'is_empty', '__len__', '__str__']
+        else:
+            return ['__new__', 'append', 'popleft', 'is_empty', '__len__', '__str__']
 
     def append(self, x):
         if self.is_empty:
             self.front = 0
             self.items._dtype = type(x)
         self.items.append(x)
+        self.rear += 1
+
+    def appendleft(self, x):
+        if self.deque is False:
+            raise ImplementationError("Deque operations can't be done here")
+        temp = []
+        if self.is_empty:
+            self.front = 0
+            self.rear = -1
+            self.items._dtype = type(x)
+        temp.append(x)
+        for i in range(self.front, self.rear + 1):
+            temp.append(self.items._data[i])
+        self.items = DynamicOneDimensionalArray(type(temp[0]), temp)
+        self.rear += 1
 
     def popleft(self):
         if self.is_empty:
@@ -111,6 +131,7 @@ class ArrayQueue(Queue):
         front_temp = self.front
         if self.front == self.rear:
             self.front = -1
+            self.rear = -1
         else:
             if (self.items._num - 1)/self.items._size < \
                 self.items._load_factor:
@@ -120,9 +141,24 @@ class ArrayQueue(Queue):
         self.items.delete(front_temp)
         return return_value
 
-    @property
-    def rear(self):
-        return self.items._last_pos_filled
+    def pop(self):
+        if self.deque is False:
+            raise ImplementationError("Deque operations can't be done here")
+        if self.is_empty:
+            raise IndexError("Queue is empty.")
+        return_value = dc(self.items[self.rear])
+        rear_temp = self.rear
+        if self.front == self.rear:
+            self.front = -1
+            self.rear = -1
+        else:
+            if (self.items._num - 1)/self.items._size < \
+                self.items._load_factor:
+                self.front = 0
+            else:
+                self.rear -= 1
+        self.items.delete(rear_temp)
+        return return_value
 
     @property
     def is_empty(self):
@@ -136,7 +172,6 @@ class ArrayQueue(Queue):
         for i in range(self.front, self.rear + 1):
             _data.append(self.items._data[i])
         return str(_data)
-
 
 class LinkedListQueue(Queue):
 

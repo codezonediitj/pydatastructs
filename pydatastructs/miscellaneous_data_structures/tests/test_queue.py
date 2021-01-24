@@ -30,6 +30,19 @@ def test_ArrayQueue():
     assert q1.popleft() == 3
     assert len(q1) == 0
 
+    q2=Queue(implementation='array', items=[0], deque=True)
+    q2.append(1)
+    q2.append(2)
+    q2.appendleft(3)
+    assert str(q2) == '[3, 0, 1, 2]'
+    assert len(q2) == 4
+    assert q2.popleft() == 3
+    assert q2.pop() == 2
+    assert len(q2) == 2
+    assert q2.popleft() == 0
+    assert q2.pop() == 1
+    assert len(q2) == 0
+
 def test_LinkedListQueue():
     q1 = Queue(implementation='linked_list')
     q1.append(1)
