@@ -77,7 +77,7 @@ class Queue(object):
 
 class ArrayQueue(Queue):
 
-    __slots__ = ['front', 'rear', 'deque']
+    __slots__ = ['front', 'rear', 'double_ended']
 
     def __new__(cls, items=None, dtype=NoneType, double_ended=False):
         if items is None:
@@ -93,15 +93,12 @@ class ArrayQueue(Queue):
         else:
             obj.front = 0
             obj.rear = items._num - 1
-        obj.deque = double_ended
+        obj.double_ended = double_ended
         return obj
 
     @classmethod
     def methods(cls):
-        if cls.deque is True:
-            return ['__new__', 'append', 'appendleft', 'popleft', 'pop', 'is_empty', '__len__', '__str__']
-        else:
-            return ['__new__', 'append', 'popleft', 'is_empty', '__len__', '__str__']
+        return ['__new__', 'append', 'appendleft', 'popleft', 'pop', 'is_empty', '__len__', '__str__']
 
     def append(self, x):
         if self.is_empty:
@@ -111,7 +108,7 @@ class ArrayQueue(Queue):
         self.rear += 1
 
     def appendleft(self, x):
-        if self.deque is False:
+        if self.double_ended is False:
             raise ImplementationError("Deque operations can't be done here")
         temp = []
         if self.is_empty:
@@ -142,7 +139,7 @@ class ArrayQueue(Queue):
         return return_value
 
     def pop(self):
-        if self.deque is False:
+        if self.double_ended is False:
             raise ImplementationError("Deque operations can't be done here")
         if self.is_empty:
             raise IndexError("Queue is empty.")
