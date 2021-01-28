@@ -19,8 +19,7 @@ __all__.extend(stack.__all__)
 
 from .queue import (
     Queue,
-    PriorityQueue,
-    Deque
+    PriorityQueue
 )
 __all__.extend(queue.__all__)
 
