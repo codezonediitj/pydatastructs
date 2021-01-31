@@ -23,6 +23,12 @@ class Queue(object):
     dtype : A valid python type
         Optional, by default NoneType if item
         is None.
+        Required only for 'array' implementation.
+    double_ended : bool
+        Optional, by default, False.
+        Set to True if the queue should support
+        additional, appendleft and pop operations
+        from left and right sides respectively.
 
     Examples
     ========
