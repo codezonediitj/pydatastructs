@@ -91,7 +91,7 @@ def test_LinkedListQueue():
     assert q1.pop().key == 1
     assert q1.popleft().key == 0
     assert len(q1) == 0
-    raises(IndexError, lambda: q1.popleft())
+    assert raises(IndexError, lambda: q1.popleft())
 
 def test_PriorityQueue():
     pq1 = PriorityQueue(implementation='linked_list')
