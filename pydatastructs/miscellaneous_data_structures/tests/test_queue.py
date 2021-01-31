@@ -30,6 +30,23 @@ def test_ArrayQueue():
     assert q1.popleft() == 3
     assert len(q1) == 0
 
+    q2 = Queue(implementation='array', items=[0], double_ended=True)
+    q2.append(1)
+    q2.append(2)
+    q2.appendleft(3)
+    assert str(q2) == '[3, 0, 1, 2]'
+    assert len(q2) == 4
+    assert q2.popleft() == 3
+    assert q2.pop() == 2
+    assert len(q2) == 2
+    assert q2.popleft() == 0
+    assert q2.pop() == 1
+    assert len(q2) == 0
+
+    q1 = Queue(implementation='array', items=[0])
+    assert raises(NotImplementedError, lambda: q1.appendleft(2))
+
+
 def test_LinkedListQueue():
     q1 = Queue(implementation='linked_list')
     q1.append(1)
@@ -49,7 +66,6 @@ def test_LinkedListQueue():
 
     q1 = Queue(implementation='linked_list',items=['a',None,type,{}])
     assert len(q1) == 4
-    assert q1.size == 4
 
     front = q1.front
     assert front.key == q1.popleft().key
@@ -59,6 +75,23 @@ def test_LinkedListQueue():
         q1.popleft()
 
     assert rear.key == q1.popleft().key
+
+    q1 = Queue(implementation='linked_list', double_ended=True)
+    q1.appendleft(1)
+    q2 = Queue(implementation='linked_list', items=[0, 1])
+    assert raises(NotImplementedError, lambda: q2.appendleft(1))
+    q1 = Queue(implementation='linked_list', items = [0, 1], double_ended=True)
+    q1.appendleft(2)
+    q1.append(3)
+    assert str(q1) == "['2', '0', '1', '3']"
+    assert len(q1) == 4
+    assert q1.popleft().key == 2
+    assert q1.pop().key == 3
+    assert len(q1) == 2
+    assert q1.pop().key == 1
+    assert q1.popleft().key == 0
+    assert len(q1) == 0
+    assert raises(IndexError, lambda: q1.popleft())
 
 def test_PriorityQueue():
     pq1 = PriorityQueue(implementation='linked_list')
