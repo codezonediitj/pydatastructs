@@ -4,7 +4,8 @@ from . import (
     binary_trees,
     m_ary_trees,
     space_partitioning_trees,
-    heaps
+    heaps,
+    suffix_tree
 )
 
 from .binary_trees import (
@@ -38,3 +39,8 @@ from .heaps import (
     BinomialHeap
 )
 __all__.extend(heaps.__all__)
+
+from .suffix_tree import(
+    SuffixTree
+)
+__all__.extend(suffix_tree.__all__)
