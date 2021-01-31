@@ -44,7 +44,7 @@ def test_ArrayQueue():
     assert len(q2) == 0
 
     q1 = Queue(implementation='array', items=[0])
-    assert raises(ModuleNotFoundError, lambda: q1.appendleft(2))
+    assert raises(NotImplementedError, lambda: q1.appendleft(2))
 
 
 def test_LinkedListQueue():
@@ -80,7 +80,7 @@ def test_LinkedListQueue():
     q1 = Queue(implementation='linked_list', double_ended=True)
     q1.appendleft(1)
     q2 = Queue(implementation='linked_list', items=[0, 1])
-    assert raises(ModuleNotFoundError, lambda: q2.appendleft(1))
+    assert raises(NotImplementedError, lambda: q2.appendleft(1))
     q1 = Queue(implementation='linked_list', items = [0, 1], double_ended=True)
     q1.appendleft(2)
     q1.append(3)

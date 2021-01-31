@@ -62,7 +62,21 @@ class Queue(object):
     def methods(cls):
         return ['__new__']
 
+    def _double_ended_check(self):
+        if not self.double_ended:
+            raise NotImplementedError(
+                    "This method is only supported for "
+                    "double ended queues.")
+
     def append(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def appendleft(self, *args, **kwargs):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def pop(self, *args, **kwargs):
         raise NotImplementedError(
             "This is an abstract method.")
 
@@ -99,7 +113,8 @@ class ArrayQueue(Queue):
 
     @classmethod
     def methods(cls):
-        return ['__new__', 'append', 'appendleft', 'popleft', 'pop', 'is_empty', '__len__', '__str__']
+        return ['__new__', 'append', 'appendleft', 'popleft',
+                'pop', 'is_empty', '__len__', '__str__']
 
     def append(self, x):
         if self.is_empty:
@@ -109,19 +124,17 @@ class ArrayQueue(Queue):
         self.rear += 1
 
     def appendleft(self, x):
-        if self.double_ended:
-            temp = []
-            if self.is_empty:
-                self.front = 0
-                self.rear = -1
-            self.items._dtype = type(x)
-            temp.append(x)
-            for i in range(self.front, self.rear + 1):
-                temp.append(self.items._data[i])
-            self.items = DynamicOneDimensionalArray(type(temp[0]), temp)
-            self.rear += 1
-        else:
-            raise ModuleNotFoundError("Deque operations can't be done here.")
+        self._double_ended_check()
+        temp = []
+        if self.is_empty:
+            self.front = 0
+            self.rear = -1
+        self.items._dtype = type(x)
+        temp.append(x)
+        for i in range(self.front, self.rear + 1):
+            temp.append(self.items._data[i])
+        self.items = DynamicOneDimensionalArray(type(temp[0]), temp)
+        self.rear += 1
 
     def popleft(self):
         if self.is_empty:
@@ -141,24 +154,23 @@ class ArrayQueue(Queue):
         return return_value
 
     def pop(self):
-        if self.double_ended:
-            if self.is_empty:
-                raise IndexError("Queue is empty.")
-            return_value = dc(self.items[self.rear])
-            rear_temp = self.rear
-            if self.front == self.rear:
-                self.front = -1
-                self.rear = -1
-            else:
-                if (self.items._num - 1)/self.items._size < \
-                    self.items._load_factor:
-                    self.front = 0
-                else:
-                    self.rear -= 1
-            self.items.delete(rear_temp)
-            return return_value
+        self._double_ended_check()
+        if self.is_empty:
+            raise IndexError("Queue is empty.")
+
+        return_value = dc(self.items[self.rear])
+        rear_temp = self.rear
+        if self.front == self.rear:
+            self.front = -1
+            self.rear = -1
         else:
-            raise ModuleNotFoundError("Deque operations can't be done here")
+            if (self.items._num - 1)/self.items._size < \
+                self.items._load_factor:
+                self.front = 0
+            else:
+                self.rear -= 1
+        self.items.delete(rear_temp)
+        return return_value
 
     @property
     def is_empty(self):
@@ -193,25 +205,22 @@ class LinkedListQueue(Queue):
     @classmethod
     def methods(cls):
         return ['__new__', 'append', 'appendleft', 'pop', 'popleft', 'rear',
-        'is_empty', '__len__', '__str__', 'front', 'size']
+                'is_empty', '__len__', '__str__', 'front', 'size']
 
     def append(self, x):
         self.queue.append(x)
 
     def appendleft(self, x):
+        self._double_ended_check()
         if self.double_ended:
             self.queue.appendleft(x)
-        else:
-            raise ModuleNotFoundError("Deque operations can't be done here")
 
     def pop(self):
+        self._double_ended_check()
         if self.is_empty:
             raise IndexError("Queue is empty.")
-        if self.double_ended:
-            return_value = self.queue.popright()
-            return return_value
-        else:
-            raise ModuleNotFoundError("Deque operations can't be done here")
+        return_value = self.queue.popright()
+        return return_value
 
     def popleft(self):
         if self.is_empty:
