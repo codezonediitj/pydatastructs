@@ -66,7 +66,6 @@ def test_LinkedListQueue():
 
     q1 = Queue(implementation='linked_list',items=['a',None,type,{}])
     assert len(q1) == 4
-    assert q1.size == 4
 
     front = q1.front
     assert front.key == q1.popleft().key

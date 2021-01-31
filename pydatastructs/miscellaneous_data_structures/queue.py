@@ -63,7 +63,7 @@ class Queue(object):
         return ['__new__']
 
     def _double_ended_check(self):
-        if not self.double_ended:
+        if not self._double_ended:
             raise NotImplementedError(
                     "This method is only supported for "
                     "double ended queues.")
@@ -92,7 +92,7 @@ class Queue(object):
 
 class ArrayQueue(Queue):
 
-    __slots__ = ['front', 'rear', 'double_ended']
+    __slots__ = ['_front', '_rear', '_double_ended']
 
     def __new__(cls, items=None, dtype=NoneType, double_ended=False):
         if items is None:
@@ -101,55 +101,56 @@ class ArrayQueue(Queue):
             dtype = type(items[0])
             items = DynamicOneDimensionalArray(dtype, items)
         obj = object.__new__(cls)
-        obj.items, obj.front = items, -1
+        obj.items, obj._front = items, -1
         if items.size == 0:
-            obj.front = -1
-            obj.rear = -1
+            obj._front = -1
+            obj._rear = -1
         else:
-            obj.front = 0
-            obj.rear = items._num - 1
-        obj.double_ended = double_ended
+            obj._front = 0
+            obj._rear = items._num - 1
+        obj._double_ended = double_ended
         return obj
 
     @classmethod
     def methods(cls):
         return ['__new__', 'append', 'appendleft', 'popleft',
-                'pop', 'is_empty', '__len__', '__str__']
+                'pop', 'is_empty', '__len__', '__str__', 'front',
+                'rear']
 
     def append(self, x):
         if self.is_empty:
-            self.front = 0
+            self._front = 0
             self.items._dtype = type(x)
         self.items.append(x)
-        self.rear += 1
+        self._rear += 1
 
     def appendleft(self, x):
         self._double_ended_check()
         temp = []
         if self.is_empty:
-            self.front = 0
-            self.rear = -1
+            self._front = 0
+            self._rear = -1
         self.items._dtype = type(x)
         temp.append(x)
-        for i in range(self.front, self.rear + 1):
+        for i in range(self._front, self._rear + 1):
             temp.append(self.items._data[i])
         self.items = DynamicOneDimensionalArray(type(temp[0]), temp)
-        self.rear += 1
+        self._rear += 1
 
     def popleft(self):
         if self.is_empty:
             raise IndexError("Queue is empty.")
-        return_value = dc(self.items[self.front])
-        front_temp = self.front
-        if self.front == self.rear:
-            self.front = -1
-            self.rear = -1
+        return_value = dc(self.items[self._front])
+        front_temp = self._front
+        if self._front == self._rear:
+            self._front = -1
+            self._rear = -1
         else:
             if (self.items._num - 1)/self.items._size < \
                 self.items._load_factor:
-                self.front = 0
+                self._front = 0
             else:
-                self.front += 1
+                self._front += 1
         self.items.delete(front_temp)
         return return_value
 
@@ -158,19 +159,27 @@ class ArrayQueue(Queue):
         if self.is_empty:
             raise IndexError("Queue is empty.")
 
-        return_value = dc(self.items[self.rear])
-        rear_temp = self.rear
-        if self.front == self.rear:
-            self.front = -1
-            self.rear = -1
+        return_value = dc(self.items[self._rear])
+        rear_temp = self._rear
+        if self._front == self._rear:
+            self._front = -1
+            self._rear = -1
         else:
             if (self.items._num - 1)/self.items._size < \
                 self.items._load_factor:
-                self.front = 0
+                self._front = 0
             else:
-                self.rear -= 1
+                self._rear -= 1
         self.items.delete(rear_temp)
         return return_value
+
+    @property
+    def front(self):
+        return self._front
+
+    @property
+    def rear(self):
+        return self._rear
 
     @property
     def is_empty(self):
@@ -181,13 +190,13 @@ class ArrayQueue(Queue):
 
     def __str__(self):
         _data = []
-        for i in range(self.front, self.rear + 1):
+        for i in range(self._front, self._rear + 1):
             _data.append(self.items._data[i])
         return str(_data)
 
 class LinkedListQueue(Queue):
 
-    __slots__ = ['queue', 'double_ended']
+    __slots__ = ['queue', '_double_ended']
 
     def __new__(cls, items=None, double_ended=False):
         obj = object.__new__(cls)
@@ -199,20 +208,20 @@ class LinkedListQueue(Queue):
                 obj.append(x)
         else:
             raise TypeError("Expected type: list/tuple")
-        obj.double_ended = double_ended
+        obj._double_ended = double_ended
         return obj
 
     @classmethod
     def methods(cls):
-        return ['__new__', 'append', 'appendleft', 'pop', 'popleft', 'rear',
-                'is_empty', '__len__', '__str__', 'front', 'size']
+        return ['__new__', 'append', 'appendleft', 'pop', 'popleft',
+                'is_empty', '__len__', '__str__', 'front', 'rear']
 
     def append(self, x):
         self.queue.append(x)
 
     def appendleft(self, x):
         self._double_ended_check()
-        if self.double_ended:
+        if self._double_ended:
             self.queue.appendleft(x)
 
     def pop(self):
@@ -230,7 +239,7 @@ class LinkedListQueue(Queue):
 
     @property
     def is_empty(self):
-        return self.size == 0
+        return self.__len__() == 0
 
     @property
     def front(self):
@@ -240,12 +249,8 @@ class LinkedListQueue(Queue):
     def rear(self):
         return self.queue.tail
 
-    @property
-    def size(self):
-        return self.queue.size
-
     def __len__(self):
-        return self.size
+        return self.queue.size
 
     def __str__(self):
         return str(self.queue)
