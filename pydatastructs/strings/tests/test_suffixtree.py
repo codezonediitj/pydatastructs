@@ -3,7 +3,13 @@ from pydatastructs.utils.raises_util import raises
 import random, string
 
 def test_suffixtree():
+    """
+    References
+    ==========
+    .. https://www.cise.ufl.edu/~sahni/dsaaj/enrich/c16/suffix.htm
 
+    """
+    
     s = SuffixTree("HelloworldHe")
     assert s.find("Hel") == 0
     assert s.find_all("He") == {0, 10}
