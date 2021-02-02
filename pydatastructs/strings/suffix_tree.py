@@ -1,55 +1,8 @@
+from pydatastructs.utils.misc_util import SuffixNode
+
 __all__ = [
     'SuffixTree'
 ]
-
-class Suffix_Node():
-
-    __slots__ = ['_suffix_link', 'transition_links', 'idx', 'depth', 'parent', 'generalized_idxs']
-
-    def __new__(cls, idx=-1, parentNode=None, depth=-1):
-        obj = object.__new__(cls)
-        obj._suffix_link = None
-        obj.transition_links = {}
-        obj.idx = idx
-        obj.depth = depth
-        obj.parent = parentNode
-        obj.generalized_idxs = {}
-        return obj
-
-    def __str__(self):
-        return ("Suffix Node: idx:" + str(self.idx) + " depth:" + str(self.depth) + " transitons:" + str(list(self.transition_links.keys())))
-
-    def _add_suffix_link(self, snode):
-        self._suffix_link = snode
-
-    def _get_suffix_link(self):
-        if self._suffix_link is not None:
-            return self._suffix_link
-        else:
-            return False
-
-    def _get_transition_link(self, suffix):
-        return False if suffix not in self.transition_links else self.transition_links[suffix]
-
-    def _add_transition_link(self, snode, suffix):
-        self.transition_links[suffix] = snode
-
-    def _has_transition(self, suffix):
-        return suffix in self.transition_links
-
-    def is_leaf(self):
-        return len(self.transition_links) == 0
-
-    def _traverse(self, f):
-        for node in self.transition_links.values():
-            node._traverse(f)
-        f(self)
-
-    def _get_leaves(self):
-        if self.is_leaf():
-            return {self}
-        else:
-            return {x for n in self.transition_links.values() for x in n._get_leaves()}
 
 class SuffixTree():
     """
@@ -58,12 +11,18 @@ class SuffixTree():
     Examples
     ========
 
-    >>> from pydatastructs.trees import SuffixTree as suffix
+    >>> from pydatastructs.strings import SuffixTree as suffix
     >>> s = suffix('hello')
     >>> s.find('he')
     0
     >>> s.find_all('l')
     {2, 3}
+    >>> s.find('f')
+    -1
+    >>> lt=["abeceda", "abecednik", "abeabecedabeabeced", "abecedaaaa", "aaabbbeeecceeeddaaaaabeceda"]
+    >>> s1 = suffix(lt)
+    >>> s1.lcs()
+    'abeced'
 
     References
     ==========
@@ -74,7 +33,7 @@ class SuffixTree():
 
     def __new__(cls, input=''):
         obj = object.__new__(cls)
-        obj.root = Suffix_Node()
+        obj.root = SuffixNode()
         obj.root.depth = 0
         obj.root.idx = 0
         obj.root.parent = obj.root
@@ -85,23 +44,22 @@ class SuffixTree():
 
     @classmethod
     def methods(cls):
-        return ['__new__', '__str__', 'lcs', 'find', 'find_all']
+        return ['__new__', 'lcs', 'find', 'find_all']
 
     def _check_input(self, input):
         if isinstance(input, str):
-            return 'st'
+            return 'str'
         elif isinstance(input, list):
             if all(isinstance(item, str) for item in input):
-                return 'gst'
-
+                return 'list'
         raise ValueError("String argument should be of type String or a list of strings")
 
     def build(self, x):
         type = self._check_input(x)
-        if type == 'st':
+        if type == 'str':
             x += next(self._terminalSymbolsGenerator())
             self._build(x)
-        if type == 'gst':
+        if type == 'list':
             self._build_generalized(x)
 
     def _build(self, x):
@@ -130,7 +88,7 @@ class SuffixTree():
     def _create_node(self, x, u, d):
         i = u.idx
         p = u.parent
-        v = Suffix_Node(idx=i, depth=d)
+        v = SuffixNode(idx=i, depth=d)
         v._add_transition_link(u, x[i + d])
         u.parent = v
         p._add_transition_link(v, x[i + p.depth])
@@ -138,7 +96,7 @@ class SuffixTree():
         return v
 
     def _create_leaf(self, x, i, u, d):
-        w = Suffix_Node()
+        w = SuffixNode()
         w.idx = i
         w.depth = len(x) - i
         u._add_transition_link(w, x[i + d])
@@ -256,5 +214,4 @@ class SuffixTree():
         UPPAs = list(list(range(0xE000, 0xF8FF+1)) + list(range(0xF0000, 0xFFFFD+1)) + list(range(0x100000, 0x10FFFD+1)))
         for i in UPPAs:
             yield (chr(i))
-
         raise ValueError("To many input strings.")

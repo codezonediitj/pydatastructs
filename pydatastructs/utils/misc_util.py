@@ -9,7 +9,8 @@ __all__ = [
     'Set',
     'CartesianTreeNode',
     'RedBlackTreeNode',
-    'TrieNode'
+    'TrieNode',
+    'SuffixNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -446,3 +447,60 @@ def _comp(u, v, tcomp):
         return False
     else:
         return tcomp(u, v)
+
+class SuffixNode(Node):
+    """
+    Represents nodes in the suffix tree data structure.
+
+    Parameters
+    ==========
+
+    string: The string to be stored in the tree.
+          Optional, by default None.
+    list: A list of strings to be stored in suffix tree.
+          Optional, by default None.
+    """
+
+    __slots__ = ['_suffix_link', 'transition_links', 'idx', 'depth', 'parent', 'generalized_idxs']
+
+    def __new__(cls, idx=-1, parentNode=None, depth=-1):
+        obj = object.__new__(cls)
+        obj._suffix_link = None
+        obj.transition_links = {}
+        obj.idx = idx
+        obj.depth = depth
+        obj.parent = parentNode
+        obj.generalized_idxs = {}
+        return obj
+
+    def _add_suffix_link(self, snode):
+        self._suffix_link = snode
+
+    def _get_suffix_link(self):
+        if self._suffix_link is not None:
+            return self._suffix_link
+        else:
+            return False
+
+    def _get_transition_link(self, suffix):
+        return False if suffix not in self.transition_links else self.transition_links[suffix]
+
+    def _add_transition_link(self, snode, suffix):
+        self.transition_links[suffix] = snode
+
+    def _has_transition(self, suffix):
+        return suffix in self.transition_links
+
+    def is_leaf(self):
+        return len(self.transition_links) == 0
+
+    def _traverse(self, f):
+        for node in self.transition_links.values():
+            node._traverse(f)
+        f(self)
+
+    def _get_leaves(self):
+        if self.is_leaf():
+            return {self}
+        else:
+            return {x for n in self.transition_links.values() for x in n._get_leaves()}
