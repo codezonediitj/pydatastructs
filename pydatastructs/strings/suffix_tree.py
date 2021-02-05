@@ -55,6 +55,19 @@ class SuffixTree():
         raise ValueError("String argument should be of type String or a list of strings")
 
     def build(self, x):
+        """
+        Builds the Suffix tree on the given input.
+
+        Parameters
+        ==========
+
+        x: str or list of str
+
+        Returns
+        =======
+
+        None
+        """
         type = self._check_input(x)
         if type == 'str':
             x += next(self._terminalSymbolsGenerator())
@@ -114,7 +127,6 @@ class SuffixTree():
 
     def _build_generalized(self, xs):
         terminal_gen = self._terminalSymbolsGenerator()
-
         _xs = ''.join([x + next(terminal_gen) for x in xs])
         self.word = _xs
         self._generalized_word_starts(xs)
@@ -138,6 +150,20 @@ class SuffixTree():
         return i
 
     def lcs(self, stringIdxs = -1):
+        """
+        Finds the Largest Common Substring of Strings provided in stringIdxs.
+        If stringIdxs is not provided, the LCS of all strings is returned.
+
+        Parameters
+        ==========
+
+        stringIdxs: int or list of int
+
+        Returns
+        =======
+
+        Longest Common Substring
+        """
         if stringIdxs == -1 or not isinstance(stringIdxs, list):
             stringIdxs = set(range(len(self.word_starts)))
         else:
@@ -164,6 +190,21 @@ class SuffixTree():
             i += len(xs[n]) + 1
 
     def find(self, y):
+        """
+        Finds the starting position of the substring y in the string used for
+        building the Suffix tree.
+
+        Parameters
+        ==========
+
+        y: str
+
+        Returns
+        =======
+
+        Index of the starting position of string y in the string used for building the Suffix tree
+        -1 if y is not a substring.
+        """
         node = self.root
         while True:
             edge = self._edgeLabel(node, node.parent)
@@ -186,6 +227,21 @@ class SuffixTree():
                 return -1
 
     def find_all(self, y):
+        """
+        Finds the starting position of the substring y in the string used for
+        building the Suffix tree.
+
+        Parameters
+        ==========
+
+        y: str
+
+        Returns
+        =======
+
+        Set of Index of the starting positions of string y in the string used for building the Suffix tree
+        {} if y is not a substring.
+        """
         node = self.root
         while True:
             edge = self._edgeLabel(node, node.parent)
