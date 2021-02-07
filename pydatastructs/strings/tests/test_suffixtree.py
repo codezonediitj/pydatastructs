@@ -14,10 +14,14 @@ def test_suffixtree():
     assert s.find_all("He") == {0, 10}
     assert s.find("Win") == -1
     assert s.find_all("go") == {}
+    assert raises(AttributeError, lambda: s.longest_common_substring())
 
     f = ['integer', 'inteinteger', 'integralerint', 'iaingerntier', 'regetnerireg', 'reger']
     s = SuffixTree(f)
-    assert s.lcs() == 'er'
+    assert s.longest_common_substring() == 'er'
+    f = ['integer', 'inteinteger', 'integralerint', 'iainegerntier', 'regetnerireg', 'reger']
+    s = SuffixTree(f)
+    assert s.longest_common_substring(7) == 'eg'
 
     assert raises(ValueError, lambda: SuffixTree(123))
     res = (100, 1, 0)

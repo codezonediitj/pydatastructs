@@ -21,7 +21,7 @@ class SuffixTree():
     -1
     >>> lt=["abeceda", "abecednik", "abeabecedabeabeced", "abecedaaaa", "aaabbbeeecceeeddaaaaabeceda"]
     >>> s1 = suffix(lt)
-    >>> s1.lcs()
+    >>> s1.longest_common_substring()
     'abeced'
 
     References
@@ -149,7 +149,7 @@ class SuffixTree():
                 i += 1
         return i
 
-    def lcs(self, stringIdxs = -1):
+    def longest_common_substring(self, stringIdxs = -1):
         """
         Finds the Largest Common Substring of Strings provided in stringIdxs.
         If stringIdxs is not provided, the LCS of all strings is returned.
