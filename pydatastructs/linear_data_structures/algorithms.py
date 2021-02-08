@@ -17,8 +17,9 @@ __all__ = [
     'longest_common_subsequence'
 ]
 
+
 def _merge(array, sl, el, sr, er, end, comp):
-    l, r = [],  []
+    l, r = [], []
     for i in range(sl, el + 1):
         if i <= end:
             l.append(array[i])
@@ -46,6 +47,7 @@ def _merge(array, sl, el, sr, er, end, comp):
         array[k] = r[j]
         j += 1
         k += 1
+
 
 def merge_sort_parallel(array, num_threads, **kwargs):
     """
@@ -97,20 +99,20 @@ def merge_sort_parallel(array, num_threads, **kwargs):
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
     for size in range(floor(log(end - start + 1, 2)) + 1):
-        pow_2 = 2**size
+        pow_2 = 2 ** size
         with ThreadPoolExecutor(max_workers=num_threads) as Executor:
             i = start
             while i <= end:
                 Executor.submit(
                     _merge,
                     array,
-                    i, i + pow_2 - 1,
-                    i + pow_2, i + 2*pow_2 - 1,
+                    i, i + pow_2 - 1, i + pow_2, i + 2 * pow_2 - 1,
                     end, comp).result()
-                i = i + 2*pow_2
+                i = i + 2 * pow_2
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
+
 
 def brick_sort(array, **kwargs):
     """
@@ -160,22 +162,24 @@ def brick_sort(array, **kwargs):
     is_sorted = False
     while is_sorted is False:
         is_sorted = True
-        for i in range(start+1, end, 2):
-            if _comp(array[i+1], array[i], comp):
-                array[i], array[i+1] = array[i+1], array[i]
+        for i in range(start + 1, end, 2):
+            if _comp(array[i + 1], array[i], comp):
+                array[i], array[i + 1] = array[i + 1], array[i]
                 is_sorted = False
         for i in range(start, end, 2):
-            if _comp(array[i+1], array[i], comp):
-                array[i], array[i+1] = array[i+1], array[i]
+            if _comp(array[i + 1], array[i], comp):
+                array[i], array[i + 1] = array[i + 1], array[i]
                 is_sorted = False
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
 
+
 def _brick_sort_swap(array, i, j, comp, is_sorted):
     if _comp(array[j], array[i], comp):
         array[i], array[j] = array[j], array[i]
         is_sorted[0] = False
+
 
 def brick_sort_parallel(array, num_threads, **kwargs):
     """
@@ -241,6 +245,7 @@ def brick_sort_parallel(array, num_threads, **kwargs):
     if _check_type(array, DynamicArray):
         array._modify(force=True)
 
+
 def heapsort(array, **kwargs):
     """
     Implements Heapsort algorithm.
@@ -286,7 +291,7 @@ def heapsort(array, **kwargs):
     end = kwargs.get('end', len(array) - 1)
 
     h = BinaryHeap(heap_property="min")
-    for i in range(start, end+1):
+    for i in range(start, end + 1):
         if array[i] is not None:
             h.insert(array[i])
         array[i] = None
@@ -298,6 +303,7 @@ def heapsort(array, **kwargs):
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
+
 
 def counting_sort(array: Array) -> Array:
     """
@@ -360,27 +366,29 @@ def counting_sort(array: Array) -> Array:
 
     total = 0
     for i in range(max_val - min_val + 1):
-        count[i], total = total, count[i] +  total
+        count[i], total = total, count[i] + total
 
     output = type(array)(array._dtype,
-                        [array[i] for i in range(len(array))
-                         if array[i] is not None])
+                         [array[i] for i in range(len(array))
+                          if array[i] is not None])
     if _check_type(output, DynamicArray):
         output._modify(force=True)
 
     for i in range(len(array)):
         x = array[i]
         if x is not None:
-            output[count[x-min_val]] = x
-            count[x-min_val] += 1
+            output[count[x - min_val]] = x
+            count[x - min_val] += 1
 
     return output
+
 
 def _matrix_multiply_helper(m1, m2, row, col):
     s = 0
     for i in range(len(m1)):
         s += m1[row][i] * m2[i][col]
     return s
+
 
 def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
     """
@@ -428,8 +436,8 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
     row_matrix_2, col_matrix_2 = len(matrix_2), len(matrix_2[0])
 
     if col_matrix_1 != row_matrix_2:
-        raise ValueError("Matrix size mismatch: %s * %s"%(
-        (row_matrix_1, col_matrix_1), (row_matrix_2, col_matrix_2)))
+        raise ValueError("Matrix size mismatch: %s * %s" % (
+            (row_matrix_1, col_matrix_1), (row_matrix_2, col_matrix_2)))
 
     C = [[None for i in range(col_matrix_1)] for j in range(row_matrix_2)]
 
@@ -443,15 +451,17 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
 
     return C
 
+
 def _bucket_sort_helper(bucket: Array) -> Array:
     for i in range(1, len(bucket)):
         key = bucket[i]
         j = i - 1
         while j >= 0 and bucket[j] > key:
-            bucket[j+1] = bucket[j]
+            bucket[j + 1] = bucket[j]
             j -= 1
-        bucket[j+1] = key
+        bucket[j + 1] = key
     return bucket
+
 
 def bucket_sort(array: Array, **kwargs) -> Array:
     """
@@ -505,14 +515,15 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
 
-    #Find maximum value in the list and use length of the list to determine which value in the list goes into which bucket
+    # Find maximum value in the list and use length of the list to determine which value in the list goes into which
+    # - bucket
     max_value = None
-    for i in range(start, end+1):
+    for i in range(start, end + 1):
         if array[i] is not None:
             max_value = array[i]
 
     count = 0
-    for i in range(start, end+1):
+    for i in range(start, end + 1):
         if array[i] is not None:
             count += 1
             if array[i] > max_value:
@@ -531,7 +542,7 @@ def bucket_sort(array: Array, **kwargs) -> Array:
             if j is not count:
                 buckets_list[j].append(array[i])
             else:
-                buckets_list[count-1].append(array[i])
+                buckets_list[count - 1].append(array[i])
 
     # Sort elements within the buckets using Insertion Sort
     for z in range(count):
@@ -544,10 +555,11 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     for i in range(end, end - number_of_null_values, -1):
         array[i] = None
     for i in range(start, end - number_of_null_values + 1):
-        array[i] = sorted_list[i-start]
+        array[i] = sorted_list[i - start]
     if _check_type(array, DynamicArray):
         array._modify(force=True)
     return array
+
 
 def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
     """
@@ -599,6 +611,7 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
 
     .. [1] https://en.wikipedia.org/wiki/Cocktail_shaker_sort
     """
+
     def swap(i, j):
         array[i], array[j] = array[j], array[i]
 
@@ -611,13 +624,13 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
 
         swapping = True
         for j in range(lower, upper):
-            if _comp(array[j], array[j+1], comp) is False:
+            if _comp(array[j], array[j + 1], comp) is False:
                 swap(j + 1, j)
                 swapping = False
 
         upper = upper - 1
         for j in range(upper, lower, -1):
-            if _comp(array[j-1], array[j], comp) is False:
+            if _comp(array[j - 1], array[j], comp) is False:
                 swap(j, j - 1)
                 swapping = False
         lower = lower + 1
@@ -626,6 +639,7 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
         array._modify(force=True)
 
     return array
+
 
 def quick_sort(array: Array, **kwargs) -> Array:
     """
@@ -694,7 +708,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
     def partition(low, high, pick_pivot_element):
         i = (low - 1)
         x = pick_pivot_element(low, high, array)
-        for j in range(low , high):
+        for j in range(low, high):
             if _comp(array[j], x, comp) is True:
                 i = i + 1
                 array[i], array[j] = array[j], array[i]
@@ -723,6 +737,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
         array._modify(force=True)
 
     return array
+
 
 def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalArray) -> OneDimensionalArray:
     """
@@ -776,14 +791,14 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
     for i in range(1, row + 1):
         check_mat[i] = [(0, []) for _ in range(col + 1)]
         for j in range(1, col + 1):
-            if seq1[i-1] == seq2[j-1]:
-                temp = check_mat[i-1][j-1][1][:]
-                temp.append(seq1[i-1])
-                check_mat[i][j] = (check_mat[i-1][j-1][0] + 1, temp)
+            if seq1[i - 1] == seq2[j - 1]:
+                temp = check_mat[i - 1][j - 1][1][:]
+                temp.append(seq1[i - 1])
+                check_mat[i][j] = (check_mat[i - 1][j - 1][0] + 1, temp)
             else:
-                if check_mat[i-1][j][0] > check_mat[i][j-1][0]:
-                    check_mat[i][j] = check_mat[i-1][j]
+                if check_mat[i - 1][j][0] > check_mat[i][j - 1][0]:
+                    check_mat[i][j] = check_mat[i - 1][j]
                 else:
-                    check_mat[i][j] = check_mat[i][j-1]
+                    check_mat[i][j] = check_mat[i][j - 1]
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])

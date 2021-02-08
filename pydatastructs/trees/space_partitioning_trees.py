@@ -6,6 +6,7 @@ __all__ = [
     'OneDimensionalSegmentTree'
 ]
 
+
 class OneDimensionalSegmentTree(object):
     """
     Represents one dimensional segment trees.
@@ -47,8 +48,8 @@ class OneDimensionalSegmentTree(object):
     def __new__(cls, segs):
         obj = object.__new__(cls)
         if any((not isinstance(seg, (tuple, list, set)) or len(seg) != 2)
-                for seg in segs):
-                    raise ValueError('%s is invalid set of intervals'%(segs))
+               for seg in segs):
+            raise ValueError('%s is invalid set of intervals' % (segs))
         for i in range(len(segs)):
             segs[i] = list(segs[i])
             segs[i].sort()
@@ -139,7 +140,7 @@ class OneDimensionalSegmentTree(object):
         i = 0
         while i < len(endpoints) - 1:
             elem_int.append(TreeNode([True, endpoints[i], endpoints[i], True], None))
-            elem_int.append(TreeNode([False, endpoints[i], endpoints[i+1], False], None))
+            elem_int.append(TreeNode([False, endpoints[i], endpoints[i + 1], False], None))
             i += 1
         elem_int.append(TreeNode([True, endpoints[i], endpoints[i], True], None))
         elem_int.append(TreeNode([False, endpoints[i], endpoints[i] + 1, False], None))

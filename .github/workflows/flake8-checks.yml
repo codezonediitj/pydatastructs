@@ -23,4 +23,4 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8
       - name: Lint with flake8
-        run: flake8 . --isolated --exclude=.cache,.venv,.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,**/migrations/** --ignore=E203,W503 --max-line-length=119
+        run: flake8 . --isolated --exclude=.cache,.venv,.svn,CVS,.bzr,.hg,.git,__pycache__,__init__.py,.tox,**/migrations/** --count --ignore=E125,E741,E731,E501 --show-source --statistics --max-line-length=119

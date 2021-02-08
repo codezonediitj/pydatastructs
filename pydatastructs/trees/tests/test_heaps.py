@@ -5,8 +5,8 @@ from pydatastructs.utils.misc_util import TreeNode, BinomialTreeNode
 from pydatastructs.utils.raises_util import raises
 from collections import deque as Queue
 
-def test_BinaryHeap():
 
+def test_BinaryHeap():
     max_heap = BinaryHeap(heap_property="max")
 
     assert raises(IndexError, lambda: max_heap.extract())
@@ -21,26 +21,24 @@ def test_BinaryHeap():
     max_heap.insert(2, 2)
     max_heap.insert(7, 7)
     assert str(max_heap) == \
-        ("[(100, 100, [1, 2]), (19, 19, [3, 4]), "
-        "(36, 36, [5, 6]), (17, 17, [7, 8]), "
-        "(3, 3, []), (25, 25, []), (1, 1, []), "
-        "(2, 2, []), (7, 7, [])]")
+           ("[(100, 100, [1, 2]), (19, 19, [3, 4]), "
+            "(36, 36, [5, 6]), (17, 17, [7, 8]), "
+            "(3, 3, []), (25, 25, []), (1, 1, []), "
+            "(2, 2, []), (7, 7, [])]")
 
     assert max_heap.extract().key == 100
 
     expected_sorted_elements = [36, 25, 19, 17, 7, 3, 2, 1]
-    l = max_heap.heap[0].left
-    l = max_heap.heap[0].right
     sorted_elements = []
     for _ in range(8):
         sorted_elements.append(max_heap.extract().key)
     assert expected_sorted_elements == sorted_elements
 
     elements = [
-                TreeNode(7, 7), TreeNode(25, 25), TreeNode(100, 100),
-                TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
-                TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
-            ]
+        TreeNode(7, 7), TreeNode(25, 25), TreeNode(100, 100),
+        TreeNode(1, 1), TreeNode(2, 2), TreeNode(3, 3),
+        TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
+    ]
     min_heap = BinaryHeap(elements=elements, heap_property="min")
     assert min_heap.extract().key == 1
 
@@ -49,22 +47,20 @@ def test_BinaryHeap():
     assert expected_sorted_elements == sorted_elements
 
     non_TreeNode_elements = [
-                (7, 7), TreeNode(25, 25), TreeNode(100, 100),
-                TreeNode(1, 1), (2, 2), TreeNode(3, 3),
-                TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
-            ]
-    assert raises(TypeError, lambda:
-                BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
+        (7, 7), TreeNode(25, 25), TreeNode(100, 100),
+        TreeNode(1, 1), (2, 2), TreeNode(3, 3),
+        TreeNode(17, 17), TreeNode(19, 19), TreeNode(36, 36)
+    ]
+    assert raises(TypeError, lambda: BinaryHeap(elements=non_TreeNode_elements, heap_property='min'))
 
     non_TreeNode_elements = DynamicOneDimensionalArray(int, 0)
     non_TreeNode_elements.append(1)
     non_TreeNode_elements.append(2)
-    assert raises(TypeError, lambda:
-                BinaryHeap(elements = non_TreeNode_elements, heap_property='min'))
+    assert raises(TypeError, lambda: BinaryHeap(elements=non_TreeNode_elements, heap_property='min'))
 
     non_heapable = "[1, 2, 3]"
-    assert raises(ValueError, lambda:
-                BinaryHeap(elements = non_heapable, heap_property='min'))
+    assert raises(ValueError, lambda: BinaryHeap(elements=non_heapable, heap_property='min'))
+
 
 def test_TernaryHeap():
     max_heap = TernaryHeap(heap_property="max")
@@ -105,6 +101,7 @@ def test_TernaryHeap():
     sorted_elements = [min_heap.extract().key for _ in range(8)]
     assert expected_sorted_elements == sorted_elements
 
+
 def test_DHeap():
     assert raises(ValueError, lambda: DHeap(heap_property="none", d=4))
     max_heap = DHeap(heap_property="max", d=5)
@@ -121,8 +118,8 @@ def test_DHeap():
     max_heap.insert(7, 7)
     assert str(max_heap) == \
            ('[(100, 100, [1, 2, 3, 4]), (25, 25, [5, 6, 7, 8]), '
-           '(36, 36, []), (17, 17, []), (3, 3, []), (19, 19, []), '
-           '(1, 1, []), (2, 2, []), (7, 7, [])]')
+            '(36, 36, []), (17, 17, []), (3, 3, []), (19, 19, []), '
+            '(1, 1, []), (2, 2, []), (7, 7, [])]')
 
     assert max_heap.extract().key == 100
 
@@ -144,36 +141,32 @@ def test_DHeap():
     sorted_elements = [min_heap.extract().key for _ in range(8)]
     assert expected_sorted_elements == sorted_elements
 
-def test_BinomialHeap():
 
+def test_BinomialHeap():
     # Corner cases
-    assert raises(TypeError, lambda:
-                  BinomialHeap(
-                    root_list=[BinomialTreeNode(1, 1), None])
-                  ) is True
+    assert raises(TypeError, lambda: BinomialHeap(
+        root_list=[BinomialTreeNode(1, 1), None])) is True
     tree1 = BinomialTree(BinomialTreeNode(1, 1), 0)
     tree2 = BinomialTree(BinomialTreeNode(2, 2), 0)
     bh = BinomialHeap(root_list=[tree1, tree2])
-    assert raises(TypeError, lambda:
-                  bh.merge_tree(BinomialTreeNode(2, 2), None))
-    assert raises(TypeError, lambda:
-                  bh.merge(None))
+    assert raises(TypeError, lambda: bh.merge_tree(BinomialTreeNode(2, 2), None))
+    assert raises(TypeError, lambda: bh.merge(None))
 
     # Testing BinomialHeap.merge
-    nodes = [BinomialTreeNode(1, 1), # 0
-            BinomialTreeNode(3, 3), # 1
-            BinomialTreeNode(9, 9), # 2
-            BinomialTreeNode(11, 11), # 3
-            BinomialTreeNode(6, 6), # 4
-            BinomialTreeNode(14, 14), # 5
-            BinomialTreeNode(2, 2), # 6
-            BinomialTreeNode(7, 7), # 7
-            BinomialTreeNode(4, 4), # 8
-            BinomialTreeNode(8, 8), # 9
-            BinomialTreeNode(12, 12), # 10
-            BinomialTreeNode(10, 10), # 11
-            BinomialTreeNode(5, 5), # 12
-            BinomialTreeNode(21, 21)] # 13
+    nodes = [BinomialTreeNode(1, 1),  # 0
+             BinomialTreeNode(3, 3),  # 1
+             BinomialTreeNode(9, 9),  # 2
+             BinomialTreeNode(11, 11),  # 3
+             BinomialTreeNode(6, 6),  # 4
+             BinomialTreeNode(14, 14),  # 5
+             BinomialTreeNode(2, 2),  # 6
+             BinomialTreeNode(7, 7),  # 7
+             BinomialTreeNode(4, 4),  # 8
+             BinomialTreeNode(8, 8),  # 9
+             BinomialTreeNode(12, 12),  # 10
+             BinomialTreeNode(10, 10),  # 11
+             BinomialTreeNode(5, 5),  # 12
+             BinomialTreeNode(21, 21)]  # 13
 
     nodes[2].add_children(nodes[3])
     nodes[4].add_children(nodes[5])

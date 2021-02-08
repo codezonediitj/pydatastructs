@@ -15,11 +15,13 @@ __all__ = [
 _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)
 
+
 class Node(object):
     """
     Abstract class representing a node.
     """
     pass
+
 
 class TreeNode(Node):
     """
@@ -59,6 +61,7 @@ class TreeNode(Node):
         """
         return str((self.left, self.key, self.data, self.right))
 
+
 class CartesianTreeNode(TreeNode):
     """
     Represents node in cartesian trees.
@@ -87,6 +90,7 @@ class CartesianTreeNode(TreeNode):
         """
         return str((self.left, self.key, self.priority, self.data, self.right))
 
+
 class RedBlackTreeNode(TreeNode):
     """
     Represents node in red-black trees.
@@ -112,6 +116,7 @@ class RedBlackTreeNode(TreeNode):
         obj = TreeNode.__new__(cls, key, data)
         obj.color = 1
         return obj
+
 
 class BinomialTreeNode(TreeNode):
     """
@@ -151,9 +156,9 @@ class BinomialTreeNode(TreeNode):
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.children, obj.parent, obj.is_root = (
-        DynamicOneDimensionalArray(BinomialTreeNode, 0),
-        None,
-        False
+            DynamicOneDimensionalArray(BinomialTreeNode, 0),
+            None,
+            False
         )
         return obj
 
@@ -170,6 +175,7 @@ class BinomialTreeNode(TreeNode):
         For printing the key and data.
         """
         return str((self.key, self.data))
+
 
 class MAryTreeNode(TreeNode):
     """
@@ -238,6 +244,7 @@ class LinkedListNode(Node):
     addrs
         List of address of nodes to be assigned to each of the attributes in links.
     """
+
     @classmethod
     def methods(cls):
         return ['__new__', '__str__']
@@ -258,12 +265,15 @@ class LinkedListNode(Node):
     def __str__(self):
         return str(self.key)
 
+
 class GraphNode(Node):
     """
     Abastract class for graph nodes/vertices.
     """
+
     def __str__(self):
         return str((self.name, self.data))
+
 
 class AdjacencyListGraphNode(GraphNode):
     """
@@ -283,6 +293,7 @@ class AdjacencyListGraphNode(GraphNode):
         nodes of the current node.
         Optional, by default, None
     """
+
     @classmethod
     def methods(cls):
         return ['__new__', 'add_adjacent_node',
@@ -296,7 +307,7 @@ class AdjacencyListGraphNode(GraphNode):
             for node in adjacency_list:
                 obj.__setattr__(node.name, node)
         obj.adjacent = adjacency_list if adjacency_list is not None \
-                       else []
+            else []
         return obj
 
     def add_adjacent_node(self, name, data=None):
@@ -317,9 +328,10 @@ class AdjacencyListGraphNode(GraphNode):
         adjacency list.
         """
         if not hasattr(self, name):
-            raise ValueError("%s is not adjacent to %s"%(name, self.name))
+            raise ValueError("%s is not adjacent to %s" % (name, self.name))
         self.adjacent.remove(name)
         delattr(self, name)
+
 
 class AdjacencyMatrixGraphNode(GraphNode):
     """
@@ -347,6 +359,7 @@ class AdjacencyMatrixGraphNode(GraphNode):
         obj._impl = 'adjacency_matrix'
         return obj
 
+
 class GraphEdge(object):
     """
     Represents the concept of edges in graphs.
@@ -359,6 +372,7 @@ class GraphEdge(object):
     node2: GraphNode or it's child classes
         The target node of the edge.
     """
+
     @classmethod
     def methods(cls):
         return ['__new__', '__str__']
@@ -371,6 +385,7 @@ class GraphEdge(object):
 
     def __str__(self):
         return str((self.source.name, self.target.name))
+
 
 class Set(object):
     """
@@ -396,8 +411,9 @@ class Set(object):
         obj = object.__new__(cls)
         obj.key = key
         obj.data = data
-        obj.parent, obj.size = [None]*2
+        obj.parent, obj.size = [None] * 2
         return obj
+
 
 class TrieNode(Node):
     """
@@ -431,6 +447,7 @@ class TrieNode(Node):
 
     def remove_child(self, char: str) -> None:
         self._children.pop(char)
+
 
 def _comp(u, v, tcomp):
     """

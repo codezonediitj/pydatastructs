@@ -1,4 +1,4 @@
-from pydatastructs.utils.misc_util import _check_type, LinkedListNode
+from pydatastructs.utils.misc_util import LinkedListNode
 
 __all__ = [
     'SinglyLinkedList',
@@ -6,6 +6,7 @@ __all__ = [
     'SinglyCircularLinkedList',
     'DoublyCircularLinkedList'
 ]
+
 
 class LinkedList(object):
     """
@@ -112,7 +113,7 @@ class LinkedList(object):
             index = self.size + index
 
         if index >= self.size:
-            raise IndexError('%d index is out of range.'%(index))
+            raise IndexError('%d index is out of range.' % index)
 
         counter = 0
         current_node = self.head
@@ -202,6 +203,7 @@ class LinkedList(object):
         """
         return self.extract(-1)
 
+
 class DoublyLinkedList(LinkedList):
     """
     Represents Doubly Linked List
@@ -244,13 +246,13 @@ class DoublyLinkedList(LinkedList):
     @classmethod
     def methods(cls):
         return ['__new__', 'insert_after',
-        'insert_before', 'insert_at', 'extract']
+                'insert_before', 'insert_at', 'extract']
 
     def insert_after(self, prev_node, key, data=None):
         self.size += 1
         new_node = LinkedListNode(key, data,
-                                 links=['next', 'prev'],
-                                 addrs=[None, None])
+                                  links=['next', 'prev'],
+                                  addrs=[None, None])
         new_node.next = prev_node.next
         if new_node.next is not None:
             new_node.next.prev = new_node
@@ -263,8 +265,8 @@ class DoublyLinkedList(LinkedList):
     def insert_before(self, next_node, key, data=None):
         self.size += 1
         new_node = LinkedListNode(key, data,
-                                 links=['next', 'prev'],
-                                 addrs=[None, None])
+                                  links=['next', 'prev'],
+                                  addrs=[None, None])
         new_node.prev = next_node.prev
         next_node.prev = new_node
         new_node.next = next_node
@@ -281,12 +283,12 @@ class DoublyLinkedList(LinkedList):
             index = self.size + index
 
         if index > self.size:
-            raise IndexError('%d index is out of range.'%(index))
+            raise IndexError('%d index is out of range.' % (index))
 
         self.size += 1
         new_node = LinkedListNode(key, data,
-                                    links=['next', 'prev'],
-                                    addrs=[None, None])
+                                  links=['next', 'prev'],
+                                  addrs=[None, None])
         if self.size == 1:
             self.head, self.tail = \
                 new_node, new_node
@@ -317,7 +319,7 @@ class DoublyLinkedList(LinkedList):
             index = self.size + index
 
         if index >= self.size:
-            raise IndexError('%d is out of range.'%(index))
+            raise IndexError('%d is out of range.' % (index))
 
         self.size -= 1
         counter = 0
@@ -336,6 +338,7 @@ class DoublyLinkedList(LinkedList):
         if index == self.size:
             self.tail = current_node.prev
         return current_node
+
 
 class SinglyLinkedList(LinkedList):
     """
@@ -379,13 +382,13 @@ class SinglyLinkedList(LinkedList):
     @classmethod
     def methods(cls):
         return ['insert_after', 'insert_at',
-        'extract']
+                'extract']
 
     def insert_after(self, prev_node, key, data=None):
         self.size += 1
         new_node = LinkedListNode(key, data,
-                                 links=['next'],
-                                 addrs=[None])
+                                  links=['next'],
+                                  addrs=[None])
         new_node.next = prev_node.next
         prev_node.next = new_node
 
@@ -400,12 +403,12 @@ class SinglyLinkedList(LinkedList):
             index = self.size + index
 
         if index > self.size:
-            raise IndexError('%d index is out of range.'%(index))
+            raise IndexError('%d index is out of range.' % (index))
 
         self.size += 1
         new_node = LinkedListNode(key, data,
-                                    links=['next'],
-                                    addrs=[None])
+                                  links=['next'],
+                                  addrs=[None])
         if self.size == 1:
             self.head, self.tail = \
                 new_node, new_node
@@ -433,7 +436,7 @@ class SinglyLinkedList(LinkedList):
             index = self.size + index
 
         if index >= self.size:
-            raise IndexError('%d is out of range.'%(index))
+            raise IndexError('%d is out of range.' % (index))
 
         self.size -= 1
         counter = 0
@@ -450,6 +453,7 @@ class SinglyLinkedList(LinkedList):
         if index == self.size:
             self.tail = prev_node
         return current_node
+
 
 class SinglyCircularLinkedList(SinglyLinkedList):
     """
@@ -488,7 +492,7 @@ class SinglyCircularLinkedList(SinglyLinkedList):
         return ['insert_after', 'insert_at', 'extract']
 
     def insert_after(self, prev_node, key, data=None):
-        super(SinglyCircularLinkedList, self).\
+        super(SinglyCircularLinkedList, self). \
             insert_after(prev_node, key, data)
         if prev_node.next.next == self.head:
             self.tail = prev_node.next
@@ -510,6 +514,7 @@ class SinglyCircularLinkedList(SinglyLinkedList):
         elif index == 0:
             self.tail.next = self.head
         return node
+
 
 class DoublyCircularLinkedList(DoublyLinkedList):
     """
@@ -545,22 +550,22 @@ class DoublyCircularLinkedList(DoublyLinkedList):
     @classmethod
     def methods(cls):
         return ['insert_after', 'insert_before',
-        'insert_at', 'extract']
+                'insert_at', 'extract']
 
     def insert_after(self, prev_node, key, data=None):
-        super(DoublyCircularLinkedList, self)\
+        super(DoublyCircularLinkedList, self) \
             .insert_after(prev_node, key, data)
         if prev_node.next.next == self.head:
             self.tail = prev_node.next
 
     def insert_before(self, next_node, key, data=None):
-        super(DoublyCircularLinkedList, self).\
+        super(DoublyCircularLinkedList, self). \
             insert_before(next_node, key, data)
         if next_node == self.head:
             self.head = next_node.prev
 
     def insert_at(self, index, key, data=None):
-        super(DoublyCircularLinkedList, self).\
+        super(DoublyCircularLinkedList, self). \
             insert_at(index, key, data)
         if self.size == 1:
             self.head.next = self.head

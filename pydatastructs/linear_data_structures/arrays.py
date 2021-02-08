@@ -6,15 +6,18 @@ __all__ = [
     'DynamicOneDimensionalArray'
 ]
 
+
 class Array(object):
-    '''
+    """
     Abstract class for arrays in pydatastructs.
-    '''
+    """
+
     def __str__(self) -> str:
         return str(self._data)
 
+
 class OneDimensionalArray(Array):
-    '''
+    """
     Represents one dimensional arrays.
 
     Parameters
@@ -63,25 +66,23 @@ class OneDimensionalArray(Array):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Array_data_structure#One-dimensional_arrays
-    '''
+    """
 
     __slots__ = ['_size', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype is NoneType or len(args) not in (1, 2):
             raise ValueError("1D array cannot be created due to incorrect"
-                                " information.")
+                             " information.")
         obj = Array.__new__(cls)
         obj._dtype = dtype
         if len(args) == 2:
-            if _check_type(args[0], list) and \
-                _check_type(args[1], int):
+            if _check_type(args[0], list) and _check_type(args[1], int):
                 for i in range(len(args[0])):
                     if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
                 size, data = args[1], list(args[0])
-            elif _check_type(args[1], list) and \
-                _check_type(args[0], int):
+            elif _check_type(args[1], list) and _check_type(args[0], int):
                 for i in range(len(args[1])):
                     if _check_type(args[1][i], dtype) is False:
                         args[1][i] = dtype(args[1][i])
@@ -91,7 +92,7 @@ class OneDimensionalArray(Array):
                                 "expected type of data is list/tuple.")
             if size != len(data):
                 raise ValueError("Conflict in the size %s and length of data %s"
-                                 %(size, len(data)))
+                                 % (size, len(data)))
             obj._size, obj._data = size, data
 
         elif len(args) == 1:
@@ -103,8 +104,7 @@ class OneDimensionalArray(Array):
                 for i in range(len(args[0])):
                     if _check_type(args[0][i], dtype) is False:
                         args[0][i] = dtype(args[0][i])
-                obj._size, obj._data = len(args[0]), \
-                                        list(args[0])
+                obj._size, obj._data = len(args[0]), list(args[0])
             else:
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
@@ -114,7 +114,7 @@ class OneDimensionalArray(Array):
     @classmethod
     def methods(cls):
         return ['__new__', '__getitem__',
-        '__setitem__', 'fill', '__len__']
+                '__setitem__', 'fill', '__len__']
 
     def __getitem__(self, i):
         if i >= self._size or i < 0:
@@ -136,6 +136,7 @@ class OneDimensionalArray(Array):
 
     def __len__(self):
         return self._size
+
 
 class MultiDimensionalArray(Array):
     """
@@ -201,7 +202,7 @@ class MultiDimensionalArray(Array):
         index = 0
         while n_dimensions > 1:
             size = dimensions[index]
-            for i in range(index+1,  len(dimensions)):
+            for i in range(index + 1, len(dimensions)):
                 size = size * dimensions[i]
             d_sizes.append(size)
             n_dimensions -= 1
@@ -254,14 +255,16 @@ class MultiDimensionalArray(Array):
         shape = []
         size = len(self._sizes)
         for i in range(1, size):
-            shape.append(self._sizes[i-1]//self._sizes[i])
+            shape.append(self._sizes[i - 1] // self._sizes[i])
         return tuple(shape)
+
 
 class DynamicArray(Array):
     """
     Abstract class for dynamic arrays.
     """
     pass
+
 
 class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     """
@@ -341,8 +344,8 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     @classmethod
     def methods(cls):
         return ['__new__', '_modify',
-        'append', 'delete', 'size',
-        '__str__', '__reversed__']
+                'append', 'delete', 'size',
+                '__str__', '__reversed__']
 
     def _modify(self, force=False):
         """
@@ -353,9 +356,9 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             i = -1
             while self._data[i] is None:
                 i -= 1
-            self._last_pos_filled = i%self._size
-        if (self._num/self._size < self._load_factor):
-            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
+            self._last_pos_filled = i % self._size
+        if self._num / self._size < self._load_factor:
+            arr_new = OneDimensionalArray(self._dtype, 2 * self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
                 if self._data[i] is not None:
@@ -367,7 +370,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
 
     def append(self, el):
         if self._last_pos_filled + 1 == self._size:
-            arr_new = OneDimensionalArray(self._dtype, 2*self._size + 1)
+            arr_new = OneDimensionalArray(self._dtype, 2 * self._size + 1)
             for i in range(self._last_pos_filled + 1):
                 arr_new[i] = self[i]
             arr_new[self._last_pos_filled + 1] = el
@@ -380,8 +383,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         self._modify()
 
     def delete(self, idx):
-        if idx <= self._last_pos_filled and idx >= 0 and \
-            self[idx] is not None:
+        if idx <= self._last_pos_filled and idx >= 0 and self[idx] is not None:
             self[idx] = None
             self._num -= 1
             if self._last_pos_filled == idx:
@@ -403,6 +405,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         for i in range(self._last_pos_filled, -1, -1):
             yield self._data[i]
 
+
 class ArrayForTrees(DynamicOneDimensionalArray):
     """
     Utility dynamic array for storing nodes of a tree.
@@ -412,10 +415,11 @@ class ArrayForTrees(DynamicOneDimensionalArray):
 
     pydatastructs.linear_data_structures.arrays.DynamicOneDimensionalArray
     """
+
     def _modify(self):
-        if self._num/self._size < self._load_factor:
+        if self._num / self._size < self._load_factor:
             new_indices = {}
-            arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
+            arr_new = OneDimensionalArray(self._dtype, 2 * self._num + 1)
             j = 0
             for i in range(self._last_pos_filled + 1):
                 if self[i] is not None:

@@ -1,7 +1,7 @@
 from pydatastructs import Trie
 
-def test_Trie():
 
+def test_Trie():
     strings = ["A", "to", "tea", "ted", "ten", "i", "in", "inn"]
     trie = Trie()
     for string in strings:

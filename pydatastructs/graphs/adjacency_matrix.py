@@ -1,10 +1,10 @@
 from pydatastructs.graphs.graph import Graph
-from pydatastructs.linear_data_structures import OneDimensionalArray
-from pydatastructs.utils.misc_util import AdjacencyMatrixGraphNode, GraphEdge
+from pydatastructs.utils.misc_util import GraphEdge
 
 __all__ = [
     'AdjacencyMatrix'
 ]
+
 
 class AdjacencyMatrix(Graph):
     """
@@ -15,6 +15,7 @@ class AdjacencyMatrix(Graph):
 
     pydatastructs.graphs.graph.Graph
     """
+
     def __new__(cls, *vertices):
         obj = object.__new__(cls)
         obj.vertices = [vertex.name for vertex in vertices]
@@ -27,10 +28,10 @@ class AdjacencyMatrix(Graph):
         return obj
 
     @classmethod
-    def methods(self):
+    def methods(cls):
         return ['is_adjacent', 'neighbors',
-        'add_edge', 'get_edge', 'remove_edge',
-        '__new__']
+                'add_edge', 'get_edge', 'remove_edge',
+                '__new__']
 
     def is_adjacent(self, node1, node2):
         node1, node2 = str(node1), str(node2)
@@ -44,16 +45,16 @@ class AdjacencyMatrix(Graph):
         for node, presence in row.items():
             if presence:
                 neighbors.append(self.__getattribute__(
-                                 str(node)))
+                    str(node)))
         return neighbors
 
     def add_vertex(self, node):
         raise NotImplementedError("Currently we allow "
-                "adjacency matrix for static graphs only")
+                                  "adjacency matrix for static graphs only")
 
     def remove_vertex(self, node):
         raise NotImplementedError("Currently we allow "
-                "adjacency matrix for static graphs only.")
+                                  "adjacency matrix for static graphs only.")
 
     def add_edge(self, source, target, cost=None):
         source, target = str(source), str(target)

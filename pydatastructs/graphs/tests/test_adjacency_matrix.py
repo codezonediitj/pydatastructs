@@ -1,6 +1,7 @@
 from pydatastructs.graphs import Graph
 from pydatastructs.utils import AdjacencyMatrixGraphNode
 
+
 def test_AdjacencyMatrix():
     v_0 = AdjacencyMatrixGraphNode(0, 0)
     v_1 = AdjacencyMatrixGraphNode(1, 1)

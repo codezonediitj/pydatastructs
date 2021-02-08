@@ -1,12 +1,12 @@
 from pydatastructs import (breadth_first_search, Graph,
-breadth_first_search_parallel, minimum_spanning_tree,
-minimum_spanning_tree_parallel, strongly_connected_components,
-depth_first_search, shortest_paths, topological_sort,
-topological_sort_parallel)
+                           breadth_first_search_parallel, minimum_spanning_tree,
+                           minimum_spanning_tree_parallel, strongly_connected_components,
+                           depth_first_search, shortest_paths, topological_sort,
+                           topological_sort_parallel)
 from pydatastructs.utils.raises_util import raises
 
-def test_breadth_first_search():
 
+def test_breadth_first_search():
     def _test_breadth_first_search(ds):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -27,6 +27,7 @@ def test_breadth_first_search():
             G1.add_edge(*edge)
 
         parent = {}
+
         def bfs_tree(curr_node, next_node, parent):
             if next_node != "":
                 parent[next_node] = curr_node
@@ -34,7 +35,7 @@ def test_breadth_first_search():
 
         breadth_first_search(G1, V1.name, bfs_tree, parent)
         assert (parent[V3.name] == V1.name and parent[V2.name] == V1.name) or \
-            (parent[V3.name] == V2.name and parent[V2.name] == V1.name)
+               (parent[V3.name] == V2.name and parent[V2.name] == V1.name)
 
         V4 = GraphNode(0)
         V5 = GraphNode(1)
@@ -56,6 +57,7 @@ def test_breadth_first_search():
             G2.add_edge(*edge)
 
         path = []
+
         def path_finder(curr_node, next_node, dest_node, parent, path):
             if next_node != "":
                 parent[next_node] = curr_node
@@ -77,8 +79,8 @@ def test_breadth_first_search():
     _test_breadth_first_search("List")
     _test_breadth_first_search("Matrix")
 
-def test_breadth_first_search_parallel():
 
+def test_breadth_first_search_parallel():
     def _test_breadth_first_search_parallel(ds):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -91,7 +93,6 @@ def test_breadth_first_search_parallel():
         V6 = GraphNode(5)
         V7 = GraphNode(6)
         V8 = GraphNode(7)
-
 
         G1 = Graph(V1, V2, V3, V4, V5, V6, V7, V8)
 
@@ -111,22 +112,20 @@ def test_breadth_first_search_parallel():
             G1.add_edge(*edge)
 
         parent = {}
+
         def bfs_tree(curr_node, next_node, parent):
             if next_node != "":
                 parent[next_node] = curr_node
             return True
 
         breadth_first_search_parallel(G1, V1.name, 5, bfs_tree, parent)
-        assert (parent[V2.name] == V1.name and parent[V3.name] == V1.name and
-                parent[V4.name] == V1.name and parent[V5.name] == V2.name and
-                (parent[V6.name] in (V2.name, V3.name)) and
-                (parent[V7.name] in (V3.name, V4.name)) and (parent[V8.name] == V4.name))
+        assert (parent[V2.name] == V1.name and parent[V3.name] == V1.name and parent[V4.name] == V1.name and parent[V5.name] == V2.name and (parent[V6.name] in (V2.name, V3.name)) and (parent[V7.name] in (V3.name, V4.name)) and (parent[V8.name] == V4.name))
 
     _test_breadth_first_search_parallel("List")
     _test_breadth_first_search_parallel("Matrix")
 
-def test_minimum_spanning_tree():
 
+def test_minimum_spanning_tree():
     def _test_minimum_spanning_tree(func, ds, algorithm, *args):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -158,13 +157,13 @@ def test_minimum_spanning_tree():
     _test_minimum_spanning_tree(fmstp, "Matrix", "kruskal", 3)
     _test_minimum_spanning_tree(fmstp, "List", "prim", 3)
 
-def test_strongly_connected_components():
 
+def test_strongly_connected_components():
     def _test_strongly_connected_components(func, ds, algorithm, *args):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
         a, b, c, d, e, f, g, h = \
-        [GraphNode(chr(x)) for x in range(ord('a'), ord('h') + 1)]
+            [GraphNode(chr(x)) for x in range(ord('a'), ord('h') + 1)]
         graph = Graph(a, b, c, d, e, f, g, h)
         graph.add_edge(a.name, b.name)
         graph.add_edge(b.name, c.name)
@@ -188,8 +187,8 @@ def test_strongly_connected_components():
     _test_strongly_connected_components(scc, "List", "kosaraju")
     _test_strongly_connected_components(scc, "Matrix", "kosaraju")
 
-def test_depth_first_search():
 
+def test_depth_first_search():
     def _test_depth_first_search(ds):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -210,14 +209,14 @@ def test_depth_first_search():
             G1.add_edge(*edge)
 
         parent = {}
+
         def dfs_tree(curr_node, next_node, parent):
             if next_node != "":
                 parent[next_node] = curr_node
             return True
 
         depth_first_search(G1, V1.name, dfs_tree, parent)
-        assert (parent[V3.name] == V1.name and parent[V2.name] == V1.name) or \
-            (parent[V3.name] == V2.name and parent[V2.name] == V1.name)
+        assert (parent[V3.name] == V1.name and parent[V2.name] == V1.name) or (parent[V3.name] == V2.name and parent[V2.name] == V1.name)
 
         V4 = GraphNode(0)
         V5 = GraphNode(1)
@@ -239,6 +238,7 @@ def test_depth_first_search():
             G2.add_edge(*edge)
 
         path = []
+
         def path_finder(curr_node, next_node, dest_node, parent, path):
             if next_node != "":
                 parent[next_node] = curr_node
@@ -260,8 +260,8 @@ def test_depth_first_search():
     _test_depth_first_search("List")
     _test_depth_first_search("Matrix")
 
-def test_shortest_paths():
 
+def test_shortest_paths():
     def _test_shortest_paths_positive_edges(ds, algorithm):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -316,8 +316,8 @@ def test_shortest_paths():
     _test_shortest_paths_positive_edges("List", 'dijkstra')
     _test_shortest_paths_positive_edges("Matrix", 'dijkstra')
 
-def test_all_pair_shortest_paths():
 
+def test_all_pair_shortest_paths():
     def _test_shortest_paths_negative_edges(ds, algorithm):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -340,8 +340,8 @@ def test_all_pair_shortest_paths():
                           '3': {'4': '3', '3': '3', '1': None, '2': None},
                           '4': {'2': '4', '4': '4', '1': None, '3': None}}
 
-def test_topological_sort():
 
+def test_topological_sort():
     def _test_topological_sort(func, ds, algorithm, threads=None):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -363,9 +363,7 @@ def test_topological_sort():
             l = func(graph, algorithm, threads)
         else:
             l = func(graph, algorithm)
-        assert all([(l1 in l[0:3]) for l1 in ('3', '5', '7')] +
-                   [(l2 in l[3:5]) for l2 in ('8', '11')] +
-                   [(l3 in l[5:]) for l3 in ('10', '9', '2')])
+        assert all([(l1 in l[0:3]) for l1 in ('3', '5', '7')] + [(l2 in l[3:5]) for l2 in ('8', '11')] + [(l3 in l[5:]) for l3 in ('10', '9', '2')])
 
     _test_topological_sort(topological_sort, "List", "kahn")
     _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)

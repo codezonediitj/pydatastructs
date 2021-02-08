@@ -1,5 +1,6 @@
 import pytest
 
+
 def raises(exception, code):
     """
     Utility for testing exceptions.

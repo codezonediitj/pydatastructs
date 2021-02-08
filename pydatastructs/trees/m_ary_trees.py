@@ -5,6 +5,7 @@ __all__ = [
     'MAryTree'
 ]
 
+
 class MAryTree(object):
     """
     Abstract m-ary tree.
@@ -46,7 +47,6 @@ class MAryTree(object):
     __slots__ = ['root_idx', 'max_children', 'comparator', 'tree', 'size',
                  'is_order_statistic']
 
-
     def __new__(cls, key=None, root_data=None, comp=None,
                 is_order_statistic=False, max_children=2):
         obj = object.__new__(cls)
@@ -59,7 +59,7 @@ class MAryTree(object):
         obj.max_children = max_children
         obj.tree, obj.size = ArrayForTrees(MAryTreeNode, [root]), 1
         obj.comparator = lambda key1, key2: key1 < key2 \
-                        if comp is None else comp
+            if comp is None else comp
         obj.is_order_statistic = is_order_statistic
         return obj
 
@@ -159,7 +159,6 @@ class MAryTree(object):
             The root of the newly created binary tree.
         """
         raise NotImplementedError("This is an abstract method.")
-
 
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]

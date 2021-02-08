@@ -5,6 +5,7 @@ from pydatastructs.miscellaneous_data_structures.queue import (
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import _check_type
 
+
 def test_Queue():
     q = Queue(implementation='array')
     q1 = Queue()
@@ -13,6 +14,7 @@ def test_Queue():
     q2 = Queue(implementation='linked_list')
     assert _check_type(q2, LinkedListQueue) is True
     assert raises(NotImplementedError, lambda: Queue(implementation=''))
+
 
 def test_ArrayQueue():
     q1 = Queue()
@@ -51,7 +53,7 @@ def test_LinkedListQueue():
     q1 = Queue(implementation='linked_list')
     q1.append(1)
     assert raises(TypeError, lambda: Queue(implementation='linked_list', items={0, 1}))
-    q1 = Queue(implementation='linked_list', items = [0, 1])
+    q1 = Queue(implementation='linked_list', items=[0, 1])
     q1.append(2)
     q1.append(3)
     assert str(q1) == "['0', '1', '2', '3']"
@@ -64,14 +66,14 @@ def test_LinkedListQueue():
     assert len(q1) == 0
     raises(IndexError, lambda: q1.popleft())
 
-    q1 = Queue(implementation='linked_list',items=['a',None,type,{}])
+    q1 = Queue(implementation='linked_list', items=['a', None, type, {}])
     assert len(q1) == 4
 
     front = q1.front
     assert front.key == q1.popleft().key
 
     rear = q1.rear
-    for _ in range(len(q1)-1):
+    for _ in range(len(q1) - 1):
         q1.popleft()
 
     assert rear.key == q1.popleft().key
@@ -80,7 +82,7 @@ def test_LinkedListQueue():
     q1.appendleft(1)
     q2 = Queue(implementation='linked_list', items=[0, 1])
     assert raises(NotImplementedError, lambda: q2.appendleft(1))
-    q1 = Queue(implementation='linked_list', items = [0, 1], double_ended=True)
+    q1 = Queue(implementation='linked_list', items=[0, 1], double_ended=True)
     q1.appendleft(2)
     q1.append(3)
     assert str(q1) == "['2', '0', '1', '3']"
@@ -93,10 +95,12 @@ def test_LinkedListQueue():
     assert len(q1) == 0
     assert raises(IndexError, lambda: q1.popleft())
 
+
 def test_PriorityQueue():
     pq1 = PriorityQueue(implementation='linked_list')
     assert _check_type(pq1, LinkedListPriorityQueue) is True
     assert raises(NotImplementedError, lambda: Queue(implementation=''))
+
 
 def test_ImplementationPriorityQueue():
     impls = ['linked_list', 'binomial_heap', 'binary_heap']

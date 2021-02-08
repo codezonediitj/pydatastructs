@@ -2,6 +2,7 @@ from pydatastructs.miscellaneous_data_structures.binomial_trees import BinomialT
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import BinomialTreeNode
 
+
 # only tests the corner cases
 def test_BinomialTree():
     assert raises(TypeError, lambda: BinomialTree(1, 1))

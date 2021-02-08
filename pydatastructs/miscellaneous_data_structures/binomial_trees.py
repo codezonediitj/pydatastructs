@@ -4,6 +4,7 @@ __all__ = [
     'BinomialTree'
 ]
 
+
 class BinomialTree(object):
     """
     Represents binomial trees
@@ -35,13 +36,12 @@ class BinomialTree(object):
     __slots__ = ['root', 'order']
 
     def __new__(cls, root=None, order=None):
-        if root is not None and \
-            not _check_type(root, BinomialTreeNode):
+        if root is not None and not _check_type(root, BinomialTreeNode):
             raise TypeError("%s i.e., root should be of "
-                             "type BinomialTreeNode."%(root))
+                            "type BinomialTreeNode." % (root))
         if order is not None and not _check_type(order, int):
             raise TypeError("%s i.e., order should be of "
-                             "type int."%(order))
+                            "type int." % (order))
         obj = object.__new__(cls)
         if root is not None:
             root.is_root = True
@@ -70,7 +70,7 @@ class BinomialTree(object):
         """
         if not _check_type(other_tree, BinomialTree):
             raise TypeError("%s i.e., other_tree should be of "
-                             "type BinomialTree"%(other_tree))
+                            "type BinomialTree" % (other_tree))
         if self.order != other_tree.order:
             raise ValueError("Orders of both the trees should be same.")
         self.root.children.append(other_tree.root)

@@ -3,8 +3,8 @@ from pydatastructs.trees.binary_trees import (
     ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree, CartesianTree, Treap, RedBlackTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
-from copy import deepcopy
 import random
+
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
@@ -21,9 +21,9 @@ def test_BinarySearchTree():
     b.insert(13, 13)
     # Explicit check for the __str__ method of Binary Trees Class
     assert str(b) == \
-    ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
-    "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
-    "(None, 13, 13, None)]")
+           ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
+            "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
+            "(None, 13, 13, None)]")
 
     trav = BinaryTreeTraversal(b)
     in_order = trav.depth_first_search(order='in_order')
@@ -105,6 +105,7 @@ def test_BinarySearchTree():
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
+
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree
     BTT = BinaryTreeTraversal
@@ -137,6 +138,7 @@ def test_BinaryTreeTraversal():
     assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
     assert raises(TypeError, lambda: BTT(1))
 
+
 def test_AVLTree():
     a = AVLTree('M', 'M')
     a.insert('N', 'N')
@@ -156,7 +158,7 @@ def test_AVLTree():
     assert [node.key for node in pre_order] == ['N', 'I', 'H', 'A', 'L', 'K', 'M', 'P', 'O', 'Q']
 
     assert [a.balance_factor(n) for n in a.tree if n is not None] == \
-        [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
+           [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
     a1 = AVLTree(1, 1)
     a1.insert(2, 2)
     a1.insert(3, 3)
@@ -225,7 +227,7 @@ def test_AVLTree():
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == [1, 0, 5, 3, 6, 2, 4]
-    assert [node.key for node in pre_order] == [3,0,1,5,2,6,4]
+    assert [node.key for node in pre_order] == [3, 0, 1, 5, 2, 6, 4]
 
     a5 = AVLTree(is_order_statistic=True)
     a5.tree = ArrayForTrees(TreeNode, [
@@ -293,6 +295,7 @@ def test_AVLTree():
     assert raises(ValueError, lambda: a5.select(0))
     assert raises(ValueError, lambda: a5.select(15))
     assert a5.rank(-1) is None
+
     def test_select_rank(expected_output):
         output = []
         for i in range(len(expected_output)):
@@ -338,8 +341,8 @@ def test_AVLTree():
     a5.delete(2)
     test_select_rank([])
 
-def test_BinaryIndexedTree():
 
+def test_BinaryIndexedTree():
     FT = BinaryIndexedTree
 
     t = FT([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -351,6 +354,7 @@ def test_BinaryIndexedTree():
     assert t.get_sum(0, 2) == 105
     assert t.get_sum(0, 4) == 114
     assert t.get_sum(1, 9) == 54
+
 
 def test_CartesianTree():
     tree = CartesianTree()
@@ -397,8 +401,8 @@ def test_CartesianTree():
     assert tree.search(3) is None
     assert tree.delete(18) is None
 
-def test_Treap():
 
+def test_Treap():
     random.seed(0)
     tree = Treap()
     tree.insert(7, 7)
@@ -411,6 +415,7 @@ def test_Treap():
     assert tree.search(1) is None
     assert tree.search(2) == 1
     assert tree.delete(1) is None
+
 
 def test_issue_234():
     """
@@ -443,6 +448,7 @@ def test_issue_234():
     tree.insert(4.56, 4.56)
     tree._left_rotate(5, 8)
     assert tree.tree[tree.tree[8].parent].left == 8
+
 
 def test_SplayTree():
     t = SplayTree(100, 100)
@@ -503,6 +509,7 @@ def test_SplayTree():
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200]
     assert [node.key for node in pre_order] == [200, 55, 50, 30, 20, 100]
+
 
 def test_RedBlackTree():
     tree = RedBlackTree()

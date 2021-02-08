@@ -1,12 +1,14 @@
-from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
-from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
-from pydatastructs.trees.heaps import BinaryHeap, BinomialHeap
 from copy import deepcopy as dc
+
+from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
+from pydatastructs.trees.heaps import BinaryHeap, BinomialHeap
+from pydatastructs.utils.misc_util import NoneType
 
 __all__ = [
     'Queue',
     'PriorityQueue'
 ]
+
 
 class Queue(object):
     """Representation of queue data structure.
@@ -62,7 +64,7 @@ class Queue(object):
             )
         else:
             raise NotImplementedError(
-                    "%s hasn't been implemented yet."%(implementation))
+                "%s hasn't been implemented yet." % (implementation))
 
     @classmethod
     def methods(cls):
@@ -71,8 +73,8 @@ class Queue(object):
     def _double_ended_check(self):
         if not self._double_ended:
             raise NotImplementedError(
-                    "This method is only supported for "
-                    "double ended queues.")
+                "This method is only supported for "
+                "double ended queues.")
 
     def append(self, *args, **kwargs):
         raise NotImplementedError(
@@ -97,7 +99,6 @@ class Queue(object):
 
 
 class ArrayQueue(Queue):
-
     __slots__ = ['_front', '_rear', '_double_ended']
 
     def __new__(cls, items=None, dtype=NoneType, double_ended=False):
@@ -152,8 +153,7 @@ class ArrayQueue(Queue):
             self._front = -1
             self._rear = -1
         else:
-            if (self.items._num - 1)/self.items._size < \
-                self.items._load_factor:
+            if (self.items._num - 1) / self.items._size < self.items._load_factor:
                 self._front = 0
             else:
                 self._front += 1
@@ -171,8 +171,7 @@ class ArrayQueue(Queue):
             self._front = -1
             self._rear = -1
         else:
-            if (self.items._num - 1)/self.items._size < \
-                self.items._load_factor:
+            if (self.items._num - 1) / self.items._size < self.items._load_factor:
                 self._front = 0
             else:
                 self._rear -= 1
@@ -200,8 +199,8 @@ class ArrayQueue(Queue):
             _data.append(self.items._data[i])
         return str(_data)
 
-class LinkedListQueue(Queue):
 
+class LinkedListQueue(Queue):
     __slots__ = ['queue', '_double_ended']
 
     def __new__(cls, items=None, double_ended=False):
@@ -261,6 +260,7 @@ class LinkedListQueue(Queue):
     def __str__(self):
         return str(self.queue)
 
+
 class PriorityQueue(object):
     """
     Represents the concept of priority queue.
@@ -287,7 +287,7 @@ class PriorityQueue(object):
         priorities i.e., minimum priority elements are extracted
         by pop operation.
 
-    Examples
+    Examples(
     ========
 
     >>> from pydatastructs import PriorityQueue
@@ -336,7 +336,7 @@ class PriorityQueue(object):
             Priority to be given to the value.
         """
         raise NotImplementedError(
-                "This is an abstract method.")
+            "This is an abstract method.")
 
     def pop(self):
         """
@@ -362,8 +362,8 @@ class PriorityQueue(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
-class LinkedListPriorityQueue(PriorityQueue):
 
+class LinkedListPriorityQueue(PriorityQueue):
     __slots__ = ['items', 'comp']
 
     @classmethod
@@ -408,8 +408,8 @@ class LinkedListPriorityQueue(PriorityQueue):
     def is_empty(self):
         return self.items.size == 0
 
-class BinaryHeapPriorityQueue(PriorityQueue):
 
+class BinaryHeapPriorityQueue(PriorityQueue):
     __slots__ = ['items']
 
     @classmethod
@@ -439,8 +439,8 @@ class BinaryHeapPriorityQueue(PriorityQueue):
     def is_empty(self):
         return self.items.is_empty
 
-class BinomialHeapPriorityQueue(PriorityQueue):
 
+class BinomialHeapPriorityQueue(PriorityQueue):
     __slots__ = ['items']
 
     @classmethod

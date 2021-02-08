@@ -2,6 +2,7 @@ from pydatastructs.utils import Set
 
 __all__ = ['DisjointSetForest']
 
+
 class DisjointSetForest(object):
     """
     Represents a forest of disjoint set trees.
@@ -53,7 +54,7 @@ class DisjointSetForest(object):
         splitting algorithm.
         """
         if self.tree.get(key, None) is None:
-            raise KeyError("Invalid key, %s"%(key))
+            raise KeyError("Invalid key, %s" % key)
         _set = self.tree[key]
         while _set.parent is not _set:
             _set, _set.parent = _set.parent, _set.parent.parent

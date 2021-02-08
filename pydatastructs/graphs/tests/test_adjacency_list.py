@@ -1,6 +1,7 @@
 from pydatastructs.graphs import Graph
 from pydatastructs.utils import AdjacencyListGraphNode
 
+
 def test_adjacency_list():
     v_1 = AdjacencyListGraphNode('v_1', 1)
     v_2 = AdjacencyListGraphNode('v_2', 2)

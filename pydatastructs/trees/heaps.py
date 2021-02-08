@@ -1,6 +1,5 @@
-from pydatastructs.utils.misc_util import _check_type, NoneType, TreeNode, BinomialTreeNode
-from pydatastructs.linear_data_structures.arrays import (ArrayForTrees,
-     DynamicOneDimensionalArray, Array)
+from pydatastructs.utils.misc_util import _check_type, TreeNode, BinomialTreeNode
+from pydatastructs.linear_data_structures.arrays import (DynamicOneDimensionalArray, Array)
 from pydatastructs.miscellaneous_data_structures.binomial_trees import BinomialTree
 
 __all__ = [
@@ -9,6 +8,7 @@ __all__ = [
     'DHeap',
     'BinomialHeap'
 ]
+
 
 class Heap(object):
     """
@@ -81,10 +81,10 @@ class DHeap(Heap):
         elif heap_property == "max":
             obj._comp = lambda key_parent, key_child: key_parent >= key_child
         else:
-            raise ValueError("%s is invalid heap property"%(heap_property))
+            raise ValueError("%s is invalid heap property" % (heap_property))
         if elements is None:
             elements = DynamicOneDimensionalArray(TreeNode, 0)
-        elif _check_type(elements, (list,tuple)):
+        elif _check_type(elements, (list, tuple)):
             elements = DynamicOneDimensionalArray(TreeNode, len(elements), elements)
         elif _check_type(elements, Array):
             elements = DynamicOneDimensionalArray(TreeNode, len(elements), elements._data)
@@ -102,8 +102,8 @@ class DHeap(Heap):
     def _build(self):
         for i in range(self._last_pos_filled + 1):
             self.heap[i]._leftmost, self.heap[i]._rightmost = \
-                self.d*i + 1, self.d*i + self.d
-        for i in range((self._last_pos_filled + 1)//self.d, -1, -1):
+                self.d * i + 1, self.d * i + self.d
+        for i in range((self._last_pos_filled + 1) // self.d, -1, -1):
             self._heapify(i)
 
     def _swap(self, idx1, idx2):
@@ -117,13 +117,13 @@ class DHeap(Heap):
     def _heapify(self, i):
         while True:
             target = i
-            l = self.d*i + 1
-            r = self.d*i + self.d
+            l = self.d * i + 1
+            r = self.d * i + self.d
 
-            for j in range(l, r+1):
+            for j in range(l, r + 1):
                 if j <= self._last_pos_filled:
                     target = j if self._comp(self.heap[j].key, self.heap[target].key) \
-                            else target
+                        else target
                 else:
                     break
 
@@ -155,10 +155,10 @@ class DHeap(Heap):
         self.heap.append(new_node)
         self._last_pos_filled += 1
         i = self._last_pos_filled
-        self.heap[i]._leftmost, self.heap[i]._rightmost = self.d*i + 1, self.d*i + self.d
+        self.heap[i]._leftmost, self.heap[i]._rightmost = self.d * i + 1, self.d * i + self.d
 
         while True:
-            parent = (i - 1)//self.d
+            parent = (i - 1) // self.d
             if i == 0 or self._comp(self.heap[parent].key, self.heap[i].key):
                 break
             else:
@@ -190,7 +190,7 @@ class DHeap(Heap):
             return element_to_be_extracted
 
     def __str__(self):
-        to_be_printed = ['' for i in range(self._last_pos_filled + 1)]
+        to_be_printed = ['' for _ in range(self._last_pos_filled + 1)]
         for i in range(self._last_pos_filled + 1):
             node = self.heap[i]
             if node._leftmost <= self._last_pos_filled:
@@ -263,6 +263,7 @@ class BinaryHeap(DHeap):
 
     .. [1] https://en.m.wikipedia.org/wiki/Binary_heap
     """
+
     def __new__(cls, elements=None, heap_property="min"):
         obj = DHeap.__new__(cls, elements, heap_property, 2)
         return obj
@@ -327,6 +328,7 @@ class TernaryHeap(DHeap):
     .. [1] https://en.wikipedia.org/wiki/D-ary_heap
     .. [2] https://ece.uwaterloo.ca/~dwharder/aads/Algorithms/d-ary_heaps/Ternary_heaps/
     """
+
     def __new__(cls, elements=None, heap_property="min"):
         obj = DHeap.__new__(cls, elements, heap_property, 3)
         return obj
@@ -371,9 +373,9 @@ class BinomialHeap(Heap):
         if root_list is None:
             root_list = []
         if not all((_check_type(root, BinomialTree))
-                for root in root_list):
-                    raise TypeError("The root_list should contain "
-                                    "references to objects of BinomialTree.")
+                   for root in root_list):
+            raise TypeError("The root_list should contain "
+                            "references to objects of BinomialTree.")
         obj = Heap.__new__(cls)
         obj.root_list = root_list
         return obj
@@ -381,8 +383,8 @@ class BinomialHeap(Heap):
     @classmethod
     def methods(cls):
         return ['__new__', 'merge_tree', 'merge', 'insert',
-        'find_minimum', 'is_emtpy', 'decrease_key', 'delete',
-        'delete_minimum']
+                'find_minimum', 'is_emtpy', 'decrease_key', 'delete',
+                'delete_minimum']
 
     def merge_tree(self, tree1, tree2):
         """
@@ -395,11 +397,9 @@ class BinomialHeap(Heap):
 
         tree2: BinomialTree
         """
-        if (not _check_type(tree1, BinomialTree)) or \
-            (not _check_type(tree2, BinomialTree)):
+        if (not _check_type(tree1, BinomialTree)) or (not _check_type(tree2, BinomialTree)):
             raise TypeError("Both the trees should be of type "
                             "BinomalTree.")
-        ret_value = None
         if tree1.root.key <= tree2.root.key:
             tree1.add_sub_tree(tree2)
             ret_value = tree1
@@ -431,9 +431,7 @@ class BinomialHeap(Heap):
             raise TypeError("Other heap is not of type BinomialHeap.")
         new_root_list = []
         i, j = 0, 0
-        while (i < len(self.root_list)) and \
-              (j < len(other_heap.root_list)):
-            new_tree = None
+        while (i < len(self.root_list)) and (j < len(other_heap.root_list)):
             while self.root_list[i] is None:
                 i += 1
             while other_heap.root_list[j] is None:
@@ -492,9 +490,7 @@ class BinomialHeap(Heap):
         min_node = None
         idx, min_idx = 0, None
         for tree in self.root_list:
-            if ((min_node is None) or
-                (tree is not None and tree.root is not None and
-                 min_node.key > tree.root.key)):
+            if ((min_node is None) or (tree is not None and tree.root is not None and min_node.key > tree.root.key)):
                 min_node = tree.root
                 min_idx = idx
             idx += 1
@@ -535,14 +531,11 @@ class BinomialHeap(Heap):
         """
         if node.key <= new_key:
             raise ValueError("The new key "
-            "should be less than current node's key.")
+                             "should be less than current node's key.")
         node.key = new_key
-        while ((not node.is_root) and
-               (node.parent.key > node.key)):
-            node.parent.key, node.key = \
-                node.key, node.parent.key
-            node.parent.data, node.data = \
-                node.data, node.parent.data
+        while (not node.is_root) and (node.parent.key > node.key):
+            node.parent.key, node.key = node.key, node.parent.key
+            node.parent.data, node.data = node.data, node.parent.data
             node = node.parent
 
     def delete(self, node):

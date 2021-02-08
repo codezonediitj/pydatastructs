@@ -1,12 +1,12 @@
 from pydatastructs.utils.misc_util import TrieNode
 from collections import deque
-import copy
 
 __all__ = [
     'Trie'
 ]
 
 Stack = Queue = deque
+
 
 class Trie(object):
     """
@@ -120,7 +120,7 @@ class Trie(object):
         i = len(path) - 1
         path[i].is_terminal = False
         while not path[i]._children and i >= 1:
-            path[i-1].remove_child(path[i].char)
+            path[i - 1].remove_child(path[i].char)
             i -= 1
             if path[i].is_terminal:
                 return True

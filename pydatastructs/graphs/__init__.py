@@ -4,7 +4,6 @@ from . import graph
 from .graph import (
     Graph
 )
-__all__.extend(graph.__all__)
 
 from . import algorithms
 from .algorithms import (
@@ -19,5 +18,7 @@ from .algorithms import (
     topological_sort,
     topological_sort_parallel
 )
+
+__all__.extend(graph.__all__)
 
 __all__.extend(algorithms.__all__)

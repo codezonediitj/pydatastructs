@@ -1,6 +1,9 @@
-from pydatastructs.linear_data_structures import DoublyLinkedList, SinglyLinkedList, SinglyCircularLinkedList, DoublyCircularLinkedList
+import random
+
+from pydatastructs.linear_data_structures import DoublyLinkedList, SinglyLinkedList, SinglyCircularLinkedList, \
+    DoublyCircularLinkedList
 from pydatastructs.utils.raises_util import raises
-import copy, random
+
 
 def test_DoublyLinkedList():
     random.seed(1000)
@@ -30,7 +33,7 @@ def test_DoublyLinkedList():
     for i in range(dll.size):
         dll_copy.append(dll[i])
     for i in range(len(dll)):
-        if i%2 == 0:
+        if i % 2 == 0:
             dll.popleft()
         else:
             dll.popright()
@@ -40,6 +43,7 @@ def test_DoublyLinkedList():
         dll_copy.extract(index)
     assert str(dll_copy) == "[]"
     assert raises(ValueError, lambda: dll_copy.extract(1))
+
 
 def test_SinglyLinkedList():
     random.seed(1000)
@@ -65,7 +69,7 @@ def test_SinglyLinkedList():
     for i in range(sll.size):
         sll_copy.append(sll[i])
     for i in range(len(sll)):
-        if i%2 == 0:
+        if i % 2 == 0:
             sll.popleft()
         else:
             sll.popright()
@@ -75,6 +79,7 @@ def test_SinglyLinkedList():
         sll_copy.extract(index)
     assert str(sll_copy) == "[]"
     assert raises(ValueError, lambda: sll_copy.extract(1))
+
 
 def test_SinglyCircularLinkedList():
     random.seed(1000)
@@ -101,7 +106,7 @@ def test_SinglyCircularLinkedList():
     for i in range(scll.size):
         scll_copy.append(scll[i])
     for i in range(len(scll)):
-        if i%2 == 0:
+        if i % 2 == 0:
             scll.popleft()
         else:
             scll.popright()
@@ -111,6 +116,7 @@ def test_SinglyCircularLinkedList():
         scll_copy.extract(index)
     assert str(scll_copy) == "[]"
     assert raises(ValueError, lambda: scll_copy.extract(1))
+
 
 def test_DoublyCircularLinkedList():
     random.seed(1000)
@@ -138,7 +144,7 @@ def test_DoublyCircularLinkedList():
     for i in range(dcll.size):
         dcll_copy.append(dcll[i])
     for i in range(len(dcll)):
-        if i%2 == 0:
+        if i % 2 == 0:
             dcll.popleft()
         else:
             dcll.popright()
