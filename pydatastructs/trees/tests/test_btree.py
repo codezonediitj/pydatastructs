@@ -1,6 +1,7 @@
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.trees.btree import BTree
 from pydatastructs.utils import BNode
+import random
 
 def test_BTree():
 
@@ -40,6 +41,11 @@ def test_BTree():
     assert str(tr._path_to(9)) == '[(<Branch 3, 7>, 2), (<Leaf 9>, 0)]'
     assert list(tr) == [0, 1, 3, 5, 7, 9]
     assert repr(tr) == '<Branch 3, 7>  <Leaf 0, 1>  <Leaf 5>  <Leaf 9>'
+    for a in range(1,10,2):
+        tr.remove(a)
+    assert repr(tr) == '<Leaf 0>'
+    tr.remove(0)
+    assert repr(tr) == '<Leaf >'
 
     tree = BTree(5)
 
@@ -52,8 +58,29 @@ def test_BTree():
     bt = BTree.bulkload(range(50), 20)
     assert list(bt) == list(range(50))
 
+    bt = BTree.bulkload(range(200), 5)
+    for i in range(1000):
+            bt.insert(random.randrange(200))
+
+    bt = BTree(2)
+    l = list(range(200))
+    for a in range(200):
+        bt.insert(a)
+    rand = l[:]
+    random.shuffle(rand)
+    while l:
+        assert list(bt) == l
+        rem = rand.pop()
+        l.remove(rem)
+        bt.remove(rem)
+    assert list(bt) == l
+
 def test_BNode():
-    node = BNode(BTree, [3, 4], [6, 7, 9])
-    assert repr(node) == '<Branch 3, 4>'
-    node.split()
+
+    node = BNode(BTree(), [3, 4, 5], [6, 7, 9, 10])
+
+    assert repr(node) == '<Branch 3, 4, 5>'
+    node1, node2 = node.split()
     assert repr(node) == '<Branch 3>'
+    assert repr(node1) == '<Branch 5>'
+    assert repr(node2) == '4'
