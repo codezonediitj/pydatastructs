@@ -38,3 +38,9 @@ from .heaps import (
     BinomialHeap
 )
 __all__.extend(heaps.__all__)
+
+from .btree import (
+    BTree, BNode
+)
+
+__all__.extend(btree.__all__)
