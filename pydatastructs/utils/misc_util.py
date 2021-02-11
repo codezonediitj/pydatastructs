@@ -449,6 +449,23 @@ def _comp(u, v, tcomp):
         return tcomp(u, v)
 
 class BNode(object):
+    """
+    Represents nodes for B-Tree implementation.
+
+    Parameters
+    ==========
+
+    tree: BTree()
+        An instance of B-Tree is to be created or
+        added.
+    contents: list
+        The data to be stored at node.
+        Optional, by default, None
+    children: list
+        The list of data to be stored in the
+        children node.
+        Optional, by default, None
+    """
     __slots__ = ["tree", "contents", "children"]
 
     def __new__(cls, tree, contents=None, children=None):
@@ -478,6 +495,10 @@ class BNode(object):
                 dest.children.insert(0, self.children.pop())
 
     def shrink(self, ancestors):
+        """
+        Shrinks/Reduces the ancestor node based on
+        the tree order and lend it to right or left node
+        """
         parent = None
 
         if ancestors:
@@ -510,6 +531,10 @@ class BNode(object):
             parent.shrink(ancestors)
 
     def grow(self, ancestors):
+        """
+        Increase the items in ancestor node as there may
+        be a vacant after deletion for balancing.
+        """
         parent, parent_index = ancestors.pop()
 
         minimum = self.tree.order // 2
@@ -549,6 +574,10 @@ class BNode(object):
                 self.tree._root = left_sib or self
 
     def split(self):
+        """
+        Splits the tree into two taking only the
+        first sibling into account
+        """
         center = len(self.contents) // 2
         median = self.contents[center]
         sibling = type(self)(
@@ -560,11 +589,19 @@ class BNode(object):
         return sibling, median
 
     def insert(self, index, item, ancestors):
+        """
+        Adds a node to the B-Tree comparing with
+        ancestor node with given item and index.
+        """
         self.contents.insert(index, item)
         if len(self.contents) > self.tree.order:
             self.shrink(ancestors)
 
     def remove(self, index, ancestors):
+        """
+        Removes node with given index and ancestor
+        from B-Tree and balances the tree.
+        """
         minimum = self.tree.order // 2
 
         if self.children:
