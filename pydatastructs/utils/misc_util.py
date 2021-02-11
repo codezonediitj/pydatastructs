@@ -9,7 +9,8 @@ __all__ = [
     'Set',
     'CartesianTreeNode',
     'RedBlackTreeNode',
-    'TrieNode'
+    'TrieNode',
+    'SkipNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -446,3 +447,17 @@ def _comp(u, v, tcomp):
         return False
     else:
         return tcomp(u, v)
+
+class SkipNode:
+    def __init__(self, val: int = 0, next = None, down = None):
+        self.val = val
+        self.next = next
+        self.down = down
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return '{}->{}'.format(
+            self.val,
+            self.next.val if self.next else 'N')

@@ -1,4 +1,4 @@
-from pydatastructs.linear_data_structures import DoublyLinkedList, SinglyLinkedList, SinglyCircularLinkedList, DoublyCircularLinkedList
+from pydatastructs.linear_data_structures import DoublyLinkedList, SinglyLinkedList, SinglyCircularLinkedList, DoublyCircularLinkedList, SkipList
 from pydatastructs.utils.raises_util import raises
 import copy, random
 
@@ -148,3 +148,31 @@ def test_DoublyCircularLinkedList():
         dcll_copy.extract(index)
     assert str(dcll_copy) == "[]"
     assert raises(ValueError, lambda: dcll_copy.extract(1))
+
+def test_SkipList():
+    sl = SkipList()
+    f, t = False, True
+
+    sl.insert(2)
+    sl.insert(10)
+    sl.insert(92)
+    sl.insert(1)
+    sl.insert(4)
+    sl.insert(27)
+    assert repr(sl) == '-inf.->1.->2.->4.->10.->27.->92.->inf.'
+    sl.remove(10)
+    assert repr(sl) == '-inf.->1.->2.->4.->27.->92.->inf.'
+    assert raises(ValueError, lambda: sl.remove(15))
+    assert sl.search(1) == t
+    assert sl.search(47) == f
+
+    sl = SkipList()
+
+    for a in range(0,20,2):
+        sl.insert(a)
+    assert repr(sl) == '-inf.->0.->2.->4.->6.->8.->10.->12.->14.->16.->18.->inf.'
+    for a in range(4,20,4):
+        sl.remove(a)
+    assert repr(sl) == '-inf.->0.->2.->6.->10.->14.->18.->inf.'
+    assert sl.search(3) == f
+    assert sl.search(10) == t

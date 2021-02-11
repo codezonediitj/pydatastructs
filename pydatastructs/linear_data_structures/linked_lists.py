@@ -1,10 +1,12 @@
-from pydatastructs.utils.misc_util import _check_type, LinkedListNode
+from pydatastructs.utils.misc_util import _check_type, LinkedListNode, SkipNode
+import math, random
 
 __all__ = [
     'SinglyLinkedList',
     'DoublyLinkedList',
     'SinglyCircularLinkedList',
-    'DoublyCircularLinkedList'
+    'DoublyCircularLinkedList',
+    'SkipList'
 ]
 
 class LinkedList(object):
@@ -581,3 +583,133 @@ class DoublyCircularLinkedList(DoublyLinkedList):
         elif index == 0:
             self.tail.next = self.head
         return node
+
+class SkipList(object):
+    """
+    Represents Skip List
+
+    Examples
+    ========
+
+    >>> from pydatastructs import SkipList
+    >>> sl = SkipList()
+    >>> sl.insert(6)
+    >>> sl.insert(1)
+    >>> sl.insert(3)
+    >>> repr(sl)
+    '-inf.->1.->3.->6.->inf.'
+    >>> sl.remove(1)
+    >>> sl.insert(4)
+    >>> sl.insert(2)
+    >>> sl.search(4)
+    True
+    >>> sl.search(10)
+    False
+    >>> repr(sl)
+    '-inf.->2.->3.->4.->6.->inf.'
+
+    """
+
+    def __new__(cls):
+        obj = object.__new__(cls)
+        obj.head = None
+        obj.tail = None
+        obj._addOneLevel()
+        return obj
+
+    def __repr__(self):
+        li = self.__str__()
+        return '->'.join(li[-1])
+
+    def __vars__(self):
+        li = self.__str__()
+        return ' '.join(map(lambda l: '->'.join(l), li))
+
+    def __str__(self):
+        li = []
+        node = self.head
+        while node:
+            l = []
+            no = node
+            while no:
+                l.append('{}{}'.format(no.val, '' if no.down else '.'))
+                no = no.next
+            li.append(l)
+            node = node.down
+        return li
+
+    def _addOneLevel(self):
+        self.tail = SkipNode(math.inf, None, self.tail)
+        self.head = SkipNode(-math.inf, self.tail, self.head)
+
+
+    def _growUp(self):
+        return random.getrandbits(1) % 2 == 0
+
+    def _search(self, target: int) -> bool:
+        linodes = []
+        node = self.head
+        while node:
+            if node.next.val >= target:
+                linodes.append(node)
+                node = node.down
+            else:
+                node = node.next
+        return linodes
+
+    def levels(self):
+        """
+        Returns the number of level in the
+        Skip list.
+        """
+        r = 0
+        node = self.head
+        while node:
+            r += 1
+            node = node.down
+        return r
+
+    def search(self, target: int):
+        """
+        Check if the number is present in the
+        Skiplist. Returns True if present else
+        return False.
+        """
+        return self._search(target)[-1].next.val == target
+
+    def insert(self, num: int):
+        """
+        Adds the given num value into
+        the SkipList.
+        """
+        linodes = self._search(num)
+        tip = linodes[-1]
+        below = SkipNode(num, tip.next)
+        tip.next = below
+        totalLevel = len(linodes)
+        level = 1
+        while self._growUp() and level <= totalLevel:
+            if level == totalLevel:
+                self._addOneLevel()
+                prev = self.head
+            else:
+                prev = linodes[totalLevel - 1 - level]
+            below = SkipNode(num, prev.next, below)
+            prev.next = below
+            level += 1
+
+    def remove(self, num: int):
+        """
+        Delete the given num value from
+        the SkipList. Optional if not present
+        raises Error
+        """
+        linodes = self._search(num)
+        tip = linodes[-1]
+        if tip.next.val != num:
+            raise ValueError('Value not found.')
+        totalLevel = len(linodes)
+        level = totalLevel - 1
+        while level >= 0 and linodes[level].next.val == num:
+            linodes[level].next = linodes[level].next.next
+            level -= 1
