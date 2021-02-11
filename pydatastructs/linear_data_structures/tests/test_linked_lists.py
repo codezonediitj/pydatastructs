@@ -171,8 +171,19 @@ def test_SkipList():
     for a in range(0,20,2):
         sl.insert(a)
     assert repr(sl) == '-inf.->0.->2.->4.->6.->8.->10.->12.->14.->16.->18.->inf.'
+    assert sl.search(16) == t
     for a in range(4,20,4):
         sl.remove(a)
     assert repr(sl) == '-inf.->0.->2.->6.->10.->14.->18.->inf.'
-    assert sl.search(3) == f
     assert sl.search(10) == t
+    for a in range(4,20,4):
+        sl.insert(a)
+    for a in range(0,20,2):
+        sl.remove(a)
+    assert repr(sl) == '-inf.->inf.'
+    assert sl.search(3) == f
+
+    li = SkipList()
+    li.insert(1)
+    li.insert(2)
+    assert sl.levels() == 4
