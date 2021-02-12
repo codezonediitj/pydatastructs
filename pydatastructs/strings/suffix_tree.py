@@ -4,7 +4,7 @@ __all__ = [
     'SuffixTree'
 ]
 
-class SuffixTree():
+class SuffixTree(object):
     """
     Represents Suffix Tree.
 
