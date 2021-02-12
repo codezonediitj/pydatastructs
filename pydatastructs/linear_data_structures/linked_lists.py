@@ -614,7 +614,7 @@ class SkipList(object):
         obj = object.__new__(cls)
         obj.head = None
         obj.tail = None
-        obj._addOneLevel()
+        obj._addonelevel()
         return obj
 
     def __repr__(self):
@@ -638,12 +638,12 @@ class SkipList(object):
             node = node.down
         return li
 
-    def _addOneLevel(self):
+    def _addonelevel(self):
         self.tail = SkipNode(math.inf, None, self.tail)
         self.head = SkipNode(-math.inf, self.tail, self.head)
 
 
-    def _growUp(self):
+    def _grow_up(self):
         return random.getrandbits(1) % 2 == 0
 
     def _search(self, target: int) -> bool:
@@ -688,9 +688,9 @@ class SkipList(object):
         tip.next = below
         totalLevel = len(linodes)
         level = 1
-        while self._growUp() and level <= totalLevel:
+        while self._grow_up() and level <= totalLevel:
             if level == totalLevel:
-                self._addOneLevel()
+                self._addonelevel()
                 prev = self.head
             else:
                 prev = linodes[totalLevel - 1 - level]
