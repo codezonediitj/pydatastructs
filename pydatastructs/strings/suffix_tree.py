@@ -47,6 +47,9 @@ class SuffixTree(object):
         return ['__new__', 'lcs', 'find', 'find_all']
 
     def _check_input(self, input):
+        """
+        Check if the input is str ot list of str.
+        """
         if isinstance(input, str):
             return 'str'
         elif isinstance(input, list):
@@ -70,12 +73,15 @@ class SuffixTree(object):
         """
         type = self._check_input(x)
         if type == 'str':
-            x += next(self._terminalSymbolsGenerator())
+            x += next(self._terminal_symbols_generator())
             self._build(x)
         if type == 'list':
             self._build_generalized(x)
 
     def _build(self, x):
+        """
+        Builds suffix tree with string.
+        """
         self.word = x
         self._build_McCreight(x)
 
@@ -99,6 +105,10 @@ class SuffixTree(object):
                 d = 0
 
     def _create_node(self, x, u, d):
+        """
+        Creates node for the suffix tree
+        with transition links.
+        """
         i = u.idx
         p = u.parent
         v = SuffixNode(idx=i, depth=d)
@@ -109,6 +119,10 @@ class SuffixTree(object):
         return v
 
     def _create_leaf(self, x, i, u, d):
+        """
+        Creates the leaf node for the
+        suffix tree.
+        """
         w = SuffixNode()
         w.idx = i
         w.depth = len(x) - i
@@ -126,7 +140,11 @@ class SuffixTree(object):
         u._add_suffix_link(v)
 
     def _build_generalized(self, xs):
-        terminal_gen = self._terminalSymbolsGenerator()
+        """
+        Builds the generalized suffix tree with list
+        of string.
+        """
+        terminal_gen = self._terminal_symbols_generator()
         _xs = ''.join([x + next(terminal_gen) for x in xs])
         self.word = _xs
         self._generalized_word_starts(xs)
@@ -134,6 +152,10 @@ class SuffixTree(object):
         self.root._traverse(self._label_generalized)
 
     def _label_generalized(self, node):
+        """
+        Helper method that labels the nodes of GST with
+        indexes of strings found in their descendants.
+        """
         if node.is_leaf():
             x = {self._get_word_start_index(node.idx)}
         else:
@@ -141,6 +163,10 @@ class SuffixTree(object):
         node.generalized_idxs = x
 
     def _get_word_start_index(self, idx):
+        """
+        Helper method that returns the index of the
+        string based on node's starting index.
+        """
         i = 0
         for _idx in self.word_starts[1:]:
             if idx < _idx:
@@ -174,6 +200,10 @@ class SuffixTree(object):
         return self.word[start:end]
 
     def _find_lcs(self, node, stringIdxs):
+        """
+        Helper method for longest common substring
+        of the labelled Generalized suffix tree.
+        """
         nodes = [self._find_lcs(n, stringIdxs)
                  for n in node.transition_links.values()
                  if n.generalized_idxs.issuperset(stringIdxs)]
@@ -183,6 +213,10 @@ class SuffixTree(object):
         return deepestNode
 
     def _generalized_word_starts(self, xs):
+        """
+        Helper method fidning the starting indexes
+        of strings in Generalized suffix tree.
+        """
         self.word_starts = []
         i = 0
         for n in range(len(xs)):
@@ -207,7 +241,7 @@ class SuffixTree(object):
         """
         node = self.root
         while True:
-            edge = self._edgeLabel(node, node.parent)
+            edge = self._edge_label(node, node.parent)
             if edge.startswith(y):
                 return node.idx
 
@@ -244,7 +278,7 @@ class SuffixTree(object):
         """
         node = self.root
         while True:
-            edge = self._edgeLabel(node, node.parent)
+            edge = self._edge_label(node, node.parent)
             if edge.startswith(y):
                 break
             i = 0
@@ -263,11 +297,20 @@ class SuffixTree(object):
         leaves = node._get_leaves()
         return {n.idx for n in leaves}
 
-    def _edgeLabel(self, node, parent):
+    def _edge_label(self, node, parent):
+        """
+        Helper method returns the edge label
+        between a node and it's parent.
+        """
         return self.word[node.idx + parent.depth: node.idx + node.depth]
 
-    def _terminalSymbolsGenerator(self):
-        UPPAs = list(list(range(0xE000, 0xF8FF+1)) + list(range(0xF0000, 0xFFFFD+1)) + list(range(0x100000, 0x10FFFD+1)))
-        for i in UPPAs:
+    def _terminal_symbols_generator(self):
+        """
+        Generator of unique terminal symbols used for building the Generalized Suffix Tree.
+        Unicode Private Use Area is used to ensure that terminal symbols are not part
+        of the input string.
+        """
+        unicode = list(list(range(0xE000, 0xF8FF+1)) + list(range(0xF0000, 0xFFFFD+1)) + list(range(0x100000, 0x10FFFD+1)))
+        for i in unicode:
             yield (chr(i))
         raise ValueError("To many input strings.")
