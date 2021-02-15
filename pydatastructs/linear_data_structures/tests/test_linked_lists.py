@@ -165,6 +165,7 @@ def test_SkipList():
     assert raises(ValueError, lambda: sl.remove(15))
     assert sl.search(1) == t
     assert sl.search(47) == f
+    repr(sl)
 
     sl = SkipList()
 
