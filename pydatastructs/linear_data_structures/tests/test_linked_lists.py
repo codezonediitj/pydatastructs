@@ -165,7 +165,9 @@ def test_SkipList():
     assert raises(ValueError, lambda: sl.remove(15))
     assert sl.search(1) == t
     assert sl.search(47) == f
-    vars(sl)
+
+    sl=SkipList()
+    assert str(vars(sl))=="{'head': -inf->inf, 'tail': inf->N}"
 
     sl = SkipList()
 

@@ -448,11 +448,13 @@ def _comp(u, v, tcomp):
     else:
         return tcomp(u, v)
 
-class SkipNode:
-    def __init__(self, val: int = 0, next = None, down = None):
-        self.val = val
-        self.next = next
-        self.down = down
+class SkipNode(object):
+    def __new__(cls, val: int = 0, next = None, down = None):
+        obj = object.__new__(cls)
+        obj.val = val
+        obj.next = next
+        obj.down = down
+        return obj
 
     def __repr__(self):
         return self.__str__()
