@@ -621,10 +621,6 @@ class SkipList(object):
         li = self.__str__()
         return '->'.join(li[-1])
 
-    def __vars__(self):
-        li = self.__str__()
-        return ' '.join(map(lambda l: '->'.join(l), li))
-
     def __str__(self):
         li = []
         node = self.head
