@@ -257,24 +257,20 @@ class LinkedListNode(Node):
         return obj
 
     def __str__(self):
-        return str(self.key)
+        return str((self.key, self.data))
 
 class SkipNode(Node):
 
-    __slots__ = ['val', 'next', 'down']
+    __slots__ = ['key', 'data', 'next', 'down']
 
-    def __new__(cls, val: int=0, next=None, down=None):
+    def __new__(cls, key, data=None, next=None, down=None):
         obj = Node.__new__(cls)
-        obj.val = val
-        obj.next = next
-        obj.down = down
+        obj.key, obj.data = key, data
+        obj.next, obj.down = next, down
         return obj
 
     def __str__(self):
-        return '{}->{}'.format(
-            self.val,
-            self.next.val if self.next else 'N')
-
+        return str((self.key, self.data))
 
 class GraphNode(Node):
     """

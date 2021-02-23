@@ -22,7 +22,9 @@ def test_DoublyLinkedList():
     assert dll.search(3) == dll[-2]
     assert dll.search(-1) is None
     dll[-2].key = 0
-    assert str(dll) == "['7', '5', '1', '6', '1.1', '0', '9']"
+    assert str(dll) == ("['(7, None)', '(5, None)', '(1, None)', "
+                        "'(6, None)', '(1.1, None)', '(0, None)', "
+                        "'(9, None)']")
     assert len(dll) == 7
     assert raises(IndexError, lambda: dll.insert_at(8, None))
     assert raises(IndexError, lambda: dll.extract(20))
@@ -57,7 +59,8 @@ def test_SinglyLinkedList():
     assert sll.popleft().key == 2
     assert sll.popright().key == 6
     sll[-2].key = 0
-    assert str(sll) == "['2', '4', '1', '0', '9']"
+    assert str(sll) == ("['(2, None)', '(4, None)', '(1, None)', "
+                        "'(0, None)', '(9, None)']")
     assert len(sll) == 5
     assert raises(IndexError, lambda: sll.insert_at(6, None))
     assert raises(IndexError, lambda: sll.extract(20))
@@ -93,7 +96,8 @@ def test_SinglyCircularLinkedList():
     assert scll.popright().key == 6
     assert scll.search(-1) is None
     scll[-2].key = 0
-    assert str(scll) == "['2', '4', '1', '0', '9']"
+    assert str(scll) == ("['(2, None)', '(4, None)', '(1, None)', "
+                         "'(0, None)', '(9, None)']")
     assert len(scll) == 5
     assert raises(IndexError, lambda: scll.insert_at(6, None))
     assert raises(IndexError, lambda: scll.extract(20))
@@ -130,7 +134,9 @@ def test_DoublyCircularLinkedList():
     assert dcll.popleft().key == 2
     assert dcll.popright().key == 4
     dcll[-2].key = 0
-    assert str(dcll) == "['7', '5', '1', '6', '1', '0', '9']"
+    assert str(dcll) == ("['(7, None)', '(5, None)', '(1, None)', "
+                         "'(6, None)', '(1, None)', '(0, None)', "
+                         "'(9, None)']")
     assert len(dcll) == 7
     assert raises(IndexError, lambda: dcll.insert_at(8, None))
     assert raises(IndexError, lambda: dcll.extract(20))

@@ -221,12 +221,12 @@ class DoublyLinkedList(LinkedList):
     >>> dll.append(5)
     >>> dll.appendleft(2)
     >>> str(dll)
-    "['2', '6', '5']"
+    "['(2, None)', '(6, None)', '(5, None)']"
     >>> dll[0].key = 7.2
     >>> dll.extract(1).key
     6
     >>> str(dll)
-    "['7.2', '5']"
+    "['(7.2, None)', '(5, None)']"
 
     References
     ==========
@@ -360,12 +360,12 @@ class SinglyLinkedList(LinkedList):
     >>> sll.append(5)
     >>> sll.appendleft(2)
     >>> str(sll)
-    "['2', '6', '5']"
+    "['(2, None)', '(6, None)', '(5, None)']"
     >>> sll[0].key = 7.2
     >>> sll.extract(1).key
     6
     >>> str(sll)
-    "['7.2', '5']"
+    "['(7.2, None)', '(5, None)']"
 
     References
     ==========
@@ -478,12 +478,12 @@ class SinglyCircularLinkedList(SinglyLinkedList):
     >>> scll.append(5)
     >>> scll.appendleft(2)
     >>> str(scll)
-    "['2', '6', '5']"
+    "['(2, None)', '(6, None)', '(5, None)']"
     >>> scll[0].key = 7.2
     >>> scll.extract(1).key
     6
     >>> str(scll)
-    "['7.2', '5']"
+    "['(7.2, None)', '(5, None)']"
 
     References
     ==========
@@ -537,12 +537,12 @@ class DoublyCircularLinkedList(DoublyLinkedList):
     >>> dcll.append(5)
     >>> dcll.appendleft(2)
     >>> str(dcll)
-    "['2', '6', '5']"
+    "['(2, None)', '(6, None)', '(5, None)']"
     >>> dcll[0].key = 7.2
     >>> dcll.extract(1).key
     6
     >>> str(dcll)
-    "['7.2', '5']"
+    "['(7.2, None)', '(5, None)']"
 
     References
     ==========
@@ -603,112 +603,153 @@ class SkipList(object):
     >>> sl.insert(6)
     >>> sl.insert(1)
     >>> sl.insert(3)
-    >>> str(sl)
-    '-inf.->1.->3.->6.->inf.'
-    >>> sl.remove(1)
+    >>> node = sl.extract(1)
+    >>> str(node)
+    '(1, None)'
     >>> sl.insert(4)
     >>> sl.insert(2)
     >>> sl.search(4)
     True
     >>> sl.search(10)
     False
-    >>> str(sl)
-    '-inf.->2.->3.->4.->6.->inf.'
 
     """
 
+    __slots__ = ['head', 'tail', '_levels', '_num_nodes', 'seed']
+
     def __new__(cls):
         obj = object.__new__(cls)
-        obj.head = None
-        obj.tail = None
-        obj._addonelevel()
+        obj.head, obj.tail = None, None
+        obj._num_nodes = 0
+        obj._levels = 0
+        obj._add_level()
         return obj
 
-    def __str__(self):
-        li = []
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'levels', 'search',
+                'extract', '__str__']
+
+    def _add_level(self):
+        self.tail = SkipNode(math.inf, next=None, down=self.tail)
+        self.head = SkipNode(-math.inf, next=self.tail, down=self.head)
+        self._levels += 1
+
+    @property
+    def levels(self):
+        """
+        Returns the number of levels in the
+        current skip list.
+        """
+        return self._levels
+
+    def _search(self, key) -> list:
+        path = []
         node = self.head
         while node:
-            l = []
-            no = node
-            while no:
-                l.append('{}{}'.format(no.val, '' if no.down else '.'))
-                no = no.next
-            li.append(l)
-            node = node.down
-        return li
-
-    def _addonelevel(self):
-        self.tail = SkipNode(math.inf, None, self.tail)
-        self.head = SkipNode(-math.inf, self.tail, self.head)
-
-
-    def _grow_up(self):
-        return random.getrandbits(1) % 2 == 0
-
-    def _search(self, target: int) -> list:
-        linodes = []
-        node = self.head
-        while node:
-            if node.next.val >= target:
-                linodes.append(node)
+            if node.next.key >= key:
+                path.append(node)
                 node = node.down
             else:
                 node = node.next
-        return linodes
+        return path
 
-    def levels(self):
-        """
-        Returns the number of level in the
-        Skip list.
-        """
-        r = 0
-        node = self.head
-        while node:
-            r += 1
-            node = node.down
-        return r
+    def search(self, key) -> bool:
+        return self._search(key)[-1].next.key == key
 
-    def search(self, target: int) -> bool:
+    def insert(self, key, data=None):
         """
-        Check if the number is present in the
-        Skiplist. Returns True if present else
-        return False.
-        """
-        return self._search(target)[-1].next.val == target
+        Inserts a new node to the skip list.
 
-    def insert(self, num: int):
+        Parameters
+        ==========
+
+        key
+            Any valid identifier to uniquely
+            identify the node in the linked list.
+
+        data
+            Any valid data to be stored in the node.
         """
-        Adds the given num value into
-        the SkipList.
-        """
-        linodes = self._search(num)
-        tip = linodes[-1]
-        below = SkipNode(num, tip.next)
+        path = self._search(key)
+        tip = path[-1]
+        below = SkipNode(key=key, data=data, next=tip.next)
         tip.next = below
-        totalLevel = len(linodes)
+        total_level = self._levels
         level = 1
-        while self._grow_up() and level <= totalLevel:
-            if level == totalLevel:
-                self._addonelevel()
+        while random.getrandbits(1) % 2 == 0 and level <= total_level:
+            if level == total_level:
+                self._add_level()
                 prev = self.head
             else:
-                prev = linodes[totalLevel - 1 - level]
-            below = SkipNode(num, prev.next, below)
+                prev = path[total_level - 1 - level]
+            below = SkipNode(key=key, data=None, next=prev.next, down=below)
             prev.next = below
             level += 1
+        self._num_nodes += 1
 
-    def remove(self, num: int):
+    def extract(self, key):
         """
-        Delete the given num value from
-        the SkipList. Optional if not present
-        raises Error
+        Extracts the node with the given key in the skip list.
+
+        Parameters
+        ==========
+
+        key
+            The key of the node under consideration.
+
+        Returns
+        =======
+
+        return_node: SkipNode
+            The node with given key.
         """
-        linodes = self._search(num)
-        tip = linodes[-1]
-        if tip.next.val != num:
-            raise ValueError('Value not found.')
-        totalLevel = len(linodes)
-        level = totalLevel - 1
-        while level >= 0 and linodes[level].next.val == num:
-            linodes[level].next = linodes[level].next.next
+        path = self._search(key)
+        tip = path[-1]
+        if tip.next.key != key:
+            raise KeyError('Node with key %s is not there in %s'%(key, self))
+        return_node = SkipNode(tip.next.key, tip.next.data)
+        total_level = self._levels
+        level = total_level - 1
+        while level >= 0 and path[level].next.key == key:
+            path[level].next = path[level].next.next
             level -= 1
+        self._levels = level
+        self._num_nodes -= 1
+        return return_node
+
+    def __str__(self):
+        node2row = {}
+        node2col = {}
+        walk = self.head
+        curr_level = self._levels - 1
+        while walk is not None:
+            curr_node = walk
+            col = 0
+            while curr_node is not None:
+                if curr_node.key != math.inf and curr_node.key != -math.inf:
+                    node2row[curr_node] = curr_level
+                    if walk.down is None:
+                        node2col[curr_node.key] = col
+                    col += 1
+                curr_node = curr_node.next
+            walk = walk.down
+            curr_level -= 1
+        sl_mat = [[str(None) for _ in range(self._num_nodes)] for _ in range(self._levels)]
+        walk = self.head
+        while walk is not None:
+            curr_node = walk
+            while curr_node is not None:
+                if curr_node in node2row:
+                    row = node2row[curr_node]
+                    col = node2col[curr_node.key]
+                    sl_mat[row][col] = str(curr_node)
+                curr_node = curr_node.next
+            walk = walk.down
+        sl_str = ""
+        for level_list in sl_mat[::-1]:
+            for node_str in level_list:
+                sl_str += node_str + " "
+            if len(sl_str) > 0:
+                sl_str += "\n"
+        return sl_str

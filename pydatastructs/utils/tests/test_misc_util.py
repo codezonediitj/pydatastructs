@@ -49,5 +49,4 @@ def test_RedBlackTreeNode():
 
 def test_SkipNode():
     c = SkipNode(1)
-    assert str(c) == '1->N'
-    assert repr(c) == '1->N'
+    assert str(c) == '(1, None)'
