@@ -259,6 +259,23 @@ class LinkedListNode(Node):
     def __str__(self):
         return str(self.key)
 
+class SkipNode(Node):
+
+    __slots__ = ['val', 'next', 'down']
+
+    def __new__(cls, val: int=0, next=None, down=None):
+        obj = Node.__new__(cls)
+        obj.val = val
+        obj.next = next
+        obj.down = down
+        return obj
+
+    def __str__(self):
+        return '{}->{}'.format(
+            self.val,
+            self.next.val if self.next else 'N')
+
+
 class GraphNode(Node):
     """
     Abastract class for graph nodes/vertices.
@@ -447,19 +464,3 @@ def _comp(u, v, tcomp):
         return False
     else:
         return tcomp(u, v)
-
-class SkipNode(object):
-    def __new__(cls, val: int = 0, next = None, down = None):
-        obj = object.__new__(cls)
-        obj.val = val
-        obj.next = next
-        obj.down = down
-        return obj
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return '{}->{}'.format(
-            self.val,
-            self.next.val if self.next else 'N')

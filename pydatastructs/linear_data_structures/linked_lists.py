@@ -292,6 +292,10 @@ class DoublyLinkedList(LinkedList):
         if self.size == 1:
             self.head, self.tail = \
                 new_node, new_node
+        elif index == self.size - 1:
+            new_node.prev = self.tail
+            self.tail.next = new_node
+            self.tail = new_node
         else:
             counter = 0
             current_node = self.head
@@ -411,6 +415,9 @@ class SinglyLinkedList(LinkedList):
         if self.size == 1:
             self.head, self.tail = \
                 new_node, new_node
+        elif index == self.size - 1:
+            self.tail.next = new_node
+            self.tail = new_node
         else:
             counter = 0
             current_node = self.head
@@ -596,7 +603,7 @@ class SkipList(object):
     >>> sl.insert(6)
     >>> sl.insert(1)
     >>> sl.insert(3)
-    >>> repr(sl)
+    >>> str(sl)
     '-inf.->1.->3.->6.->inf.'
     >>> sl.remove(1)
     >>> sl.insert(4)
@@ -605,7 +612,7 @@ class SkipList(object):
     True
     >>> sl.search(10)
     False
-    >>> repr(sl)
+    >>> str(sl)
     '-inf.->2.->3.->4.->6.->inf.'
 
     """
@@ -616,10 +623,6 @@ class SkipList(object):
         obj.tail = None
         obj._addonelevel()
         return obj
-
-    def __repr__(self):
-        li = self.__str__()
-        return '->'.join(li[-1])
 
     def __str__(self):
         li = []
@@ -642,7 +645,7 @@ class SkipList(object):
     def _grow_up(self):
         return random.getrandbits(1) % 2 == 0
 
-    def _search(self, target: int) -> bool:
+    def _search(self, target: int) -> list:
         linodes = []
         node = self.head
         while node:
@@ -665,7 +668,7 @@ class SkipList(object):
             node = node.down
         return r
 
-    def search(self, target: int):
+    def search(self, target: int) -> bool:
         """
         Check if the number is present in the
         Skiplist. Returns True if present else
