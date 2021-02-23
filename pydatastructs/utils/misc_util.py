@@ -260,6 +260,24 @@ class LinkedListNode(Node):
         return str((self.key, self.data))
 
 class SkipNode(Node):
+    """
+    Represents node in linked lists.
+
+    Parameters
+    ==========
+
+    key
+        Any valid identifier to uniquely
+        identify the node in the skip list.
+    data
+        Any valid data to be stored in the node.
+    next
+        Reference to the node lying just forward to the current node.
+        Optional, by default, None.
+    down
+        Reference to the node lying just below the current node.
+        Optional, by default, None.
+    """
 
     __slots__ = ['key', 'data', 'next', 'down']
 
