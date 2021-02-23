@@ -97,7 +97,7 @@ def _apis():
     pyds.LinkedListNode, pyds.BinomialTreeNode, pyds.AdjacencyListGraphNode,
     pyds.AdjacencyMatrixGraphNode, pyds.GraphEdge, pyds.Set, pyds.BinaryIndexedTree,
     pyds.CartesianTree, pyds.CartesianTreeNode, pyds.Treap, pyds.RedBlackTreeNode, pyds.RedBlackTree,
-    pyds.Trie, pyds.TrieNode]
+    pyds.Trie, pyds.TrieNode, pyds.SkipList]
 
 def test_public_api():
     pyds = pydatastructs
