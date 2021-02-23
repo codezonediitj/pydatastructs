@@ -294,6 +294,7 @@ class DoublyLinkedList(LinkedList):
                 new_node, new_node
         elif index == self.size - 1:
             new_node.prev = self.tail
+            new_node.next = self.tail.next
             self.tail.next = new_node
             self.tail = new_node
         else:
@@ -416,6 +417,7 @@ class SinglyLinkedList(LinkedList):
             self.head, self.tail = \
                 new_node, new_node
         elif index == self.size - 1:
+            new_node.next = self.tail.next
             self.tail.next = new_node
             self.tail = new_node
         else:
@@ -628,7 +630,7 @@ class SkipList(object):
     @classmethod
     def methods(cls):
         return ['__new__', 'levels', 'search',
-                'extract', '__str__']
+                'extract', '__str__', 'size']
 
     def _add_level(self):
         self.tail = SkipNode(math.inf, next=None, down=self.tail)
@@ -688,6 +690,10 @@ class SkipList(object):
             level += 1
         self._num_nodes += 1
 
+    @property
+    def size(self):
+        return self._num_nodes
+
     def extract(self, key):
         """
         Extracts the node with the given key in the skip list.
@@ -714,8 +720,18 @@ class SkipList(object):
         while level >= 0 and path[level].next.key == key:
             path[level].next = path[level].next.next
             level -= 1
-        self._levels = level
+        walk = self.head
+        while walk is not None:
+            if walk.next is self.tail:
+                self._levels -= 1
+                self.head = walk.down
+                self.tail = self.tail.down
+                walk = walk.down
+            else:
+                break
         self._num_nodes -= 1
+        if self._levels == 0:
+            self._add_level()
         return return_node
 
     def __str__(self):
@@ -735,6 +751,7 @@ class SkipList(object):
                 curr_node = curr_node.next
             walk = walk.down
             curr_level -= 1
+        print(self._num_nodes, self._levels)
         sl_mat = [[str(None) for _ in range(self._num_nodes)] for _ in range(self._levels)]
         walk = self.head
         while walk is not None:

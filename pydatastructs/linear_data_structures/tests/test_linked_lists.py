@@ -156,40 +156,38 @@ def test_DoublyCircularLinkedList():
     assert raises(ValueError, lambda: dcll_copy.extract(1))
 
 def test_SkipList():
+    random.seed(0)
     sl = SkipList()
-    f, t = False, True
-
     sl.insert(2)
     sl.insert(10)
     sl.insert(92)
     sl.insert(1)
     sl.insert(4)
     sl.insert(27)
-    assert repr(sl) == '-inf.->1.->2.->4.->10.->27.->92.->inf.'
-    sl.remove(10)
-    assert repr(sl) == '-inf.->1.->2.->4.->27.->92.->inf.'
-    assert raises(ValueError, lambda: sl.remove(15))
-    assert sl.search(1) == t
-    assert sl.search(47) == f
+    sl.extract(10)
+    assert str(sl) == ("(1, None) None None None None \n"
+                       "(1, None) None None None None \n"
+                       "(1, None) (2, None) (4, None) (27, None) (92, None) \n")
+    assert raises(KeyError, lambda: sl.extract(15))
+    assert sl.search(1) is True
+    assert sl.search(47) is False
 
     sl = SkipList()
 
-    for a in range(0,20,2):
+    for a in range(0, 20, 2):
         sl.insert(a)
-    assert repr(sl) == '-inf.->0.->2.->4.->6.->8.->10.->12.->14.->16.->18.->inf.'
-    assert sl.search(16) == t
-    for a in range(4,20,4):
-        sl.remove(a)
-    assert repr(sl) == '-inf.->0.->2.->6.->10.->14.->18.->inf.'
-    assert sl.search(10) == t
-    for a in range(4,20,4):
+    assert sl.search(16) is True
+    for a in range(4, 20, 4):
+        sl.extract(a)
+    assert sl.search(10) is True
+    for a in range(4, 20, 4):
         sl.insert(a)
-    for a in range(0,20,2):
-        sl.remove(a)
-    assert repr(sl) == '-inf.->inf.'
-    assert sl.search(3) == f
+    for a in range(0, 20, 2):
+        sl.extract(a)
+    assert sl.search(3) is False
 
     li = SkipList()
     li.insert(1)
     li.insert(2)
-    assert sl.levels() == 4
+    assert li.levels == 1
+    assert li.size == 2
