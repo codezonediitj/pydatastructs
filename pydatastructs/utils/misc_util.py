@@ -10,7 +10,8 @@ __all__ = [
     'CartesianTreeNode',
     'RedBlackTreeNode',
     'TrieNode',
-    'SuffixNode'
+    'SuffixNode',
+    'SkipNode'
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
@@ -257,7 +258,38 @@ class LinkedListNode(Node):
         return obj
 
     def __str__(self):
-        return str(self.key)
+        return str((self.key, self.data))
+
+class SkipNode(Node):
+    """
+    Represents node in linked lists.
+
+    Parameters
+    ==========
+
+    key
+        Any valid identifier to uniquely
+        identify the node in the skip list.
+    data
+        Any valid data to be stored in the node.
+    next
+        Reference to the node lying just forward to the current node.
+        Optional, by default, None.
+    down
+        Reference to the node lying just below the current node.
+        Optional, by default, None.
+    """
+
+    __slots__ = ['key', 'data', 'next', 'down']
+
+    def __new__(cls, key, data=None, next=None, down=None):
+        obj = Node.__new__(cls)
+        obj.key, obj.data = key, data
+        obj.next, obj.down = next, down
+        return obj
+
+    def __str__(self):
+        return str((self.key, self.data))
 
 class GraphNode(Node):
     """
