@@ -148,6 +148,4 @@ def test_longest_increasing_subsequence():
     Z = ODA(int, [4, 2, 5, 8, 11])
     output = longest_increasing_subsequence(Z)
     assert str(output) == "4"
-    
-
 
