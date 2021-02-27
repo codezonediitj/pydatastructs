@@ -6,9 +6,9 @@ PyDataStructs
 About
 -----
 
-Currently, the project aims to be a Python package for various data structures in computer science. Besides, we are also working on including parallel algorithms. To the best of our knowledge, a well-designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist. 
+This project aims to be a Python package for various data structures in computer science. We are also working on the development of various alogorithms including parallel algorithms. To the best of our knowledge, a well-designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist. 
 
-In future, i.e, after a few releases of the package when the software design will become stable, we also aim to provide APIs for the code in C++ and Java as well.
+ When the software design becomes stable after a few releases of the package in the near future, we also aim to provide APIs for the code in C++ and Java as well.
 
 Installation
 ------------
@@ -45,9 +45,7 @@ You can use the examples given in the following book as tests for your code:
 Why we use Python?
 ------------------
 
-As we know Python is an interpreted language and hence is slow as compared to C++, the most
-popular language for sports programming. We still decided to use Python because the software
-development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time. However, keeping the need of the users in mind, we will shift to C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch, after a few releases with APIs available for all the languages.
+As we know Python is an interpreted language and hence is slow compared to C++, the most popular language for competitive programming. We still decided to use Python because the software development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time. However, keeping the need of the users in mind, we will shift to C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch, after a few releases with APIs available for all the languages.
 
 How to contribute?
 ------------------
