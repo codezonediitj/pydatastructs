@@ -549,7 +549,7 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     if _check_type(array, DynamicArray):
         array._modify(force=True)
     return array
-
+    
 def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
     """
     Performs cocktail sort on the given array.
