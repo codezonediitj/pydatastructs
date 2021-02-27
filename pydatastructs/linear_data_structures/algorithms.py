@@ -14,7 +14,8 @@ __all__ = [
     'bucket_sort',
     'cocktail_shaker_sort',
     'quick_sort',
-    'longest_common_subsequence'
+    'longest_common_subsequence',
+    'longest_increasing_subsequence'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
