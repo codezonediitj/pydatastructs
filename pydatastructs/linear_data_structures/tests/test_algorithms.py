@@ -1,7 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence)
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence, longest_increasing_subsequence)
 
 
 from pydatastructs.utils.raises_util import raises
@@ -102,7 +102,7 @@ def test_matrix_multiply_parallel():
     output = matrix_multiply_parallel(I, J, num_threads=1)
     assert expected_result == output
 
-def test_longest_common_sequence():
+def test_longest_increasing_subsequence():
     ODA = OneDimensionalArray
     expected_result = "['A', 'S', 'C', 'I', 'I']"
 
@@ -126,3 +126,25 @@ def test_longest_common_sequence():
     Z = ODA(int, [])
     output = longest_common_subsequence(Y, Z)
     assert str(output) == '[]'
+
+def test_longest_common_sequence():
+    ODA = OneDimensionalArray
+    expected_result = "5"
+
+    str1 = ODA(int, [1, 3, 8, 4, 7, 6, 12])
+    output = longest_increasing_subsequence(str1)
+    assert str(output) == expected_result
+
+    expected_result = "3"
+
+    I = ODA(int, [9, 11, 8, 14, 12])
+    output = longest_common_subsequence(I)
+    assert str(output) == expected_result
+
+    Y = ODA(int, [1, 2, 3, 4, 4, 3, 7, 9])
+    output = longest_common_subsequence(Y)
+    assert str(output) == "6"
+
+    Z = ODA(int, [4, 2, 5, 8, 11])
+    output = longest_common_subsequence(Z)
+    assert str(output) == "4"
