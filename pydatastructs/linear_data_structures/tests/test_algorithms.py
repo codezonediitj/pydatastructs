@@ -127,7 +127,7 @@ def test_longest_common_subsequence():
     output = longest_common_subsequence(Y, Z)
     assert str(output) == '[]'
 
-def test_longest_increasing_sequence():
+def test_longest_increasing_subsequence():
     ODA = OneDimensionalArray
     expected_result = "5"
 

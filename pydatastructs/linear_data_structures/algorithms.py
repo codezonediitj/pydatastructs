@@ -803,14 +803,14 @@ def longest_increasing_subsequence(seq: Array) -> int:
     Examples
     ========
     >>> from pydatastructs import longest_increasing_subsequence as LIS, OneDimensionalArray as ODA
-    >>> arr1 = ['1', '3, '9', '4', '6']
+    >>> arr1 = [1, 3, 9, 4, 6]
     >>> lis = LIS(arr1)
     >>> str(lis)
     "4"
-    >>> arr1 = ['8', '7', '22', '12', '16', '28', '44']
-    >>> lcs = LIS(arr1)
+    >>> arr1 = [8, 7, 2, 12, 16, 28, 44]
+    >>> lis = LIS(arr1)
     >>> str(lis)
-    "[5"
+    "5"
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Longest_increasing_subsequence
@@ -827,4 +827,3 @@ def longest_increasing_subsequence(seq: Array) -> int:
     for i in range(n):         
             maximum = max(maximum, lis[i])  
     return maximum
-    
