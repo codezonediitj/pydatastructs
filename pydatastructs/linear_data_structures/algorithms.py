@@ -690,7 +690,7 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
     >>> lcs = LCS(arr1, arr2)
     >>> str(lcs)
     "['A', 'P', 'P']"
-    
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
@@ -744,7 +744,7 @@ def longest_increasing_subsequence(seq: OneDimensionalArray) -> int:
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-    
+
     """
     n=len(seq)
     lis=[1]*n
