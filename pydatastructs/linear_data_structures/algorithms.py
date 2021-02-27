@@ -806,11 +806,11 @@ def longest_increasing_subsequence(seq: Array) -> int:
     >>> arr1 = [1, 3, 9, 4, 6]
     >>> lis = LIS(arr1)
     >>> str(lis)
-    "4"
+    '4'
     >>> arr1 = [8, 7, 2, 12, 16, 28, 44]
     >>> lis = LIS(arr1)
     >>> str(lis)
-    "5"
+    '5'
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Longest_increasing_subsequence
@@ -821,7 +821,7 @@ def longest_increasing_subsequence(seq: Array) -> int:
     lis=[1]*n
     for i in range(1, n):
         for j in range(0, i):
-            if seq[i] > seq[j] and seq[i]< seq[j] + 1 : 
+            if seq[i] > seq[j] and lis[i]< lis[j] + 1 : 
                 lis[i] = lis[j]+1
     maximum=0
     for i in range(n):         
