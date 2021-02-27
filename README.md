@@ -94,3 +94,15 @@ The following parameters are to be followed to pass the code quality tests for y
 reference (using `is`, `is not`) and not by value(`==`, `!=`).
 
 Keep contributing!!
+
+Thanks to these wonderful people ✨✨:
+
+<table>
+	<tr>
+		<td>
+			<a href="https://github.com/codezonediitj/pydatastructs/graphs/contributors">
+  				<img src="https://contrib.rocks/image?repo=codezonediitj/pydatastructs" />
+			</a>
+		</td>
+	</tr>
+</table>
