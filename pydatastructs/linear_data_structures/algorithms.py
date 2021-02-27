@@ -789,7 +789,7 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
 
-def longest_increasing_subsequence(array: Array) -> int:
+def longest_increasing_subsequence(seq: Array) -> int:
     """
     Finds the length of longest increasing subsequence of the given sequences.
     Parameters
@@ -818,17 +818,13 @@ def longest_increasing_subsequence(array: Array) -> int:
    
     """
     n=len(seq)
-
     lis=[1]*n
-
     for i in range(1, n):
         for j in range(0, i):
             if seq[i] > seq[j] and seq[i]< seq[j] + 1 : 
                 lis[i] = lis[j]+1
     maximum=0
-
     for i in range(n):         
             maximum = max(maximum, lis[i])  
-
     return maximum
-    
+
