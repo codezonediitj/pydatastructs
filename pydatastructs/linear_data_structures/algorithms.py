@@ -84,6 +84,7 @@ def merge_sort_parallel(array, num_threads, **kwargs):
     >>> merge_sort_parallel(arr, 3, comp=lambda u, v: u > v)
     >>> [arr[0], arr[1], arr[2]]
     [3, 2, 1]
+    
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Merge_sort
@@ -140,6 +141,7 @@ def brick_sort(array, **kwargs):
     >>> brick_sort(arr, comp=lambda u, v: u > v)
     >>> [arr[0], arr[1], arr[2]]
     [3, 2, 1]
+
     References
     ==========
     .. [1] https://www.geeksforgeeks.org/odd-even-sort-brick-sort/
@@ -204,6 +206,7 @@ def brick_sort_parallel(array, num_threads, **kwargs):
     >>> brick_sort_parallel(arr, num_threads=5, comp=lambda u, v: u > v)
     >>> [arr[0], arr[1], arr[2]]
     [3, 2, 1]
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort
@@ -249,6 +252,7 @@ def heapsort(array, **kwargs):
     >>> heapsort(arr)
     >>> [arr[0], arr[1], arr[2]]
     [1, 2, 3]
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Heapsort
@@ -298,6 +302,7 @@ def counting_sort(array: Array) -> Array:
     >>> out = counting_sort(arr)
     >>> str(out)
     "['0', '5', '78']"
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Counting_sort
@@ -376,6 +381,7 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
     >>> J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
     >>> matrix_multiply_parallel(I, J, num_threads=5)
     [[3, 3, 3], [1, 2, 1], [2, 2, 2]]
+
     References
     ==========
     .. [1] https://www3.nd.edu/~zxu2/acms60212-40212/Lec-07-3.pdf
@@ -440,6 +446,7 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     >>> out = bucket_sort(arr)
     >>> str(out)
     "['0', '1', '78']"
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Bucket_sort
@@ -533,6 +540,7 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
     >>> out = cocktail_shaker_sort(arr)
     >>> str(out)
     '[5, 21, 37]'
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Cocktail_shaker_sort
@@ -612,6 +620,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
     >>> out = quick_sort(arr)
     >>> str(out)
     '[5, 21, 37]'
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Quicksort
