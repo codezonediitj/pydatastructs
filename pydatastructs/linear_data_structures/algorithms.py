@@ -549,7 +549,7 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     if _check_type(array, DynamicArray):
         array._modify(force=True)
     return array
-    
+
 def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
     """
     Performs cocktail sort on the given array.
@@ -815,8 +815,7 @@ def longest_increasing_subsequence(seq: Array) -> int:
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-    Note
-   
+    
     """
     n=len(seq)
     lis=[1]*n
@@ -826,5 +825,5 @@ def longest_increasing_subsequence(seq: Array) -> int:
                 lis[i] = lis[j]+1
     maximum=0
     for i in range(n):
-            maximum = max(maximum, lis[i])
+        maximum = max(maximum, lis[i])
     return maximum
