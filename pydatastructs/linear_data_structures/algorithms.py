@@ -14,7 +14,8 @@ __all__ = [
     'bucket_sort',
     'cocktail_shaker_sort',
     'quick_sort',
-    'longest_common_subsequence'
+    'longest_common_subsequence',
+    'longest_increasing_subsequence'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -787,3 +788,46 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
                     check_mat[i][j] = check_mat[i][j-1]
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
+
+def longest_increasing_subsequence(array: Array) -> int:
+    """
+    Finds the length of longest increasing subsequence of the given sequences.
+    Parameters
+    ========
+    seq: OneDimensionalArray
+        The sequence.
+    Returns
+    =======
+    output: int
+        The length of longest increasing subsequence.
+    Examples
+    ========
+    >>> from pydatastructs import longest_increasing_subsequence as LIS, OneDimensionalArray as ODA
+    >>> arr1 = ['1', '3, '9', '4', '6']
+    >>> lis = LIS(arr1)
+    >>> str(lis)
+    "4"
+    >>> arr1 = ['8', '7', '22', '12', '16', '28', '44']
+    >>> lcs = LIS(arr1)
+    >>> str(lis)
+    "[5"
+    References
+    ==========
+    .. [1] https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+    Note
+   
+    """
+    n=len(seq)
+
+    lis=[1]*n
+
+    for i in range(1, n):
+        for j in range(0, i):
+            if seq[i] > seq[j] and seq[i]< seq[j] + 1 : 
+                lis[i] = lis[j]+1
+    maximum=0
+
+    for i in range(n):         
+            maximum = max(maximum, lis[i])  
+
+    return maximum
