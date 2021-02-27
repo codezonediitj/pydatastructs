@@ -84,7 +84,7 @@ def merge_sort_parallel(array, num_threads, **kwargs):
     >>> merge_sort_parallel(arr, 3, comp=lambda u, v: u > v)
     >>> [arr[0], arr[1], arr[2]]
     [3, 2, 1]
-    
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Merge_sort
@@ -690,6 +690,7 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
     >>> lcs = LCS(arr1, arr2)
     >>> str(lcs)
     "['A', 'P', 'P']"
+    
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
