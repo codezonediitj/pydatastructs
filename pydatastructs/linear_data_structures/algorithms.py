@@ -811,6 +811,7 @@ def longest_increasing_subsequence(seq: Array) -> int:
     >>> lis = LIS(arr1)
     >>> str(lis)
     '5'
+    
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Longest_increasing_subsequence
