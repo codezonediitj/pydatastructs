@@ -102,7 +102,7 @@ def test_matrix_multiply_parallel():
     output = matrix_multiply_parallel(I, J, num_threads=1)
     assert expected_result == output
 
-def test_longest_increasing_subsequence():
+def test_longest_common_subsequence():
     ODA = OneDimensionalArray
     expected_result = "['A', 'S', 'C', 'I', 'I']"
 
@@ -127,7 +127,7 @@ def test_longest_increasing_subsequence():
     output = longest_common_subsequence(Y, Z)
     assert str(output) == '[]'
 
-def test_longest_common_sequence():
+def test_longest_increasing_sequence():
     ODA = OneDimensionalArray
     expected_result = "5"
 
@@ -138,15 +138,15 @@ def test_longest_common_sequence():
     expected_result = "3"
 
     I = ODA(int, [9, 11, 8, 14, 12])
-    output = longest_common_subsequence(I)
+    output = longest_increasing_subsequence(I)
     assert str(output) == expected_result
 
     Y = ODA(int, [1, 2, 3, 4, 4, 3, 7, 9])
-    output = longest_common_subsequence(Y)
+    output = longest_increasing_subsequence(Y)
     assert str(output) == "6"
 
     Z = ODA(int, [4, 2, 5, 8, 11])
-    output = longest_common_subsequence(Z)
+    output = longest_increasing_subsequence(Z)
     assert str(output) == "4"
-    
+
 
