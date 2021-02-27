@@ -32,6 +32,7 @@ from .algorithms import (
     bucket_sort,
     cocktail_shaker_sort,
     quick_sort,
-    longest_common_subsequence
+    longest_common_subsequence,
+    longest_increasing_subsequence
 )
 __all__.extend(algorithms.__all__)
