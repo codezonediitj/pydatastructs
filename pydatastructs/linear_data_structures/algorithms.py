@@ -820,11 +820,11 @@ def longest_increasing_subsequence(seq: OneDimensionalArray) -> int:
     def CeilIndex(A, l, r, key): 
   
         while (r - l > 1): 
-        m = l + (r - l)//2
-        if (A[m] >= key): 
-            r = m 
-        else: 
-            l = m 
+            m = l + (r - l)//2
+            if (A[m] >= key): 
+                r = m 
+            else: 
+                l = m 
         return r 
      
     size = len(seq)
