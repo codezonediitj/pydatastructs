@@ -827,4 +827,3 @@ def longest_increasing_subsequence(seq: OneDimensionalArray) -> int:
     for i in range(n):
         maximum = max(maximum, lis[i])
     return maximum
-
