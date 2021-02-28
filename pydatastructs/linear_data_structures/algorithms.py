@@ -818,7 +818,6 @@ def longest_increasing_subsequence(seq: OneDimensionalArray) -> int:
 
     """
     def CeilIndex(A, l, r, key):
-
         while (r - l > 1):
             m = l + (r - l)//2
             if (A[m] >= key):
@@ -826,7 +825,7 @@ def longest_increasing_subsequence(seq: OneDimensionalArray) -> int:
             else:
                 l = m
         return r
-     
+
     size = len(seq)
     tailTable = [0 for i in range(size + 1)]
     length = 0 # always points empty slot
@@ -842,7 +841,7 @@ def longest_increasing_subsequence(seq: OneDimensionalArray) -> int:
 
             # seq[i] wants to extend
             # largest subsequence
-            tailTable[len] = seq[i]
+            tailTable[length] = seq[i]
             length+= 1
         else:
             # seq[i] wants to be current
