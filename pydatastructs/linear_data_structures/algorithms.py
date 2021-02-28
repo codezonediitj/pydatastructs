@@ -817,13 +817,42 @@ def longest_increasing_subsequence(seq: OneDimensionalArray) -> int:
     .. [1] https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 
     """
-    n=len(seq)
-    lis=[1]*n
-    for i in range(1, n):
-        for j in range(0, i):
-            if seq[i] > seq[j] and lis[i]< lis[j] + 1:
-                lis[i] = lis[j]+1
-    maximum=0
-    for i in range(n):
-        maximum = max(maximum, lis[i])
-    return maximum
+    def CeilIndex(A, l, r, key): 
+  
+    while (r - l > 1): 
+      
+        m = l + (r - l)//2
+        if (A[m] >= key): 
+            r = m 
+        else: 
+            l = m 
+    return r 
+     
+    size = len(seq)
+    tailTable = [0 for i in range(size + 1)] 
+    length = 0 # always points empty slot 
+   
+    tailTable[0] = seq[0] 
+    length = 1
+    for i in range(1, size): 
+      
+        if (seq[i] < tailTable[0]): 
+  
+            # new smallest value 
+            tailTable[0] = seq[i] 
+   
+        elif (seq[i] > tailTable[length-1]): 
+  
+            # A[i] wants to extend 
+            # largest subsequence 
+            tailTable[len] = seq[i] 
+            length+= 1
+   
+        else: 
+            # A[i] wants to be current 
+            # end candidate of an existing 
+            # subsequence. It will replace 
+            # ceil value in tailTable 
+            tailTable[CeilIndex(tailTable, -1, length-1, seq[i])] = seq[i] 
+          
+    return length
