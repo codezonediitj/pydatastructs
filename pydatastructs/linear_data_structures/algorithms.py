@@ -51,8 +51,10 @@ def _merge(array, sl, el, sr, er, end, comp):
 def merge_sort_parallel(array, num_threads, **kwargs):
     """
     Implements parallel merge sort.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be sorted.
     num_threads: int
@@ -74,8 +76,10 @@ def merge_sort_parallel(array, num_threads, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+
     Examples
     ========
+
     >>> from pydatastructs import OneDimensionalArray, merge_sort_parallel
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
     >>> merge_sort_parallel(arr, 3)
@@ -87,6 +91,7 @@ def merge_sort_parallel(array, num_threads, **kwargs):
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Merge_sort
     """
     start = kwargs.get('start', 0)
@@ -111,8 +116,10 @@ def merge_sort_parallel(array, num_threads, **kwargs):
 def brick_sort(array, **kwargs):
     """
     Implements Brick Sort / Odd Even sorting algorithm
+
     Parameters
     ==========
+
     array: Array
         The array which is to be sorted.
     start: int
@@ -131,6 +138,7 @@ def brick_sort(array, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+
     Examples
     ========
     >>> from pydatastructs import OneDimensionalArray, brick_sort
@@ -173,8 +181,10 @@ def _brick_sort_swap(array, i, j, comp, is_sorted):
 def brick_sort_parallel(array, num_threads, **kwargs):
     """
     Implements Concurrent Brick Sort / Odd Even sorting algorithm
+
     Parameters
     ==========
+
     array: Array/list
         The array which is to be sorted.
     num_threads: int
@@ -196,8 +206,10 @@ def brick_sort_parallel(array, num_threads, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+
     Examples
     ========
+
     >>> from pydatastructs import OneDimensionalArray, brick_sort_parallel
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
     >>> brick_sort_parallel(arr, num_threads=5)
@@ -209,6 +221,7 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort
     """
 
@@ -232,8 +245,10 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 def heapsort(array, **kwargs):
     """
     Implements Heapsort algorithm.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be sorted.
     start: int
@@ -245,8 +260,10 @@ def heapsort(array, **kwargs):
         is to be sorted.
         Optional, by default the index
         of the last position filled.
+
     Examples
     ========
+
     >>> from pydatastructs import OneDimensionalArray, heapsort
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
     >>> heapsort(arr)
@@ -255,9 +272,12 @@ def heapsort(array, **kwargs):
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Heapsort
+
     Note
     ====
+
     This function does not support custom comparators as is the case with
     other sorting functions in this file.
     """
@@ -283,16 +303,22 @@ def heapsort(array, **kwargs):
 def counting_sort(array: Array) -> Array:
     """
     Performs counting sort on the given array.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be sorted.
+
     Returns
     =======
+
     output: Array
         The sorted array.
+
     Examples
     ========
+
     >>> from pydatastructs import DynamicOneDimensionalArray as DODA, counting_sort
     >>> arr = DODA(int, [5, 78, 1, 0])
     >>> out = counting_sort(arr)
@@ -305,9 +331,12 @@ def counting_sort(array: Array) -> Array:
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Counting_sort
+
     Note
     ====
+
     Since, counting sort is a non-comparison sorting algorithm,
     custom comparators aren't allowed.
     The ouput array doesn't contain any `None` value.
@@ -357,25 +386,35 @@ def _matrix_multiply_helper(m1, m2, row, col):
 def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
     """
     Implements concurrent Matrix multiplication
+
     Parameters
     ==========
+
     matrix_1: Any matrix representation
         Left matrix
+
     matrix_2: Any matrix representation
         Right matrix
+
     num_threads: int
         The maximum number of threads
         to be used for multiplication.
+
     Raises
     ======
+
     ValueError
         When the columns in matrix_1 are not equal to the rows in matrix_2
+
     Returns
     =======
+
     C: list
         The result of matrix multiplication.
+
     Examples
     ========
+
     >>> from pydatastructs import matrix_multiply_parallel
     >>> I = [[1, 1, 0], [0, 1, 0], [0, 0, 1]]
     >>> J = [[2, 1, 2], [1, 2, 1], [2, 2, 2]]
@@ -418,8 +457,10 @@ def _bucket_sort_helper(bucket: Array) -> Array:
 def bucket_sort(array: Array, **kwargs) -> Array:
     """
     Performs bucket sort on the given array.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be sorted.
     start: int
@@ -431,12 +472,16 @@ def bucket_sort(array: Array, **kwargs) -> Array:
         is to be sorted.
         Optional, by default the index
         of the last position filled.
+
     Returns
     =======
+
     output: Array
         The sorted array.
+
     Examples
     ========
+
     >>> from pydatastructs import DynamicOneDimensionalArray as DODA, bucket_sort
     >>> arr = DODA(int, [5, 78, 1, 0])
     >>> out = bucket_sort(arr)
@@ -449,9 +494,12 @@ def bucket_sort(array: Array, **kwargs) -> Array:
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Bucket_sort
+
     Note
     ====
+
     This function does not support custom comparators as is the case with
     other sorting functions in this file.
     """
@@ -505,8 +553,10 @@ def bucket_sort(array: Array, **kwargs) -> Array:
 def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
     """
     Performs cocktail sort on the given array.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be sorted.
     start: int
@@ -525,12 +575,16 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+
     Returns
     =======
+
     output: Array
         The sorted array.
+
     Examples
     ========
+
     >>> from pydatastructs import OneDimensionalArray as ODA, cocktail_shaker_sort
     >>> arr = ODA(int, [5, 78, 1, 0])
     >>> out = cocktail_shaker_sort(arr)
@@ -543,6 +597,7 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Cocktail_shaker_sort
     """
     def swap(i, j):
@@ -576,8 +631,10 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
 def quick_sort(array: Array, **kwargs) -> Array:
     """
     Performs quick sort on the given array.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be sorted.
     start: int
@@ -605,12 +662,16 @@ def quick_sort(array: Array, **kwargs) -> Array:
         the original input array to `quick_sort` function.
         Optional, by default, picks the element at `high`
         index of the current partition as pivot.
+
     Returns
     =======
+
     output: Array
         The sorted array.
+
     Examples
     ========
+
     >>> from pydatastructs import OneDimensionalArray as ODA, quick_sort
     >>> arr = ODA(int, [5, 78, 1, 0])
     >>> out = quick_sort(arr)
@@ -623,6 +684,7 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Quicksort
     """
     from pydatastructs import Stack
@@ -667,18 +729,24 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
     """
     Finds the longest common subsequence between the
     two given sequences.
+
     Parameters
     ========
+
     seq1: OneDimensionalArray
         The first sequence.
     seq2: OneDimensionalArray
         The second sequence.
+
     Returns
     =======
+
     output: OneDimensionalArray
         The longest common subsequence.
+
     Examples
     ========
+
     >>> from pydatastructs import longest_common_subsequence as LCS, OneDimensionalArray as ODA
     >>> arr1 = ODA(str, ['A', 'B', 'C', 'D', 'E'])
     >>> arr2 = ODA(str, ['A', 'B', 'C', 'G' ,'D', 'E', 'F'])
@@ -693,9 +761,12 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+
     Note
     ====
+
     The data types of elements across both the sequences
     should be same and should be comparable.
     """
@@ -756,3 +827,4 @@ def longest_increasing_subsequence(seq: OneDimensionalArray) -> int:
     for i in range(n):
         maximum = max(maximum, lis[i])
     return maximum
+
