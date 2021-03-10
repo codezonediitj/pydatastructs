@@ -1,0 +1,3 @@
+import pydatastructs
+
+print("WOW")
