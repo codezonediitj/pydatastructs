@@ -16,6 +16,9 @@ class DisjointSetForest(object):
     >>> dst.union(1, 2)
     >>> dst.find_root(2).key
     1
+    >>> dst.make_root(2)
+    >>> dst.find_root(2).key
+    2
 
     References
     ==========
@@ -74,3 +77,18 @@ class DisjointSetForest(object):
 
             y_root.parent = x_root
             x_root.size += y_root.size
+
+    def make_root(self, key):
+        """
+        Finds the set to which the key belongs
+        and makes it as the root of the set.
+        """
+        if self.tree.get(key, None) is None:
+            raise KeyError("Invalid key, %s"%(key))
+
+        current_root = self.find_root(key)
+        if current_root.key != key:
+            key_set = self.tree[key]
+            current_root.parent = key_set
+            key_set.size = current_root.size
+            key_set.parent = key_set

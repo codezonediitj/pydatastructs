@@ -15,9 +15,15 @@ def test_DisjointSetForest():
 
     assert (dst.find_root(1) == dst.find_root(2) ==
             dst.find_root(5) == dst.find_root(6) == dst.find_root(8))
+    assert dst.find_root(1).key == 1
+    assert dst.find_root(2).key == 1
+    dst.make_root(8)
+    assert dst.find_root(2).key == 8
+    assert dst.find_root(8).key == 8
     assert dst.find_root(3) == dst.find_root(4)
     assert dst.find_root(7).key == 7
-
+    dst.make_root(2)
     assert raises(KeyError, lambda: dst.find_root(9))
+    assert raises(KeyError, lambda: dst.make_root(19))
     dst.union(3, 1)
-    assert dst.find_root(3).key == 1
+    assert dst.find_root(3).key == 2
