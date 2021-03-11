@@ -1,7 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence)
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_sorted)
 
 
 from pydatastructs.utils.raises_util import raises
@@ -126,3 +126,36 @@ def test_longest_common_sequence():
     Z = ODA(int, [])
     output = longest_common_subsequence(Y, Z)
     assert str(output) == '[]'
+
+def test_is_sorted():
+    ODA = OneDimensionalArray
+
+    expected_result = True
+
+    arr = ODA(int,[1,2,5,6])
+    output = is_sorted(arr,0,len(arr)-1)
+    assert output == expected_result
+
+    expected_result = False
+
+    arr1 = ODA(int,[4,3,2,1])
+    output = is_sorted(arr1,0,len(arr1)-1)
+    assert output == expected_result
+
+    expected_result = True
+
+    arr2 = ODA(int,[6,1,2,3,4,5])
+    output = is_sorted(arr2,1,5)
+    assert output == expected_result
+
+    expected_result = False
+
+    arr3 = ODA(int,[0,-1,-2,-3,-4,4])
+    output = is_sorted(arr3,0,5)
+    assert output == expected_result
+
+    expected_result = True
+
+    arr4 = ODA(int,[1,2,3,4,5,6,7,8,9,10])
+    output = is_sorted(arr4,0,9)
+    assert output == expected_result
