@@ -50,12 +50,12 @@ class Graph(object):
     def __new__(cls, *args, **kwargs):
         default_impl = args[0]._impl if args else 'adjacency_list'
         implementation = kwargs.get('implementation', default_impl)
-        if implementation is 'adjacency_list':
+        if implementation == 'adjacency_list':
             from pydatastructs.graphs.adjacency_list import AdjacencyList
             obj = AdjacencyList(*args)
             obj._impl = implementation
             return obj
-        elif implementation is 'adjacency_matrix':
+        elif implementation == 'adjacency_matrix':
             from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
             obj = AdjacencyMatrix(*args)
             obj._impl = implementation
