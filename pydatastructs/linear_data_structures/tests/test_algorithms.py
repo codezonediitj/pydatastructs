@@ -1,7 +1,8 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence)
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence,
+    upper_bound, lower_bound)
 
 
 from pydatastructs.utils.raises_util import raises
@@ -126,3 +127,48 @@ def test_longest_common_sequence():
     Z = ODA(int, [])
     output = longest_common_subsequence(Y, Z)
     assert str(output) == '[]'
+
+def test_upper_bound():
+    ODA = OneDimensionalArray
+    arr1 = ODA(int, [3, 3, 3])
+    output = upper_bound(arr1, 0, len(arr1)-1, 3)
+    expected_result = 2
+    assert expected_result == output
+
+    arr2 = ODA(int, [4, 4, 5, 6])
+    output = upper_bound(arr2, 0, len(arr2)-1, 4)
+    expected_result = 2
+    assert expected_result == output
+
+    arr3 = ODA(int, [6, 6, 7, 8, 9])
+    output = upper_bound(arr3, 0, len(arr3)-1, 5)
+    expected_result = 0
+    assert expected_result == output
+
+    arr4 = ODA(int, [3, 4, 4])
+    output = upper_bound(arr4, 0, len(arr4)-1, 5)
+    expected_result = 2
+    assert expected_result == output
+
+
+def test_lower_bound():
+    ODA = OneDimensionalArray
+    arr1 = ODA(int, [3, 3, 3])
+    output = lower_bound(arr1, 0, len(arr1)-1, 3)
+    expected_result = 0
+    assert expected_result == output
+
+    arr2 = ODA(int, [4, 4, 5, 6])
+    output = lower_bound(arr2, 0, len(arr2)-1, 5)
+    expected_result = 2
+    assert expected_result == output
+
+    arr3 = ODA(int, [6, 6, 7, 8, 9])
+    output = lower_bound(arr3, 0, len(arr3)-1, 5)
+    expected_result = 0
+    assert expected_result == output
+
+    arr4 = ODA(int, [3, 4, 4])
+    output = lower_bound(arr4, 0, len(arr4)-1, 5)
+    expected_result = 2
+    assert expected_result == output
