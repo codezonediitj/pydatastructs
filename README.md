@@ -85,7 +85,7 @@ Please follow the rules and guidelines given below,
 1. Follow the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 2. If you are planning to contribute a new data structure then first raise an **issue** for discussing the API, rather than directly making a PR. Please go through [Plan of Action for Adding New Data Structures](https://github.com/codezonediitj/pydatastructs/wiki/Plan-of-Action-for-Adding-New-Data-Structures)
 3. For the first-time contributors we recommend not to take a complex data structure, rather start with `beginner` or `easy`.
-4. We don't assign issues to any individual. It is first come first serve basis. Anyone willing to work on an issue can comment on the thread that he/she is working on it and raise a PR for the same.
+4. We don't assign issues to any individual. Instead, we follow First Come First Serve for taking over issues, i.e., if one contributor has already showed interest then no comment should be made after that as it won't be considered. Anyone willing to work on an issue can comment on the thread that he/she is working on it and raise a PR for the same.
 5. Any open PR must be provided with some updates after being reviewed. If it is stalled for more than 4 days, it will be labeled as `Please take over`, meaning that anyone willing to continue that PR can start working on it.
 6. PRs that are not related to the project or doesn't follow any guidelines will be labeled as `Could Close`, meaning that the PR is not necessary at the moment.
 
