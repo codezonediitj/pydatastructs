@@ -86,9 +86,20 @@ class DisjointSetForest(object):
         if self.tree.get(key, None) is None:
             raise KeyError("Invalid key, %s"%(key))
 
-        current_root = self.find_root(key)
-        if current_root.key != key:
-            key_set = self.tree[key]
-            current_root.parent = key_set
-            key_set.size = current_root.size
+        key_set = self.tree[key]
+        if key_set.parent is not key_set:
+            current_parent = key_set.parent
+            # Remove this key subtree size from all its ancestors
+            while current_parent.parent is not current_parent:
+                current_parent.size -= key_set.size
+                current_parent = current_parent.parent
+
+            all_set_size = current_parent.size # This is the root node
+            current_parent.size -= key_set.size
+
+            # Make parent of current root as key
+            current_parent.parent = key_set
+            # size of new root will be same as previous root's size
+            key_set.size = all_set_size
+            # Make parent of key as itself
             key_set.parent = key_set
