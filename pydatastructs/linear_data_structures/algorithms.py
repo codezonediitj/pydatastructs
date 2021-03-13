@@ -792,24 +792,28 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
 def upper_bound(array, start, end, value, comp):
     """
-    Finds the index of the first occurence of an element greater than value according to an order defined,in the given sorted OneDimensionalArray
+    Finds the index of the first occurence of an element greater than value according
+    to an order defined,in the given sorted OneDimensionalArray
 
     Parameters
     ========
     array: OneDimensionalArray
-    The sorted array (sorted according to a custom comparator function) in which the upper bound has to be found
+        The sorted array (sorted according to a custom comparator function) in which the
+        upper bound has to be found
 
     start: int
-    The staring index of the portion of the array in which the upper bound of a given value has to be looked for
+        The staring index of the portion of the array in which the upper bound
+        of a given value has to be looked for
 
     end: int
-    The ending index of the portion of the array in which the upper bound of a given value has to be looked for
+        The ending index of the portion of the array in which the upper bound
+        of a given value has to be looked for
 
     Returns
     =======
 
     output: int
-    Upper bound of the given value in the given sorted OneDimensionalArray
+        Upper bound of the given value in the given sorted OneDimensionalArray
 
     Examples
     ========
@@ -819,7 +823,7 @@ def upper_bound(array, start, end, value, comp):
     >>> upperBound
     3
     >>> arr = ODA(int, [7, 6, 5, 5, 4])
-    >>> upperBound = upper_bound(arr, 0, 4, 5, lambda x, y: x >= y)
+    >>> upperBound = upper_bound(arr, 0, 4, 5, lambda x, y: x > y)
     >>> upperBound
     4
 
@@ -829,13 +833,13 @@ def upper_bound(array, start, end, value, comp):
     The OneDimensionalArray must be sorted beforehand
     """
     if comp is None:
-        comp = lambda a, b: (a <= b)
+        comp = lambda a, b: (a < b)
     index = end
-    if not comp(array[start], value):
+    if comp(value, array[start]):
         index = start
     while start <= end:
-        mid = (start+end)//2
-        if comp(array[mid],value):
+        mid = (start + end)//2
+        if not comp(value, array[mid]):
             start = mid + 1
         else:
             index = mid
@@ -844,24 +848,28 @@ def upper_bound(array, start, end, value, comp):
 
 def lower_bound(array, start, end, value, comp):
     """
-    Finds the the index of the first occurence of an element which is not less than value according to an order defined, in the given OneDimensionalArray
+    Finds the the index of the first occurence of an element which is not
+    less than value according to an order defined, in the given OneDimensionalArray
 
     Parameters
     ========
     array: OneDimensionalArray
-    The sorted array (sorted according to a custom comparator function) in which the lower bound has to be found
+        The sorted array (sorted according to a custom comparator function)
+        in which the lower bound has to be found
 
     start: int
-    The staring index of the portion of the array in which the lower bound of a given value has to be looked for
+        The staring index of the portion of the array in which the lower
+        bound of a given value has to be looked for
 
     end: int
-    The ending index of the portion of the array in which the lower bound of a given value has to be looked for
+        The ending index of the portion of the array in which the lower
+        bound of a given value has to be looked for
 
     Returns
     =======
 
     output: int
-    Lower bound of the given value in the given sorted OneDimensionalArray
+        Lower bound of the given value in the given sorted OneDimensionalArray
 
     Examples
     ========
@@ -887,8 +895,8 @@ def lower_bound(array, start, end, value, comp):
     if not comp(array[start], value):
         index = start
     while start <= end:
-        mid = (start+end)//2
-        if comp(array[mid],value):
+        mid = (start + end)//2
+        if comp(array[mid], value):
             start = mid + 1
         else:
             index = mid

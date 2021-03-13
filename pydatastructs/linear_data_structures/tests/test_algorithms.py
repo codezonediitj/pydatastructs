@@ -131,37 +131,37 @@ def test_longest_common_sequence():
 def test_upper_bound():
     ODA = OneDimensionalArray
     arr1 = ODA(int, [3, 3, 3])
-    output = upper_bound(arr1, 0, len(arr1)-1, 3, None)
+    output = upper_bound(arr1, 0, len(arr1) - 1, 3, None)
     expected_result = 2
     assert expected_result == output
 
     arr2 = ODA(int, [4, 4, 5, 6])
-    output = upper_bound(arr2, 0, len(arr2)-1, 4, None)
+    output = upper_bound(arr2, 0, len(arr2) - 1, 4, None)
     expected_result = 2
     assert expected_result == output
 
     arr3 = ODA(int, [6, 6, 7, 8, 9])
-    output = upper_bound(arr3, 0, len(arr3)-1, 5, None)
+    output = upper_bound(arr3, 0, len(arr3) - 1, 5, None)
     expected_result = 0
     assert expected_result == output
 
     arr4 = ODA(int, [3, 4, 4])
-    output = upper_bound(arr4, 0, len(arr4)-1, 5, None)
+    output = upper_bound(arr4, 0, len(arr4) - 1, 5, None)
     expected_result = 2
     assert expected_result == output
 
     arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr5, 0, len(arr5)-1, 6, lambda x, y: x >= y)
+    output = upper_bound(arr5, 0, len(arr5) - 1, 6, lambda x, y: x > y)
     expected_result = 5
     assert expected_result == output
 
     arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr6, 0, len(arr6)-1, 2, lambda x, y: x >= y)
+    output = upper_bound(arr6, 0, len(arr6) - 1, 2, lambda x, y: x > y)
     expected_result = 7
     assert expected_result == output
 
     arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr7, 0, len(arr7)-1, 9, lambda x, y: x >= y)
+    output = upper_bound(arr7, 0, len(arr7) - 1, 9, lambda x, y: x > y)
     expected_result = 0
     assert expected_result == output
 
@@ -169,36 +169,36 @@ def test_upper_bound():
 def test_lower_bound():
     ODA = OneDimensionalArray
     arr1 = ODA(int, [3, 3, 3])
-    output = lower_bound(arr1, 0, len(arr1)-1, 3, None)
+    output = lower_bound(arr1, 0, len(arr1) - 1, 3, None)
     expected_result = 0
     assert expected_result == output
 
     arr2 = ODA(int, [4, 4, 5, 6])
-    output = lower_bound(arr2, 0, len(arr2)-1, 5, None)
+    output = lower_bound(arr2, 0, len(arr2) - 1, 5, None)
     expected_result = 2
     assert expected_result == output
 
     arr3 = ODA(int, [6, 6, 7, 8, 9])
-    output = lower_bound(arr3, 0, len(arr3)-1, 5, None)
+    output = lower_bound(arr3, 0, len(arr3) - 1, 5, None)
     expected_result = 0
     assert expected_result == output
 
     arr4 = ODA(int, [3, 4, 4])
-    output = lower_bound(arr4, 0, len(arr4)-1, 5, None)
+    output = lower_bound(arr4, 0, len(arr4) - 1, 5, None)
     expected_result = 2
     assert expected_result == output
 
     arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr5, 0, len(arr5)-1, 5, lambda x, y: x > y)
+    output = lower_bound(arr5, 0, len(arr5) - 1, 5, lambda x, y: x > y)
     expected_result = 5
     assert expected_result == output
 
     arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr6, 0, len(arr6)-1, 2, lambda x, y: x > y)
+    output = lower_bound(arr6, 0, len(arr6) - 1, 2, lambda x, y: x > y)
     expected_result = 7
     assert expected_result == output
 
     arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr7, 0, len(arr7)-1, 9, lambda x, y: x > y)
+    output = lower_bound(arr7, 0, len(arr7) - 1, 9, lambda x, y: x > y)
     expected_result = 0
     assert expected_result == output
