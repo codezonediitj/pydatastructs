@@ -794,12 +794,17 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
 def insertion_sort(array, left=0, right=None):
     '''
+    
     This insertion sort function is required for implementation of timsort
-    In Insertion sort, The array is virtually split into a sorted and an unsorted part. 
-    Values from the unsorted part are picked and placed at the correct position in the sorted part.
-    The first step in implementing Timsort is modifying the implementation of insertion_sort() from before:
-    This modified implementation adds a couple of parameters, left and right, that indicate which portion of the array should be sorted. This allows the Timsort 
-    algorithm to sort a portion of the array in place. Modifying the function instead of creating a new one means that it can be reused for both insertion sort and Timsort.
+    In Insertion sort, The array is virtually split into a sorted and an 
+    unsorted part. Values from the unsorted part are picked and placed at
+    the correct position in the sorted part.The first step in implementing
+    Timsort is modifying the implementation of insertion_sort() from before
+    : This modified implementation adds a couple of parameters, left and 
+    right, that indicate which portion of the array should be sorted. This
+    allows the Timsort algorithm to sort a portion of the array in place. 
+    Modifying the function instead of creating a new one means that it can 
+    be reused for both insertion sort and Timsort.
     
   
     '''
@@ -838,38 +843,49 @@ def insertion_sort(array, left=0, right=None):
 
 def timsort(array):
     '''
-    The Timsort algorithm is considered a hybrid sorting algorithm because it employs a best-of-both-worlds combination of insertion sort and merge sort.
-    The main characteristic of Timsort is that it takes advantage of already-sorted elements that exist in most real-world datasets.
-    These are called natural runs. The algorithm then iterates over the list, collecting the elements into runs and merging them into a single sorted list.
+   
+    The Timsort algorithm is considered a hybrid sorting algorithm because
+    it employs a best-of-both-worlds combination of insertion sort and 
+    merge sort. The main characteristic of Timsort is that it takes 
+    advantage of already-sorted elements that exist in most real-world 
+    datasets.These are called natural runs. The algorithm then iterates
+    over the list, collecting the elements into runs and merging them into 
+    a single sorted list.
     
     
     Parameters
     ========
 
     array: Array
-       The required array to be sorted
+        The required array to be sorted
+    left: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    right: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
 
     Returns
     =======
 
     output: Array
-       The sorted list or array
+        The sorted list or array
 
     Examples
     ========
-
-
-    >>>  arr = [-2, 7, 15, -14, 0, 15, 0,  
-           7, -7, -4, -13, 5, 8, -14, 12] 
+    
+    >>> from pydatastructs import OneDimensionalArray, timsort
+    >>> arr = OneDimensionalArray(int,[-2, 7, 15, -14, 0, 15, 0,  
+           7, -7, -4, -13, 5, 8, -14, 12] )
     >>> timsort(arr)
-    >>> print(arr)
-    [-14, -14, -13, -7, -4, -2, 0, 0,  
-           5, 7, 7, 8, 12, 15, 15] 
-           
-    >>>  arr = [9, 80, 32, 16] 
-    >>> timsort(arr)
-    >>> print(arr)
-    [9 , 16, 32, 80]        
+    >>> [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], 
+        arr[7], arr[8], arr[9], arr[10], arr[11], arr[12], arr[13], 
+        arr[14]]
+    [-14, -14, -13, -7, -4, -2, 0, 0, 5, 7, 7, 8, 12, 15, 15] 
+    
 
     References
     ==========
@@ -905,8 +921,9 @@ def timsort(array):
             # `midpoint + 1`, while the `right` array should
             # go from `midpoint + 1` to `end + 1`.
             merged_array = merge(
-                left=array[start:midpoint + 1],
-                right=array[midpoint + 1:end + 1])
+               # left=array[start:midpoint + 1],
+               # right=array[midpoint + 1:end + 1]
+            )
 
             # Finally, put the merged array back into
             # your array
