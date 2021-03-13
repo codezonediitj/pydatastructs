@@ -792,7 +792,7 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
 '''Tim Sort Implementation'''
 
-def insertion_sort(array, left=0, right=None):
+def insertion_sort(array:Array, left=0, right=None)-> Array:
     '''
     
     This insertion sort function is required for implementation of timsort
@@ -840,8 +840,19 @@ def insertion_sort(array, left=0, right=None):
         array[j + 1] = key_item
 
     return array
+    '''
+     Examples
+    ========
+    
+    >>> from pydatastructs import OneDimensionalArray, insertion_sort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> insertion_sort(arr, 0)
+    >>> [arr[0], arr[1], arr[2]]
+    [1, 2, 3]
+    
+    '''
 
-def timsort(array):
+def timsort(array : Array, left , right)-> Array:
     '''
    
     The Timsort algorithm is considered a hybrid sorting algorithm because
@@ -853,44 +864,6 @@ def timsort(array):
     a single sorted list.
     
     
-    Parameters
-    ========
-
-    array: Array
-        The required array to be sorted
-    left: int
-        The starting index of the portion
-        which is to be sorted.
-        Optional, by default 0
-    right: int
-        The ending index of the portion which
-        is to be sorted.
-        Optional, by default the index
-        of the last position filled.
-
-    Returns
-    =======
-
-    output: Array
-        The sorted list or array
-
-    Examples
-    ========
-    
-    >>> from pydatastructs import OneDimensionalArray, timsort
-    >>> arr = OneDimensionalArray(int,[-2, 7, 15, -14, 0, 15, 0,  
-           7, -7, -4, -13, 5, 8, -14, 12] )
-    >>> timsort(arr)
-    >>> [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], 
-        arr[7], arr[8], arr[9], arr[10], arr[11], arr[12], arr[13], 
-        arr[14]]
-    [-14, -14, -13, -7, -4, -2, 0, 0, 5, 7, 7, 8, 12, 15, 15] 
-    
-
-    References
-    ==========
-
-    .. [1] https://en.wikipedia.org/wiki/Timsort
     '''
     min_run = 32
     n = len(array)
@@ -921,8 +894,8 @@ def timsort(array):
             # `midpoint + 1`, while the `right` array should
             # go from `midpoint + 1` to `end + 1`.
             merged_array = merge(
-               # left=array[start:midpoint + 1],
-               # right=array[midpoint + 1:end + 1]
+               left= array[start:midpoint + 1],
+               right= array[midpoint + 1:end + 1]
             )
 
             # Finally, put the merged array back into
@@ -933,3 +906,48 @@ def timsort(array):
         size *= 2
 
     return array
+''' 
+    Parameters
+    ========
+
+    array: Array
+        The required array to be sorted
+    left: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    right: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted list or array
+
+    Examples
+    ========
+    
+    >>> from pydatastructs import OneDimensionalArray, timsort
+    >>> arr = OneDimensionalArray(int,[-2, 7, 15, -14, 0, 15, 0] )
+    >>> timsort(arr, 0, 14)
+    >>> [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+    [ -14, -2, 0, 0, 7, 15, 15] 
+    
+    
+    >>> from pydatastructs import OneDimensionalArray, timsort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> timsort(arr, 0, 2)
+    >>> [arr[0], arr[1], arr[2]]
+    [1, 2, 3]
+
+    
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Timsort
+    '''
