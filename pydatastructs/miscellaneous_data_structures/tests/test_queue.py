@@ -56,7 +56,8 @@ def test_LinkedListQueue():
     q1 = Queue(implementation='linked_list', items=[0, 1])
     q1.append(2)
     q1.append(3)
-    assert str(q1) == "['0', '1', '2', '3']"
+    assert str(q1) == ("['(0, None)', '(1, None)', "
+                       "'(2, None)', '(3, None)']")
     assert len(q1) == 4
     assert q1.popleft().key == 0
     assert q1.popleft().key == 1
@@ -85,7 +86,7 @@ def test_LinkedListQueue():
     q1 = Queue(implementation='linked_list', items=[0, 1], double_ended=True)
     q1.appendleft(2)
     q1.append(3)
-    assert str(q1) == "['2', '0', '1', '3']"
+    assert str(q1) == "['(2, None)', '(0, None)', '(1, None)', '(3, None)']"
     assert len(q1) == 4
     assert q1.popleft().key == 2
     assert q1.pop().key == 3

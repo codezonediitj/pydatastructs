@@ -12,6 +12,7 @@ from .misc_util import (
     Set,
     CartesianTreeNode,
     RedBlackTreeNode,
-    TrieNode
+    TrieNode,
+    SkipNode
 )
 __all__.extend(misc_util.__all__)

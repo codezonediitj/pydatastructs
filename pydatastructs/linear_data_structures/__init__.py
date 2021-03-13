@@ -10,7 +10,7 @@ from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel,
     longest_common_subsequence
 
 from pydatastructs.linear_data_structures.linked_lists import SinglyLinkedList, DoublyLinkedList, \
-    SinglyCircularLinkedList, DoublyCircularLinkedList
+    SinglyCircularLinkedList, DoublyCircularLinkedList, SkipList
 
 __all__.extend(arrays.__all__)
 
