@@ -14,7 +14,9 @@ __all__ = [
     'bucket_sort',
     'cocktail_shaker_sort',
     'quick_sort',
-    'longest_common_subsequence'
+    'longest_common_subsequence',
+    'insertion_sort',
+    'timsort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -787,3 +789,130 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
                     check_mat[i][j] = check_mat[i][j-1]
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
+
+==============
+
+def insertion_sort(array, left=0, right=None):
+    '''
+    This insertion sort function is required for implementation of timsort
+    In Insertion sort, The array is virtually split into a sorted and an unsorted part. 
+    Values from the unsorted part are picked and placed at the correct position in the sorted part.
+    The first step in implementing Timsort is modifying the implementation of insertion_sort() from before:
+    This modified implementation adds a couple of parameters, left and right, that indicate which portion of the array should be sorted. This allows the Timsort 
+    algorithm to sort a portion of the array in place. Modifying the function instead of creating a new one means that it can be reused for both insertion sort and Timsort.
+    
+  
+    '''
+    
+    if right is None:
+        right = len(array) - 1
+
+    # Loop from the element indicated by
+    # `left` until the element indicated by `right`
+    for i in range(left + 1, right + 1):
+        # This is the element we want to position in its
+        # correct place
+        key_item = array[i]
+
+        # Initialize the variable that will be used to
+        # find the correct position of the element referenced
+        # by `key_item`
+        j = i - 1
+
+        # Run through the list of items (the left
+        # portion of the array) and find the correct position
+        # of the element referenced by `key_item`. Do this only
+        # if the `key_item` is smaller than its adjacent values.
+        while j >= left and array[j] > key_item:
+            # Shift the value one position to the left
+            # and reposition `j` to point to the next element
+            # (from right to left)
+            array[j + 1] = array[j]
+            j -= 1
+
+        # When you finish shifting the elements, position
+        # the `key_item` in its correct location
+        array[j + 1] = key_item
+
+    return array
+
+def timsort(array):
+    '''
+    The Timsort algorithm is considered a hybrid sorting algorithm because it employs a best-of-both-worlds combination of insertion sort and merge sort.
+    The main characteristic of Timsort is that it takes advantage of already-sorted elements that exist in most real-world datasets.
+    These are called natural runs. The algorithm then iterates over the list, collecting the elements into runs and merging them into a single sorted list.
+    
+    
+    Parameters
+    ========
+
+    array: Array
+       The required array to be sorted
+
+    Returns
+    =======
+
+    output: Array
+       The sorted list or array
+
+    Examples
+    ========
+
+
+    >>>  arr = [-2, 7, 15, -14, 0, 15, 0,  
+           7, -7, -4, -13, 5, 8, -14, 12] 
+    >>> timsort(arr)
+    >>> print(arr)
+    [-14, -14, -13, -7, -4, -2, 0, 0,  
+           5, 7, 7, 8, 12, 15, 15] 
+           
+    >>>  arr = [9, 80, 32, 16] 
+    >>> timsort(arr)
+    >>> print(arr)
+    [9 , 16, 32, 80]        
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Timsort
+    '''
+    min_run = 32
+    n = len(array)
+
+    # Start by slicing and sorting small portions of the
+    # input array. The size of these slices is defined by
+    # your `min_run` size.
+    for i in range(0, n, min_run):
+        insertion_sort(array, i, min((i + min_run - 1), n - 1))
+
+    # Now you can start merging the sorted slices.
+    # Start from `min_run`, doubling the size on
+    # each iteration until you surpass the length of
+    # the array.
+    size = min_run
+    while size < n:
+        # Determine the arrays that will
+        # be merged together
+        for start in range(0, n, size * 2):
+            # Compute the `midpoint` (where the first array ends
+            # and the second starts) and the `endpoint` (where
+            # the second array ends)
+            midpoint = start + size - 1
+            end = min((start + size * 2 - 1), (n-1))
+
+            # Merge the two subarrays.
+            # The `left` array should go from `start` to
+            # `midpoint + 1`, while the `right` array should
+            # go from `midpoint + 1` to `end + 1`.
+            merged_array = merge(
+                left=array[start:midpoint + 1],
+                right=array[midpoint + 1:end + 1])
+
+            # Finally, put the merged array back into
+            # your array
+            array[start:start + len(merged_array)] = merged_array
+
+        # Each iteration should double the size of your arrays
+        size *= 2
+
+    return array
