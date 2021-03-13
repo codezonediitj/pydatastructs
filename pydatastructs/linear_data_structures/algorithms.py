@@ -790,14 +790,14 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
 
-def upper_bound(array, start, end, value):
+def upper_bound(array, start, end, value, comp):
     """
-    Finds the index of the first occurence of an element greater than value,in the given sorted OneDimensionalArray
+    Finds the index of the first occurence of an element greater than value according to an order defined,in the given sorted OneDimensionalArray
 
     Parameters
     ========
     array: OneDimensionalArray
-    The sorted array in which the upper bound has to be found
+    The sorted array (sorted according to a custom comparator function) in which the upper bound has to be found
 
     start: int
     The staring index of the portion of the array in which the upper bound of a given value has to be looked for
@@ -815,39 +815,41 @@ def upper_bound(array, start, end, value):
     ========
     >>> from pydatastructs import upper_bound, OneDimensionalArray as ODA
     >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> upperBound = upper_bound(arr, 0, 4, 5)
+    >>> upperBound = upper_bound(arr, 0, 4, 5, None)
     >>> upperBound
     3
-    >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> upperBound = upper_bound(arr, 0, 4, 4)
+    >>> arr = ODA(int, [7, 6, 5, 5, 4])
+    >>> upperBound = upper_bound(arr, 0, 4, 5, lambda x, y: x >= y)
     >>> upperBound
-    1
+    4
 
     Note
     ====
 
     The OneDimensionalArray must be sorted beforehand
     """
+    if comp is None:
+        comp = lambda a, b: (a <= b)
     index = end
-    if array[start] > value:
+    if not comp(array[start], value):
         index = start
     while start <= end:
         mid = (start+end)//2
-        if array[mid] <= value:
-            start = mid+1
+        if comp(array[mid],value):
+            start = mid + 1
         else:
             index = mid
-            end = mid-1
+            end = mid -1
     return index
 
-def lower_bound(array, start, end, value):
+def lower_bound(array, start, end, value, comp):
     """
-    Finds the the index of the first occurence of an element which is not less than value, in the given OneDimensionalArray
+    Finds the the index of the first occurence of an element which is not less than value according to an order defined, in the given OneDimensionalArray
 
     Parameters
     ========
     array: OneDimensionalArray
-    The sorted array in which the lower bound has to be found
+    The sorted array (sorted according to a custom comparator function) in which the lower bound has to be found
 
     start: int
     The staring index of the portion of the array in which the lower bound of a given value has to be looked for
@@ -866,25 +868,27 @@ def lower_bound(array, start, end, value):
 
     >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
     >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> lowerBound = lower_bound(arr, 0, 4, 5)
+    >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x < y)
     >>> lowerBound
     1
-    >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> lowerBound = lower_bound(arr, 0, 4, 6)
+    >>> arr = ODA(int, [7, 6, 5, 5, 4])
+    >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x > y)
     >>> lowerBound
-    3
+    2
 
     Note
     ====
 
     The OneDimensionalArray must be sorted beforehand
     """
+    if comp is None:
+        comp = lambda a, b: (a < b)
     index = end
-    if array[start] > value:
+    if not comp(array[start], value):
         index = start
     while start <= end:
         mid = (start+end)//2
-        if array[mid] < value:
+        if comp(array[mid],value):
             start = mid + 1
         else:
             index = mid
