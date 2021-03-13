@@ -790,7 +790,7 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
 
-==============
+'''Tim Sort Implementation'''
 
 def insertion_sort(array, left=0, right=None):
     '''
