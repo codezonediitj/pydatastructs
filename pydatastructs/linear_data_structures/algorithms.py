@@ -843,7 +843,7 @@ def upper_bound(array, start, end, value, comp):
             start = mid + 1
         else:
             index = mid
-            end = mid -1
+            end = mid - 1
     return index
 
 def lower_bound(array, start, end, value, comp):
@@ -900,5 +900,5 @@ def lower_bound(array, start, end, value, comp):
             start = mid + 1
         else:
             index = mid
-            end = mid -1
+            end = mid - 1
     return index
