@@ -794,21 +794,21 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
 def insertion_sort(array:Array, left=0, right=None)-> Array:
     '''
-    
+
     This insertion sort function is required for implementation of timsort
-    In Insertion sort, The array is virtually split into a sorted and an 
+    In Insertion sort, The array is virtually split into a sorted and an
     unsorted part. Values from the unsorted part are picked and placed at
     the correct position in the sorted part.The first step in implementing
     Timsort is modifying the implementation of insertion_sort() from before
-    : This modified implementation adds a couple of parameters, left and 
+    : This modified implementation adds a couple of parameters, left and
     right, that indicate which portion of the array should be sorted. This
-    allows the Timsort algorithm to sort a portion of the array in place. 
-    Modifying the function instead of creating a new one means that it can 
+    allows the Timsort algorithm to sort a portion of the array in place.
+    Modifying the function instead of creating a new one means that it can
     be reused for both insertion sort and Timsort.
-    
-  
+
+
     '''
-    
+
     if right is None:
         right = len(array) - 1
 
@@ -840,31 +840,31 @@ def insertion_sort(array:Array, left=0, right=None)-> Array:
         array[j + 1] = key_item
 
     return array
-    '''
+    """
      Examples
     ========
-    
+
     >>> from pydatastructs import OneDimensionalArray, insertion_sort
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
     >>> insertion_sort(arr, 0)
     >>> [arr[0], arr[1], arr[2]]
     [1, 2, 3]
-    
-    '''
+
+    """
 
 def timsort(array : Array, left , right)-> Array:
-    '''
-   
+    """
+
     The Timsort algorithm is considered a hybrid sorting algorithm because
-    it employs a best-of-both-worlds combination of insertion sort and 
-    merge sort. The main characteristic of Timsort is that it takes 
-    advantage of already-sorted elements that exist in most real-world 
+    it employs a best-of-both-worlds combination of insertion sort and
+    merge sort. The main characteristic of Timsort is that it takes
+    advantage of already-sorted elements that exist in most real-world
     datasets.These are called natural runs. The algorithm then iterates
-    over the list, collecting the elements into runs and merging them into 
+    over the list, collecting the elements into runs and merging them into
     a single sorted list.
-    
-    
-    '''
+
+
+    """
     min_run = 32
     n = len(array)
 
@@ -893,7 +893,7 @@ def timsort(array : Array, left , right)-> Array:
             # The `left` array should go from `start` to
             # `midpoint + 1`, while the `right` array should
             # go from `midpoint + 1` to `end + 1`.
-            merged_array = merge(
+            merged_array = merge_sort_parallel(
                left= array[start:midpoint + 1],
                right= array[midpoint + 1:end + 1]
             )
@@ -906,7 +906,7 @@ def timsort(array : Array, left , right)-> Array:
         size *= 2
 
     return array
-''' 
+    """
     Parameters
     ========
 
@@ -930,24 +930,24 @@ def timsort(array : Array, left , right)-> Array:
 
     Examples
     ========
-    
+
     >>> from pydatastructs import OneDimensionalArray, timsort
     >>> arr = OneDimensionalArray(int,[-2, 7, 15, -14, 0, 15, 0] )
     >>> timsort(arr, 0, 14)
     >>> [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
-    [ -14, -2, 0, 0, 7, 15, 15] 
-    
-    
+    [ -14, -2, 0, 0, 7, 15, 15]
+
+
     >>> from pydatastructs import OneDimensionalArray, timsort
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
     >>> timsort(arr, 0, 2)
     >>> [arr[0], arr[1], arr[2]]
     [1, 2, 3]
 
-    
+
 
     References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Timsort
-    '''
+    """
