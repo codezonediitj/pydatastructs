@@ -128,17 +128,13 @@ def test_longest_common_sequence():
     assert str(output) == '[]'
 
 def test_insertion_sort():
-    random.seed(1000)
 
-    n = random.randint(10, 20)
     arr = OneDimensionalArray(int, [-2, 7, 15, -14, 0, 15, 0])
     expected_arr = [-14, -2, 0, 0, 7, 15, 15]
-    return insertion_sort(arr,0) == expected_arr
+    return insertion_sort(arr,0,len(arr)-1) == expected_arr
 
 def test_tim_sort():
-    random.seed(1000)
 
-    n = random.randint(10, 20)
     arr = OneDimensionalArray(int, [-2, 7, 15, -14, 0, 15, 0])
     expected_arr = [ -14, -2, 0, 0, 7, 15, 15]
-    return timsort(arr)==expected_arr
+    return timsort(arr,0,len(arr)-1)==expected_arr

@@ -852,7 +852,7 @@ def insertion_sort(array:Array, left,right=None)-> Array:
 
     """
 
-def timsort(array : Array,**kwargs)-> Array:
+def timsort(array : Array,start,end)-> Array:
     """
 
     The Timsort algorithm is considered a hybrid sorting algorithm because
@@ -865,8 +865,52 @@ def timsort(array : Array,**kwargs)-> Array:
 
 
     """
-    start = kwargs.get('start', 0)
-    end = kwargs.get('end', len(array) - 1)
+    """
+      Parameters
+      ========
+
+      array: Array
+          The required array to be sorted
+      start: int
+          The starting index of the portion
+          which is to be sorted.
+          Optional, by default 0
+      end: int
+          The ending index of the portion which
+          is to be sorted.
+          Optional, by default the index
+          of the last position filled.
+
+      Returns
+      =======
+
+      output: Array
+          The sorted list or array
+
+      Examples
+      ========
+
+      >>> from pydatastructs import OneDimensionalArray, timsort
+      >>> arr = OneDimensionalArray(int,[-2, 7, 15, -14, 0, 15, 0] )
+      >>> timsort(arr, 0, 14)
+      >>> [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+      [ -14, -2, 0, 0, 7, 15, 15]
+
+
+      >>> from pydatastructs import OneDimensionalArray, timsort
+      >>> arr = OneDimensionalArray(int,[3, 2, 1])
+      >>> timsort(arr, 0, 2)
+      >>> [arr[0], arr[1], arr[2]]
+      [1, 2, 3]
+
+
+
+      References
+      ==========
+
+      .. [1] https://en.wikipedia.org/wiki/Timsort
+      """
+
     min_run = 32
     n = len(array)
 
@@ -909,48 +953,3 @@ def timsort(array : Array,**kwargs)-> Array:
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
-    """
-    Parameters
-    ========
-
-    array: Array
-        The required array to be sorted
-    start: int
-        The starting index of the portion
-        which is to be sorted.
-        Optional, by default 0
-    end: int
-        The ending index of the portion which
-        is to be sorted.
-        Optional, by default the index
-        of the last position filled.
-
-    Returns
-    =======
-
-    output: Array
-        The sorted list or array
-
-    Examples
-    ========
-
-    >>> from pydatastructs import OneDimensionalArray, timsort
-    >>> arr = OneDimensionalArray(int,[-2, 7, 15, -14, 0, 15, 0] )
-    >>> timsort(arr, 0, 14)
-    >>> [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
-    [ -14, -2, 0, 0, 7, 15, 15]
-
-
-    >>> from pydatastructs import OneDimensionalArray, timsort
-    >>> arr = OneDimensionalArray(int,[3, 2, 1])
-    >>> timsort(arr, 0, 2)
-    >>> [arr[0], arr[1], arr[2]]
-    [1, 2, 3]
-
-
-
-    References
-    ==========
-
-    .. [1] https://en.wikipedia.org/wiki/Timsort
-    """
