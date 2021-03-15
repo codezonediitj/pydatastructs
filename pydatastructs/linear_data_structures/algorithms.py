@@ -792,7 +792,7 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
 '''Tim Sort Implementation'''
 
-def insertion_sort(array:Array, left=0, right=None)-> Array:
+def insertion_sort(array:Array, left,right=None)-> Array:
     '''
 
     This insertion sort function is required for implementation of timsort
@@ -808,7 +808,7 @@ def insertion_sort(array:Array, left=0, right=None)-> Array:
 
 
     '''
-
+    left=0
     if right is None:
         right = len(array) - 1
 
@@ -852,7 +852,7 @@ def insertion_sort(array:Array, left=0, right=None)-> Array:
 
     """
 
-def timsort(array : Array, left , right)-> Array:
+def timsort(array : Array,**kwargs)-> Array:
     """
 
     The Timsort algorithm is considered a hybrid sorting algorithm because
@@ -865,6 +865,8 @@ def timsort(array : Array, left , right)-> Array:
 
 
     """
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
     min_run = 32
     n = len(array)
 
@@ -893,7 +895,7 @@ def timsort(array : Array, left , right)-> Array:
             # The `left` array should go from `start` to
             # `midpoint + 1`, while the `right` array should
             # go from `midpoint + 1` to `end + 1`.
-            merged_array = merge_sort_parallel(
+            merged_array = _merge(
                left= array[start:midpoint + 1],
                right= array[midpoint + 1:end + 1]
             )
@@ -905,18 +907,19 @@ def timsort(array : Array, left , right)-> Array:
         # Each iteration should double the size of your arrays
         size *= 2
 
-    return array
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
     """
     Parameters
     ========
 
     array: Array
         The required array to be sorted
-    left: int
+    start: int
         The starting index of the portion
         which is to be sorted.
         Optional, by default 0
-    right: int
+    end: int
         The ending index of the portion which
         is to be sorted.
         Optional, by default the index
