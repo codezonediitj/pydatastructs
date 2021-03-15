@@ -1,7 +1,7 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence)
+heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence, insertion_sort, timsort)
 
 
 from pydatastructs.utils.raises_util import raises
@@ -126,3 +126,7 @@ def test_longest_common_sequence():
     Z = ODA(int, [])
     output = longest_common_subsequence(Y, Z)
     assert str(output) == '[]'
+def test_insertion_sort():
+    _test_common_sort(insertion_sort)
+def test_tim_sort():
+    _test_common_sort(timsort)
