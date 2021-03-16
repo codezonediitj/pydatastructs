@@ -15,7 +15,7 @@ __all__ = [
     'cocktail_shaker_sort',
     'quick_sort',
     'longest_common_subsequence',
-    'is_sorted'
+    'is_ordered'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -789,9 +789,9 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
 
-def is_sorted(array, start, end):
+def is_ordered(array, start, end, comp):
     """
-    Checks whether the given array is sorted or not.
+    Checks whether the given array is ordered or not.
 
     Parameters
     =========
@@ -807,16 +807,19 @@ def is_sorted(array, start, end):
     Examples
     ========
 
-    >>> from pydatastructs import OneDimensionalArray, is_sorted
+    >>> from pydatastructs import OneDimensionalArray, is_ordered
     >>> arr = OneDimensionalArray(int,[4,3,2,1])
-    >>> is_sorted(arr,0,3)
+    >>> is_ordered(arr,0,3, None)
     False
     >>> arr1 = OneDimensionalArray(int,[1,2,3])
-    >>> is_sorted(arr1,0,2)
+    >>> is_ordered(arr1,0,2, None)
     True
 
     """
-    for i in range(start+1,end+1):
-        if(array[i]<array[i-1]):
+    if comp is None:
+        comp = lambda a, b: a < b
+
+    for i in range(start + 1, end + 1):
+        if(comp(array[i], array[i - 1])):
             return False
     return True
