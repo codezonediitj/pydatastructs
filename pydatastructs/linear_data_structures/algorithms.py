@@ -808,29 +808,17 @@ def is_ordered(array, start, end, comp):
     ========
 
     >>> from pydatastructs import OneDimensionalArray, is_ordered
-<<<<<<< HEAD
-    >>> arr = OneDimensionalArray(int,[4,3,2,1])
-    >>> is_ordered(arr,0,3, None)
-    False
-    >>> arr1 = OneDimensionalArray(int,[1,2,3])
-    >>> is_ordered(arr1,0,2, None)
-=======
     >>> arr = OneDimensionalArray(int, [4, 3, 2, 1])
     >>> is_ordered(arr, 0, 3, None)
     False
     >>> arr1 = OneDimensionalArray(int, [1, 2, 3])
     >>> is_ordered(arr1, 0, 2, None)
->>>>>>> 5150c6f4be36ae6db15a9fc0c2578a7e8afa51b4
     True
 
     """
     if comp is None:
         comp = lambda a, b: a < b
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> 5150c6f4be36ae6db15a9fc0c2578a7e8afa51b4
+        
     for i in range(start + 1, end + 1):
         if(comp(array[i], array[i - 1])):
             return False
