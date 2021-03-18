@@ -818,7 +818,6 @@ def is_ordered(array, start, end, comp):
     """
     if comp is None:
         comp = lambda a, b: a < b
-        
     for i in range(start + 1, end + 1):
         if(comp(array[i], array[i - 1])):
             return False
