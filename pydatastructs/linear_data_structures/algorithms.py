@@ -813,7 +813,7 @@ def upper_bound(array, start, end, value, comp):
     =======
 
     output: int
-        Upper bound of the given value in the given sorted OneDimensionalArray
+        Index of the upper bound of the given value in the given sorted OneDimensionalArray
 
     Examples
     ========
@@ -835,15 +835,16 @@ def upper_bound(array, start, end, value, comp):
     if comp is None:
         comp = lambda a, b: (a < b)
     index = end
+    inclusiveEnd = end - 1
     if comp(value, array[start]):
         index = start
-    while start <= end:
-        mid = (start + end)//2
+    while start <= inclusiveEnd:
+        mid = (start + inclusiveEnd)//2
         if not comp(value, array[mid]):
             start = mid + 1
         else:
             index = mid
-            end = mid - 1
+            inclusiveEnd = mid - 1
     return index
 
 def lower_bound(array, start, end, value, comp):
@@ -869,7 +870,7 @@ def lower_bound(array, start, end, value, comp):
     =======
 
     output: int
-        Lower bound of the given value in the given sorted OneDimensionalArray
+        Index of the lower bound of the given value in the given sorted OneDimensionalArray
 
     Examples
     ========
@@ -892,13 +893,14 @@ def lower_bound(array, start, end, value, comp):
     if comp is None:
         comp = lambda a, b: (a < b)
     index = end
+    inclusiveEnd = end - 1
     if not comp(array[start], value):
         index = start
-    while start <= end:
-        mid = (start + end)//2
+    while start <= inclusiveEnd:
+        mid = (start + inclusiveEnd)//2
         if comp(array[mid], value):
             start = mid + 1
         else:
             index = mid
-            end = mid - 1
+            inclusiveEnd = mid - 1
     return index
