@@ -815,6 +815,12 @@ def is_ordered(array, **kwargs):
         equal to is used for comparing two
         values.
 
+    Returns
+    =======
+
+    True if the specified ordering is present
+    from start to end (inclusive) otherwise False.
+
     Examples
     ========
 
