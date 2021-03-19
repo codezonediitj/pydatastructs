@@ -18,12 +18,14 @@ def test_trailing_white_spaces():
     for file_path in py_files:
         file = open(file_path, "r")
         line = file.readline()
+        line_number = 1
         while line != "":
             if line.endswith(" \n") or line.endswith("\t\n") \
                 or line.endswith(" ") or line.endswith("\t"):
-                assert False, "%s contains trailing whitespace at %s"\
-                               %(file_path, line)
+                assert False, "%s contains trailing whitespace at line number %d: %s"\
+                               %(file_path, line_number, line)
             line = file.readline()
+            line_number += 1
         file.close()
 
 def test_final_new_lines():
@@ -46,6 +48,7 @@ def test_comparison_True_False_None():
         if file_path.find("test_code_quality.py") == -1:
             file = open(file_path, "r")
             line = file.readline()
+            line_number = 1
             while line != "":
                 if ((line.find("== True") != -1) or
                     (line.find("== False") != -1) or
@@ -54,9 +57,10 @@ def test_comparison_True_False_None():
                     (line.find("!= False") != -1) or
                     (line.find("!= None") != -1)):
                     assert False, "%s compares True/False/None using by "\
-                                "value, should be done by reference at %s"\
-                                %(file_path, line)
+                                "value, should be done by reference at line number %d: %s"\
+                                %(file_path, line_number, line)
                 line = file.readline()
+                line_number += 1
             file.close()
 
 def test_presence_of_tabs():
