@@ -798,20 +798,19 @@ def is_ordered(array, **kwargs):
 
     array: Array
         The array which is to be checked for having
-        specified ordered among its elements.
+        specified ordering among its elements.
     start: int
-        The starting index of the portion
-        which is to be sorted.
+        The starting index of the portion of the array
+        under consideration.
         Optional, by default 0
     end: int
-        The ending index of the portion which
-        is to be sorted.
+        The ending index of the portion of the array
+        under consideration.
         Optional, by default the index
         of the last position filled.
     comp: lambda/function
         The comparator which is to be used
-        for sorting. If the function returns
-        False then only swapping is performed.
+        for specifying the desired ordering.
         Optional, by default, less than or
         equal to is used for comparing two
         values.
