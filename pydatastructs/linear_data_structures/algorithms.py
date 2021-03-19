@@ -14,7 +14,8 @@ __all__ = [
     'bucket_sort',
     'cocktail_shaker_sort',
     'quick_sort',
-    'longest_common_subsequence'
+    'longest_common_subsequence',
+    'is_ordered'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -787,3 +788,52 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
                     check_mat[i][j] = check_mat[i][j-1]
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
+
+def is_ordered(array, **kwargs):
+    """
+    Checks whether the given array is ordered or not.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be checked for having
+        specified ordering among its elements.
+    start: int
+        The starting index of the portion of the array
+        under consideration.
+        Optional, by default 0
+    end: int
+        The ending index of the portion of the array
+        under consideration.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for specifying the desired ordering.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, is_ordered
+    >>> arr = OneDimensionalArray(int, [1, 2, 3, 4])
+    >>> is_ordered(arr)
+    True
+    >>> arr1 = OneDimensionalArray(int, [1, 2, 3])
+    >>> is_ordered(arr1, start=0, end=1, comp=lambda u, v: u > v)
+    False
+
+    """
+    lower = kwargs.get('start', 0)
+    upper = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+
+    for i in range(lower + 1, upper + 1):
+        if array[i] is None or array[i - 1] is None:
+            continue
+        if comp(array[i], array[i - 1]):
+            return False
+    return True
