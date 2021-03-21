@@ -16,8 +16,9 @@ __all__ = [
     'quick_sort',
     'longest_common_subsequence',
     'upper_bound',
-    'lower_bound'
-    ]
+    'lower_bound',
+    'is_ordered'
+]
 
 def _merge(array, sl, el, sr, er, end, comp):
     l, r = [],  []
@@ -790,6 +791,50 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
 
+def is_ordered(array, **kwargs):
+    """
+    Checks whether the given array is ordered or not.
+    Parameters
+    ==========
+    array: Array
+        The array which is to be checked for having
+        specified ordering among its elements.
+    start: int
+        The starting index of the portion of the array
+        under consideration.
+        Optional, by default 0
+    end: int
+        The ending index of the portion of the array
+        under consideration.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for specifying the desired ordering.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    Examples
+    ========
+    >>> from pydatastructs import OneDimensionalArray, is_ordered
+    >>> arr = OneDimensionalArray(int, [1, 2, 3, 4])
+    >>> is_ordered(arr)
+    True
+    >>> arr1 = OneDimensionalArray(int, [1, 2, 3])
+    >>> is_ordered(arr1, start=0, end=1, comp=lambda u, v: u > v)
+    False
+    """
+    lower = kwargs.get('start', 0)
+    upper = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+
+    for i in range(lower + 1, upper + 1):
+        if array[i] is None or array[i - 1] is None:
+            continue
+        if comp(array[i], array[i - 1]):
+            return False
+    return True
+
 def upper_bound(array, start, end, value, comp):
     """
     Finds the index of the first occurence of an element greater than value according
@@ -835,16 +880,16 @@ def upper_bound(array, start, end, value, comp):
     if comp is None:
         comp = lambda a, b: (a < b)
     index = end
-    inclusiveEnd = end - 1
+    inclusive_end = end - 1
     if comp(value, array[start]):
         index = start
-    while start <= inclusiveEnd:
-        mid = (start + inclusiveEnd)//2
+    while start <= inclusive_end:
+        mid = (start + inclusive_end)//2
         if not comp(value, array[mid]):
             start = mid + 1
         else:
             index = mid
-            inclusiveEnd = mid - 1
+            inclusive_end = mid - 1
     return index
 
 def lower_bound(array, start, end, value, comp):
@@ -868,7 +913,6 @@ def lower_bound(array, start, end, value, comp):
 
     Returns
     =======
-
     output: int
         Index of the lower bound of the given value in the given sorted OneDimensionalArray
 
@@ -893,14 +937,14 @@ def lower_bound(array, start, end, value, comp):
     if comp is None:
         comp = lambda a, b: (a < b)
     index = end
-    inclusiveEnd = end - 1
+    inclusive_end = end - 1
     if not comp(array[start], value):
         index = start
-    while start <= inclusiveEnd:
-        mid = (start + inclusiveEnd)//2
+    while start <= inclusive_end:
+        mid = (start + inclusive_end)//2
         if comp(array[mid], value):
             start = mid + 1
         else:
             index = mid
-            inclusiveEnd = mid - 1
+            inclusive_end = mid - 1
     return index
