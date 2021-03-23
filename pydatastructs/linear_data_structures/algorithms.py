@@ -815,6 +815,10 @@ def is_ordered(array, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    Returns
+    =======
+    True if the specified ordering is present
+    from start to end (inclusive) otherwise False.
     Examples
     ========
     >>> from pydatastructs import OneDimensionalArray, is_ordered
