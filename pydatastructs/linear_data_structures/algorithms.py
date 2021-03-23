@@ -794,8 +794,10 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 def is_ordered(array, **kwargs):
     """
     Checks whether the given array is ordered or not.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be checked for having
         specified ordering among its elements.
@@ -814,6 +816,7 @@ def is_ordered(array, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+
     Examples
     ========
     >>> from pydatastructs import OneDimensionalArray, is_ordered
@@ -823,6 +826,7 @@ def is_ordered(array, **kwargs):
     >>> arr1 = OneDimensionalArray(int, [1, 2, 3])
     >>> is_ordered(arr1, start=0, end=1, comp=lambda u, v: u > v)
     False
+
     """
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
@@ -835,7 +839,7 @@ def is_ordered(array, **kwargs):
             return False
     return True
 
-def upper_bound(array, start, end, value, comp):
+def upper_bound(array, value, **kwargs):
     """
     Finds the index of the first occurence of an element greater than value according
     to an order defined,in the given sorted OneDimensionalArray
@@ -864,11 +868,11 @@ def upper_bound(array, start, end, value, comp):
     ========
     >>> from pydatastructs import upper_bound, OneDimensionalArray as ODA
     >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> upperBound = upper_bound(arr, 0, 4, 5, None)
+    >>> upperBound = upper_bound(arr, 5, start = 0, end = 4)
     >>> upperBound
     3
     >>> arr = ODA(int, [7, 6, 5, 5, 4])
-    >>> upperBound = upper_bound(arr, 0, 4, 5, lambda x, y: x > y)
+    >>> upperBound = upper_bound(arr, 5, comp = lambda x, y: x > y)
     >>> upperBound
     4
 
@@ -877,8 +881,11 @@ def upper_bound(array, start, end, value, comp):
 
     The OneDimensionalArray must be sorted beforehand
     """
-    if comp is None:
-        comp = lambda a, b: (a < b)
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array))
+    comp = kwargs.get('comp', lambda x,y: x < y)
+    # if comp is None:
+    #     comp = lambda a, b: (a < b)
     index = end
     inclusive_end = end - 1
     if comp(value, array[start]):
@@ -892,7 +899,7 @@ def upper_bound(array, start, end, value, comp):
             inclusive_end = mid - 1
     return index
 
-def lower_bound(array, start, end, value, comp):
+def lower_bound(array, value, **kwargs):
     """
     Finds the the index of the first occurence of an element which is not
     less than value according to an order defined, in the given OneDimensionalArray
@@ -921,11 +928,11 @@ def lower_bound(array, start, end, value, comp):
 
     >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
     >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x < y)
+    >>> lowerBound = lower_bound(arr, 5, end = 4, comp = lambda x, y : x < y)
     >>> lowerBound
     1
     >>> arr = ODA(int, [7, 6, 5, 5, 4])
-    >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x > y)
+    >>> lowerBound = lower_bound(arr, 5, start = 0, comp = lambda x, y : x > y)
     >>> lowerBound
     2
 
@@ -934,8 +941,11 @@ def lower_bound(array, start, end, value, comp):
 
     The OneDimensionalArray must be sorted beforehand
     """
-    if comp is None:
-        comp = lambda a, b: (a < b)
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array))
+    comp = kwargs.get('comp', lambda x, y: x < y)
+    # if comp is None:
+    #     comp = lambda a, b: (a < b)
     index = end
     inclusive_end = end - 1
     if not comp(array[start], value):
