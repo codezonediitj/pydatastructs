@@ -2,7 +2,8 @@ from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
     heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,
-    cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered)
+    cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
+    upper_bound, lower_bound, longest_increasing_subsequence)
 
 
 from pydatastructs.utils.raises_util import raises
@@ -157,3 +158,118 @@ def test_is_ordered():
     arr4.delete(0)
     output = is_ordered(arr4)
     assert output == expected_result
+
+
+def test_upper_bound():
+    ODA = OneDimensionalArray
+    arr1 = ODA(int, [3, 3, 3])
+    output = upper_bound(arr1, 0, len(arr1), 3, None)
+    expected_result = 3
+    assert expected_result == output
+
+    arr2 = ODA(int, [4, 4, 5, 6])
+    output = upper_bound(arr2, 0, 3, 4, None)
+    expected_result = 2
+    assert expected_result == output
+
+    arr3 = ODA(int, [6, 6, 7, 8, 9])
+    output = upper_bound(arr3, 2, 4, 5, None)
+    expected_result = 2
+    assert expected_result == output
+
+    arr4 = ODA(int, [3, 4, 4, 6])
+    output = upper_bound(arr4, 1, 3, 5, None)
+    expected_result = 3
+    assert expected_result == output
+
+    arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr5, 0, len(arr5), 6, lambda x, y: x > y)
+    expected_result = 5
+    assert expected_result == output
+
+    arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr6, 2, len(arr6), 2, lambda x, y: x > y)
+    expected_result = 8
+    assert expected_result == output
+
+    arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr7, 3, 7, 9, lambda x, y: x > y)
+    expected_result = 3
+    assert expected_result == output
+
+    arr8 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr8, 0, 3, 6, lambda x, y: x > y)
+    expected_result = 3
+    assert expected_result == output
+
+
+def test_lower_bound():
+    ODA = OneDimensionalArray
+    arr1 = ODA(int, [3, 3, 3])
+    output = lower_bound(arr1, 1, len(arr1), 3, None)
+    expected_result = 1
+    assert expected_result == output
+
+    arr2 = ODA(int, [4, 4, 4, 4, 5, 6])
+    output = lower_bound(arr2, 0, 3, 5, None)
+    expected_result = 3
+    assert expected_result == output
+
+    arr3 = ODA(int, [6, 6, 7, 8, 9])
+    output = lower_bound(arr3, 0, 3, 5, None)
+    expected_result = 0
+    assert expected_result == output
+
+    arr4 = ODA(int, [3, 4, 4, 4])
+    output = lower_bound(arr4, 0, 4, 5, None)
+    expected_result = 4
+    assert expected_result == output
+
+    arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr5, 0, len(arr5), 5, lambda x, y: x > y)
+    expected_result = 5
+    assert expected_result == output
+
+    arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr6, 4, len(arr6), 2, lambda x, y: x > y)
+    expected_result = 8
+    assert expected_result == output
+
+    arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr7, 0, 5, 9, lambda x, y: x > y)
+    expected_result = 0
+    assert expected_result == output
+
+    arr8 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr8, 0, 3, 6, lambda x, y: x > y)
+    expected_result = 1
+    assert expected_result == output
+
+
+def test_longest_increasing_subsequence():
+    ODA = OneDimensionalArray
+
+    arr1 = ODA(int, [2, 5, 3, 7, 11, 8, 10, 13, 6])
+    output = longest_increasing_subsequence(arr1)
+    expected_result = [2, 3, 7, 8, 10, 13]
+    assert expected_result == output
+
+    arr2 = ODA(int, [3, 4, -1, 5, 8, 2, 2, 2, 3, 12, 7, 9, 10])
+    output = longest_increasing_subsequence(arr2)
+    expected_result = [-1, 2, 3, 7, 9, 10]
+    assert expected_result == output
+
+    arr3 = ODA(int, [6, 6, 6, 19, 9])
+    output = longest_increasing_subsequence(arr3)
+    expected_result = [6, 9]
+    assert expected_result == output
+
+    arr4 = ODA(int, [5, 4, 4, 3, 3, 6, 6, 8])
+    output = longest_increasing_subsequence(arr4)
+    expected_result = [3, 6, 8]
+    assert expected_result == output
+
+    arr5 = ODA(int, [7, 6, 6, 6, 5, 4, 3])
+    output = longest_increasing_subsequence(arr5)
+    expected_result = [3]
+    assert expected_result == output

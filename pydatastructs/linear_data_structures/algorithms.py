@@ -15,7 +15,10 @@ __all__ = [
     'cocktail_shaker_sort',
     'quick_sort',
     'longest_common_subsequence',
-    'is_ordered'
+    'is_ordered',
+    'upper_bound',
+    'lower_bound',
+    'longest_increasing_subsequence'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -843,3 +846,170 @@ def is_ordered(array, **kwargs):
         if comp(array[i], array[i - 1]):
             return False
     return True
+
+
+def upper_bound(array, start, end, value, comp):
+    """
+    Finds the index of the first occurence of an element greater than value according
+    to an order defined,in the given sorted OneDimensionalArray
+
+    Parameters
+    ========
+    array: OneDimensionalArray
+        The sorted array (sorted according to a custom comparator function) in which the
+        upper bound has to be found
+    start: int
+        The staring index of the portion of the array in which the upper bound
+        of a given value has to be looked for
+    end: int
+        The ending index of the portion of the array in which the upper bound
+        of a given value has to be looked for
+
+    Returns
+    =======
+    output: int
+        Index of the upper bound of the given value in the given sorted OneDimensionalArray
+
+    Examples
+    ========
+    >>> from pydatastructs import upper_bound, OneDimensionalArray as ODA
+    >>> arr = ODA(int, [4, 5, 5, 6, 7])
+    >>> upperBound = upper_bound(arr, 0, 4, 5, None)
+    >>> upperBound
+    3
+    >>> arr = ODA(int, [7, 6, 5, 5, 4])
+    >>> upperBound = upper_bound(arr, 0, 4, 5, lambda x, y: x > y)
+    >>> upperBound
+    4
+
+    Note
+    ====
+    The OneDimensionalArray must be sorted beforehand
+    """
+    if comp is None:
+        def comp(a, b): return (a < b)
+    index = end
+    inclusive_end = end - 1
+    if comp(value, array[start]):
+        index = start
+    while start <= inclusive_end:
+        mid = (start + inclusive_end)//2
+        if not comp(value, array[mid]):
+            start = mid + 1
+        else:
+            index = mid
+            inclusive_end = mid - 1
+    return index
+
+
+def lower_bound(array, start, end, value, comp):
+    """
+    Finds the the index of the first occurence of an element which is not
+    less than value according to an order defined, in the given OneDimensionalArray
+
+    Parameters
+    ========
+    array: OneDimensionalArray
+        The sorted array (sorted according to a custom comparator function)
+        in which the lower bound has to be found
+    start: int
+        The staring index of the portion of the array in which the lower
+        bound of a given value has to be looked for
+    end: int
+        The ending index of the portion of the array in which the lower
+        bound of a given value has to be looked for
+
+    Returns
+    =======
+    output: int
+        Index of the lower bound of the given value in the given sorted OneDimensionalArray
+
+    Examples
+    ========
+    >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
+    >>> arr = ODA(int, [4, 5, 5, 6, 7])
+    >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x < y)
+    >>> lowerBound
+    1
+    >>> arr = ODA(int, [7, 6, 5, 5, 4])
+    >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x > y)
+    >>> lowerBound
+    2
+    Note
+    ====
+    The OneDimensionalArray must be sorted beforehand
+    """
+    if comp is None:
+        def comp(a, b): return (a < b)
+    index = end
+    inclusive_end = end - 1
+    if not comp(array[start], value):
+        index = start
+    while start <= inclusive_end:
+        mid = (start + inclusive_end)//2
+        if comp(array[mid], value):
+            start = mid + 1
+        else:
+            index = mid
+            inclusive_end = mid - 1
+    return index
+
+
+def longest_increasing_subsequence(array):
+    """
+    Returns the longest increasing subsequence (as a OneDimensionalArray) that
+    can be obtained from a given OneDimensionalArray. A subsequence
+    of an array is an ordered subset of the array's elements having the same
+    sequential ordering as the original array. Here, an increasing
+    sequence stands for a strictly increasing sequence of numbers.
+
+    Parameters
+    ========
+
+    array: OneDimensionalArray
+        The given array in the form of a OneDimensionalArray
+
+    Returns
+    =======
+
+    output: OneDimensionalArray
+        Returns the longest increasing subsequence that can be obtained
+        from the given array
+
+    Examples
+    ========
+
+    >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
+    >>> from pydatastructs import longest_increasing_subsequence as LIS
+    >>> array = ODA(int, [2, 5, 3, 7, 11, 8, 10, 13, 6])
+    >>> longestIncreasingSubsequence = LIS(array)
+    >>> longestIncreasingSubsequence
+    [2, 3, 7, 8, 10, 13]
+    >>> array2 = ODA(int, [3, 4, -1, 5, 8, 2, 2 ,2, 3, 12, 7, 9, 10])
+    >>> longestIncreasingSubsequence = LIS(array2)
+    >>> longestIncreasingSubsequence
+    [-1, 2, 3, 7, 9, 10]
+    """
+    n = len(array)
+    dp = [0]*n
+    parent = [-1]*n
+    length = 0
+    for i in range(1, n):
+        if array[i] <= array[dp[0]]:
+            dp[0] = i
+        elif array[dp[length]] < array[i]:
+            length += 1
+            dp[length] = i
+            parent[i] = dp[length - 1]
+        else:
+            curr_array = [array[dp[i]] for i in range(length)]
+            ceil = lower_bound(curr_array, 0, length, array[i], None)
+            dp[ceil] = i
+            parent[i] = dp[ceil - 1]
+    ans = []
+
+    last_index = dp[length]
+    while last_index != -1:
+        ans[:0] = [array[last_index]]
+        last_index = parent[last_index]
+    return ans

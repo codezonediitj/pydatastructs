@@ -33,6 +33,9 @@ from .algorithms import (
     cocktail_shaker_sort,
     quick_sort,
     longest_common_subsequence,
-    is_ordered
+    is_ordered,
+    upper_bound,
+    lower_bound,
+    longest_increasing_subsequence
 )
 __all__.extend(algorithms.__all__)
