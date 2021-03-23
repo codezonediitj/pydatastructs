@@ -935,6 +935,7 @@ def lower_bound(array, start, end, value, comp):
     >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x > y)
     >>> lowerBound
     2
+
     Note
     ====
     The OneDimensionalArray must be sorted beforehand
