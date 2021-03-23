@@ -251,7 +251,7 @@ def test_longest_increasing_subsequence():
     expected_result = [2, 3, 7, 8, 10, 13]
     assert expected_result == output
 
-    arr2 = ODA(int, [3, 4, -1, 5, 8, 2, 3, 12, 7, 9, 10])
+    arr2 = ODA(int, [3, 4, -1, 5, 8, 2, 2, 2, 3, 12, 7, 9, 10])
     output = longest_increasing_subsequence(arr2)
     expected_result = [-1, 2, 3, 7, 9, 10]
     assert expected_result == output

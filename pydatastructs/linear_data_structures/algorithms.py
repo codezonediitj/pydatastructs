@@ -792,11 +792,14 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
 
     return OneDimensionalArray(seq1._dtype, check_mat[row][col][-1])
 
+
 def is_ordered(array, **kwargs):
     """
     Checks whether the given array is ordered or not.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be checked for having
         specified ordering among its elements.
@@ -815,10 +818,13 @@ def is_ordered(array, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+
     Returns
     =======
+
     True if the specified ordering is present
     from start to end (inclusive) otherwise False.
+
     Examples
     ========
     >>> from pydatastructs import OneDimensionalArray, is_ordered
@@ -828,6 +834,7 @@ def is_ordered(array, **kwargs):
     >>> arr1 = OneDimensionalArray(int, [1, 2, 3])
     >>> is_ordered(arr1, start=0, end=1, comp=lambda u, v: u > v)
     False
+
     """
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
@@ -1002,7 +1009,7 @@ def longest_increasing_subsequence(array):
             parent[i] = dp[length - 1]
         else:
             curr_array = [array[dp[i]] for i in range(length)]
-            ceil = upper_bound(curr_array, 0, length, array[i], None)
+            ceil = lower_bound(curr_array, 0, length, array[i], None)
             dp[ceil] = i
             parent[i] = dp[ceil - 1]
     ans = []
