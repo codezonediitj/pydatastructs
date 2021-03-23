@@ -2,7 +2,7 @@ from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
     heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence,
-    is_ordered, upper_bound, lower_bound)
+    is_ordered, upper_bound, lower_bound, longest_increasing_subsequence)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -240,4 +240,32 @@ def test_lower_bound():
     arr8 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
     output = lower_bound(arr8, 0, 3, 6, lambda x, y: x > y)
     expected_result = 1
+    assert expected_result == output
+
+def test_longest_increasing_subsequence():
+    ODA = OneDimensionalArray
+
+    arr1 = ODA(int, [2, 5, 3, 7, 11, 8, 10, 13, 6])
+    output = longest_increasing_subsequence(arr1)
+    expected_result = [2, 3, 7, 8, 10, 13]
+    assert expected_result == output
+
+    arr2 = ODA(int, [3, 4, -1, 5, 8, 2, 3, 12, 7, 9, 10])
+    output = longest_increasing_subsequence(arr2)
+    expected_result = [-1, 2, 3, 7, 9, 10]
+    assert expected_result == output
+
+    arr3 = ODA(int, [6, 6, 6, 19, 9])
+    output = longest_increasing_subsequence(arr3)
+    expected_result = [6, 9]
+    assert expected_result == output
+
+    arr4 = ODA(int, [5, 4, 4, 3, 3, 6, 6, 8])
+    output = longest_increasing_subsequence(arr4)
+    expected_result = [3, 6, 8]
+    assert expected_result == output
+
+    arr5 = ODA(int, [7, 6, 6, 6, 5, 4, 3])
+    output = longest_increasing_subsequence(arr5)
+    expected_result = [3]
     assert expected_result == output

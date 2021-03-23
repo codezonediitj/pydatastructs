@@ -35,6 +35,7 @@ from .algorithms import (
     longest_common_subsequence,
     is_ordered,
     upper_bound,
-    lower_bound
+    lower_bound,
+    longest_increasing_subsequence
 )
 __all__.extend(algorithms.__all__)
