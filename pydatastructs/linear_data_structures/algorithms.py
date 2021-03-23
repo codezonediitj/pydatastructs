@@ -817,8 +817,15 @@ def is_ordered(array, **kwargs):
         equal to is used for comparing two
         values.
 
+    Returns
+    =======
+
+    True if the specified ordering is present
+    from start to end (inclusive) otherwise False.
+
     Examples
     ========
+
     >>> from pydatastructs import OneDimensionalArray, is_ordered
     >>> arr = OneDimensionalArray(int, [1, 2, 3, 4])
     >>> is_ordered(arr)
