@@ -857,13 +857,18 @@ def upper_bound(array, value, **kwargs):
         The sorted array (sorted according to a custom comparator function) in which the
         upper bound has to be found
 
-    start: int
+    start: int, optional
         The staring index of the portion of the array in which the upper bound
         of a given value has to be looked for
 
-    end: int
+    end: int, optional
         The ending index of the portion of the array in which the upper bound
         of a given value has to be looked for
+
+    comp: boolean function, optional
+        A function that specifies the ordering of elements. By default, it takes two
+        parameters and returns True if 1st parameter is strictly smaller than
+        2nd parameter
 
     Returns
     =======
@@ -891,8 +896,6 @@ def upper_bound(array, value, **kwargs):
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array))
     comp = kwargs.get('comp', lambda x,y: x < y)
-    # if comp is None:
-    #     comp = lambda a, b: (a < b)
     index = end
     inclusive_end = end - 1
     if comp(value, array[start]):
@@ -917,13 +920,19 @@ def lower_bound(array, value, **kwargs):
         The sorted array (sorted according to a custom comparator function)
         in which the lower bound has to be found
 
-    start: int
+    start: int, optional
         The staring index of the portion of the array in which the lower
-        bound of a given value has to be looked for
+        bound of a given value has to be looked for. Default value is set to 0.
 
-    end: int
+    end: int, optional
         The ending index of the portion of the array in which the lower
-        bound of a given value has to be looked for
+        bound of a given value has to be looked for. Default value is set to
+        end of array, i.e., len(arr)
+
+    comp: boolean function, optional
+        A function that specifies the ordering of elements. By default, it takes two
+        parameters and returns True if 1st parameter is strictly smaller than
+        2nd parameter
 
     Returns
     =======
@@ -951,8 +960,6 @@ def lower_bound(array, value, **kwargs):
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array))
     comp = kwargs.get('comp', lambda x, y: x < y)
-    # if comp is None:
-    #     comp = lambda a, b: (a < b)
     index = end
     inclusive_end = end - 1
     if not comp(array[start], value):
