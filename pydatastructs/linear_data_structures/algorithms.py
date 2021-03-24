@@ -848,46 +848,58 @@ def is_ordered(array, **kwargs):
     return True
 
 
-def upper_bound(array, start, end, value, comp):
+def upper_bound(array, value, **kwargs):
     """
     Finds the index of the first occurence of an element greater than value according
     to an order defined,in the given sorted OneDimensionalArray
 
     Parameters
     ========
+
     array: OneDimensionalArray
         The sorted array (sorted according to a custom comparator function) in which the
         upper bound has to be found
-    start: int
+
+    start: int, optional
         The staring index of the portion of the array in which the upper bound
         of a given value has to be looked for
-    end: int
+
+    end: int, optional
         The ending index of the portion of the array in which the upper bound
         of a given value has to be looked for
 
+    comp: boolean function, optional
+        A function that specifies the ordering of elements. By default, it takes two
+        parameters and returns True if 1st parameter is strictly smaller than
+        2nd parameter
+
     Returns
     =======
+
     output: int
         Index of the upper bound of the given value in the given sorted OneDimensionalArray
 
     Examples
     ========
+
     >>> from pydatastructs import upper_bound, OneDimensionalArray as ODA
     >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> upperBound = upper_bound(arr, 0, 4, 5, None)
+    >>> upperBound = upper_bound(arr, 5, start = 0, end = 4)
     >>> upperBound
     3
     >>> arr = ODA(int, [7, 6, 5, 5, 4])
-    >>> upperBound = upper_bound(arr, 0, 4, 5, lambda x, y: x > y)
+    >>> upperBound = upper_bound(arr, 5, comp = lambda x, y: x > y)
     >>> upperBound
     4
 
     Note
     ====
+
     The OneDimensionalArray must be sorted beforehand
     """
-    if comp is None:
-        def comp(a, b): return (a < b)
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array))
+    comp = kwargs.get('comp', lambda x, y: x < y)
     index = end
     inclusive_end = end - 1
     if comp(value, array[start]):
@@ -902,46 +914,59 @@ def upper_bound(array, start, end, value, comp):
     return index
 
 
-def lower_bound(array, start, end, value, comp):
+def lower_bound(array, value, **kwargs):
     """
     Finds the the index of the first occurence of an element which is not
     less than value according to an order defined, in the given OneDimensionalArray
 
     Parameters
     ========
+
     array: OneDimensionalArray
         The sorted array (sorted according to a custom comparator function)
         in which the lower bound has to be found
-    start: int
+
+    start: int, optional
         The staring index of the portion of the array in which the lower
-        bound of a given value has to be looked for
-    end: int
+        bound of a given value has to be looked for. Default value is set to 0.
+
+    end: int, optional
         The ending index of the portion of the array in which the lower
-        bound of a given value has to be looked for
+        bound of a given value has to be looked for. Default value is set to
+        end of array, i.e., len(arr)
+
+    comp: boolean function, optional
+        A function that specifies the ordering of elements. By default, it takes two
+        parameters and returns True if 1st parameter is strictly smaller than
+        2nd parameter
 
     Returns
     =======
+
     output: int
         Index of the lower bound of the given value in the given sorted OneDimensionalArray
 
     Examples
     ========
+
     >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
     >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x < y)
+    >>> lowerBound = lower_bound(arr, 5, end = 4, comp = lambda x, y : x < y)
     >>> lowerBound
     1
     >>> arr = ODA(int, [7, 6, 5, 5, 4])
-    >>> lowerBound = lower_bound(arr, 0, 4, 5, lambda x, y : x > y)
+    >>> lowerBound = lower_bound(arr, 5, start = 0, comp = lambda x, y : x > y)
     >>> lowerBound
     2
 
     Note
     ====
+
     The OneDimensionalArray must be sorted beforehand
     """
-    if comp is None:
-        def comp(a, b): return (a < b)
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array))
+    comp = kwargs.get('comp', lambda x, y: x < y)
     index = end
     inclusive_end = end - 1
     if not comp(array[start], value):
@@ -1004,7 +1029,7 @@ def longest_increasing_subsequence(array):
             parent[i] = dp[length - 1]
         else:
             curr_array = [array[dp[i]] for i in range(length)]
-            ceil = lower_bound(curr_array, 0, length, array[i], None)
+            ceil = lower_bound(curr_array, array[i])
             dp[ceil] = i
             parent[i] = dp[ceil - 1]
     ans = []
