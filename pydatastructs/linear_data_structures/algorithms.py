@@ -849,13 +849,13 @@ def is_ordered(array, **kwargs):
 def upper_bound(array, value, **kwargs):
     """
     Finds the index of the first occurence of an element greater than the given
-    value according to specified order, in the given sorted OneDimensionalArray.
+    value according to specified order, in the given OneDimensionalArray using a variation of binary search method.
 
     Parameters
     ==========
 
     array: OneDimensionalArray
-        The sorted array in which the upper bound has to be found.
+        The array in which the upper bound has to be found.
 
     start: int
         The staring index of the portion of the array in which the upper bound
@@ -879,7 +879,7 @@ def upper_bound(array, value, **kwargs):
     =======
 
     output: int
-        Index of the upper bound of the given value in the given sorted OneDimensionalArray
+        Index of the upper bound of the given value in the given OneDimensionalArray.
 
     Examples
     ========
@@ -897,7 +897,6 @@ def upper_bound(array, value, **kwargs):
     Note
     ====
 
-    The given OneDimensionalArray object must be sorted.
     DynamicOneDimensionalArray objects may not work as expected.
     """
     start = kwargs.get('start', 0)
@@ -920,13 +919,13 @@ def lower_bound(array, value, **kwargs):
     """
     Finds the the index of the first occurence of an element which is not
     less than the given value according to specified order,
-    in the given sorted OneDimensionalArray
+    in the given OneDimensionalArray using a variation of binary search method.
 
     Parameters
     ==========
 
     array: OneDimensionalArray
-        The sorted array in which the lower bound has to be found.
+        The array in which the lower bound has to be found.
 
     start: int
         The staring index of the portion of the array in which the upper bound
@@ -968,7 +967,6 @@ def lower_bound(array, value, **kwargs):
     Note
     ====
 
-    The given OneDimensionalArray object must be sorted.
     DynamicOneDimensionalArray objects may not work as expected.
     """
     start = kwargs.get('start', 0)
