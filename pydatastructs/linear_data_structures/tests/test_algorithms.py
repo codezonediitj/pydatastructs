@@ -148,7 +148,7 @@ def test_is_ordered():
 
     expected_result = True
     arr3 = ODA(int, [0, -1, -2, -3, -4, 4])
-    output = is_ordered(arr3, start = 1, end = 4, comp = lambda u, v: u > v)
+    output = is_ordered(arr3, start=1, end=4, comp=lambda u, v: u > v)
     assert output == expected_result
 
     expected_result = True
@@ -165,37 +165,37 @@ def test_upper_bound():
     assert expected_result == output
 
     arr2 = ODA(int, [4, 4, 5, 6])
-    output = upper_bound(arr2, 4, end = 3)
+    output = upper_bound(arr2, 4, end=3)
     expected_result = 2
     assert expected_result == output
 
     arr3 = ODA(int, [6, 6, 7, 8, 9])
-    output = upper_bound(arr3, 5, start = 2, end = 4)
+    output = upper_bound(arr3, 5, start=2, end=4)
     expected_result = 2
     assert expected_result == output
 
     arr4 = ODA(int, [3, 4, 4, 6])
-    output = upper_bound(arr4, 5, start = 1, end = 3)
+    output = upper_bound(arr4, 5, start=1, end=3)
     expected_result = 3
     assert expected_result == output
 
     arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr5, 6, comp = lambda x, y: x > y)
+    output = upper_bound(arr5, 6, comp=lambda x, y: x > y)
     expected_result = 5
     assert expected_result == output
 
     arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr6, 2, start = 2, comp = lambda x, y: x > y)
+    output = upper_bound(arr6, 2, start=2, comp=lambda x, y: x > y)
     expected_result = 8
     assert expected_result == output
 
     arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr7, 9, start = 3, end = 7, comp = lambda x, y: x > y)
+    output = upper_bound(arr7, 9, start=3, end=7, comp=lambda x, y: x > y)
     expected_result = 3
     assert expected_result == output
 
     arr8 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr8, 6, end = 3, comp = lambda x, y: x > y)
+    output = upper_bound(arr8, 6, end=3, comp=lambda x, y: x > y)
     expected_result = 3
     assert expected_result == output
 
@@ -203,17 +203,17 @@ def test_upper_bound():
 def test_lower_bound():
     ODA = OneDimensionalArray
     arr1 = ODA(int, [3, 3, 3])
-    output = lower_bound(arr1, 3, start = 1)
+    output = lower_bound(arr1, 3, start=1)
     expected_result = 1
     assert expected_result == output
 
     arr2 = ODA(int, [4, 4, 4, 4, 5, 6])
-    output = lower_bound(arr2, 5, end = 3)
+    output = lower_bound(arr2, 5, end=3)
     expected_result = 3
     assert expected_result == output
 
     arr3 = ODA(int, [6, 6, 7, 8, 9])
-    output = lower_bound(arr3, 5, end = 3)
+    output = lower_bound(arr3, 5, end=3)
     expected_result = 0
     assert expected_result == output
 
@@ -223,21 +223,21 @@ def test_lower_bound():
     assert expected_result == output
 
     arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr5, 5, comp = lambda x, y: x > y)
+    output = lower_bound(arr5, 5, comp=lambda x, y: x > y)
     expected_result = 5
     assert expected_result == output
 
     arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr6, 2, start = 4, comp = lambda x, y: x > y)
+    output = lower_bound(arr6, 2, start=4, comp=lambda x, y: x > y)
     expected_result = 8
     assert expected_result == output
 
     arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr7, 9, end = 5, comp = lambda x, y: x > y)
+    output = lower_bound(arr7, 9, end=5, comp=lambda x, y: x > y)
     expected_result = 0
     assert expected_result == output
 
     arr8 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr8, 6, end = 3, comp = lambda x, y: x > y)
+    output = lower_bound(arr8, 6, end=3, comp=lambda x, y: x > y)
     expected_result = 1
     assert expected_result == output

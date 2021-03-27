@@ -798,7 +798,7 @@ def is_ordered(array, **kwargs):
     Parameters
     ==========
 
-    array: Array
+    array: OneDimensionalArray
         The array which is to be checked for having
         specified ordering among its elements.
     start: int
@@ -848,27 +848,32 @@ def is_ordered(array, **kwargs):
 
 def upper_bound(array, value, **kwargs):
     """
-    Finds the index of the first occurence of an element greater than value according
-    to an order defined,in the given sorted OneDimensionalArray
+    Finds the index of the first occurence of an element greater than the given
+    value according to specified order, in the given sorted OneDimensionalArray.
 
     Parameters
-    ========
-    array: OneDimensionalArray
-        The sorted array (sorted according to a custom comparator function) in which the
-        upper bound has to be found
+    ==========
 
-    start: int, optional
+    array: OneDimensionalArray
+        The sorted array in which the upper bound has to be found.
+
+    start: int
         The staring index of the portion of the array in which the upper bound
-        of a given value has to be looked for
+        of a given value has to be looked for.
+        Optional, by default 0
 
     end: int, optional
         The ending index of the portion of the array in which the upper bound
-        of a given value has to be looked for
+        of a given value has to be looked for.
+        Optional, by default the index
+        of the last position filled.
 
-    comp: boolean function, optional
-        A function that specifies the ordering of elements. By default, it takes two
-        parameters and returns True if 1st parameter is strictly smaller than
-        2nd parameter
+    comp: lambda/function
+        The comparator which is to be used
+        for specifying the desired ordering.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
 
     Returns
     =======
@@ -878,24 +883,26 @@ def upper_bound(array, value, **kwargs):
 
     Examples
     ========
+
     >>> from pydatastructs import upper_bound, OneDimensionalArray as ODA
-    >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> upperBound = upper_bound(arr, 5, start = 0, end = 4)
-    >>> upperBound
+    >>> arr1 = ODA(int, [4, 5, 5, 6, 7])
+    >>> ub = upper_bound(arr1, 5, start=0, end=4)
+    >>> ub
     3
-    >>> arr = ODA(int, [7, 6, 5, 5, 4])
-    >>> upperBound = upper_bound(arr, 5, comp = lambda x, y: x > y)
-    >>> upperBound
+    >>> arr2 = ODA(int, [7, 6, 5, 5, 4])
+    >>> ub = upper_bound(arr2, 5, comp=lambda x, y: x > y)
+    >>> ub
     4
 
     Note
     ====
 
-    The OneDimensionalArray must be sorted beforehand
+    The given OneDimensionalArray object must be sorted.
+    DynamicOneDimensionalArray objects may not work as expected.
     """
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array))
-    comp = kwargs.get('comp', lambda x,y: x < y)
+    comp = kwargs.get('comp', lambda x, y: x < y)
     index = end
     inclusive_end = end - 1
     if comp(value, array[start]):
@@ -912,50 +919,57 @@ def upper_bound(array, value, **kwargs):
 def lower_bound(array, value, **kwargs):
     """
     Finds the the index of the first occurence of an element which is not
-    less than value according to an order defined, in the given OneDimensionalArray
+    less than the given value according to specified order,
+    in the given sorted OneDimensionalArray
 
     Parameters
-    ========
-    array: OneDimensionalArray
-        The sorted array (sorted according to a custom comparator function)
-        in which the lower bound has to be found
+    ==========
 
-    start: int, optional
-        The staring index of the portion of the array in which the lower
-        bound of a given value has to be looked for. Default value is set to 0.
+    array: OneDimensionalArray
+        The sorted array in which the lower bound has to be found.
+
+    start: int
+        The staring index of the portion of the array in which the upper bound
+        of a given value has to be looked for.
+        Optional, by default 0
 
     end: int, optional
-        The ending index of the portion of the array in which the lower
-        bound of a given value has to be looked for. Default value is set to
-        end of array, i.e., len(arr)
+        The ending index of the portion of the array in which the upper bound
+        of a given value has to be looked for.
+        Optional, by default the index
+        of the last position filled.
 
-    comp: boolean function, optional
-        A function that specifies the ordering of elements. By default, it takes two
-        parameters and returns True if 1st parameter is strictly smaller than
-        2nd parameter
+    comp: lambda/function
+        The comparator which is to be used
+        for specifying the desired ordering.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
 
     Returns
     =======
+
     output: int
-        Index of the lower bound of the given value in the given sorted OneDimensionalArray
+        Index of the lower bound of the given value in the given OneDimensionalArray
 
     Examples
     ========
 
     >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
-    >>> arr = ODA(int, [4, 5, 5, 6, 7])
-    >>> lowerBound = lower_bound(arr, 5, end = 4, comp = lambda x, y : x < y)
-    >>> lowerBound
+    >>> arr1 = ODA(int, [4, 5, 5, 6, 7])
+    >>> lb = lower_bound(arr1, 5, end=4, comp=lambda x, y : x < y)
+    >>> lb
     1
     >>> arr = ODA(int, [7, 6, 5, 5, 4])
-    >>> lowerBound = lower_bound(arr, 5, start = 0, comp = lambda x, y : x > y)
-    >>> lowerBound
+    >>> lb = lower_bound(arr, 5, start=0, comp=lambda x, y : x > y)
+    >>> lb
     2
 
     Note
     ====
 
-    The OneDimensionalArray must be sorted beforehand
+    The given OneDimensionalArray object must be sorted.
+    DynamicOneDimensionalArray objects may not work as expected.
     """
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array))
