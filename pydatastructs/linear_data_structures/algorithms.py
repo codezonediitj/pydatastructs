@@ -856,18 +856,15 @@ def upper_bound(array, value, **kwargs):
 
     array: OneDimensionalArray
         The array in which the upper bound has to be found.
-
     start: int
         The staring index of the portion of the array in which the upper bound
         of a given value has to be looked for.
         Optional, by default 0
-
     end: int, optional
         The ending index of the portion of the array in which the upper bound
         of a given value has to be looked for.
         Optional, by default the index
         of the last position filled.
-
     comp: lambda/function
         The comparator which is to be used
         for specifying the desired ordering.
@@ -878,7 +875,7 @@ def upper_bound(array, value, **kwargs):
     Returns
     =======
 
-    output: int
+    index: int
         Index of the upper bound of the given value in the given OneDimensionalArray.
 
     Examples
@@ -926,18 +923,15 @@ def lower_bound(array, value, **kwargs):
 
     array: OneDimensionalArray
         The array in which the lower bound has to be found.
-
     start: int
         The staring index of the portion of the array in which the upper bound
         of a given value has to be looked for.
         Optional, by default 0
-
     end: int, optional
         The ending index of the portion of the array in which the upper bound
         of a given value has to be looked for.
         Optional, by default the index
         of the last position filled.
-
     comp: lambda/function
         The comparator which is to be used
         for specifying the desired ordering.
@@ -948,7 +942,7 @@ def lower_bound(array, value, **kwargs):
     Returns
     =======
 
-    output: int
+    index: int
         Index of the lower bound of the given value in the given OneDimensionalArray
 
     Examples
