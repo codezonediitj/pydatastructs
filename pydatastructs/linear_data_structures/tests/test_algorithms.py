@@ -1,9 +1,8 @@
 from pydatastructs import (
     merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
-    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,
-    cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered)
-
+    heapsort, matrix_multiply_parallel, counting_sort, bucket_sort, cocktail_shaker_sort, quick_sort, longest_common_subsequence,
+    is_ordered, upper_bound, lower_bound)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -157,3 +156,88 @@ def test_is_ordered():
     arr4.delete(0)
     output = is_ordered(arr4)
     assert output == expected_result
+
+def test_upper_bound():
+    ODA = OneDimensionalArray
+    arr1 = ODA(int, [3, 3, 3])
+    output = upper_bound(arr1, 3)
+    expected_result = 3
+    assert expected_result == output
+
+    arr2 = ODA(int, [4, 4, 5, 6])
+    output = upper_bound(arr2, 4, end=3)
+    expected_result = 2
+    assert expected_result == output
+
+    arr3 = ODA(int, [6, 6, 7, 8, 9])
+    output = upper_bound(arr3, 5, start=2, end=4)
+    expected_result = 2
+    assert expected_result == output
+
+    arr4 = ODA(int, [3, 4, 4, 6])
+    output = upper_bound(arr4, 5, start=1, end=3)
+    expected_result = 3
+    assert expected_result == output
+
+    arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr5, 6, comp=lambda x, y: x > y)
+    expected_result = 5
+    assert expected_result == output
+
+    arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr6, 2, start=2, comp=lambda x, y: x > y)
+    expected_result = 8
+    assert expected_result == output
+
+    arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr7, 9, start=3, end=7, comp=lambda x, y: x > y)
+    expected_result = 3
+    assert expected_result == output
+
+    arr8 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr8, 6, end=3, comp=lambda x, y: x > y)
+    expected_result = 3
+    assert expected_result == output
+
+
+def test_lower_bound():
+    ODA = OneDimensionalArray
+    arr1 = ODA(int, [3, 3, 3])
+    output = lower_bound(arr1, 3, start=1)
+    expected_result = 1
+    assert expected_result == output
+
+    arr2 = ODA(int, [4, 4, 4, 4, 5, 6])
+    output = lower_bound(arr2, 5, end=3)
+    expected_result = 3
+    assert expected_result == output
+
+    arr3 = ODA(int, [6, 6, 7, 8, 9])
+    output = lower_bound(arr3, 5, end=3)
+    expected_result = 0
+    assert expected_result == output
+
+    arr4 = ODA(int, [3, 4, 4, 4])
+    output = lower_bound(arr4, 5)
+    expected_result = 4
+    assert expected_result == output
+
+    arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr5, 5, comp=lambda x, y: x > y)
+    expected_result = 5
+    assert expected_result == output
+
+    arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr6, 2, start=4, comp=lambda x, y: x > y)
+    expected_result = 8
+    assert expected_result == output
+
+    arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr7, 9, end=5, comp=lambda x, y: x > y)
+    expected_result = 0
+    assert expected_result == output
+
+    arr8 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr8, 6, end=3, comp=lambda x, y: x > y)
+    expected_result = 1
+    assert expected_result == output

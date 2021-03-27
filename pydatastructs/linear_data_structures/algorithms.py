@@ -15,6 +15,8 @@ __all__ = [
     'cocktail_shaker_sort',
     'quick_sort',
     'longest_common_subsequence',
+    'upper_bound',
+    'lower_bound',
     'is_ordered'
 ]
 
@@ -796,7 +798,7 @@ def is_ordered(array, **kwargs):
     Parameters
     ==========
 
-    array: Array
+    array: OneDimensionalArray
         The array which is to be checked for having
         specified ordering among its elements.
     start: int
@@ -843,3 +845,136 @@ def is_ordered(array, **kwargs):
         if comp(array[i], array[i - 1]):
             return False
     return True
+
+def upper_bound(array, value, **kwargs):
+    """
+    Finds the index of the first occurence of an element greater than the given
+    value according to specified order, in the given OneDimensionalArray using a variation of binary search method.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array in which the upper bound has to be found.
+    start: int
+        The staring index of the portion of the array in which the upper bound
+        of a given value has to be looked for.
+        Optional, by default 0
+    end: int, optional
+        The ending index of the portion of the array in which the upper bound
+        of a given value has to be looked for.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for specifying the desired ordering.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Returns
+    =======
+
+    index: int
+        Index of the upper bound of the given value in the given OneDimensionalArray.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import upper_bound, OneDimensionalArray as ODA
+    >>> arr1 = ODA(int, [4, 5, 5, 6, 7])
+    >>> ub = upper_bound(arr1, 5, start=0, end=4)
+    >>> ub
+    3
+    >>> arr2 = ODA(int, [7, 6, 5, 5, 4])
+    >>> ub = upper_bound(arr2, 5, comp=lambda x, y: x > y)
+    >>> ub
+    4
+
+    Note
+    ====
+
+    DynamicOneDimensionalArray objects may not work as expected.
+    """
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array))
+    comp = kwargs.get('comp', lambda x, y: x < y)
+    index = end
+    inclusive_end = end - 1
+    if comp(value, array[start]):
+        index = start
+    while start <= inclusive_end:
+        mid = (start + inclusive_end)//2
+        if not comp(value, array[mid]):
+            start = mid + 1
+        else:
+            index = mid
+            inclusive_end = mid - 1
+    return index
+
+def lower_bound(array, value, **kwargs):
+    """
+    Finds the the index of the first occurence of an element which is not
+    less than the given value according to specified order,
+    in the given OneDimensionalArray using a variation of binary search method.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array in which the lower bound has to be found.
+    start: int
+        The staring index of the portion of the array in which the upper bound
+        of a given value has to be looked for.
+        Optional, by default 0
+    end: int, optional
+        The ending index of the portion of the array in which the upper bound
+        of a given value has to be looked for.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for specifying the desired ordering.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Returns
+    =======
+
+    index: int
+        Index of the lower bound of the given value in the given OneDimensionalArray
+
+    Examples
+    ========
+
+    >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
+    >>> arr1 = ODA(int, [4, 5, 5, 6, 7])
+    >>> lb = lower_bound(arr1, 5, end=4, comp=lambda x, y : x < y)
+    >>> lb
+    1
+    >>> arr = ODA(int, [7, 6, 5, 5, 4])
+    >>> lb = lower_bound(arr, 5, start=0, comp=lambda x, y : x > y)
+    >>> lb
+    2
+
+    Note
+    ====
+
+    DynamicOneDimensionalArray objects may not work as expected.
+    """
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array))
+    comp = kwargs.get('comp', lambda x, y: x < y)
+    index = end
+    inclusive_end = end - 1
+    if not comp(array[start], value):
+        index = start
+    while start <= inclusive_end:
+        mid = (start + inclusive_end)//2
+        if comp(array[mid], value):
+            start = mid + 1
+        else:
+            index = mid
+            inclusive_end = mid - 1
+    return index
