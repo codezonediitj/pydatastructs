@@ -159,7 +159,6 @@ def test_is_ordered():
     output = is_ordered(arr4)
     assert output == expected_result
 
-
 def test_upper_bound():
     ODA = OneDimensionalArray
     arr1 = ODA(int, [3, 3, 3])
@@ -244,7 +243,6 @@ def test_lower_bound():
     output = lower_bound(arr8, 6, end=3, comp=lambda x, y: x > y)
     expected_result = 1
     assert expected_result == output
-
 
 def test_longest_increasing_subsequence():
     ODA = OneDimensionalArray
