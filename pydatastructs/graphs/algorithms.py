@@ -11,7 +11,7 @@ from pydatastructs.miscellaneous_data_structures import (
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
-
+import math
 __all__ = [
     'breadth_first_search',
     'breadth_first_search_parallel',
@@ -22,7 +22,8 @@ __all__ = [
     'shortest_paths',
     'all_pair_shortest_paths',
     'topological_sort',
-    'topological_sort_parallel'
+    'topological_sort_parallel',
+    'lowest_common_ancestor'
 ]
 
 Stack = Queue = deque
@@ -993,3 +994,112 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
     if len(L) != num_vertices:
         raise ValueError("Graph is not acyclic.")
     return L
+
+def lowest_common_ancestor(graph: Graph, vertex1: str, vertex2: str, algorithm: str) -> str:
+    """
+    Finds the lowest common ancestor of two vertices u and v of a directed acylic graph.
+    The LCA of two vertices u and v is defined as the vertex w which is an ancestor
+    of both u and v and is farthest from the root vertex.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    vertex1, vertex2: str
+        The names of the vertices in the graph whose lowest common
+        ancestor is to be found.
+    algorithm: str
+        The algorithm to be used.
+        Currently, following are supported,
+        'binary_lifting' -> Binary lifting algorithm as given in [1].
+
+    Returns
+    =======
+
+    str
+        The name of the vertex that is the lowest common ancestor of the two given
+        vertices in the given graph.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, lowest_common_ancestor
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> v_3 = AdjacencyListGraphNode('v_3')
+    >>> v_4 = AdjacencyListGraphNode('v_4')
+    >>> v_5 = AdjacencyListGraphNode('v_5')
+    >>> graph = Graph(v_1, v_2, v_3, v_4, v_5)
+    >>> graph.add_edge('v_1', 'v_2')
+    >>> graph.add_edge('v_1', 'v_3')
+    >>> graph.add_edge('v_3', 'v_4')
+    >>> graph.add_edge('v_3', 'v_5')
+    >>> lowest_common_ancestor(graph, 'v_2', 'v_5', 'binary_lifting')
+    'v_1'
+    >>> lowest_common_ancestor(graph, 'v_4', 'v_5', 'binary_lifting')
+    'v_3'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
+    """
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+            "Currently %s algorithm isn't implemented for "
+            "performing topological sort on %s graphs." % (algorithm, graph._impl))
+    return getattr(algorithms, func)(graph, vertex1, vertex2)
+
+
+def _binary_lifting_adjacency_list(graph: Graph, vertex1: str, vertex2: str) -> list:
+    num_vertices = len(graph.vertices)
+    log_value = math.log2(num_vertices)
+    ancestor = {u: [""]*(int(log_value) + 1) for u in graph.vertices}
+    level = {u: 0 for u in graph.vertices}
+    parent= {}
+    def precompute(curr_node, next_node, ancestor, level, parent):
+        if next_node != "" :
+            ancestor[next_node][0] = curr_node
+            level[next_node] = level[curr_node] + 1
+            parent[next_node] = curr_node
+        return True
+
+    def _collect_source_nodes(graph: Graph) -> list:
+        S = []
+        in_degree = {u: 0 for u in graph.vertices}
+        for u in graph.vertices:
+            for v in graph.neighbors(u):
+                in_degree[v.name] += 1
+        for u in in_degree:
+            if in_degree[u] == 0:
+                S.append(u)
+        return list(S)
+
+    source = _collect_source_nodes(graph)[0]
+
+    depth_first_search(graph, source, precompute, ancestor, level, parent)
+    for pow in range(1, int(log_value) + 1):
+        for vertex in graph.vertices:
+            if(ancestor[vertex][pow] != ""):
+                ancestor[vertex][pow] = ancestor[ancestor[vertex][pow - 1]][pow - 1]
+
+    if level[vertex1] > level[vertex2]:
+        vertex1, vertex2 = vertex2, vertex1
+
+    difference = level[vertex2] - level[vertex1]
+    while(difference > 0):
+        pow_of_two =int(math.log2(difference))
+        vertex2 = ancestor[vertex2][pow_of_two]
+        difference =- (1 << pow_of_two)
+
+    if vertex1 == vertex2:
+        return vertex1
+
+    for pow in range(int(log_value), -1, -1):
+        if ancestor[vertex1][pow] != "" and (ancestor[vertex1][pow] != ancestor[vertex2][pow]):
+            vertex1 = ancestor[vertex1][pow]
+            vertex2 = ancestor[vertex2][pow]
+    return ancestor[vertex1][0]
