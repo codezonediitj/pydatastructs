@@ -1007,12 +1007,12 @@ def longest_increasing_subsequence(array):
     >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
     >>> from pydatastructs import longest_increasing_subsequence as LIS
     >>> array = ODA(int, [2, 5, 3, 7, 11, 8, 10, 13, 6])
-    >>> longestIncreasingSubsequence = LIS(array)
-    >>> longestIncreasingSubsequence
+    >>> longest_inc_subsequence = LIS(array)
+    >>> longest_inc_subsequence
     [2, 3, 7, 8, 10, 13]
     >>> array2 = ODA(int, [3, 4, -1, 5, 8, 2, 2 ,2, 3, 12, 7, 9, 10])
-    >>> longestIncreasingSubsequence = LIS(array2)
-    >>> longestIncreasingSubsequence
+    >>> longest_inc_subsequence = LIS(array2)
+    >>> longest_inc_subsequence
     [-1, 2, 3, 7, 9, 10]
     """
     n = len(array)
