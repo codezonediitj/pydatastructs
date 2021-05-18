@@ -12,6 +12,7 @@ from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
 import math
+
 __all__ = [
     'breadth_first_search',
     'breadth_first_search_parallel',
@@ -1059,12 +1060,10 @@ def _binary_lifting_adjacency_list(graph: Graph, vertex1: str, vertex2: str) -> 
     log_value = math.log2(num_vertices)
     ancestor = {u: [""]*(int(log_value) + 1) for u in graph.vertices}
     level = {u: 0 for u in graph.vertices}
-    parent= {}
-    def precompute(curr_node, next_node, ancestor, level, parent):
+    def precompute(curr_node, next_node, ancestor, level):
         if next_node != "" :
             ancestor[next_node][0] = curr_node
             level[next_node] = level[curr_node] + 1
-            parent[next_node] = curr_node
         return True
 
     def _collect_source_nodes(graph: Graph) -> list:
@@ -1080,7 +1079,7 @@ def _binary_lifting_adjacency_list(graph: Graph, vertex1: str, vertex2: str) -> 
 
     source = _collect_source_nodes(graph)[0]
 
-    depth_first_search(graph, source, precompute, ancestor, level, parent)
+    depth_first_search(graph, source, precompute, ancestor, level)
     for pow in range(1, int(log_value) + 1):
         for vertex in graph.vertices:
             if(ancestor[vertex][pow] != ""):
