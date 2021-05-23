@@ -385,6 +385,7 @@ def test_lowest_common_ancestor():
         V5 = GraphNode(4)
         V6 = GraphNode(5)
         V7 = GraphNode(6)
+        V8 = GraphNode(7)
 
         G1 = Graph(V1, V2, V3, V4, V5, V6, V7)
 
@@ -394,7 +395,8 @@ def test_lowest_common_ancestor():
             (V3.name, V4.name),
             (V3.name, V5.name),
             (V5.name, V6.name),
-            (V5.name, V7.name)
+            (V5.name, V7.name),
+            (V2.name, V8.name)
         ]
 
         for edge in edges:
@@ -408,7 +410,7 @@ def test_lowest_common_ancestor():
         expected_result = V3.name
         assert(lca2 == expected_result)
 
-        lca3 = lowest_common_ancestor(G1, V2.name, V7.name)
+        lca3 = lowest_common_ancestor(G1, V7.name, V2.name)
         expected_result = V1.name
         assert(lca3 == expected_result)
 
@@ -419,3 +421,7 @@ def test_lowest_common_ancestor():
         lca5 = lowest_common_ancestor(G1, V3.name, V7.name)
         expected_result = V3.name
         assert(lca5 == expected_result)
+
+        lca6 = lowest_common_ancestor(G1, V7.name, V8.name)
+        expected_result = V1.name
+        assert(lca6 == expected_result)

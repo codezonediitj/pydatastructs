@@ -1036,7 +1036,7 @@ def lowest_common_ancestor(graph: Graph, vertex1: str, vertex2: str, algorithm: 
     >>> graph.add_edge('v_1', 'v_3')
     >>> graph.add_edge('v_3', 'v_4')
     >>> graph.add_edge('v_3', 'v_5')
-    >>> lowest_common_ancestor(graph, 'v_1', 'v_5', 'binary_lifting')
+    >>> lowest_common_ancestor(graph, 'v_5', 'v_2', 'binary_lifting')
     'v_1'
     >>> lowest_common_ancestor(graph, 'v_4', 'v_5', 'binary_lifting')
     'v_3'
@@ -1093,7 +1093,6 @@ def _binary_lifting_adjacency_list(graph: Graph, vertex1: str, vertex2: str) -> 
         pow_of_two =int(math.log2(difference))
         vertex2 = ancestor[vertex2][pow_of_two]
         difference =- (1 << pow_of_two)
-
     if vertex1 == vertex2:
         return vertex1
 
