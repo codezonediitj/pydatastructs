@@ -1036,7 +1036,7 @@ def lowest_common_ancestor(graph: Graph, vertex1: str, vertex2: str, algorithm: 
     >>> graph.add_edge('v_1', 'v_3')
     >>> graph.add_edge('v_3', 'v_4')
     >>> graph.add_edge('v_3', 'v_5')
-    >>> lowest_common_ancestor(graph, 'v_2', 'v_5', 'binary_lifting')
+    >>> lowest_common_ancestor(graph, 'v_1', 'v_5', 'binary_lifting')
     'v_1'
     >>> lowest_common_ancestor(graph, 'v_4', 'v_5', 'binary_lifting')
     'v_3'
@@ -1044,14 +1044,14 @@ def lowest_common_ancestor(graph: Graph, vertex1: str, vertex2: str, algorithm: 
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
+    .. [1] https://www.geeksforgeeks.org/lca-in-a-tree-using-binary-lifting-technique/
     """
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
         raise NotImplementedError(
             "Currently %s algorithm isn't implemented for "
-            "performing topological sort on %s graphs." % (algorithm, graph._impl))
+            "finding lowest common ancestor of two vertices in a %s graph." % (algorithm, graph._impl))
     return getattr(algorithms, func)(graph, vertex1, vertex2)
 
 
@@ -1082,7 +1082,7 @@ def _binary_lifting_adjacency_list(graph: Graph, vertex1: str, vertex2: str) -> 
     depth_first_search(graph, source, precompute, ancestor, level)
     for pow in range(1, int(log_value) + 1):
         for vertex in graph.vertices:
-            if(ancestor[vertex][pow] != ""):
+            if(ancestor[vertex][pow-1] != ""):
                 ancestor[vertex][pow] = ancestor[ancestor[vertex][pow - 1]][pow - 1]
 
     if level[vertex1] > level[vertex2]:

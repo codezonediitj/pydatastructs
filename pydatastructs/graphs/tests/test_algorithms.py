@@ -1,4 +1,5 @@
 from math import exp
+from pydatastructs.linear_data_structures.algorithms import lower_bound
 from pydatastructs.graphs.algorithms import lowest_common_ancestor
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
@@ -410,3 +411,11 @@ def test_lowest_common_ancestor():
         lca3 = lowest_common_ancestor(G1, V2.name, V7.name)
         expected_result = V1.name
         assert(lca3 == expected_result)
+
+        lca4 = lowest_common_ancestor(G1, V1.name, V6.name)
+        expected_result = V1.name
+        assert(lca4 == expected_result)
+
+        lca5 = lowest_common_ancestor(G1, V3.name, V7.name)
+        expected_result = V3.name
+        assert(lca5 == expected_result)
