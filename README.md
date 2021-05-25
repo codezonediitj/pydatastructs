@@ -6,7 +6,7 @@ PyDataStructs
 About
 -----
 
-This project aims to be a Python package for various data structures in computer science. We are also working on the development of various alogorithms including parallel algorithms. To the best of our knowledge, a well-designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist.
+This project aims to be a Python package for various data structures in computer science. We are also working on the development of various algorithms including parallel algorithms. To the best of our knowledge, a well-designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist.
 
  Once the software design becomes more stable after a few releases of this package in the near future, we also aim to provide APIs for the code in C++ and Java as well.
 
@@ -42,7 +42,7 @@ For a good visualisation of the different data structures and algorithms, refer 
 You can use the examples given in the following book as tests for your code:
 - [https://opendatastructures.org/ods-python.pdf](https://opendatastructures.org/ods-python.pdf)
 
-Why we use Python?
+Why do we use Python?
 ------------------
 
 As we know Python is an interpreted language and hence is slow compared to C++, the most popular language for competitive programming. We still decided to use Python because the software development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time. However, keeping the need of the users in mind, we will shift to C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch, after a few releases with APIs available for all the languages.
@@ -78,16 +78,16 @@ It is recommended to go through the following links before you start working.
 Guidelines
 ----------
 
-We recommend you to join our [gitter channel](https://gitter.im/codezoned2017/Lobby) for dicussing anything related to the project.
+We recommend you to join our [gitter channel](https://gitter.im/codezoned2017/Lobby) for discussing anything related to the project.
 
 Please follow the rules and guidelines given below,
 
 1. Follow the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 2. If you are planning to contribute a new data structure then first raise an **issue** for discussing the API, rather than directly making a PR. Please go through [Plan of Action for Adding New Data Structures](https://github.com/codezonediitj/pydatastructs/wiki/Plan-of-Action-for-Adding-New-Data-Structures)
 3. For the first-time contributors we recommend not to take a complex data structure, rather start with `beginner` or `easy`.
-4. We don't assign issues to any individual. Instead, we follow First Come First Serve for taking over issues, i.e., if one contributor has already showed interest then no comment should be made after that as it won't be considered. Anyone willing to work on an issue can comment on the thread that he/she is working on it and raise a PR for the same.
+4. We don't assign issues to any individual. Instead, we follow First Come First Serve for taking over issues, i.e., if one contributor has already shown interest then no comment should be made after that as it won't be considered. Anyone willing to work on an issue can comment on the thread that he/she is working on and raise a PR for the same.
 5. Any open PR must be provided with some updates after being reviewed. If it is stalled for more than 4 days, it will be labeled as `Please take over`, meaning that anyone willing to continue that PR can start working on it.
-6. PRs that are not related to the project or doesn't follow any guidelines will be labeled as `Could Close`, meaning that the PR is not necessary at the moment.
+6. PRs that are not related to the project or don't follow any guidelines will be labeled as `Could Close`, meaning that the PR is not necessary at the moment.
 
 The following parameters are to be followed to pass the code quality tests for your Pull Requests,
 
