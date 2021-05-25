@@ -109,5 +109,3 @@ Thanks to these wonderful people ✨✨:
 		</td>
 	</tr>
 </table>
-
-
