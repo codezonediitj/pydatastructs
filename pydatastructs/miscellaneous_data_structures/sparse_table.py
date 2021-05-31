@@ -1,9 +1,8 @@
-import math
 
 __all__ = ['sparseTable']
 
 
-class sparseTable:
+class sparseTable(object):
     """
     Represents the sparse table data structure, used to answer range queries efficiently.
 
@@ -37,25 +36,37 @@ class sparseTable:
     2
     """
 
-    def __init__(self, arr, combine, isIdempotent=False):
+    __slots__ = ['table', 'isIdempotent', 'arr', 'combine']
+
+    log_values = [0, 0]
+
+    def __new__(cls, arr, combine, isIdempotent=False):
         n = len(arr)
-        self.isIdempotent = isIdempotent
-        self.log_values = [0]*(n+1)
-        self.log_values[1] = 0
-        self.arr = arr
-        self.combine = combine
-        for i in range(2, n+1):
-            self.log_values[i] = self.log_values[i//2] + 1
-        table = [[0]*(self.log_values[n]+1) for i in range(n)]
-        self.table = table
+        obj = object.__new__(cls)
+        obj.isIdempotent = isIdempotent
+        obj.arr = arr
+        obj.combine = combine
+
+        curr_len = len(cls.log_values)
+        for i in range(curr_len, n+1):
+            cls.log_values.append(cls.log_values[i//2] + 1)
+
+        table = [[0]*(cls.log_values[n]+1) for i in range(n)]
+        obj.table = table
+
         for i in range(n):
-            self.table[i][0] = arr[i]
-        for j in range(1, self.log_values[n]+2):
+            obj.table[i][0] = arr[i]
+        for j in range(1, cls.log_values[n]+1):
             i = 0
             while i + (1 << j) <= n:
-                self.table[i][j] = self.combine(
-                    self.table[i][j-1], self.table[i + (1 << (j-1))][j-1])
+                obj.table[i][j] = obj.combine(obj.table[i][j-1],
+                obj.table[i + (1 << (j-1))][j-1])
                 i += 1
+        return obj
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', 'query']
 
     def query(self, left, right):
         """
