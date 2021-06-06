@@ -989,7 +989,7 @@ def longest_increasing_subsequence(array):
     sequence stands for a strictly increasing sequence of numbers.
 
     Parameters
-    ========
+    ==========
 
     array: OneDimensionalArray
         The given array in the form of a OneDimensionalArray
