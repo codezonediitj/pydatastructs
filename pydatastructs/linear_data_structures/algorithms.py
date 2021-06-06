@@ -15,9 +15,10 @@ __all__ = [
     'cocktail_shaker_sort',
     'quick_sort',
     'longest_common_subsequence',
+    'is_ordered',
     'upper_bound',
     'lower_bound',
-    'is_ordered'
+    'longest_increasing_subsequence'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -978,3 +979,62 @@ def lower_bound(array, value, **kwargs):
             index = mid
             inclusive_end = mid - 1
     return index
+
+def longest_increasing_subsequence(array):
+    """
+    Returns the longest increasing subsequence (as a OneDimensionalArray) that
+    can be obtained from a given OneDimensionalArray. A subsequence
+    of an array is an ordered subset of the array's elements having the same
+    sequential ordering as the original array. Here, an increasing
+    sequence stands for a strictly increasing sequence of numbers.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The given array in the form of a OneDimensionalArray
+
+    Returns
+    =======
+
+    output: OneDimensionalArray
+        Returns the longest increasing subsequence that can be obtained
+        from the given array
+
+    Examples
+    ========
+
+    >>> from pydatastructs import lower_bound, OneDimensionalArray as ODA
+    >>> from pydatastructs import longest_increasing_subsequence as LIS
+    >>> array = ODA(int, [2, 5, 3, 7, 11, 8, 10, 13, 6])
+    >>> longest_inc_subsequence = LIS(array)
+    >>> longest_inc_subsequence
+    [2, 3, 7, 8, 10, 13]
+    >>> array2 = ODA(int, [3, 4, -1, 5, 8, 2, 2 ,2, 3, 12, 7, 9, 10])
+    >>> longest_inc_subsequence = LIS(array2)
+    >>> longest_inc_subsequence
+    [-1, 2, 3, 7, 9, 10]
+    """
+    n = len(array)
+    dp = [0]*n
+    parent = [-1]*n
+    length = 0
+    for i in range(1, n):
+        if array[i] <= array[dp[0]]:
+            dp[0] = i
+        elif array[dp[length]] < array[i]:
+            length += 1
+            dp[length] = i
+            parent[i] = dp[length - 1]
+        else:
+            curr_array = [array[dp[i]] for i in range(length)]
+            ceil = lower_bound(curr_array, array[i])
+            dp[ceil] = i
+            parent[i] = dp[ceil - 1]
+    ans = []
+
+    last_index = dp[length]
+    while last_index != -1:
+        ans[:0] = [array[last_index]]
+        last_index = parent[last_index]
+    return ans
