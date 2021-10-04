@@ -13,6 +13,7 @@ from .misc_util import (
     CartesianTreeNode,
     RedBlackTreeNode,
     TrieNode,
+    SuffixNode,
     SkipNode
 )
 __all__.extend(misc_util.__all__)
