@@ -1059,7 +1059,7 @@ def next_permutation(array):
 
     output: Bool
         Returns `True` if the function can rearrange the given array as a
-        lexicographicaly greater permutation, otherwise `False`.
+        lexicographically greater permutation, otherwise `False`.
 
     Examples
     ========
