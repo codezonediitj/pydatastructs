@@ -18,7 +18,8 @@ __all__ = [
     'is_ordered',
     'upper_bound',
     'lower_bound',
-    'longest_increasing_subsequence'
+    'longest_increasing_subsequence',
+    'next_permutation'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1038,3 +1039,66 @@ def longest_increasing_subsequence(array):
         ans[:0] = [array[last_index]]
         last_index = parent[last_index]
     return ans
+
+def next_permutation(array):
+    """
+    If the function can determine the next higher permutation, it
+    rearranges the elements as such and returns `True`. If that was
+    not possible (because it is already at the largest possible permutation),
+    it rearranges the elements according to the first permutation
+    (sorted in ascending order) and returns `False`.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        A given array whose next permutation has to be found.
+
+    Returns
+    =======
+
+    output: Bool
+        Returns `True` if the function can rearrange the given array as a
+        lexicographicaly greater permutation, otherwise `False`.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import next_permutation, OneDimensionalArray as ODA
+    >>> array = ODA(int, [1, 2, 3, 4])
+    >>> next_permute = next_permutation(array)
+    >>> next_permute
+    True
+    >>> print(array)
+    [1, 2, 4, 3]
+    >>> array = ODA(int, [3, 2, 1])
+    >>> next_permute = next_permutation(array)
+    >>> next_permute
+    False
+    >>> print(array)
+    [1, 2, 3]
+
+    References
+    ==========
+
+    .. [1] http://www.cplusplus.com/reference/algorithm/next_permutation/
+    """
+    n = len(array)
+    i = n - 1
+    while i > 0 and array[i-1] >= array[i]:
+        i -= 1
+    if i > 0:
+        left, right = i, n - 1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if array[i-1] < array[mid]:
+                left = mid + 1
+            else:
+                right = mid - 1
+        array[i-1], array[left-1] = array[left-1], array[i-1]
+    left, right = i, n - 1
+    while left < right:
+        array[left], array[right] = array[right], array[left]
+        left += 1
+        right -= 1
+    return True if i > 0 else False
