@@ -3,7 +3,8 @@ from pydatastructs import (
     OneDimensionalArray, brick_sort, brick_sort_parallel,
     heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
-    upper_bound, lower_bound, longest_increasing_subsequence)
+    upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
+    prev_permutation)
 
 
 from pydatastructs.utils.raises_util import raises
@@ -271,3 +272,51 @@ def test_longest_increasing_subsequence():
     output = longest_increasing_subsequence(arr5)
     expected_result = [3]
     assert expected_result == output
+
+def _test_permutation_common(array, expected_perms, func):
+    num_perms = len(expected_perms)
+
+    output = []
+    for _ in range(num_perms):
+        signal, array = func(array)
+        output.append(array)
+        if not signal:
+            break
+
+    assert len(output) == len(expected_perms)
+    for perm1, perm2 in zip(output, expected_perms):
+        assert str(perm1) == str(perm2)
+
+def test_next_permutation():
+    ODA = OneDimensionalArray
+
+    array = ODA(int, [1, 2, 3])
+    expected_perms = [[1, 3, 2], [2, 1, 3],
+                      [2, 3, 1], [3, 1, 2],
+                      [3, 2, 1], [1, 2, 3]]
+    _test_permutation_common(array, expected_perms, next_permutation)
+
+def test_prev_permutation():
+    ODA = OneDimensionalArray
+
+    array = ODA(int, [3, 2, 1])
+    expected_perms = [[3, 1, 2], [2, 3, 1],
+                      [2, 1, 3], [1, 3, 2],
+                      [1, 2, 3], [3, 2, 1]]
+    _test_permutation_common(array, expected_perms, prev_permutation)
+
+def test_next_prev_permutation():
+    ODA = OneDimensionalArray
+    random.seed(1000)
+
+    for i in range(100):
+        data = set(random.sample(range(1, 10000), 10))
+        array = ODA(int, list(data))
+
+        _, next_array = next_permutation(array)
+        _, orig_array = prev_permutation(next_array)
+        assert str(orig_array) == str(array)
+
+        _, prev_array = prev_permutation(array)
+        _, orig_array = next_permutation(prev_array)
+        assert str(orig_array) == str(array)
