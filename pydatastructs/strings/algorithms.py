@@ -53,13 +53,13 @@ def find(text, query, algorithm):
 
     .. [1] https://www.inf.hs-flensburg.de/lang/algorithmen/pattern/kmpen.htm
     """
-    import pydatastructs.strings.algorithms as algorithms 
+    import pydatastructs.strings.algorithms as algorithms
     func = "_" + algorithm
-    if not hasattr(algorithms, func): 
-        raise NotImplementedError( 
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
         "Currently %s algoithm for searching strings "
         "inside a text isn't implemented yet."
-        %(algorithm)) 
+        %(algorithm))
     return getattr(algorithms, func)(text, query)
 
 
