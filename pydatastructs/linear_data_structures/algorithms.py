@@ -19,7 +19,8 @@ __all__ = [
     'upper_bound',
     'lower_bound',
     'longest_increasing_subsequence',
-    'next_permutation'
+    'next_permutation',
+    'prev_permutation'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1092,6 +1093,70 @@ def next_permutation(array):
         while left <= right:
             mid = left + (right - left) // 2
             if permute[i-1] < permute[mid]:
+                left = mid + 1
+            else:
+                right = mid - 1
+        permute[i-1], permute[left-1] = permute[left-1], permute[i-1]
+    left, right = i, n - 1
+    while left < right:
+        permute[left], permute[right] = permute[right], permute[left]
+        left += 1
+        right -= 1
+    result =  True if i > 0 else False
+    return result, permute
+
+def prev_permutation(array):
+    """
+    If the function can determine the next lower permutation, it
+    rearranges the elements as such and returns `True` and the permutation.
+    If that was not possible (because it is already at the lowest possible
+    permutation), it rearranges the elements according to the last permutation
+    (sorted in descending order) and returns `False` and the rearranged permutation.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        A given array whose previous permutation has to be found.
+
+    Returns
+    =======
+
+    output: Bool, Array
+        Returns `True` if the function can rearrange the given array as a
+        lexicographically lower permutation, otherwise `False`. And the
+        rearranged previous permutation
+
+    Examples
+    ========
+
+    >>> from pydatastructs import prev_permutation, OneDimensionalArray as ODA
+    >>> array = ODA(int, [1, 2, 4, 3])
+    >>> is_lower, prev_permute = prev_permutation(array)
+    >>> print(is_lower, prev_permute)
+    True [1, 2, 3, 4]
+    >>> array = ODA(int, [1, 2, 3, 4])
+    >>> is_lower, prev_permute = prev_permutation(array)
+    >>> print(is_lower, prev_permute)
+    False [4, 3, 2, 1]
+
+    References
+    ==========
+
+    .. [1] http://www.cplusplus.com/reference/algorithm/prev_permutation/
+    """
+    n = len(array)
+    permute = OneDimensionalArray(int, n)
+    for i in range(n):
+        permute[i] = array[i]
+    i = n - 1
+    while i > 0 and permute[i-1] <= permute[i]:
+        i -= 1
+    if i > 0:
+        left, right = i, n - 1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if permute[i-1] > permute[mid]:
                 left = mid + 1
             else:
                 right = mid - 1

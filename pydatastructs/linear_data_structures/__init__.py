@@ -37,6 +37,7 @@ from .algorithms import (
     upper_bound,
     lower_bound,
     longest_increasing_subsequence,
-    next_permutation
+    next_permutation,
+    prev_permutation
 )
 __all__.extend(algorithms.__all__)
