@@ -1041,27 +1041,67 @@ def longest_increasing_subsequence(array):
         last_index = parent[last_index]
     return ans
 
-def next_permutation(array):
+def _permutation_util(array, start, end, comp, perm_comp):
+    size = end - start + 1
+    permute = OneDimensionalArray(int, size)
+    for i, j in zip(range(start, end + 1), range(size)):
+        permute[j] = array[i]
+    i = size - 1
+    while i > 0 and perm_comp(permute[i - 1], permute[i], comp):
+        i -= 1
+    if i > 0:
+        left, right = i, size - 1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if not perm_comp(permute[i - 1], permute[mid], comp):
+                left = mid + 1
+            else:
+                right = mid - 1
+        permute[i - 1], permute[left - 1] = \
+            permute[left - 1], permute[i - 1]
+    left, right = i, size - 1
+    while left < right:
+        permute[left], permute[right] = permute[right], permute[left]
+        left += 1
+        right -= 1
+    result =  True if i > 0 else False
+    return result, permute
+
+def next_permutation(array, **kwargs):
     """
     If the function can determine the next higher permutation, it
-    rearranges the elements as such and returns `True` and the permutation.
-    If that was not possible (because it is already at the largest possible
-    permutation), it rearranges the elements according to the first permutation
-    (sorted in ascending order) and returns `False` and the rearranged permutation.
+    returns `True` and the permutation in a new array.
+    If that is not possible, because it is already at the largest possible
+    permutation, it returns the elements according to the first permutation
+    and returns `False` and the permutation in a new array.
 
     Parameters
     ==========
 
     array: OneDimensionalArray
-        A given array whose next permutation has to be found.
+        The array which is to be used for finding next permutation.
+    start: int
+        The staring index of the considered portion of the array.
+        Optional, by default 0
+    end: int, optional
+        The ending index of the considered portion of the array.
+        Optional, by default the index of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used for specifying the
+        desired lexicographical ordering.
+        Optional, by default, less than is
+        used for comparing two values.
+
 
     Returns
     =======
 
-    output: Bool, Array
-        Returns `True` if the function can rearrange the given array as a
-        lexicographically greater permutation, otherwise `False`. And the
-        rearranged next permutation
+    output: bool, OneDimensionalArray
+        First element is `True` if the function can rearrange
+        the given portion of the input array as a lexicographically
+        greater permutation, otherwise returns `False`.
+        Second element is an array having the next permutation.
+
 
     Examples
     ========
@@ -1069,63 +1109,66 @@ def next_permutation(array):
     >>> from pydatastructs import next_permutation, OneDimensionalArray as ODA
     >>> array = ODA(int, [1, 2, 3, 4])
     >>> is_greater, next_permute = next_permutation(array)
-    >>> print(is_greater, next_permute)
-    True [1, 2, 4, 3]
+    >>> is_greater, str(next_permute)
+    (True, '[1, 2, 4, 3]')
     >>> array = ODA(int, [3, 2, 1])
     >>> is_greater, next_permute = next_permutation(array)
-    >>> print(is_greater, next_permute)
-    False [1, 2, 3]
+    >>> is_greater, str(next_permute)
+    (False, '[1, 2, 3]')
 
     References
     ==========
 
     .. [1] http://www.cplusplus.com/reference/algorithm/next_permutation/
     """
-    n = len(array)
-    permute = OneDimensionalArray(int, n)
-    for i in range(n):
-        permute[i] = array[i]
-    i = n - 1
-    while i > 0 and permute[i-1] >= permute[i]:
-        i -= 1
-    if i > 0:
-        left, right = i, n - 1
-        while left <= right:
-            mid = left + (right - left) // 2
-            if permute[i-1] < permute[mid]:
-                left = mid + 1
-            else:
-                right = mid - 1
-        permute[i-1], permute[left-1] = permute[left-1], permute[i-1]
-    left, right = i, n - 1
-    while left < right:
-        permute[left], permute[right] = permute[right], permute[left]
-        left += 1
-        right -= 1
-    result =  True if i > 0 else False
-    return result, permute
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get('comp', lambda x, y: x < y)
 
-def prev_permutation(array):
+    def _next_permutation_comp(x, y, _comp):
+        if _comp(x, y):
+            return False
+        else:
+            return True
+
+    return _permutation_util(array, start, end, comp,
+                             _next_permutation_comp)
+
+def prev_permutation(array, **kwargs):
     """
     If the function can determine the next lower permutation, it
-    rearranges the elements as such and returns `True` and the permutation.
-    If that was not possible (because it is already at the lowest possible
-    permutation), it rearranges the elements according to the last permutation
-    (sorted in descending order) and returns `False` and the rearranged permutation.
+    returns `True` and the permutation in a new array.
+    If that is not possible, because it is already at the lowest possible
+    permutation, it returns the elements according to the last permutation
+    and returns `False` and the permutation in a new array.
 
     Parameters
     ==========
 
     array: OneDimensionalArray
-        A given array whose previous permutation has to be found.
+        The array which is to be used for finding next permutation.
+    start: int
+        The staring index of the considered portion of the array.
+        Optional, by default 0
+    end: int, optional
+        The ending index of the considered portion of the array.
+        Optional, by default the index of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used for specifying the
+        desired lexicographical ordering.
+        Optional, by default, less than is
+        used for comparing two values.
+
 
     Returns
     =======
 
-    output: Bool, Array
-        Returns `True` if the function can rearrange the given array as a
-        lexicographically lower permutation, otherwise `False`. And the
-        rearranged previous permutation
+    output: bool, OneDimensionalArray
+        First element is `True` if the function can rearrange
+        the given portion of the input array as a lexicographically
+        smaller permutation, otherwise returns `False`.
+        Second element is an array having the previous permutation.
+
 
     Examples
     ========
@@ -1133,38 +1176,27 @@ def prev_permutation(array):
     >>> from pydatastructs import prev_permutation, OneDimensionalArray as ODA
     >>> array = ODA(int, [1, 2, 4, 3])
     >>> is_lower, prev_permute = prev_permutation(array)
-    >>> print(is_lower, prev_permute)
-    True [1, 2, 3, 4]
+    >>> is_lower, str(prev_permute)
+    (True, '[1, 2, 3, 4]')
     >>> array = ODA(int, [1, 2, 3, 4])
     >>> is_lower, prev_permute = prev_permutation(array)
-    >>> print(is_lower, prev_permute)
-    False [4, 3, 2, 1]
+    >>> is_lower, str(prev_permute)
+    (False, '[4, 3, 2, 1]')
 
     References
     ==========
 
     .. [1] http://www.cplusplus.com/reference/algorithm/prev_permutation/
     """
-    n = len(array)
-    permute = OneDimensionalArray(int, n)
-    for i in range(n):
-        permute[i] = array[i]
-    i = n - 1
-    while i > 0 and permute[i-1] <= permute[i]:
-        i -= 1
-    if i > 0:
-        left, right = i, n - 1
-        while left <= right:
-            mid = left + (right - left) // 2
-            if permute[i-1] > permute[mid]:
-                left = mid + 1
-            else:
-                right = mid - 1
-        permute[i-1], permute[left-1] = permute[left-1], permute[i-1]
-    left, right = i, n - 1
-    while left < right:
-        permute[left], permute[right] = permute[right], permute[left]
-        left += 1
-        right -= 1
-    result =  True if i > 0 else False
-    return result, permute
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get('comp', lambda x, y: x < y)
+
+    def _prev_permutation_comp(x, y, _comp):
+        if _comp(x, y):
+            return True
+        else:
+            return False
+
+    return _permutation_util(array, start, end, comp,
+                             _prev_permutation_comp)
