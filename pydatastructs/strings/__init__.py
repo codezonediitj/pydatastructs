@@ -2,7 +2,7 @@ __all__ = []
 
 from . import (
     trie,
-    string_matching_algorithms
+    algorithms
 )
 
 from .trie import (
@@ -11,8 +11,8 @@ from .trie import (
 
 __all__.extend(trie.__all__)
 
-from .string_matching_algorithms import (
-    find_string
+from .algorithms import (
+    find
 )
 
-__all__.extend(string_matching_algorithms.__all__)
+__all__.extend(algorithms.__all__)
