@@ -22,7 +22,7 @@ def test_trailing_white_spaces():
         while line != "":
             if line.endswith(" \n") or line.endswith("\t\n") \
                 or line.endswith(" ") or line.endswith("\t"):
-                assert False, "%s contains trailing whitespace at line number %d: %s"\
+                assert False, "%s:%d : %s"\
                                %(file_path, line_number, line)
             line = file.readline()
             line_number += 1
