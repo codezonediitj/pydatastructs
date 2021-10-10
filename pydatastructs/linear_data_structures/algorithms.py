@@ -1043,10 +1043,10 @@ def longest_increasing_subsequence(array):
 def next_permutation(array):
     """
     If the function can determine the next higher permutation, it
-    rearranges the elements as such and returns `True`. If that was
-    not possible (because it is already at the largest possible permutation),
-    it rearranges the elements according to the first permutation
-    (sorted in ascending order) and returns `False`.
+    rearranges the elements as such and returns `True` and the permutation.
+    If that was not possible (because it is already at the largest possible
+    permutation), it rearranges the elements according to the first permutation
+    (sorted in ascending order) and returns `False` and the rearranged permutation.
 
     Parameters
     ==========
@@ -1057,26 +1057,23 @@ def next_permutation(array):
     Returns
     =======
 
-    output: Bool
+    output: Bool, Array
         Returns `True` if the function can rearrange the given array as a
-        lexicographically greater permutation, otherwise `False`.
+        lexicographically greater permutation, otherwise `False`. And the
+        rearranged next permutation
 
     Examples
     ========
 
     >>> from pydatastructs import next_permutation, OneDimensionalArray as ODA
     >>> array = ODA(int, [1, 2, 3, 4])
-    >>> next_permute = next_permutation(array)
-    >>> next_permute
-    True
-    >>> print(array)
-    [1, 2, 4, 3]
+    >>> is_greater, next_permute = next_permutation(array)
+    >>> print(is_greater, next_permute)
+    True [1, 2, 4, 3]
     >>> array = ODA(int, [3, 2, 1])
-    >>> next_permute = next_permutation(array)
-    >>> next_permute
-    False
-    >>> print(array)
-    [1, 2, 3]
+    >>> is_greater, next_permute = next_permutation(array)
+    >>> print(is_greater, next_permute)
+    False [1, 2, 3]
 
     References
     ==========
@@ -1084,21 +1081,25 @@ def next_permutation(array):
     .. [1] http://www.cplusplus.com/reference/algorithm/next_permutation/
     """
     n = len(array)
+    permute = OneDimensionalArray(int, n)
+    for i in range(n):
+        permute[i] = array[i]
     i = n - 1
-    while i > 0 and array[i-1] >= array[i]:
+    while i > 0 and permute[i-1] >= permute[i]:
         i -= 1
     if i > 0:
         left, right = i, n - 1
         while left <= right:
             mid = left + (right - left) // 2
-            if array[i-1] < array[mid]:
+            if permute[i-1] < permute[mid]:
                 left = mid + 1
             else:
                 right = mid - 1
-        array[i-1], array[left-1] = array[left-1], array[i-1]
+        permute[i-1], permute[left-1] = permute[left-1], permute[i-1]
     left, right = i, n - 1
     while left < right:
-        array[left], array[right] = array[right], array[left]
+        permute[left], permute[right] = permute[right], permute[left]
         left += 1
         right -= 1
-    return True if i > 0 else False
+    result =  True if i > 0 else False
+    return result, permute
