@@ -51,7 +51,7 @@ def find(text, query, algorithm):
     References
     ==========
 
-    .. [1] https://www.inf.hs-flensburg.de/lang/algorithmen/pattern/kmpen.htm
+    .. [1] https://en.wikipedia.org/wiki/Knuth–Morris–Pratt_algorithm
     """
     import pydatastructs.strings.algorithms as algorithms
     func = "_" + algorithm
