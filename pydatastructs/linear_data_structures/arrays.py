@@ -68,9 +68,12 @@ class OneDimensionalArray(Array):
     __slots__ = ['_size', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
-        if dtype is NoneType or len(args) not in (1, 2):
-            raise ValueError("1D array cannot be created due to incorrect"
-                                " information.")
+        if dtype is NoneType:
+            raise ValueError("Data type is not defined.")
+        if len(args) not in (1, 2):
+            raise ValueError("Too few arguments to create a 1D array,"
+                                " pass either size of the array"
+                                " or list of elements or both.")
         obj = Array.__new__(cls)
         obj._dtype = dtype
         if len(args) == 2:
@@ -90,7 +93,7 @@ class OneDimensionalArray(Array):
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
             if size != len(data):
-                raise ValueError("Conflict in the size %s and length of data %s"
+                raise ValueError("Conflict in the size, %s and length of data, %s"
                                  %(size, len(data)))
             obj._size, obj._data = size, data
 
@@ -181,9 +184,11 @@ class MultiDimensionalArray(Array):
     __slots__ = ['_sizes', '_data', '_dtype']
 
     def __new__(cls, dtype: type = NoneType, *args, **kwargs):
-        if dtype is NoneType or not args:
-            raise ValueError("Array cannot be created due to incorrect"
-                             " information.")
+        if dtype is NoneType:
+            raise ValueError("Data type is not defined.")
+        elif not args:
+            raise ValueError("Too few arguments to create a multi dimensional array,"
+                                " pass dimensions.")
         if len(args) == 1:
             obj = Array.__new__(cls)
             obj._dtype = dtype
@@ -194,8 +199,8 @@ class MultiDimensionalArray(Array):
         dimensions = args
         for dimension in dimensions:
             if dimension < 1:
-                raise ValueError("Array cannot be created due to incorrect"
-                                 " dimensions.")
+                raise ValueError("Number of dimensions"
+                                    " cannot be less than 1")
         n_dimensions = len(dimensions)
         d_sizes = []
         index = 0
