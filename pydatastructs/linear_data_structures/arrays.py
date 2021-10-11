@@ -187,8 +187,8 @@ class MultiDimensionalArray(Array):
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         elif not args:
-            raise ValueError("Too few arguments to create a multi dimensional array,"
-                                " pass dimensions.")
+            raise ValueError("Too few arguments to create a "
+                             "multi dimensional array, pass dimensions.")
         if len(args) == 1:
             obj = Array.__new__(cls)
             obj._dtype = dtype
@@ -199,8 +199,7 @@ class MultiDimensionalArray(Array):
         dimensions = args
         for dimension in dimensions:
             if dimension < 1:
-                raise ValueError("Number of dimensions"
-                                    " cannot be less than 1")
+                raise ValueError("Size of dimension cannot be less than 1")
         n_dimensions = len(dimensions)
         d_sizes = []
         index = 0
