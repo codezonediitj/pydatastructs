@@ -70,7 +70,7 @@ class OneDimensionalArray(Array):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
-        elif len(args) not in (1, 2):
+        if len(args) not in (1, 2):
             raise ValueError("Too few arguments to create a 1D array,"
                                 " pass either size of the array"
                                 " or list of elements or both.")
@@ -93,7 +93,7 @@ class OneDimensionalArray(Array):
                 raise TypeError("Expected type of size is int and "
                                 "expected type of data is list/tuple.")
             if size != len(data):
-                raise ValueError("Conflict in the size -> %s and length of data -> %s"
+                raise ValueError("Conflict in the size, %s and length of data, %s"
                                  %(size, len(data)))
             obj._size, obj._data = size, data
 
@@ -187,7 +187,7 @@ class MultiDimensionalArray(Array):
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         elif not args:
-            raise ValueError("Too few arguments to create a Multi Dimensional array,"
+            raise ValueError("Too few arguments to create a multi dimensional array,"
                                 " pass dimensions.")
         if len(args) == 1:
             obj = Array.__new__(cls)
@@ -199,7 +199,7 @@ class MultiDimensionalArray(Array):
         dimensions = args
         for dimension in dimensions:
             if dimension < 1:
-                raise ValueError("Incorrect dimensions passed, dimension"
+                raise ValueError("Number of dimensions"
                                     " cannot be less than 1")
         n_dimensions = len(dimensions)
         d_sizes = []
