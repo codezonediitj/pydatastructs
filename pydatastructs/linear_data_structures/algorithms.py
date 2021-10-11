@@ -1,5 +1,5 @@
 from pydatastructs.linear_data_structures.arrays import (
-    OneDimensionalArray, DynamicArray, Array)
+    OneDimensionalArray, DynamicArray, DynamicOneDimensionalArray, Array)
 from pydatastructs.utils.misc_util import _check_type, _comp
 from concurrent.futures import ThreadPoolExecutor
 from math import log, floor
@@ -1010,16 +1010,18 @@ def longest_increasing_subsequence(array):
     >>> from pydatastructs import longest_increasing_subsequence as LIS
     >>> array = ODA(int, [2, 5, 3, 7, 11, 8, 10, 13, 6])
     >>> longest_inc_subsequence = LIS(array)
-    >>> longest_inc_subsequence
+    >>> print(longest_inc_subsequence)
     [2, 3, 7, 8, 10, 13]
     >>> array2 = ODA(int, [3, 4, -1, 5, 8, 2, 2 ,2, 3, 12, 7, 9, 10])
     >>> longest_inc_subsequence = LIS(array2)
-    >>> longest_inc_subsequence
+    >>> print(longest_inc_subsequence)
     [-1, 2, 3, 7, 9, 10]
     """
     n = len(array)
-    dp = [0]*n
-    parent = [-1]*n
+    dp = OneDimensionalArray(int, n)
+    dp.fill(0)
+    parent = OneDimensionalArray(int, n)
+    parent.fill(-1)
     length = 0
     for i in range(1, n):
         if array[i] <= array[dp[0]]:
@@ -1033,13 +1035,16 @@ def longest_increasing_subsequence(array):
             ceil = lower_bound(curr_array, array[i])
             dp[ceil] = i
             parent[i] = dp[ceil - 1]
-    ans = []
-
+    ans = DynamicOneDimensionalArray(int, 0)
     last_index = dp[length]
     while last_index != -1:
-        ans[:0] = [array[last_index]]
+        ans.append(array[last_index])
         last_index = parent[last_index]
-    return ans
+    n = ans._last_pos_filled + 1
+    ans_ODA = OneDimensionalArray(int, n)
+    for i in range(n):
+        ans_ODA[n-1-i] = ans[i]
+    return ans_ODA
 
 def _permutation_util(array, start, end, comp, perm_comp):
     size = end - start + 1

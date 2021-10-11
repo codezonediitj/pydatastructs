@@ -251,27 +251,27 @@ def test_longest_increasing_subsequence():
     arr1 = ODA(int, [2, 5, 3, 7, 11, 8, 10, 13, 6])
     output = longest_increasing_subsequence(arr1)
     expected_result = [2, 3, 7, 8, 10, 13]
-    assert expected_result == output
+    assert str(expected_result) == str(output)
 
     arr2 = ODA(int, [3, 4, -1, 5, 8, 2, 2, 2, 3, 12, 7, 9, 10])
     output = longest_increasing_subsequence(arr2)
     expected_result = [-1, 2, 3, 7, 9, 10]
-    assert expected_result == output
+    assert str(expected_result) == str(output)
 
     arr3 = ODA(int, [6, 6, 6, 19, 9])
     output = longest_increasing_subsequence(arr3)
     expected_result = [6, 9]
-    assert expected_result == output
+    assert str(expected_result) == str(output)
 
     arr4 = ODA(int, [5, 4, 4, 3, 3, 6, 6, 8])
     output = longest_increasing_subsequence(arr4)
     expected_result = [3, 6, 8]
-    assert expected_result == output
+    assert str(expected_result) == str(output)
 
     arr5 = ODA(int, [7, 6, 6, 6, 5, 4, 3])
     output = longest_increasing_subsequence(arr5)
     expected_result = [3]
-    assert expected_result == output
+    assert str(expected_result) == str(output)
 
 def _test_permutation_common(array, expected_perms, func):
     num_perms = len(expected_perms)
