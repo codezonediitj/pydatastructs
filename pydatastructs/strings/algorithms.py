@@ -68,6 +68,8 @@ def find(text, query, algorithm):
 
 
 def _knuth_morris_pratt(text, query):
+    if len(text) == 0 or len(query) == 0:
+        return DynamicOneDimensionalArray(int, 0)
     kmp_table = _build_kmp_table(query)
     return _do_match(text, query, kmp_table)
 
@@ -75,7 +77,7 @@ _kmp = _knuth_morris_pratt
 
 def _build_kmp_table(query):
     pos, cnd = 1, 0
-    kmp_table = OneDimensionalArray(int, len(query) + 5) # hacky fix to avoid error
+    kmp_table = OneDimensionalArray(int, len(query) + 1)
 
     kmp_table[0] = -1
 
@@ -96,8 +98,6 @@ def _build_kmp_table(query):
 def _do_match(string, query, kmp_table):
     j, k = 0, 0
     positions = DynamicOneDimensionalArray(int, 0)
-    if len(string) == 0 or len(query) == 0:
-        return positions
 
     while j < len(string):
         if query[k] == string[j]:
