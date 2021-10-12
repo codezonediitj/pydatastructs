@@ -4,7 +4,8 @@ from . import (
     binary_trees,
     m_ary_trees,
     space_partitioning_trees,
-    heaps
+    heaps,
+    intervaltree
 )
 
 from .binary_trees import (
@@ -38,3 +39,9 @@ from .heaps import (
     BinomialHeap
 )
 __all__.extend(heaps.__all__)
+
+from .intervaltree import (
+    Node,
+    IntervalTree
+)
+__all__.extend(intervaltree.__all__)

@@ -10,7 +10,7 @@ __all__ = [
     'CartesianTreeNode',
     'RedBlackTreeNode',
     'TrieNode',
-    'SkipNode'
+    'SkipNode',
 ]
 
 _check_type = lambda a, t: isinstance(a, t)
