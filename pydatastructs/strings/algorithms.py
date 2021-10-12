@@ -5,6 +5,8 @@ __all__ = [
     'find'
 ]
 
+PRIME_NUMBER, MOD = 257, 1000000007
+
 def find(text, query, algorithm):
     """
     Finds occurrence of a query string within the text string.
@@ -112,12 +114,18 @@ def _do_match(string, query, kmp_table):
 
     return positions
 
-def hash_str(string, p=137, m=1e9 + 7):
+def _p_pow(length, p=PRIME_NUMBER, m=MOD):
+    p_pow = OneDimensionalArray(int, length)
+    p_pow[0] = 1
+    for i in range(1, length):
+        p_pow[i] = (p_pow[i-1] * p) % m
+    return p_pow
+
+def hash_str(string, p=PRIME_NUMBER, m=MOD):
     hash_value = 0
-    p_pow = 1
-    for c in string:
-        hash_value = (hash_value + (ord(c) - 31) * p_pow) % m
-        p_pow = (p_pow * p) % m
+    p_pow = _p_pow(len(string), p, m)
+    for i in range(len(string)):
+        hash_value = (hash_value + ord(string[i]) * p_pow[i]) % m
     return hash_value
 
 def _rabin_karp(text, query):
@@ -126,21 +134,19 @@ def _rabin_karp(text, query):
     positions = DynamicOneDimensionalArray(int, 0)
     if q == 0 or t == 0:
         return positions
-    p = 137
-    m = 1e9 + 7
-    query_hash = hash_str(query, p, m)
+
+    query_hash = hash_str(query)
     text_hash = OneDimensionalArray(int, t + 1)
     text_hash.fill(0)
-    p_pow = 1
+    p_pow = _p_pow(t)
+
     for i in range(t):
-        text_hash[i+1] = (text_hash[i] + (ord(text[i]) - 31) * p_pow) % m
-        p_pow = (p_pow * p) % m
-    p_pow = 1
+        text_hash[i+1] = (text_hash[i] + ord(text[i]) * p_pow[i]) % MOD
     for i in range(t - q + 1):
-        curr_hash = (text_hash[i + q] + m - text_hash[i]) % m
-        if curr_hash == (int(query_hash) * int(p_pow)) % int(m):
+        curr_hash = (text_hash[i + q] + MOD - text_hash[i]) % MOD
+        if curr_hash == (query_hash * p_pow[i]) % MOD:
             positions.append(i)
-        p_pow = (p_pow * p) % m
+
     return positions
 
 _rka = _rabin_karp
