@@ -149,4 +149,3 @@ def _rabin_karp(text, query):
 
     return positions
 
-
