@@ -28,7 +28,9 @@ def _test_common_string_matching(algorithm):
         "Knuth-Morris-Pratt": "-Pratt-",
         "abcabcabcabdabcabdabcabca": "qwertyuiopzxcvbnm",
         "aefcdfaecdaefaefcdaefeaefcdcdeae": "cdaefaefe",
-        "fullstringmatch": "fullstrinmatch"
+        "fullstringmatch": "fullstrinmatch",
+        "abc": "",
+        "": "abc"
     }
 
     for test_case_key in false_text_pattern_dictionary:

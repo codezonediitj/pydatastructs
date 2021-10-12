@@ -73,7 +73,7 @@ _kmp = _knuth_morris_pratt
 
 def _build_kmp_table(query):
     pos, cnd = 1, 0
-    kmp_table = OneDimensionalArray(int, len(query) + 1)
+    kmp_table = OneDimensionalArray(int, len(query) + 5) # hacky fix to avoid error
 
     kmp_table[0] = -1
 
@@ -94,6 +94,8 @@ def _build_kmp_table(query):
 def _do_match(string, query, kmp_table):
     j, k = 0, 0
     positions = DynamicOneDimensionalArray(int, 0)
+    if len(string) == 0 or len(query) == 0:
+        return positions
 
     while j < len(string):
         if query[k] == string[j]:
@@ -122,9 +124,7 @@ def _rabin_karp(text, query):
     t = len(text)
     q = len(query)
     positions = DynamicOneDimensionalArray(int, 0)
-    if q == 0:
-        for i in range(t):
-            positions.append(i)
+    if q == 0 or t == 0:
         return positions
     p = 137
     m = 1e9 + 7
