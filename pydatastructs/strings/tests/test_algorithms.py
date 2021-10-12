@@ -5,6 +5,8 @@ import random, string
 def test_kmp():
     _test_common_string_matching('kmp')
 
+def test_rka():
+    _test_common_string_matching('rka')
 
 def _test_common_string_matching(algorithm):
     true_text_pattern_dictionary = {
@@ -52,7 +54,7 @@ def _test_common_string_matching(algorithm):
             if rand_str != query:
                 freq += 1
                 text += query + rand_str + query
-        positions = find(text, query, algorithm="kmp")
+        positions = find(text, query, algorithm)
         assert positions._num == num_times * 2
         for i in range(positions._last_pos_filled):
             p = positions[i]
@@ -60,5 +62,5 @@ def _test_common_string_matching(algorithm):
 
         text = gen_random_string(len(query))
         if text != query:
-            positions = find(text, query, algorithm="kmp")
+            positions = find(text, query, algorithm)
             assert positions.size == 0

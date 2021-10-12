@@ -22,6 +22,7 @@ def find(text, query, algorithm):
         Currently the following algorithms are
         supported,
         'kmp' -> Knuth-Morris-Pratt as given in [1].
+        'rka' -> Rabin–Karp algorithm as given in [2].
 
     Returns
     =======
@@ -52,6 +53,7 @@ def find(text, query, algorithm):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Knuth–Morris–Pratt_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
     """
     import pydatastructs.strings.algorithms as algorithms
     func = "_" + algorithm
@@ -107,3 +109,38 @@ def _do_match(string, query, kmp_table):
                 k = k + 1
 
     return positions
+
+def hash_str(string, p=137, m=1e9 + 7):
+    hash_value = 0
+    p_pow = 1
+    for c in string:
+        hash_value = (hash_value + (ord(c) - 31) * p_pow) % m
+        p_pow = (p_pow * p) % m
+    return hash_value
+
+def _rabin_karp(text, query):
+    t = len(text)
+    q = len(query)
+    positions = DynamicOneDimensionalArray(int, 0)
+    if q == 0:
+        for i in range(t):
+            positions.append(i)
+        return positions
+    p = 137
+    m = 1e9 + 7
+    query_hash = hash_str(query, p, m)
+    text_hash = OneDimensionalArray(int, t + 1)
+    text_hash.fill(0)
+    p_pow = 1
+    for i in range(t):
+        text_hash[i+1] = (text_hash[i] + (ord(text[i]) - 31) * p_pow) % m
+        p_pow = (p_pow * p) % m
+    p_pow = 1
+    for i in range(t - q + 1):
+        curr_hash = (text_hash[i + q] + m - text_hash[i]) % m
+        if curr_hash == (int(query_hash) * int(p_pow)) % int(m):
+            positions.append(i)
+        p_pow = (p_pow * p) % m
+    return positions
+
+_rka = _rabin_karp
