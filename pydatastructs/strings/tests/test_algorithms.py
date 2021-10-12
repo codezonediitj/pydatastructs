@@ -6,7 +6,7 @@ def test_kmp():
     _test_common_string_matching('kmp')
 
 def test_rka():
-    _test_common_string_matching('rka')
+    _test_common_string_matching('rabin_karp')
 
 def _test_common_string_matching(algorithm):
     true_text_pattern_dictionary = {

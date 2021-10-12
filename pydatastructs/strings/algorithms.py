@@ -24,7 +24,7 @@ def find(text, query, algorithm):
         Currently the following algorithms are
         supported,
         'kmp' -> Knuth-Morris-Pratt as given in [1].
-        'rka' -> Rabin–Karp algorithm as given in [2].
+        'rabin_karp' -> Rabin–Karp algorithm as given in [2].
 
     Returns
     =======
@@ -149,4 +149,4 @@ def _rabin_karp(text, query):
 
     return positions
 
-_rka = _rabin_karp
+
