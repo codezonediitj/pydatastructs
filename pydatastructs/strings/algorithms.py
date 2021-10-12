@@ -121,7 +121,7 @@ def _p_pow(length, p=PRIME_NUMBER, m=MOD):
         p_pow[i] = (p_pow[i-1] * p) % m
     return p_pow
 
-def hash_str(string, p=PRIME_NUMBER, m=MOD):
+def _hash_str(string, p=PRIME_NUMBER, m=MOD):
     hash_value = 0
     p_pow = _p_pow(len(string), p, m)
     for i in range(len(string)):
@@ -135,7 +135,7 @@ def _rabin_karp(text, query):
     if q == 0 or t == 0:
         return positions
 
-    query_hash = hash_str(query)
+    query_hash = _hash_str(query)
     text_hash = OneDimensionalArray(int, t + 1)
     text_hash.fill(0)
     p_pow = _p_pow(t)
