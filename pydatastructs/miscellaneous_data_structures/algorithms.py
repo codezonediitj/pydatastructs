@@ -19,7 +19,7 @@ class RangeMinimumQuery:
 
 
 class RangeMinimumQuerySparseTable(RangeMinimumQuery):
-    
+
     __slots__ = ["sparse_table"]
 
     def __new__(cls, array):
