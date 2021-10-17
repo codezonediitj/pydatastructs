@@ -5,3 +5,5 @@ Linear Data Structures
    :maxdepth: 2
 
    arrays.rst
+   linked_lists.rst
+   algorithms.rst

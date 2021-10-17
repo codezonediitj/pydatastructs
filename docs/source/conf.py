@@ -14,6 +14,9 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+# -- Imports ----------------
+
+import sphinx_readable_theme
 
 # -- Project information -----------------------------------------------------
 
@@ -51,9 +54,8 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-import sphinx_readable_theme
-
 html_theme = 'readable'
+
 html_theme_path = [sphinx_readable_theme.get_html_theme_path()]
 
 # Add any paths that contain custom static files (such as style sheets) here,
