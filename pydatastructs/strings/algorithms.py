@@ -5,6 +5,8 @@ __all__ = [
     'find'
 ]
 
+PRIME_NUMBER, MOD = 257, 1000000007
+
 def find(text, query, algorithm):
     """
     Finds occurrence of a query string within the text string.
@@ -22,6 +24,7 @@ def find(text, query, algorithm):
         Currently the following algorithms are
         supported,
         'kmp' -> Knuth-Morris-Pratt as given in [1].
+        'rabin_karp' -> Rabin–Karp algorithm as given in [2].
 
     Returns
     =======
@@ -52,6 +55,7 @@ def find(text, query, algorithm):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Knuth–Morris–Pratt_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
     """
     import pydatastructs.strings.algorithms as algorithms
     func = "_" + algorithm
@@ -64,6 +68,8 @@ def find(text, query, algorithm):
 
 
 def _knuth_morris_pratt(text, query):
+    if len(text) == 0 or len(query) == 0:
+        return DynamicOneDimensionalArray(int, 0)
     kmp_table = _build_kmp_table(query)
     return _do_match(text, query, kmp_table)
 
@@ -105,5 +111,40 @@ def _do_match(string, query, kmp_table):
             if k < 0:
                 j = j + 1
                 k = k + 1
+
+    return positions
+
+def _p_pow(length, p=PRIME_NUMBER, m=MOD):
+    p_pow = OneDimensionalArray(int, length)
+    p_pow[0] = 1
+    for i in range(1, length):
+        p_pow[i] = (p_pow[i-1] * p) % m
+    return p_pow
+
+def _hash_str(string, p=PRIME_NUMBER, m=MOD):
+    hash_value = 0
+    p_pow = _p_pow(len(string), p, m)
+    for i in range(len(string)):
+        hash_value = (hash_value + ord(string[i]) * p_pow[i]) % m
+    return hash_value
+
+def _rabin_karp(text, query):
+    t = len(text)
+    q = len(query)
+    positions = DynamicOneDimensionalArray(int, 0)
+    if q == 0 or t == 0:
+        return positions
+
+    query_hash = _hash_str(query)
+    text_hash = OneDimensionalArray(int, t + 1)
+    text_hash.fill(0)
+    p_pow = _p_pow(t)
+
+    for i in range(t):
+        text_hash[i+1] = (text_hash[i] + ord(text[i]) * p_pow[i]) % MOD
+    for i in range(t - q + 1):
+        curr_hash = (text_hash[i + q] + MOD - text_hash[i]) % MOD
+        if curr_hash == (query_hash * p_pow[i]) % MOD:
+            positions.append(i)
 
     return positions
