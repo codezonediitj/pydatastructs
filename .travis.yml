@@ -3,12 +3,14 @@ sudo: false
 language: python
 
 python:
-        - "3.6"
+        - "3.8"
 install:
         - pip install -r requirements.txt
+        - pip install sphinx==4.2.0
 
 script:
         - python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
 
 after_success:
         - codecov
+        - sphinx-build -b html docs/source/ docs/build/html
