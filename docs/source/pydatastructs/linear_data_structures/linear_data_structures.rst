@@ -2,7 +2,7 @@ Linear Data Structures
 ======================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    arrays.rst
    linked_lists.rst
