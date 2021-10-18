@@ -689,7 +689,7 @@ class CartesianTree(SelfBalancingBinaryTree):
     See Also
     ========
 
-    pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
+    pydatastructs.trees.binary_trees.SelfBalancingBinaryTree
     """
     @classmethod
     def methods(cls):
@@ -1083,7 +1083,7 @@ class RedBlackTree(SelfBalancingBinaryTree):
     See Also
     ========
 
-    pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
+    pydatastructs.trees.binary_trees.SelfBalancingBinaryTree
     """
 
     @classmethod

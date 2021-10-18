@@ -23,7 +23,9 @@ def find(text, query, algorithm):
         searching.
         Currently the following algorithms are
         supported,
+
         'kmp' -> Knuth-Morris-Pratt as given in [1].
+
         'rabin_karp' -> Rabin–Karp algorithm as given in [2].
 
     Returns
@@ -54,7 +56,7 @@ def find(text, query, algorithm):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Knuth–Morris–Pratt_algorithm
+    .. [1] https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
     .. [2] https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
     """
     import pydatastructs.strings.algorithms as algorithms

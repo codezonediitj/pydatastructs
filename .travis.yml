@@ -6,9 +6,12 @@ python:
         - "3.8"
 install:
         - travis_wait 60 pip install -r requirements.txt
+        - travis_wait 60 pip install -r docs/requirements.txt
 
 script:
         - travis_wait 60 python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
 
 after_success:
         - codecov
+        - pip install -e .
+        - sphinx-build -b html docs/source/ docs/build/html

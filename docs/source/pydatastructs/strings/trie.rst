@@ -1,0 +1,4 @@
+Trie
+====
+
+.. autoclass:: pydatastructs.Trie

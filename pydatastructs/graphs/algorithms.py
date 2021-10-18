@@ -272,8 +272,9 @@ def minimum_spanning_tree(graph, algorithm):
         computing a minimum spanning tree.
         Currently the following algorithms are
         supported,
-        'kruskal' -> Kruskal's algorithm as given in
-                     [1].
+
+        'kruskal' -> Kruskal's algorithm as given in [1].
+
         'prim' -> Prim's algorithm as given in [2].
 
     Returns
@@ -405,8 +406,9 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
         computing a minimum spanning tree.
         Currently the following algorithms are
         supported,
-        'kruskal' -> Kruskal's algorithm as given in
-                     [1].
+
+        'kruskal' -> Kruskal's algorithm as given in [1].
+
         'prim' -> Prim's algorithm as given in [2].
     num_threads: int
         The number of threads to be used.
@@ -519,8 +521,8 @@ def strongly_connected_components(graph, algorithm):
         computing strongly connected components.
         Currently the following algorithms are
         supported,
-        'kosaraju' -> Kosaraju's algorithm as given in
-                     [1].
+
+        'kosaraju' -> Kosaraju's algorithm as given in [1].
 
     Returns
     =======
@@ -656,7 +658,9 @@ def shortest_paths(graph: Graph, algorithm: str,
     algorithm: str
         The algorithm to be used. Currently, the following algorithms
         are implemented,
+
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
+
         'dijkstra' -> Dijkstra algorithm as given in [2].
     source: str
         The name of the source the node.
@@ -775,6 +779,7 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str) -> tuple:
     algorithm: str
         The algorithm to be used. Currently, the following algorithms
         are implemented,
+
         'floyd_warshall' -> Floyd Warshall algorithm as given in [1].
 
     Returns
@@ -856,6 +861,7 @@ def topological_sort(graph: Graph, algorithm: str) -> list:
     algorithm: str
         The algorithm to be used.
         Currently, following are supported,
+
         'kahn' -> Kahn's algorithm as given in [1].
 
     Returns
@@ -927,6 +933,7 @@ def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int) ->
     algorithm: str
         The algorithm to be used.
         Currently, following are supported,
+
         'kahn' -> Kahn's algorithm as given in [1].
     num_threads: int
         The maximum number of threads to be used.
