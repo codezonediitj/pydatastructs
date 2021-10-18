@@ -23,6 +23,7 @@ import sphinx_readable_theme
 project = 'PyDataStructs'
 copyright = '2021, PyDataStructs Development Team'
 author = 'PyDataStructs Development Team'
+master_doc = 'index'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
