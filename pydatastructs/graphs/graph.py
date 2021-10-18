@@ -14,8 +14,14 @@ class Graph(object):
         The implementation to be used for storing
         graph in memory. It can be figured out
         from type of the vertices(if passed at construction).
+        Currently the following implementations are supported,
+
+        'adjacency_list' -> Adjacency list implementation.
+
+        'adjacency_matrix' -> Adjacency matrix implementation.
+
         By default, 'adjacency_list'.
-    vertices: AdjacencyListGraphNode(s)
+    vertices: GraphNode(s)
         For AdjacencyList implementation vertices
         can be passed for initializing the graph.
 
