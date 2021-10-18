@@ -68,5 +68,5 @@ autodoc_default_options = {
     'members': True,
     'undoc-members': True,
     'special-members': True,
-    'exclude-members': '__new__, methods, __slots__'
+    'exclude-members': '__new__, methods, __slots__, __dict__, __weakref__'
 }
