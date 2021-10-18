@@ -27,7 +27,3 @@ Contents
    :maxdepth: 1
 
    pydatastructs/pydatastructs.rst
-
-
-
-
