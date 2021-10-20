@@ -420,8 +420,8 @@ class BinarySearchTree(BinaryTree):
         its index in the sorted list of nodes
         of the tree.
 
-        Parameter
-        =========
+        Parameters
+        ==========
 
         x: key
             The key of the node whose rank is to be found out.
@@ -441,8 +441,8 @@ class BinarySearchTree(BinaryTree):
         """
         Utility funtion to find the simple path between root and node.
 
-        Parameter
-        =========
+        Parameters
+        ==========
 
         key: Node.key
             Key of the node to be searched
@@ -689,7 +689,7 @@ class CartesianTree(SelfBalancingBinaryTree):
     See Also
     ========
 
-    pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
+    pydatastructs.trees.binary_trees.SelfBalancingBinaryTree
     """
     @classmethod
     def methods(cls):
@@ -1083,7 +1083,7 @@ class RedBlackTree(SelfBalancingBinaryTree):
     See Also
     ========
 
-    pydatastructs.trees.binary_tree.SelfBalancingBinaryTree
+    pydatastructs.trees.binary_trees.SelfBalancingBinaryTree
     """
 
     @classmethod

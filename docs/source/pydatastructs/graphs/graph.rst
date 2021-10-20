@@ -1,0 +1,4 @@
+Graph
+=====
+
+.. autoclass:: pydatastructs.Graph
