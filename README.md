@@ -16,13 +16,13 @@ Installation
 You can install the library by running the following command,
 
 ```python
-python3 setup.py install
+python -m pip install .
 ```
 
 For development purposes, you can use the option `develop` as shown below,
 
 ```python
-python3 setup.py develop
+python -m pip install -e .
 ```
 
 Make sure that your python version is above `3.5`.
