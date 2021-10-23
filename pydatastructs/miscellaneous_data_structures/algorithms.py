@@ -1,9 +1,46 @@
 from pydatastructs.miscellaneous_data_structures.sparse_table import SparseTable
 
-
 __all__ = ['RangeMinimumQuery']
 
+
 class RangeMinimumQuery:
+    """
+    Answers incoming queries of the form (L, R), which ask to find
+    the minimum element in array A between positions L (inclusive) and
+    R (exclusive).
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array for which we need to answer queries.
+    ds: str
+        The data structure we want to use for RangeMinimumQuery.
+
+        'array' -> Simple array implementation
+
+        'sparse_table' -> Sparse Table implementation as given in [2]
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, RangeMinimumQuery
+    >>> arr = OneDimensionalArray(int, [4, 6, 1, 5, 7, 3])
+    >>> RMQ = RangeMinimumQuery(arr)
+    >>> RMQ.query(3,5)
+    3
+    >>> RMQ.query(0,5)
+    1
+    >>> RMQ.query(0,3)
+    1
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Range_minimum_query
+    .. [2] https://cp-algorithms.com/data_structures/sparse-table.html
+    """
+
     def __new__(cls, array, ds='sparse_table'):
         if ds == 'array':
             return RangeMinimumQueryArray(array)
