@@ -6,9 +6,9 @@ __all__ = ['RangeMinimumQuery']
 class RangeMinimumQuery:
     def __new__(cls, array, ds='sparse_table'):
         if ds == 'array':
-            return RangeMinimumQueryArray(cls, array)
+            return RangeMinimumQueryArray(array)
         elif ds == 'sparse_table':
-            return RangeMinimumQuerySparseTable(cls, array)
+            return RangeMinimumQuerySparseTable(array)
         else:
             raise NotImplementedError(
                 "Currently %s data structure for range "
