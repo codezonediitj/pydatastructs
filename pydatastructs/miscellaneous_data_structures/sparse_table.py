@@ -22,9 +22,10 @@ class SparseTable(object):
         obj = object.__new__(cls)
         N = len(array)
         LOGN = int(math.log2(N)) + 1
-        obj.table = [OneDimensionalArray(int, LOGN)]*N
+        obj.table = [OneDimensionalArray(int, LOGN) for i in range(N)]
         for i in range(N):
             obj.table[i][0] = array[i]
+
         for j in range(1, LOGN + 1):
             for i in range(N - (1 << j) + 1):
                 obj.table[i][j] = min(
