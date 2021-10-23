@@ -16,13 +16,13 @@ class SparseTable(object):
     .. [1] https://cp-algorithms.com/data_structures/sparse-table.html
     """
 
-    __slots__ = ['table']
+    __slots__ = ['table', 'logs']
 
     def __new__(cls, array):
         obj = object.__new__(cls)
         N = len(array)
         LOGN = int(math.log2(N)) + 1
-        obj.table = MultiDimensionalArray(int, N, LOGN)
+        obj.table = [OneDimensionalArray(int, LOGN)]*N
         for i in range(N):
             obj.table[i][0] = array[i]
         for j in range(1, LOGN + 1):
