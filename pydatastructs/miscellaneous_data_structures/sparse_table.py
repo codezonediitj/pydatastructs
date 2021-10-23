@@ -37,9 +37,9 @@ class SparseTable(object):
 
     @classmethod
     def methods(cls):
-        return ['__rangequery__']
+        return ['__query__']
 
-    def __rangequery__(self, left, right):
+    def __query__(self, left, right):
         j = self.logs[right-left+1]
         return min(
             self.table[left][j],
