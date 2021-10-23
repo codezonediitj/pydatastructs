@@ -1,6 +1,8 @@
 from pydatastructs.miscellaneous_data_structures.sparse_table import SparseTable
 
 
+__all__ = ['RangeMinimumQuery']
+
 class RangeMinimumQuery:
     def __new__(cls, array, ds='sparse_table'):
         if ds == 'array':
