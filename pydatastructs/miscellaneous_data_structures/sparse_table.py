@@ -18,21 +18,23 @@ class SparseTable(object):
 
     __slots__ = ['table']
 
-    def __new__(cls, array, N=500000):
+    def __new__(cls, array):
         obj = object.__new__(cls)
-        MAXLOG = int(math.log2(2*N))
-        obj.table = MultiDimensionalArray(int, 2*N+10, MAXLOG)
-        obj.logs = OneDimensionalArray(int, 2*N+10)
-        obj.logs[0] = obj.logs[1] = 0
-        for i in range(2, N):
-            obj.logs[i] = obj.logs[int(i/2)] + 1
-        for i in range(len(array)):
+        N = len(array)
+        LOGN = int(math.log2(N)) + 1
+        obj.table = MultiDimensionalArray(int, N, LOGN)
+        for i in range(N):
             obj.table[i][0] = array[i]
-        for j in range(1, obj.MAXLOG):
-            for i in range(len(array) - (1 << j) + 1):
+        for j in range(1, LOGN + 1):
+            for i in range(N - (1 << j) + 1):
                 obj.table[i][j] = min(
                     obj.table[i][j-1],
                     obj.table[i+(1 << (j-1))][j-1])
+
+        obj.logs = OneDimensionalArray(int, N+1)
+        obj.logs[0] = obj.logs[1] = 0
+        for i in range(2, N+1):
+            obj.logs[i] = obj.logs[int(i/2)] + 1
         return obj
 
     @classmethod
