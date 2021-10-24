@@ -20,10 +20,45 @@ code in C++ and Java as well.
 
    This project is under active development and contributions are welcome.
 
+Installation
+============
+
+After changing your directory to project root, you can 
+install the package by running the following command,
+
+``python -m pip install .``
+
+For development purposes, you can use the option `e` as shown below,
+
+``python -m pip install -e .``
+
+For building documentation execute the following commands one after
+the other,
+
+1. ``pip install -r docs/requirements.txt``
+2. ``sphinx-build -b html docs/source/ docs/build/html``
+
+Make sure that your python version is at least ``3.8``.
+
+Why do we use Python?
+=====================
+
+As we know Python is an interpreted language and hence is 
+slow compared to C++, the most popular language for competitive programming. 
+We still decided to use Python because the software development can happen 
+at a much faster pace and it is much easier to test various software designs 
+and APIs as coding them out takes no time. However, keeping the need of the 
+users in mind, we will shift to C++ backend,  which will happen quickly as 
+we would be required to just translate the tested code rather than writing it 
+from scratch, after a few releases with APIs available for all the languages.
+
 Contents
 ========
 
 .. toctree::
    :maxdepth: 1
 
+   tutorials.rst
+   contributing.rst
+   authors.rst
    pydatastructs/pydatastructs.rst
