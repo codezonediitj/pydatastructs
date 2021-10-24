@@ -8,3 +8,5 @@ Miscellaneous Data Structures
    queue.rst
    binomial_trees.rst
    disjoint_set.rst
+   sparse_table.rst
+   algorithms.rst

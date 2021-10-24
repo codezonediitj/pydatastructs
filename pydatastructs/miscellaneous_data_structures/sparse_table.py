@@ -48,7 +48,7 @@ class SparseTable(object):
     .. [1] https://cp-algorithms.com/data_structures/sparse-table.html
     """
 
-    __slots__ = ['table', 'func']
+    __slots__ = ['_table', 'func']
 
     def __new__(cls, array, func):
 
@@ -58,16 +58,16 @@ class SparseTable(object):
         obj = object.__new__(cls)
         size = len(array)
         log_size = int(math.log2(size)) + 1
-        obj.table = [OneDimensionalArray(int, log_size) for _ in range(size)]
+        obj._table = [OneDimensionalArray(int, log_size) for _ in range(size)]
         obj.func = func
 
         for i in range(size):
-            obj.table[i][0] = func((array[i],))
+            obj._table[i][0] = func((array[i],))
 
         for j in range(1, log_size + 1):
             for i in range(size - (1 << j) + 1):
-                obj.table[i][j] = func((obj.table[i][j - 1],
-                                        obj.table[i + (1 << (j - 1))][j - 1]))
+                obj._table[i][j] = func((obj._table[i][j - 1],
+                                         obj._table[i + (1 << (j - 1))][j - 1]))
 
         return obj
 
@@ -76,15 +76,29 @@ class SparseTable(object):
         return ['query', '__str__']
 
     def query(self, start, end):
+        """
+        Method to perform a query on sparse table in [start, end)
+        range.
+
+        Parameters
+        ==========
+
+        start: int
+            The starting index of the range.
+        end: int
+            The index just before which the range ends.
+            This means that this index will be excluded
+            from the range for generating results.
+        """
         end -= 1
         j = int(math.log2(end - start + 1)) + 1
         answer = None
         while j >= 0:
             if start + (1 << j) - 1 <= end:
-                answer = self.func((answer, self.table[start][j]))
+                answer = self.func((answer, self._table[start][j]))
                 start += 1 << j
             j -= 1
         return answer
 
     def __str__(self):
-        return str([str(array) for array in self.table])
+        return str([str(array) for array in self._table])
