@@ -23,8 +23,7 @@ code in C++ and Java as well.
 Installation
 ============
 
-After changing your directory to project root, you can 
-install the package by running the following command,
+You can install the package by running the following command,
 
 ``pip install cz-pydatastructs``
 
