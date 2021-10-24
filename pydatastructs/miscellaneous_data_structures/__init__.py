@@ -35,6 +35,6 @@ from .sparse_table import (
 __all__.extend(sparse_table.__all__)
 
 from .algorithms import (
-    RangeMinimumQuery
+    RangeQueryStatic
 )
 __all__.extend(algorithms.__all__)

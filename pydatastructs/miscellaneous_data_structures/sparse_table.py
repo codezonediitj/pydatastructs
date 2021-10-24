@@ -16,34 +16,38 @@ class SparseTable(object):
     .. [1] https://cp-algorithms.com/data_structures/sparse-table.html
     """
 
-    __slots__ = ['table', 'logs']
+    __slots__ = ['table', 'logs', 'func']
 
-    def __new__(cls, array):
+    def __new__(cls, array, func):
         obj = object.__new__(cls)
-        N = len(array)
-        LOGN = int(math.log2(N)) + 1
-        obj.table = [OneDimensionalArray(int, LOGN) for i in range(N)]
-        for i in range(N):
-            obj.table[i][0] = array[i]
+        size = len(array)
+        log_size = int(math.log2(size)) + 1
+        obj.table = [OneDimensionalArray(int, log_size) for _ in range(size)]
+        obj.logs = OneDimensionalArray(int, size + 1)
+        obj.func = func
 
-        for j in range(1, LOGN + 1):
-            for i in range(N - (1 << j) + 1):
-                obj.table[i][j] = min(
-                    obj.table[i][j-1],
-                    obj.table[i+(1 << (j-1))][j-1])
+        for i in range(size):
+            obj.table[i][0] = func((array[i],))
 
-        obj.logs = OneDimensionalArray(int, N+1)
+        for j in range(1, log_size + 1):
+            for i in range(size - (1 << j) + 1):
+                obj.table[i][j] = func((obj.table[i][j - 1],
+                                        obj.table[i + (1 << (j - 1))][j - 1]))
+
         obj.logs[0] = obj.logs[1] = 0
-        for i in range(2, N+1):
-            obj.logs[i] = obj.logs[int(i/2)] + 1
+        for i in range(2, size + 1):
+            obj.logs[i] = obj.logs[i//2] + 1
         return obj
 
     @classmethod
     def methods(cls):
-        return ['__query__']
+        return ['query']
 
-    def __query__(self, left, right):
-        j = self.logs[right-left+1]
-        return min(
-            self.table[left][j],
-            self.table[right-(1 << j)+1][j])
+    def query(self, start, end):
+        rsize = end - start
+        log_rsize = self.logs[rsize + 1]
+        return self.func((self.table[end][log_rsize],
+                          self.table[end - (1 << log_rsize) + 1][log_rsize]))
+
+    def __str__(self):
+        return str([str(array) for array in self.table])

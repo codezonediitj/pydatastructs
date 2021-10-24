@@ -19,7 +19,7 @@ You can install the library by running the following command,
 python -m pip install .
 ```
 
-For development purposes, you can use the option `develop` as shown below,
+For development purposes, you can use the option `e` as shown below,
 
 ```python
 python -m pip install -e .

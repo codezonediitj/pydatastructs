@@ -10,8 +10,14 @@ __all__ = [
     'CartesianTreeNode',
     'RedBlackTreeNode',
     'TrieNode',
-    'SkipNode'
+    'SkipNode',
+    'minimum',
+    'summation',
+    'greatest_common_divisor'
 ]
+
+import math
+
 
 _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)
@@ -478,3 +484,33 @@ def _comp(u, v, tcomp):
         return False
     else:
         return tcomp(u, v)
+
+def minimum(x_y):
+    if len(x_y) == 1:
+        return x_y[0]
+
+    x, y = x_y
+    if x is None or y is None:
+        return x if y is None else y
+
+    return min(x, y)
+
+def greatest_common_divisor(x_y):
+    if len(x_y) == 1:
+        return x_y[0]
+
+    x, y = x_y
+    if x is None or y is None:
+        return x if y is None else y
+
+    return math.gcd(x, y)
+
+def summation(x_y):
+    if len(x_y) == 1:
+        return x_y[0]
+
+    x, y = x_y
+    if x is None or y is None:
+        return x if y is None else y
+
+    return x + y
