@@ -10,8 +10,14 @@ __all__ = [
     'CartesianTreeNode',
     'RedBlackTreeNode',
     'TrieNode',
-    'SkipNode'
+    'SkipNode',
+    'minimum',
+    'summation',
+    'greatest_common_divisor'
 ]
+
+import math
+
 
 _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)
@@ -478,3 +484,42 @@ def _comp(u, v, tcomp):
         return False
     else:
         return tcomp(u, v)
+
+def _check_range_query_inputs(input, bounds):
+    start, end = input
+    if start >= end:
+        raise ValueError("Input (%d, %d) range is empty."%(start, end))
+    if start < bounds[0] or end > bounds[1]:
+        raise IndexError("Input (%d, %d) range is out of "
+                         "bounds of array indices (%d, %d)."
+                         %(start, end, bounds[0], bounds[1]))
+
+def minimum(x_y):
+    if len(x_y) == 1:
+        return x_y[0]
+
+    x, y = x_y
+    if x is None or y is None:
+        return x if y is None else y
+
+    return min(x, y)
+
+def greatest_common_divisor(x_y):
+    if len(x_y) == 1:
+        return x_y[0]
+
+    x, y = x_y
+    if x is None or y is None:
+        return x if y is None else y
+
+    return math.gcd(x, y)
+
+def summation(x_y):
+    if len(x_y) == 1:
+        return x_y[0]
+
+    x, y = x_y
+    if x is None or y is None:
+        return x if y is None else y
+
+    return x + y

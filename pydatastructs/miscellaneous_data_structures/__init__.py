@@ -4,7 +4,8 @@ from . import (
     stack,
     binomial_trees,
     queue,
-    disjoint_set
+    disjoint_set,
+    sparse_table
 )
 
 from .binomial_trees import (
@@ -27,3 +28,13 @@ from .disjoint_set import (
     DisjointSetForest,
 )
 __all__.extend(disjoint_set.__all__)
+
+from .sparse_table import (
+    SparseTable,
+)
+__all__.extend(sparse_table.__all__)
+
+from .algorithms import (
+    RangeQueryStatic
+)
+__all__.extend(algorithms.__all__)

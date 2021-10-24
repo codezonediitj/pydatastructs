@@ -1,0 +1,4 @@
+Algorithms
+==========
+
+.. autoclass:: pydatastructs.RangeQueryStatic
