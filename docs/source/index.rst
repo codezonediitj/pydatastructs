@@ -26,19 +26,9 @@ Installation
 After changing your directory to project root, you can 
 install the package by running the following command,
 
-``python -m pip install .``
+``pip install cz-pydatastructs``
 
-For development purposes, you can use the option `e` as shown below,
-
-``python -m pip install -e .``
-
-For building documentation execute the following commands one after
-the other,
-
-1. ``pip install -r docs/requirements.txt``
-2. ``sphinx-build -b html docs/source/ docs/build/html``
-
-Make sure that your python version is at least ``3.8``.
+Make sure that your python version is at least ``3.5``.
 
 Why do we use Python?
 =====================
