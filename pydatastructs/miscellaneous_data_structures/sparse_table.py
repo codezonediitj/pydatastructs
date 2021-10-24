@@ -16,14 +16,17 @@ class SparseTable(object):
     .. [1] https://cp-algorithms.com/data_structures/sparse-table.html
     """
 
-    __slots__ = ['table', 'logs', 'func']
+    __slots__ = ['table', 'func']
 
     def __new__(cls, array, func):
+
+        if len(array) == 0:
+            raise ValueError("Input %s array is empty."%(array))
+
         obj = object.__new__(cls)
         size = len(array)
         log_size = int(math.log2(size)) + 1
         obj.table = [OneDimensionalArray(int, log_size) for _ in range(size)]
-        obj.logs = OneDimensionalArray(int, size + 1)
         obj.func = func
 
         for i in range(size):
@@ -34,9 +37,6 @@ class SparseTable(object):
                 obj.table[i][j] = func((obj.table[i][j - 1],
                                         obj.table[i + (1 << (j - 1))][j - 1]))
 
-        obj.logs[0] = obj.logs[1] = 0
-        for i in range(2, size + 1):
-            obj.logs[i] = obj.logs[i//2] + 1
         return obj
 
     @classmethod
@@ -44,10 +44,15 @@ class SparseTable(object):
         return ['query']
 
     def query(self, start, end):
-        rsize = end - start
-        log_rsize = self.logs[rsize + 1]
-        return self.func((self.table[end][log_rsize],
-                          self.table[end - (1 << log_rsize) + 1][log_rsize]))
+        end -= 1
+        j = int(math.log2(end - start + 1)) + 1
+        answer = None
+        while j >= 0:
+            if start + (1 << j) - 1 <= end:
+                answer = self.func((answer, self.table[start][j]))
+                start += 1 << j
+            j -= 1
+        return answer
 
     def __str__(self):
         return str([str(array) for array in self.table])

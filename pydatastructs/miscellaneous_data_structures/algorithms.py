@@ -1,4 +1,5 @@
 from pydatastructs.miscellaneous_data_structures.sparse_table import SparseTable
+from pydatastructs.utils.misc_util import _check_range_query_inputs
 
 __all__ = ['RangeQueryStatic']
 
@@ -29,7 +30,7 @@ class RangeQueryStatic:
     >>> arr = OneDimensionalArray(int, [4, 6, 1, 5, 7, 3])
     >>> RMQ = RangeQueryStatic(arr, minimum)
     >>> RMQ.query(3, 5)
-    3
+    5
     >>> RMQ.query(0, 5)
     1
     >>> RMQ.query(0, 3)
@@ -43,6 +44,9 @@ class RangeQueryStatic:
     """
 
     def __new__(cls, array, func, data_structure='sparse_table'):
+        if len(array) == 0:
+            raise ValueError("Input %s array is empty."%(array))
+
         if data_structure == 'array':
             return RangeQueryStaticArray(array, func)
         elif data_structure == 'sparse_table':
@@ -60,17 +64,17 @@ class RangeQueryStatic:
 
 class RangeQueryStaticSparseTable(RangeQueryStatic):
 
-    __slots__ = ["sparse_table"]
+    __slots__ = ["sparse_table", "bounds"]
 
     def __new__(cls, array, func):
         obj = object.__new__(cls)
         sparse_table = SparseTable(array, func)
+        obj.bounds = (0, len(array))
         obj.sparse_table = sparse_table
         return obj
 
     def query(self, start, end):
-        if start >= end:
-            raise ValueError("Input (%d, %d) range is empty."%(start, end))
+        _check_range_query_inputs((start, end), self.bounds)
         return self.sparse_table.query(start, end)
 
 
@@ -85,8 +89,7 @@ class RangeQueryStaticArray(RangeQueryStatic):
         return obj
 
     def query(self, start, end):
-        if start >= end:
-            raise ValueError("Input (%d, %d) range is empty."%(start, end))
+        _check_range_query_inputs((start, end), (0, len(self.array)))
 
         rsize = end - start
 
@@ -95,5 +98,5 @@ class RangeQueryStaticArray(RangeQueryStatic):
 
         query_ans = self.func((self.array[start], self.array[start + 1]))
         for i in range(start + 2, end):
-            query_ans = self.func(query_ans, self.array[i])
+            query_ans = self.func((query_ans, self.array[i]))
         return query_ans

@@ -485,6 +485,15 @@ def _comp(u, v, tcomp):
     else:
         return tcomp(u, v)
 
+def _check_range_query_inputs(input, bounds):
+    start, end = input
+    if start >= end:
+        raise ValueError("Input (%d, %d) range is empty."%(start, end))
+    if start < bounds[0] or end > bounds[1]:
+        raise IndexError("Input (%d, %d) range is out of "
+                         "bounds of array indices (%d, %d)."
+                         %(start, end, bounds[0], bounds[1]))
+
 def minimum(x_y):
     if len(x_y) == 1:
         return x_y[0]
