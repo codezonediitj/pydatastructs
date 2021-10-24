@@ -32,6 +32,16 @@ class SparseTable(object):
 
         `summation` - For range sum queries.
 
+    Examples
+    ========
+
+    >>> from pydatastructs import SparseTable, minimum
+    >>> from pydatastructs import OneDimensionalArray
+    >>> arr = OneDimensionalArray(int, [1, 2, 3, 4, 5])
+    >>> s_t = SparseTable(arr, minimum)
+    >>> str(s_t)
+    "['[1, 1, 1]', '[2, 2, 2]', '[3, 3, None]', '[4, 4, None]', '[5, None, None]']"
+
     References
     ==========
 
