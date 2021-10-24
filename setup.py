@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pydatastructs",
-    version="0.0.1-dev",
+    version="0.0.1-alpha",
     author="PyDataStructs Development Team",
     author_email="pydatastructs@googlegroups.com",
     description="A python package for data structures",
