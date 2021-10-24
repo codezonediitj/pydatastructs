@@ -6,21 +6,45 @@ __all__ = ['RangeQueryStatic']
 
 class RangeQueryStatic:
     """
-    Answers incoming queries of the form (L, R), which ask to find
-    the minimum element in array A between positions L (inclusive) and
-    R (exclusive).
+    Produces results for range queries of different kinds
+    by using specified data structure.
 
     Parameters
     ==========
 
     array: OneDimensionalArray
         The array for which we need to answer queries.
-    ds: str
-        The data structure we want to use for RangeMinimumQuery.
+        All the elements should be of type `int`.
+    func: callable
+        The function to be used for generating results
+        of a query. It should accept only one tuple as an
+        argument. The size of the tuple will be either 1 or 2
+        and any one of the elements can be `None`. You can treat
+        `None` in whatever way you want according to the query
+        you are performing. For example, in case of range minimum
+        queries, `None` can be treated as infinity. We provide
+        the following which can be used as an argument value for this
+        parameter,
 
-        'array' -> Simple array implementation
+        `minimum` - For range minimum queries.
 
-        'sparse_table' -> Sparse Table implementation as given in [2]
+        `greatest_common_divisor` - For queries finding greatest
+                                    common divisor of a range.
+
+        `summation` - For range sum queries.
+    data_structure: str
+        The data structure to be used for performing
+        range queries.
+        Currently the following data structures are supported,
+
+        'array' -> Array data structure.
+                   Each query takes O(end - start) time asymptotically.
+
+        'sparse_table' -> Sparse table data structure.
+                          Each query takes O(log(end - start)) time
+                          asymptotically.
+
+        By default, 'sparse_table'.
 
     Examples
     ========
@@ -36,11 +60,13 @@ class RangeQueryStatic:
     >>> RMQ.query(0, 3)
     1
 
-    References
-    ==========
+    Note
+    ====
 
-    .. [1] https://en.wikipedia.org/wiki/Range_minimum_query
-    .. [2] https://cp-algorithms.com/data_structures/sparse-table.html
+    The array once passed as an input should not be modified
+    once the `RangeQueryStatic` constructor is called. If you
+    have updated the array, then you need to create a new
+    `RangeQueryStatic` object with this updated array.
     """
 
     def __new__(cls, array, func, data_structure='sparse_table'):
@@ -57,7 +83,24 @@ class RangeQueryStatic:
                 "query without updates isn't implemented yet."
                 % (data_structure))
 
+    @classmethod
+    def methods(cls):
+        return ['query']
+
     def query(start, end):
+        """
+        Method to perform a query in [start, end) range.
+
+        Parameters
+        ==========
+
+        start: int
+            The starting index of the range.
+        end: int
+            The index just before which the range ends.
+            This means that this index will be excluded
+            from the range for generating results.
+        """
         raise NotImplementedError(
             "This is an abstract method.")
 
@@ -73,6 +116,10 @@ class RangeQueryStaticSparseTable(RangeQueryStatic):
         obj.sparse_table = sparse_table
         return obj
 
+    @classmethod
+    def methods(cls):
+        return ['query']
+
     def query(self, start, end):
         _check_range_query_inputs((start, end), self.bounds)
         return self.sparse_table.query(start, end)
@@ -87,6 +134,10 @@ class RangeQueryStaticArray(RangeQueryStatic):
         obj.array = array
         obj.func = func
         return obj
+
+    @classmethod
+    def methods(cls):
+        return ['query']
 
     def query(self, start, end):
         _check_range_query_inputs((start, end), (0, len(self.array)))

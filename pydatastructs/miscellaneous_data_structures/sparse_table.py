@@ -8,7 +8,29 @@ __all__ = ['SparseTable']
 
 class SparseTable(object):
     """
-    Represents a sparse table
+    Represents the sparse table data structure.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array to be used for filling the sparse table.
+    func: callable
+        The function to be used for filling the sparse table.
+        It should accept only one tuple as an argument. The
+        size of the tuple will be either 1 or 2 and any one
+        of the elements can be `None`. You can treat `None` in
+        whatever way you want. For example, in case of minimum
+        values, `None` can be treated as infinity. We provide
+        the following which can be used as an argument value for this
+        parameter,
+
+        `minimum` - For range minimum queries.
+
+        `greatest_common_divisor` - For queries finding greatest
+                                    common divisor of a range.
+
+        `summation` - For range sum queries.
 
     References
     ==========
@@ -41,7 +63,7 @@ class SparseTable(object):
 
     @classmethod
     def methods(cls):
-        return ['query']
+        return ['query', '__str__']
 
     def query(self, start, end):
         end -= 1
