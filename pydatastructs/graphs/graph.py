@@ -89,7 +89,8 @@ class Graph(object):
 
     def add_vertex(self, node):
         """
-        Adds the input vertex to the node.
+        Adds the input vertex to the node, or does nothing
+        if the input vertex is already in the graph.
         """
         raise NotImplementedError(
             "This is an abstract method.")
@@ -97,7 +98,7 @@ class Graph(object):
     def remove_vertex(self, node):
         """
         Removes the input vertex along with all the edges
-        pointing towards to it.
+        pointing towards it.
         """
         raise NotImplementedError(
             "This is an abstract method.")
