@@ -15,7 +15,8 @@ class Array(object):
 
 class OneDimensionalArray(Array):
     '''
-    Represents one dimensional arrays.
+    Represents one dimensional static arrays of
+    fixed size.
 
     Parameters
     ==========
@@ -269,7 +270,8 @@ class DynamicArray(Array):
 
 class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     """
-    Represents dynamic one dimensional arrays.
+    Represents resizable and dynamic one
+    dimensional arrays.
 
     Parameters
     ==========
