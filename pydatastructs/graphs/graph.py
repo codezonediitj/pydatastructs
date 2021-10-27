@@ -49,6 +49,14 @@ class Graph(object):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Graph_(abstract_data_type)
+
+    Note
+    ====
+    Steps to create a graph:
+    1. Create nodes (AdjacencyListGraphNode or AdjacencyListMatrixNode)
+    2. Add nodes to the graph
+    3. Add edges b/w these nodes
+
     """
 
     __slots__ = ['_impl']
