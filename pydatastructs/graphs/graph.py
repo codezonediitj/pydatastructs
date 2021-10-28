@@ -52,9 +52,13 @@ class Graph(object):
 
     Note
     ====
+
     Steps to create a graph:
+
     1. Create nodes (AdjacencyListGraphNode or AdjacencyListMatrixNode)
+
     2. Add nodes to the graph
+
     3. Add edges b/w these nodes
 
     """
