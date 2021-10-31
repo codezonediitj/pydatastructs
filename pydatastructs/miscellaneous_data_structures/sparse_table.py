@@ -86,11 +86,8 @@ class SparseTable(object):
         start: int
             The starting index of the range.
         end: int
-            The index just before which the range ends.
-            This means that this index will be excluded
-            from the range for generating results.
+            The ending index of the range
         """
-        end -= 1
         j = int(math.log2(end - start + 1)) + 1
         answer = None
         while j >= 0:
