@@ -26,7 +26,7 @@ author = 'PyDataStructs Development Team'
 master_doc = 'index'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1-alpha'
+release = '0.0.1-beta'
 
 
 # -- General configuration ---------------------------------------------------

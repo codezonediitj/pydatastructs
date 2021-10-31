@@ -1,4 +1,4 @@
-__version__ = "0.0.1-alpha"
+__version__ = "0.0.1-beta"
 
 from .linear_data_structures import *
 from .trees import *
