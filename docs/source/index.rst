@@ -29,6 +29,21 @@ You can install the package by running the following command,
 
 Make sure that your python version is at least ``3.5``.
 
+Why PyDataStructs?
+==================
+
+1. **Single package for all your data structures and algorithms** - We have and are
+   implementing many popular and useful data structures and algorithms.
+
+2. **Consistent and Clean Interface** - The APIs we have provided are **consistent** with each other,
+   **clean** and **easy to use**. We make sure of that before adding any new data structure or algorithm.
+
+3. **Well Tested** - We thoroughly test our code before making any new addition to PyDataStructs.
+   **99 percent** lines of our code have already been tested by us.
+
+So, **you can easily rely on PyDataStructs** for any data structure or algorithm you want to use
+**without worrying about implementing** it **from scratch**. Everything is just a few calls away.
+
 Why do we use Python?
 =====================
 
