@@ -86,7 +86,7 @@ class SparseTable(object):
         start: int
             The starting index of the range.
         end: int
-            The ending index of the range
+            The ending index of the range.
         """
         j = int(math.log2(end - start + 1)) + 1
         answer = None
