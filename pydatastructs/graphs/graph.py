@@ -53,13 +53,11 @@ class Graph(object):
     Note
     ====
 
-    Steps to create a graph:
-
-    1. Create nodes (AdjacencyListGraphNode or AdjacencyListMatrixNode)
-
-    2. Add nodes to the graph
-
-    3. Add edges b/w these nodes
+    Make sure to create nodes (AdjacencyListGraphNode or AdjacencyMatrixGraphNode)
+    and them in your graph using Graph.add_vertex before adding edges whose
+    end points require either of the nodes that you added. In other words,
+    Graph.add_edge doesn't add new nodes on its own if the input
+    nodes are not already present in the Graph.
 
     """
 

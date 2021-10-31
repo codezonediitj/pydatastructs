@@ -52,17 +52,18 @@ class AdjacencyList(Graph):
                 node_obj.adjacent.remove(name)
 
     def add_edge(self, source, target, cost=None):
-        error_msg = "Vertex %s is not present in the graph. \
-                    Call Graph.add_vertex() to add a new \
-                    vertex. Graph.add_edge is only responsible \
-                    for adding edges and it will not add new \
-                    vertices on its own. This is done to maintain \
-                    clear separation between the functionality of \
-                    the two methods."
+        source, target = str(source), str(target)
+        error_msg = ("Vertex %s is not present in the graph."
+                     "Call Graph.add_vertex to add a new"
+                     "vertex. Graph.add_edge is only responsible"
+                     "for adding edges and it will not add new"
+                     "vertices on its own. This is done to maintain"
+                     "clear separation between the functionality of"
+                     "these two methods.")
         if not hasattr(self, source):
-            raise ValueError(error_msg %(source))
+            raise ValueError(error_msg % (source))
         if not hasattr(self, target):
-            raise ValueError(error_msg %(target))
+            raise ValueError(error_msg % (target))
 
         source, target = self.__getattribute__(source), \
             self.__getattribute__(target)

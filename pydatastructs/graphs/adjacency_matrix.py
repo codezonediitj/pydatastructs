@@ -57,6 +57,18 @@ class AdjacencyMatrix(Graph):
 
     def add_edge(self, source, target, cost=None):
         source, target = str(source), str(target)
+        error_msg = ("Vertex %s is not present in the graph."
+                     "Call Graph.add_vertex to add a new"
+                     "vertex. Graph.add_edge is only responsible"
+                     "for adding edges and it will not add new"
+                     "vertices on its own. This is done to maintain"
+                     "clear separation between the functionality of"
+                     "these two methods.")
+        if source not in self.matrix:
+            raise ValueError(error_msg % (source))
+        if target not in self.matrix:
+            raise ValueError(error_msg % (target))
+
         self.matrix[source][target] = True
         if cost is not None:
             self.edge_weights[source + "_" + target] = \
