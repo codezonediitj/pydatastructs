@@ -1,2 +1,3 @@
 sphinx==4.2.0
 sphinx-readable-theme==1.3.0
+myst_nb==0.13.1
