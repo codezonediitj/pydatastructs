@@ -36,8 +36,11 @@ release = '0.0.1-alpha'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    'myst_nb'
 ]
+
+jupyter_execute_notebooks = "off"
 
 napoleon_numpy_docstring = True
 

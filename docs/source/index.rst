@@ -48,6 +48,7 @@ Contents
    :maxdepth: 1
 
    tutorials.rst
+   pydatastructs_sphinx_graphs
    contributing.rst
    authors.rst
    pydatastructs/pydatastructs.rst
