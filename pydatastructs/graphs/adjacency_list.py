@@ -26,8 +26,8 @@ class AdjacencyList(Graph):
     @classmethod
     def methods(self):
         return ['is_adjacent', 'neighbors',
-        'add_vertex', 'remove_vertex', 'add_edge',
-        'get_edge', 'remove_edge', '__new__']
+                'add_vertex', 'remove_vertex', 'add_edge',
+                'get_edge', 'remove_edge', '__new__']
 
     def is_adjacent(self, node1, node2):
         node1 = self.__getattribute__(node1)
@@ -52,8 +52,21 @@ class AdjacencyList(Graph):
                 node_obj.adjacent.remove(name)
 
     def add_edge(self, source, target, cost=None):
+        source, target = str(source), str(target)
+        error_msg = ("Vertex %s is not present in the graph."
+                     "Call Graph.add_vertex to add a new"
+                     "vertex. Graph.add_edge is only responsible"
+                     "for adding edges and it will not add new"
+                     "vertices on its own. This is done to maintain"
+                     "clear separation between the functionality of"
+                     "these two methods.")
+        if not hasattr(self, source):
+            raise ValueError(error_msg % (source))
+        if not hasattr(self, target):
+            raise ValueError(error_msg % (target))
+
         source, target = self.__getattribute__(source), \
-                         self.__getattribute__(target)
+            self.__getattribute__(target)
         source.add_adjacent_node(target.name)
         if cost is not None:
             self.edge_weights[source.name + "_" + target.name] = \

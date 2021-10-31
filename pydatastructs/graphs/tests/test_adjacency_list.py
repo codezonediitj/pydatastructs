@@ -1,5 +1,6 @@
 from pydatastructs.graphs import Graph
 from pydatastructs.utils import AdjacencyListGraphNode
+from pydatastructs.utils.raises_util import raises
 
 def test_adjacency_list():
     v_1 = AdjacencyListGraphNode('v_1', 1)
@@ -38,3 +39,6 @@ def test_adjacency_list():
     g.remove_vertex('v')
     assert g.is_adjacent('v_2', 'v') is False
     assert g.is_adjacent('v_3', 'v') is False
+
+    assert raises(ValueError, lambda: g.add_edge('u', 'v'))
+    assert raises(ValueError, lambda: g.add_edge('v', 'x'))

@@ -1,5 +1,6 @@
 from pydatastructs.graphs import Graph
 from pydatastructs.utils import AdjacencyMatrixGraphNode
+from pydatastructs.utils.raises_util import raises
 
 def test_AdjacencyMatrix():
     v_0 = AdjacencyMatrixGraphNode(0, 0)
@@ -25,3 +26,6 @@ def test_AdjacencyMatrix():
     assert neighbors == [v_1]
     g.remove_edge(0, 1)
     assert g.is_adjacent(0, 1) is False
+
+    assert raises(ValueError, lambda: g.add_edge('u', 'v'))
+    assert raises(ValueError, lambda: g.add_edge('v', 'x'))
