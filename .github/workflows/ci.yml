@@ -1,4 +1,4 @@
-name: Python CI Workflow
+name: PyDataStructs Continuous Integration Tests
 
 on:
   push:
@@ -8,10 +8,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
       matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
         python-version:
           - "3.7"
           - "3.8"
@@ -28,12 +29,12 @@ jobs:
 
       - name: Upgrade pip version
         run: |
-          python3 -m pip install --upgrade pip
+          python -m pip install --upgrade pip
 
       - name: Install requirements
         run: |
-          pip3 install -r requirements.txt
-          pip3 install -r docs/requirements.txt
+          pip install -r requirements.txt
+          pip install -r docs/requirements.txt
 
       - name: Build package
         run: |
