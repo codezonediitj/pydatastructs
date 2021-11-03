@@ -1,0 +1,62 @@
+name: Python CI Workflow
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip version
+        run: |
+          python3 -m pip install --upgrade pip
+
+      - name: Install requirements
+        run: |
+          pip3 install -r requirements.txt
+          pip3 install -r docs/requirements.txt
+
+      - name: Build package
+        run: |
+          python -m pip install .
+
+      - name: Run tests
+        run: |
+          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage/reports/
+          env_vars: OS,PYTHON
+          fail_ci_if_error: false
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          path_to_write_report: ./coverage/codecov_report.txt
+          verbose: true
+
+      - name: Build Documentation
+        uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
