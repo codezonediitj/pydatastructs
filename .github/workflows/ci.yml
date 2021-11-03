@@ -58,6 +58,5 @@ jobs:
           verbose: true
 
       - name: Build Documentation
-        uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "docs/"
+        run: |
+          sphinx-build -b html docs/source/ docs/build/html
