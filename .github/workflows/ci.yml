@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ${{matrix.os}}
-    timeout-minutes: ${{secrets.TIMEOUT_MINUTES}}
+    timeout-minutes: ${{ secrets.TIMEOUT_MINUTES }}
     strategy:
       fail-fast: false
       matrix:
