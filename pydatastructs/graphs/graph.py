@@ -49,6 +49,16 @@ class Graph(object):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Graph_(abstract_data_type)
+
+    Note
+    ====
+
+    Make sure to create nodes (AdjacencyListGraphNode or AdjacencyMatrixGraphNode)
+    and them in your graph using Graph.add_vertex before adding edges whose
+    end points require either of the nodes that you added. In other words,
+    Graph.add_edge doesn't add new nodes on its own if the input
+    nodes are not already present in the Graph.
+
     """
 
     __slots__ = ['_impl']
@@ -89,7 +99,8 @@ class Graph(object):
 
     def add_vertex(self, node):
         """
-        Adds the input vertex to the node.
+        Adds the input vertex to the node, or does nothing
+        if the input vertex is already in the graph.
         """
         raise NotImplementedError(
             "This is an abstract method.")
@@ -97,7 +108,7 @@ class Graph(object):
     def remove_vertex(self, node):
         """
         Removes the input vertex along with all the edges
-        pointing towards to it.
+        pointing towards it.
         """
         raise NotImplementedError(
             "This is an abstract method.")

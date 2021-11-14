@@ -26,7 +26,7 @@ author = 'PyDataStructs Development Team'
 master_doc = 'index'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1-dev'
+release = '1.0.1-dev'
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,8 +36,11 @@ release = '0.0.1-dev'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    'myst_nb'
 ]
+
+jupyter_execute_notebooks = "off"
 
 napoleon_numpy_docstring = True
 
