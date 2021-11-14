@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pydatastructs",
-    version="0.0.1-dev",
+    name="cz-pydatastructs",
+    version="0.0.1",
     author="PyDataStructs Development Team",
     author_email="pydatastructs@googlegroups.com",
     description="A python package for data structures",
@@ -17,7 +17,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
-        "Topic :: Education :: Data Structures",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Software Development :: Libraries"

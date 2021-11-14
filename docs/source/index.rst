@@ -23,22 +23,26 @@ code in C++ and Java as well.
 Installation
 ============
 
-After changing your directory to project root, you can 
-install the package by running the following command,
+You can install the package by running the following command,
 
-``python -m pip install .``
+``pip install cz-pydatastructs==0.0.1``
 
-For development purposes, you can use the option `e` as shown below,
+Make sure that your python version is at least ``3.5``.
 
-``python -m pip install -e .``
+Why PyDataStructs?
+==================
 
-For building documentation execute the following commands one after
-the other,
+1. **Single package for all your data structures and algorithms** - We have and are
+   implementing many popular and useful data structures and algorithms.
 
-1. ``pip install -r docs/requirements.txt``
-2. ``sphinx-build -b html docs/source/ docs/build/html``
+2. **Consistent and Clean Interface** - The APIs we have provided are **consistent** with each other,
+   **clean** and **easy to use**. We make sure of that before adding any new data structure or algorithm.
 
-Make sure that your python version is at least ``3.8``.
+3. **Well Tested** - We thoroughly test our code before making any new addition to PyDataStructs.
+   **99 percent** lines of our code have already been tested by us.
+
+So, **you can easily rely on PyDataStructs** for any data structure or algorithm you want to use
+**without worrying about implementing** it **from scratch**. Everything is just a few calls away.
 
 Why do we use Python?
 =====================
@@ -59,6 +63,7 @@ Contents
    :maxdepth: 1
 
    tutorials.rst
+   pydatastructs_sphinx_graphs
    contributing.rst
    authors.rst
    pydatastructs/pydatastructs.rst

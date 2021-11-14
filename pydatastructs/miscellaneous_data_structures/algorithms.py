@@ -53,11 +53,11 @@ class RangeQueryStatic:
     >>> from pydatastructs import minimum
     >>> arr = OneDimensionalArray(int, [4, 6, 1, 5, 7, 3])
     >>> RMQ = RangeQueryStatic(arr, minimum)
-    >>> RMQ.query(3, 5)
+    >>> RMQ.query(3, 4)
     5
-    >>> RMQ.query(0, 5)
+    >>> RMQ.query(0, 4)
     1
-    >>> RMQ.query(0, 3)
+    >>> RMQ.query(0, 2)
     1
 
     Note
@@ -97,9 +97,7 @@ class RangeQueryStatic:
         start: int
             The starting index of the range.
         end: int
-            The index just before which the range ends.
-            This means that this index will be excluded
-            from the range for generating results.
+            The ending index of the range.
         """
         raise NotImplementedError(
             "This is an abstract method.")
@@ -121,7 +119,7 @@ class RangeQueryStaticSparseTable(RangeQueryStatic):
         return ['query']
 
     def query(self, start, end):
-        _check_range_query_inputs((start, end), self.bounds)
+        _check_range_query_inputs((start, end + 1), self.bounds)
         return self.sparse_table.query(start, end)
 
 
@@ -140,14 +138,14 @@ class RangeQueryStaticArray(RangeQueryStatic):
         return ['query']
 
     def query(self, start, end):
-        _check_range_query_inputs((start, end), (0, len(self.array)))
+        _check_range_query_inputs((start, end + 1), (0, len(self.array)))
 
-        rsize = end - start
+        rsize = end - start + 1
 
         if rsize == 1:
             return self.func((self.array[start],))
 
         query_ans = self.func((self.array[start], self.array[start + 1]))
-        for i in range(start + 2, end):
+        for i in range(start + 2, end + 1):
             query_ans = self.func((query_ans, self.array[i]))
         return query_ans

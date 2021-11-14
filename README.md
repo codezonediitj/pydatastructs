@@ -101,11 +101,11 @@ Keep contributing!!
 Thanks to these wonderful people ✨✨:
 
 <table>
-	<tr>
-		<td>
-			<a href="https://github.com/codezonediitj/pydatastructs/graphs/contributors">
-  				<img src="https://contrib.rocks/image?repo=codezonediitj/pydatastructs" />
-			</a>
-		</td>
-	</tr>
+    <tr>
+        <td>
+            <a href="https://github.com/codezonediitj/pydatastructs/graphs/contributors">
+                  <img src="https://contrib.rocks/image?repo=codezonediitj/pydatastructs" />
+            </a>
+        </td>
+    </tr>
 </table>

@@ -12,9 +12,9 @@ def _test_RangeQueryStatic_common(func, gen_expected):
 
     array = OneDimensionalArray(int, [1])
     rq = RangeQueryStatic(array, func)
-    assert rq.query(0, 1) == 1
-    raises(ValueError, lambda: rq.query(0, 0))
-    raises(IndexError, lambda: rq.query(0, 2))
+    assert rq.query(0, 0) == 1
+    raises(ValueError, lambda: rq.query(0, -1))
+    raises(IndexError, lambda: rq.query(0, 1))
 
     array_sizes = [3, 6, 12, 24, 48, 96]
     random.seed(0)
@@ -38,18 +38,18 @@ def _test_RangeQueryStatic_common(func, gen_expected):
 def test_RangeQueryStatic_minimum():
 
     def _gen_minimum_expected(data, i, j):
-        return min(data[i:j])
+        return min(data[i:j + 1])
 
     _test_RangeQueryStatic_common(minimum, _gen_minimum_expected)
 
 def test_RangeQueryStatic_greatest_common_divisor():
 
     def _gen_gcd_expected(data, i, j):
-        if j - i == 1:
+        if j == i:
             return data[i]
         else:
             expected_gcd = math.gcd(data[i], data[i + 1])
-            for idx in range(i + 2, j):
+            for idx in range(i + 2, j + 1):
                 expected_gcd = math.gcd(expected_gcd, data[idx])
             return expected_gcd
 
@@ -58,6 +58,6 @@ def test_RangeQueryStatic_greatest_common_divisor():
 def test_RangeQueryStatic_summation():
 
     def _gen_summation_expected(data, i, j):
-        return sum(data[i:j])
+        return sum(data[i:j + 1])
 
     return _test_RangeQueryStatic_common(summation, _gen_summation_expected)

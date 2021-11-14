@@ -4,7 +4,7 @@ Tutorials
 We provide the following tutorials to show how ``pydatastructs`` 
 APIs can help in solving complicated data structures and algorithms 
 problems easily. For now the problems are abstract. However, we plan 
-to add some examples showing usage of ``pydatastructs`` on real world 
+to add some more examples showing usage of ``pydatastructs`` on real world 
 data sets such as `Stanford Large Network Dataset Collection <https://snap.stanford.edu/data/>`_
 and `Urban Dictionary Words And Definitions <https://www.kaggle.com/therohk/urban-dictionary-words-dataset>`_.
 If you are interested in playing around with the above datasets using our API,
