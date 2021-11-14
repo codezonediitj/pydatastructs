@@ -25,7 +25,7 @@ Installation
 
 You can install the package by running the following command,
 
-``pip install cz-pydatastructs==0.0.1b0``
+``pip install cz-pydatastructs==0.0.1``
 
 Make sure that your python version is at least ``3.5``.
 
