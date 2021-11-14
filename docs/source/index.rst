@@ -23,11 +23,22 @@ code in C++ and Java as well.
 Installation
 ============
 
-You can install the package by running the following command,
+After changing your directory to project root, you can 
+install the package by running the following command,
 
-``pip install cz-pydatastructs==0.0.1``
+``python -m pip install .``
 
-Make sure that your python version is at least ``3.5``.
+For development purposes, you can use the option `e` as shown below,
+
+``python -m pip install -e .``
+
+For building documentation execute the following commands one after
+the other,
+
+1. ``pip install -r docs/requirements.txt``
+2. ``sphinx-build -b html docs/source/ docs/build/html``
+
+Make sure that your python version is at least ``3.8``.
 
 Why PyDataStructs?
 ==================
