@@ -1,3 +1,6 @@
+import math, pydatastructs
+from enum import Enum
+
 __all__ = [
     'TreeNode',
     'MAryTreeNode',
@@ -13,11 +16,22 @@ __all__ = [
     'SkipNode',
     'minimum',
     'summation',
-    'greatest_common_divisor'
+    'greatest_common_divisor',
+    'Backend'
 ]
 
-import math
 
+class Backend(Enum):
+
+    PYTHON = 'Python'
+
+    def __str__(self):
+        return self.value
+
+def raise_if_backend_is_not_python(api, backend):
+    if backend != Backend.PYTHON:
+        raise ValueError("As of {} version, only {} backend is supported for {} API".format(
+                            pydatastructs.__version__, str(Backend.PYTHON), api))
 
 _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)

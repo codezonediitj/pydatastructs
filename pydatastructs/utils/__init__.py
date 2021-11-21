@@ -16,6 +16,7 @@ from .misc_util import (
     SkipNode,
     summation,
     greatest_common_divisor,
-    minimum
+    minimum,
+    Backend
 )
 __all__.extend(misc_util.__all__)

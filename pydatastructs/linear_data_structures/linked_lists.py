@@ -1,5 +1,7 @@
-from pydatastructs.utils.misc_util import _check_type, LinkedListNode, SkipNode
 import math, random
+from pydatastructs.utils.misc_util import _check_type, LinkedListNode, SkipNode
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
 
 __all__ = [
     'SinglyLinkedList',
@@ -236,7 +238,9 @@ class DoublyLinkedList(LinkedList):
     """
     __slots__ = ['head', 'tail', 'size']
 
-    def __new__(cls):
+    def __new__(cls, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = LinkedList.__new__(cls)
         obj.head = None
         obj.tail = None
@@ -376,7 +380,9 @@ class SinglyLinkedList(LinkedList):
     """
     __slots__ = ['head', 'tail', 'size']
 
-    def __new__(cls):
+    def __new__(cls, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = LinkedList.__new__(cls)
         obj.head = None
         obj.tail = None
@@ -619,7 +625,9 @@ class SkipList(object):
 
     __slots__ = ['head', 'tail', '_levels', '_num_nodes', 'seed']
 
-    def __new__(cls):
+    def __new__(cls, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.head, obj.tail = None, None
         obj._num_nodes = 0
@@ -751,7 +759,6 @@ class SkipList(object):
                 curr_node = curr_node.next
             walk = walk.down
             curr_level -= 1
-        print(self._num_nodes, self._levels)
         sl_mat = [[str(None) for _ in range(self._num_nodes)] for _ in range(self._levels)]
         walk = self.head
         while walk is not None:

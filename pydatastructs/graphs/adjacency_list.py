@@ -1,6 +1,6 @@
 from pydatastructs.graphs.graph import Graph
-from pydatastructs.linear_data_structures import DynamicOneDimensionalArray
-from pydatastructs.utils.misc_util import GraphEdge
+from pydatastructs.utils.misc_util import (
+    GraphEdge, Backend, raise_if_backend_is_not_python)
 
 __all__ = [
     'AdjacencyList'
@@ -15,7 +15,9 @@ class AdjacencyList(Graph):
 
     pydatastructs.graphs.graph.Graph
     """
-    def __new__(cls, *vertices):
+    def __new__(cls, *vertices, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         for vertex in vertices:
             obj.__setattr__(vertex.name, vertex)
