@@ -88,7 +88,10 @@ class ArrayStack(Stack):
 
     __slots__ = ['items']
 
-    def __new__(cls, items=None, dtype=NoneType):
+    def __new__(cls, items=None, dtype=NoneType,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if items is None:
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
@@ -137,7 +140,9 @@ class LinkedListStack(Stack):
 
     __slots__ = ['stack']
 
-    def __new__(cls, items=None):
+    def __new__(cls, items=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.stack = SinglyLinkedList()
         if items is None:
