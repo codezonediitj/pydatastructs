@@ -1,6 +1,6 @@
-from pydatastructs.linear_data_structures.arrays import (
-    MultiDimensionalArray, OneDimensionalArray)
-from pydatastructs.utils.misc_util import NoneType
+from pydatastructs.linear_data_structures.arrays import OneDimensionalArray
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
 import math
 
 __all__ = ['SparseTable']
@@ -31,6 +31,10 @@ class SparseTable(object):
                                     common divisor of a range.
 
         `summation` - For range sum queries.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -50,7 +54,9 @@ class SparseTable(object):
 
     __slots__ = ['_table', 'func']
 
-    def __new__(cls, array, func):
+    def __new__(cls, array, func, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
 
         if len(array) == 0:
             raise ValueError("Input %s array is empty."%(array))

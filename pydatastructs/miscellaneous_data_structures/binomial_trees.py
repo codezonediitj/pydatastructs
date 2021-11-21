@@ -1,4 +1,6 @@
-from pydatastructs.utils.misc_util import BinomialTreeNode, _check_type
+from pydatastructs.utils.misc_util import (
+    BinomialTreeNode, _check_type, Backend,
+    raise_if_backend_is_not_python)
 
 __all__ = [
     'BinomialTree'
@@ -17,6 +19,10 @@ class BinomialTree(object):
     order: int
         The order of the binomial tree.
         By default, None
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -34,7 +40,9 @@ class BinomialTree(object):
     """
     __slots__ = ['root', 'order']
 
-    def __new__(cls, root=None, order=None):
+    def __new__(cls, root=None, order=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if root is not None and \
             not _check_type(root, BinomialTreeNode):
             raise TypeError("%s i.e., root should be of "

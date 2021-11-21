@@ -1,4 +1,6 @@
 
+from pydatastructs.utils.misc_util import Backend, raise_if_backend_is_not_python
+
 __all__ = [
     'Graph'
 ]
@@ -24,6 +26,10 @@ class Graph(object):
     vertices: GraphNode(s)
         For AdjacencyList implementation vertices
         can be passed for initializing the graph.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -64,6 +70,8 @@ class Graph(object):
     __slots__ = ['_impl']
 
     def __new__(cls, *args, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         default_impl = args[0]._impl if args else 'adjacency_list'
         implementation = kwargs.get('implementation', default_impl)
         if implementation == 'adjacency_list':

@@ -1,10 +1,20 @@
 from pydatastructs.utils import Set
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
 
 __all__ = ['DisjointSetForest']
 
 class DisjointSetForest(object):
     """
     Represents a forest of disjoint set trees.
+
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -28,7 +38,9 @@ class DisjointSetForest(object):
 
     __slots__ = ['tree']
 
-    def __new__(cls):
+    def __new__(cls, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.tree = dict()
         return obj

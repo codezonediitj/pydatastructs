@@ -4,8 +4,8 @@ data structure.
 """
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
-from pydatastructs.utils import GraphEdge
-from pydatastructs.utils.misc_util import _comp
+from pydatastructs.utils.misc_util import (
+    _comp, raise_if_backend_is_not_python, Backend)
 from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
@@ -51,6 +51,10 @@ def breadth_first_search(
         current node and the node next to current node.
         The rest of the arguments are optional and you can
         provide your own stuff there.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -75,6 +79,8 @@ def breadth_first_search(
     >>> G.add_edge(V2.name, V3.name)
     >>> breadth_first_search(G, V1.name, f, V3.name)
     """
+    raise_if_backend_is_not_python(
+        breadth_first_search, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_breadth_first_search_" + graph._impl
     if not hasattr(algorithms, func):
@@ -133,6 +139,10 @@ def breadth_first_search_parallel(
         current node and the node next to current node.
         The rest of the arguments are optional and you can
         provide your own stuff there.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -157,6 +167,8 @@ def breadth_first_search_parallel(
     >>> G.add_edge(V2.name, V3.name)
     >>> breadth_first_search_parallel(G, V1.name, 3, f, V3.name)
     """
+    raise_if_backend_is_not_python(
+        breadth_first_search_parallel, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_breadth_first_search_parallel_" + graph._impl
     if not hasattr(algorithms, func):
@@ -256,7 +268,7 @@ def _minimum_spanning_tree_prim_adjacency_list(graph):
                     e[w] = vw
     return mst
 
-def minimum_spanning_tree(graph, algorithm):
+def minimum_spanning_tree(graph, algorithm, **kwargs):
     """
     Computes a minimum spanning tree for the given
     graph and algorithm.
@@ -276,6 +288,10 @@ def minimum_spanning_tree(graph, algorithm):
         'kruskal' -> Kruskal's algorithm as given in [1].
 
         'prim' -> Prim's algorithm as given in [2].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -312,6 +328,8 @@ def minimum_spanning_tree(graph, algorithm):
     should be used only for such graphs. Using with other
     types of graphs may lead to unwanted results.
     """
+    raise_if_backend_is_not_python(
+        minimum_spanning_tree, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_minimum_spanning_tree_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
@@ -390,7 +408,7 @@ def _minimum_spanning_tree_parallel_prim_adjacency_list(graph, num_threads):
 
     return mst
 
-def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
+def minimum_spanning_tree_parallel(graph, algorithm, num_threads, **kwargs):
     """
     Computes a minimum spanning tree for the given
     graph and algorithm using the given number of threads.
@@ -412,6 +430,10 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
         'prim' -> Prim's algorithm as given in [2].
     num_threads: int
         The number of threads to be used.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -448,6 +470,8 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads):
     should be used only for such graphs. Using with other
     types of graphs will lead to unwanted results.
     """
+    raise_if_backend_is_not_python(
+        minimum_spanning_tree_parallel, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_minimum_spanning_tree_parallel_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
@@ -505,7 +529,7 @@ def _strongly_connected_components_kosaraju_adjacency_list(graph):
 _strongly_connected_components_kosaraju_adjacency_matrix = \
     _strongly_connected_components_kosaraju_adjacency_list
 
-def strongly_connected_components(graph, algorithm):
+def strongly_connected_components(graph, algorithm, **kwargs):
     """
     Computes strongly connected components for the given
     graph and algorithm.
@@ -523,6 +547,10 @@ def strongly_connected_components(graph, algorithm):
         supported,
 
         'kosaraju' -> Kosaraju's algorithm as given in [1].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -550,6 +578,8 @@ def strongly_connected_components(graph, algorithm):
     .. [1] https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
 
     """
+    raise_if_backend_is_not_python(
+        strongly_connected_components, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_strongly_connected_components_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
@@ -583,6 +613,10 @@ def depth_first_search(
         current node and the node next to current node.
         The rest of the arguments are optional and you can
         provide your own stuff there.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -612,6 +646,8 @@ def depth_first_search(
 
     .. [1] https://en.wikipedia.org/wiki/Depth-first_search
     """
+    raise_if_backend_is_not_python(
+        depth_first_search, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_depth_first_search_" + graph._impl
     if not hasattr(algorithms, func):
@@ -646,7 +682,8 @@ def _depth_first_search_adjacency_list(
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
 
 def shortest_paths(graph: Graph, algorithm: str,
-                   source: str, target: str="") -> tuple:
+                   source: str, target: str="",
+                   **kwargs) -> tuple:
     """
     Finds shortest paths in the given graph from a given source.
 
@@ -668,6 +705,10 @@ def shortest_paths(graph: Graph, algorithm: str,
         The name of the target node.
         Optional, by default, all pair shortest paths
         are returned.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -701,6 +742,8 @@ def shortest_paths(graph: Graph, algorithm: str,
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
     .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
     """
+    raise_if_backend_is_not_python(
+        shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
@@ -767,7 +810,8 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
 
 _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
 
-def all_pair_shortest_paths(graph: Graph, algorithm: str) -> tuple:
+def all_pair_shortest_paths(graph: Graph, algorithm: str,
+                            **kwargs) -> tuple:
     """
     Finds shortest paths between all pairs of vertices in the given graph.
 
@@ -781,6 +825,10 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str) -> tuple:
         are implemented,
 
         'floyd_warshall' -> Floyd Warshall algorithm as given in [1].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -810,6 +858,8 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str) -> tuple:
 
     .. [1] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
     """
+    raise_if_backend_is_not_python(
+        all_pair_shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
@@ -849,7 +899,8 @@ def _floyd_warshall_adjacency_list(graph: Graph):
 
 _floyd_warshall_adjacency_matrix = _floyd_warshall_adjacency_list
 
-def topological_sort(graph: Graph, algorithm: str) -> list:
+def topological_sort(graph: Graph, algorithm: str,
+                     **kwargs) -> list:
     """
     Performs topological sort on the given graph using given algorithm.
 
@@ -863,6 +914,10 @@ def topological_sort(graph: Graph, algorithm: str) -> list:
         Currently, following are supported,
 
         'kahn' -> Kahn's algorithm as given in [1].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -886,6 +941,8 @@ def topological_sort(graph: Graph, algorithm: str) -> list:
 
     .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
     """
+    raise_if_backend_is_not_python(
+        topological_sort, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
@@ -920,7 +977,8 @@ def _kahn_adjacency_list(graph: Graph) -> list:
         raise ValueError("Graph is not acyclic.")
     return L
 
-def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int) -> list:
+def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int,
+                              **kwargs) -> list:
     """
     Performs topological sort on the given graph using given algorithm using
     given number of threads.
@@ -937,6 +995,10 @@ def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int) ->
         'kahn' -> Kahn's algorithm as given in [1].
     num_threads: int
         The maximum number of threads to be used.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -960,6 +1022,8 @@ def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int) ->
 
     .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
     """
+    raise_if_backend_is_not_python(
+        topological_sort_parallel, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl + '_parallel'
     if not hasattr(algorithms, func):

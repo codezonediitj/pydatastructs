@@ -1,5 +1,6 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
-from pydatastructs.utils.misc_util import NoneType, LinkedListNode, _check_type
+from pydatastructs.utils.misc_util import (
+    NoneType, Backend, raise_if_backend_is_not_python)
 from pydatastructs.trees.heaps import BinaryHeap, BinomialHeap
 from copy import deepcopy as dc
 
@@ -29,6 +30,10 @@ class Queue(object):
         Set to True if the queue should support
         additional, appendleft and pop operations
         from left and right sides respectively.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -50,6 +55,8 @@ class Queue(object):
     """
 
     def __new__(cls, implementation='array', **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if implementation == 'array':
             return ArrayQueue(
                 kwargs.get('items', None),
@@ -100,7 +107,10 @@ class ArrayQueue(Queue):
 
     __slots__ = ['_front', '_rear', '_double_ended']
 
-    def __new__(cls, items=None, dtype=NoneType, double_ended=False):
+    def __new__(cls, items=None, dtype=NoneType, double_ended=False,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if items is None:
             items = DynamicOneDimensionalArray(dtype, 0)
         else:
@@ -204,7 +214,10 @@ class LinkedListQueue(Queue):
 
     __slots__ = ['queue', '_double_ended']
 
-    def __new__(cls, items=None, double_ended=False):
+    def __new__(cls, items=None, double_ended=False,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.queue = SinglyLinkedList()
         if items is None:
@@ -273,11 +286,15 @@ class PriorityQueue(object):
         used for supporting operations
         of priority queue.
         The following implementations are supported,
+
         'linked_list' -> Linked list implementation.
+
         'binary_heap' -> Binary heap implementation.
+
         'binomial_heap' -> Binomial heap implementation.
             Doesn't support custom comparators, minimum
             key data is extracted in every pop.
+
         Optional, by default, 'binary_heap' implementation
         is used.
     comp: function
@@ -286,6 +303,10 @@ class PriorityQueue(object):
         By default, `lambda u, v: u < v` is used to compare
         priorities i.e., minimum priority elements are extracted
         by pop operation.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -309,6 +330,8 @@ class PriorityQueue(object):
     """
 
     def __new__(cls, implementation='binary_heap', **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         comp = kwargs.get("comp", lambda u, v: u < v)
         if implementation == 'linked_list':
             return LinkedListPriorityQueue(comp)
@@ -370,7 +393,9 @@ class LinkedListPriorityQueue(PriorityQueue):
     def methods(cls):
         return ['__new__', 'push', 'pop', 'peek', 'is_empty']
 
-    def __new__(cls, comp):
+    def __new__(cls, comp, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.items = SinglyLinkedList()
         obj.comp = comp
@@ -416,7 +441,9 @@ class BinaryHeapPriorityQueue(PriorityQueue):
     def methods(cls):
         return ['__new__', 'push', 'pop', 'peek', 'is_empty']
 
-    def __new__(cls, comp):
+    def __new__(cls, comp, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.items = BinaryHeap()
         obj.items._comp = comp
@@ -447,7 +474,9 @@ class BinomialHeapPriorityQueue(PriorityQueue):
     def methods(cls):
         return ['__new__', 'push', 'pop', 'peek', 'is_empty']
 
-    def __new__(cls):
+    def __new__(cls, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.items = BinomialHeap()
         return obj

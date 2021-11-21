@@ -1,4 +1,5 @@
 import os, re, sys, pydatastructs, inspect
+from typing import Type
 
 def _list_files():
     root_path = os.path.abspath(
@@ -128,3 +129,26 @@ def test_public_api():
                                 "have %s method implemented."%(
                                     _class, method
                                 ))
+
+def test_backend_argument_message():
+
+    def call_and_raise(api, pos_args_count=0):
+        try:
+            if pos_args_count == 0:
+                api(backend=None)
+            elif pos_args_count == 1:
+                api(None, backend=None)
+            elif pos_args_count == 2:
+                api(None, None, backend=None)
+        except ValueError as value_error:
+            assert str(api) in value_error.args[0]
+        except TypeError as type_error:
+            max_pos_args_count = 2
+            if pos_args_count <= max_pos_args_count:
+                call_and_raise(api, pos_args_count + 1)
+            else:
+                raise type_error
+
+    apis = _apis()
+    for api in apis:
+        call_and_raise(api, 0)

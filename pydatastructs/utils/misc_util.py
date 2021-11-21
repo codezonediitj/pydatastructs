@@ -1,3 +1,6 @@
+import math, pydatastructs
+from enum import Enum
+
 __all__ = [
     'TreeNode',
     'MAryTreeNode',
@@ -13,11 +16,22 @@ __all__ = [
     'SkipNode',
     'minimum',
     'summation',
-    'greatest_common_divisor'
+    'greatest_common_divisor',
+    'Backend'
 ]
 
-import math
 
+class Backend(Enum):
+
+    PYTHON = 'Python'
+
+    def __str__(self):
+        return self.value
+
+def raise_if_backend_is_not_python(api, backend):
+    if backend != Backend.PYTHON:
+        raise ValueError("As of {} version, only {} backend is supported for {} API".format(
+                            pydatastructs.__version__, str(Backend.PYTHON), api))
 
 _check_type = lambda a, t: isinstance(a, t)
 NoneType = type(None)
@@ -43,6 +57,10 @@ class TreeNode(Node):
         Optional, index of the left child node.
     right: int
         Optional, index of the right child node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
 
     __slots__ = ['key', 'data', 'left', 'right', 'is_root',
@@ -52,7 +70,9 @@ class TreeNode(Node):
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.left, obj.right, obj.parent, obj.height, obj.size = \
@@ -79,11 +99,16 @@ class CartesianTreeNode(TreeNode):
         Any valid data to be stored in the node.
     priority: int
         An integer value for heap property.
-
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     __slots__ = ['key', 'data', 'priority']
 
-    def __new__(cls, key, priority, data=None):
+    def __new__(cls, key, priority, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = TreeNode.__new__(cls, key, data)
         obj.priority = priority
         return obj
@@ -107,7 +132,10 @@ class RedBlackTreeNode(TreeNode):
         Any valid data to be stored in the node.
     color
         0 for black and 1 for red.
-
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     __slots__ = ['key', 'data', 'color']
 
@@ -115,7 +143,9 @@ class RedBlackTreeNode(TreeNode):
     def methods(cls):
         return ['__new__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = TreeNode.__new__(cls, key, data)
         obj.color = 1
         return obj
@@ -131,6 +161,10 @@ class BinomialTreeNode(TreeNode):
         Required for comparison operations.
     data
         Any valid data to be stored in the node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -146,6 +180,10 @@ class BinomialTreeNode(TreeNode):
     is_root: bool, by default, False
         If the current node is a root of the tree then
         set it to True otherwise False.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     __slots__ = ['parent', 'key', 'children', 'data', 'is_root']
 
@@ -153,7 +191,9 @@ class BinomialTreeNode(TreeNode):
     def methods(cls):
         return ['__new__', 'add_children', '__str__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
@@ -189,6 +229,10 @@ class MAryTreeNode(TreeNode):
         Required for comparison operations.
     data
         Any valid data to be stored in the node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -208,7 +252,9 @@ class MAryTreeNode(TreeNode):
     def methods(cls):
         return ['__new__', 'add_children', '__str__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
         obj = Node.__new__(cls)
         obj.data = data
@@ -241,15 +287,24 @@ class LinkedListNode(Node):
     data
         Any valid data to be stored in the node.
     links
-        List of names of attributes which should be used as links to other nodes.
+        List of names of attributes which should
+        be used as links to other nodes.
     addrs
-        List of address of nodes to be assigned to each of the attributes in links.
+        List of address of nodes to be assigned to
+        each of the attributes in links.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     @classmethod
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, key, data=None, links=None, addrs=None):
+    def __new__(cls, key, data=None, links=None, addrs=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if links is None:
             links = ['next']
         if addrs is None:
@@ -278,16 +333,25 @@ class SkipNode(Node):
     data
         Any valid data to be stored in the node.
     next
-        Reference to the node lying just forward to the current node.
+        Reference to the node lying just forward
+        to the current node.
         Optional, by default, None.
     down
-        Reference to the node lying just below the current node.
+        Reference to the node lying just below the
+        current node.
         Optional, by default, None.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
 
     __slots__ = ['key', 'data', 'next', 'down']
 
-    def __new__(cls, key, data=None, next=None, down=None):
+    def __new__(cls, key, data=None, next=None, down=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = Node.__new__(cls)
         obj.key, obj.data = key, data
         obj.next, obj.down = next, down
@@ -320,13 +384,20 @@ class AdjacencyListGraphNode(GraphNode):
         Any valid iterator to initialize the adjacent
         nodes of the current node.
         Optional, by default, None
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     @classmethod
     def methods(cls):
         return ['__new__', 'add_adjacent_node',
                 'remove_adjacent_node']
 
-    def __new__(cls, name, data=None, adjacency_list=None):
+    def __new__(cls, name, data=None, adjacency_list=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = GraphNode.__new__(cls)
         obj.name, obj.data = str(name), data
         obj._impl = 'adjacency_list'
@@ -371,6 +442,10 @@ class AdjacencyMatrixGraphNode(GraphNode):
         The index of the node in the AdjacencyMatrix.
     data
         The data to be stored at each graph node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     __slots__ = ['name', 'data']
 
@@ -378,7 +453,10 @@ class AdjacencyMatrixGraphNode(GraphNode):
     def methods(cls):
         return ['__new__']
 
-    def __new__(cls, name, data=None):
+    def __new__(cls, name, data=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = GraphNode.__new__(cls)
         obj.name, obj.data, obj.is_connected = \
             str(name), data, None
@@ -396,12 +474,19 @@ class GraphEdge(object):
         The source node of the edge.
     node2: GraphNode or it's child classes
         The target node of the edge.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     @classmethod
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, node1, node2, value=None):
+    def __new__(cls, node1, node2, value=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.source, obj.target = node1, node2
         obj.value = value
@@ -422,6 +507,10 @@ class Set(object):
         the set.
     data: Python object
         The data to be stored in the set.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
 
     __slots__ = ['parent', 'size', 'key', 'data']
@@ -430,7 +519,10 @@ class Set(object):
     def methods(cls):
         return ['__new__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.key = key
         obj.data = data
@@ -446,6 +538,10 @@ class TrieNode(Node):
 
     char: The character stored in the current node.
           Optional, by default None.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
 
     __slots__ = ['char', '_children', 'is_terminal']
@@ -454,7 +550,9 @@ class TrieNode(Node):
     def methods(cls):
         return ['__new__', 'add_child', 'get_child', 'remove_child']
 
-    def __new__(cls, char=None):
+    def __new__(cls, char=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = Node.__new__(cls)
         obj.char = char
         obj._children = {}

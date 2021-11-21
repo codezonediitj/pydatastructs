@@ -1,6 +1,7 @@
 from pydatastructs.graphs.graph import Graph
-from pydatastructs.linear_data_structures import OneDimensionalArray
-from pydatastructs.utils.misc_util import AdjacencyMatrixGraphNode, GraphEdge
+from pydatastructs.utils.misc_util import (
+    GraphEdge, raise_if_backend_is_not_python,
+    Backend)
 
 __all__ = [
     'AdjacencyMatrix'
@@ -15,7 +16,9 @@ class AdjacencyMatrix(Graph):
 
     pydatastructs.graphs.graph.Graph
     """
-    def __new__(cls, *vertices):
+    def __new__(cls, *vertices, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.vertices = [vertex.name for vertex in vertices]
         for vertex in vertices:

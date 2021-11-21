@@ -1,5 +1,7 @@
 from pydatastructs.utils import MAryTreeNode
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
 
 __all__ = [
     'MAryTree'
@@ -15,23 +17,19 @@ class MAryTree(object):
     key
         Required if tree is to be instantiated with
         root otherwise not needed.
-
     root_data
         Optional, the root node of the binary tree.
         If not of type MAryTreeNode, it will consider
         root as data and a new root node will
         be created.
-
     comp: lambda
         Optional, A lambda function which will be used
         for comparison of keys. Should return a
         bool value. By default it implements less
         than operator.
-
     is_order_statistic: bool
         Set it to True, if you want to use the
         order statistic features of the tree.
-
     max_children
         Optional, specifies the maximum number of children
         a node can have. Defaults to 2 in case nothing is
@@ -48,7 +46,10 @@ class MAryTree(object):
 
 
     def __new__(cls, key=None, root_data=None, comp=None,
-                is_order_statistic=False, max_children=2):
+                is_order_statistic=False, max_children=2,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
@@ -77,7 +78,6 @@ class MAryTree(object):
 
         key
             The key for comparison.
-
         data
             The data to be inserted.
 
@@ -127,7 +127,6 @@ class MAryTree(object):
 
         key
             The key for searching.
-
         parent: bool
             If true then returns index of the
             parent of the node with the passed

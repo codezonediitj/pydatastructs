@@ -1,6 +1,8 @@
 from pydatastructs.linear_data_structures.arrays import (
     OneDimensionalArray, DynamicArray, DynamicOneDimensionalArray, Array)
-from pydatastructs.utils.misc_util import _check_type, _comp
+from pydatastructs.utils.misc_util import (
+    _check_type, _comp, Backend,
+    raise_if_backend_is_not_python)
 from concurrent.futures import ThreadPoolExecutor
 from math import log, floor
 
@@ -81,6 +83,10 @@ def merge_sort_parallel(array, num_threads, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -99,6 +105,8 @@ def merge_sort_parallel(array, num_threads, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Merge_sort
     """
+    raise_if_backend_is_not_python(
+            merge_sort_parallel, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
@@ -143,6 +151,10 @@ def brick_sort(array, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -159,6 +171,8 @@ def brick_sort(array, **kwargs):
     ==========
     .. [1] https://www.geeksforgeeks.org/odd-even-sort-brick-sort/
     """
+    raise_if_backend_is_not_python(
+        brick_sort, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
@@ -211,6 +225,10 @@ def brick_sort_parallel(array, num_threads, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -229,7 +247,8 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort
     """
-
+    raise_if_backend_is_not_python(
+        brick_sort_parallel, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
@@ -265,6 +284,10 @@ def heapsort(array, **kwargs):
         is to be sorted.
         Optional, by default the index
         of the last position filled.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -286,6 +309,8 @@ def heapsort(array, **kwargs):
     This function does not support custom comparators as is the case with
     other sorting functions in this file.
     """
+    raise_if_backend_is_not_python(
+        heapsort, kwargs.get('backend', Backend.PYTHON))
     from pydatastructs.trees.heaps import BinaryHeap
 
     start = kwargs.get('start', 0)
@@ -305,7 +330,7 @@ def heapsort(array, **kwargs):
     if _check_type(array, DynamicArray):
         array._modify(force=True)
 
-def counting_sort(array: Array) -> Array:
+def counting_sort(array: Array, **kwargs) -> Array:
     """
     Performs counting sort on the given array.
 
@@ -314,6 +339,10 @@ def counting_sort(array: Array) -> Array:
 
     array: Array
         The array which is to be sorted.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -346,6 +375,8 @@ def counting_sort(array: Array) -> Array:
     custom comparators aren't allowed.
     The ouput array doesn't contain any `None` value.
     """
+    raise_if_backend_is_not_python(
+        counting_sort, kwargs.get('backend', Backend.PYTHON))
     max_val, min_val = array[0], array[0]
     none_count = 0
     for i in range(len(array)):
@@ -397,13 +428,15 @@ def matrix_multiply_parallel(matrix_1, matrix_2, num_threads):
 
     matrix_1: Any matrix representation
         Left matrix
-
     matrix_2: Any matrix representation
         Right matrix
-
     num_threads: int
         The maximum number of threads
         to be used for multiplication.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Raises
     ======
@@ -477,6 +510,10 @@ def bucket_sort(array: Array, **kwargs) -> Array:
         is to be sorted.
         Optional, by default the index
         of the last position filled.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -508,6 +545,8 @@ def bucket_sort(array: Array, **kwargs) -> Array:
     This function does not support custom comparators as is the case with
     other sorting functions in this file.
     """
+    raise_if_backend_is_not_python(
+        bucket_sort, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
 
@@ -580,6 +619,10 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -605,6 +648,8 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
 
     .. [1] https://en.wikipedia.org/wiki/Cocktail_shaker_sort
     """
+    raise_if_backend_is_not_python(
+        cocktail_shaker_sort, kwargs.get('backend', Backend.PYTHON))
     def swap(i, j):
         array[i], array[j] = array[j], array[i]
 
@@ -667,6 +712,10 @@ def quick_sort(array: Array, **kwargs) -> Array:
         the original input array to `quick_sort` function.
         Optional, by default, picks the element at `high`
         index of the current partition as pivot.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -692,6 +741,8 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     .. [1] https://en.wikipedia.org/wiki/Quicksort
     """
+    raise_if_backend_is_not_python(
+        quick_sort, kwargs.get('backend', Backend.PYTHON))
     from pydatastructs import Stack
     comp = kwargs.get("comp", lambda u, v: u <= v)
     pick_pivot_element = kwargs.get("pick_pivot_element",
@@ -730,7 +781,8 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     return array
 
-def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalArray) -> OneDimensionalArray:
+def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalArray,
+                               **kwargs) -> OneDimensionalArray:
     """
     Finds the longest common subsequence between the
     two given sequences.
@@ -742,6 +794,10 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
         The first sequence.
     seq2: OneDimensionalArray
         The second sequence.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -775,6 +831,8 @@ def longest_common_subsequence(seq1: OneDimensionalArray, seq2: OneDimensionalAr
     The data types of elements across both the sequences
     should be same and should be comparable.
     """
+    raise_if_backend_is_not_python(
+        longest_common_subsequence, kwargs.get('backend', Backend.PYTHON))
     row = len(seq1)
     col = len(seq2)
     check_mat = {0: [(0, []) for _ in range(col + 1)]}
@@ -819,6 +877,10 @@ def is_ordered(array, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -836,8 +898,9 @@ def is_ordered(array, **kwargs):
     >>> arr1 = OneDimensionalArray(int, [1, 2, 3])
     >>> is_ordered(arr1, start=0, end=1, comp=lambda u, v: u > v)
     False
-
     """
+    raise_if_backend_is_not_python(
+        is_ordered, kwargs.get('backend', Backend.PYTHON))
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
@@ -874,6 +937,10 @@ def upper_bound(array, value, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -899,6 +966,8 @@ def upper_bound(array, value, **kwargs):
 
     DynamicOneDimensionalArray objects may not work as expected.
     """
+    raise_if_backend_is_not_python(
+        upper_bound, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array))
     comp = kwargs.get('comp', lambda x, y: x < y)
@@ -941,6 +1010,10 @@ def lower_bound(array, value, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -966,6 +1039,8 @@ def lower_bound(array, value, **kwargs):
 
     DynamicOneDimensionalArray objects may not work as expected.
     """
+    raise_if_backend_is_not_python(
+        lower_bound, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array))
     comp = kwargs.get('comp', lambda x, y: x < y)
@@ -982,7 +1057,7 @@ def lower_bound(array, value, **kwargs):
             inclusive_end = mid - 1
     return index
 
-def longest_increasing_subsequence(array):
+def longest_increasing_subsequence(array, **kwargs):
     """
     Returns the longest increasing subsequence (as a OneDimensionalArray) that
     can be obtained from a given OneDimensionalArray. A subsequence
@@ -995,6 +1070,10 @@ def longest_increasing_subsequence(array):
 
     array: OneDimensionalArray
         The given array in the form of a OneDimensionalArray
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -1017,6 +1096,9 @@ def longest_increasing_subsequence(array):
     >>> str(longest_inc_subsequence)
     '[-1, 2, 3, 7, 9, 10]'
     """
+    raise_if_backend_is_not_python(
+        longest_increasing_subsequence,
+        kwargs.get('backend', Backend.PYTHON))
     n = len(array)
     dp = OneDimensionalArray(int, n)
     dp.fill(0)
@@ -1096,6 +1178,10 @@ def next_permutation(array, **kwargs):
         desired lexicographical ordering.
         Optional, by default, less than is
         used for comparing two values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
 
     Returns
@@ -1126,6 +1212,8 @@ def next_permutation(array, **kwargs):
 
     .. [1] http://www.cplusplus.com/reference/algorithm/next_permutation/
     """
+    raise_if_backend_is_not_python(
+        next_permutation, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get('comp', lambda x, y: x < y)
@@ -1163,6 +1251,10 @@ def prev_permutation(array, **kwargs):
         desired lexicographical ordering.
         Optional, by default, less than is
         used for comparing two values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
 
     Returns
@@ -1193,6 +1285,8 @@ def prev_permutation(array, **kwargs):
 
     .. [1] http://www.cplusplus.com/reference/algorithm/prev_permutation/
     """
+    raise_if_backend_is_not_python(
+        prev_permutation, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get('comp', lambda x, y: x < y)

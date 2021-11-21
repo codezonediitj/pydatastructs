@@ -1,5 +1,7 @@
-from pydatastructs.utils.misc_util import _check_type, NoneType, TreeNode, BinomialTreeNode
-from pydatastructs.linear_data_structures.arrays import (ArrayForTrees,
+from pydatastructs.utils.misc_util import (
+    _check_type, TreeNode, BinomialTreeNode,
+    Backend, raise_if_backend_is_not_python)
+from pydatastructs.linear_data_structures.arrays import (
      DynamicOneDimensionalArray, Array)
 from pydatastructs.miscellaneous_data_structures.binomial_trees import BinomialTree
 
@@ -24,12 +26,10 @@ class DHeap(Heap):
     Parameters
     ==========
 
-    elements : list, tuple, Array
+    elements: list, tuple, Array
         Optional, by default 'None'.
         list/tuple/Array of initial TreeNode in Heap.
-
-
-    heap_property : str
+    heap_property: str
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -40,6 +40,10 @@ class DHeap(Heap):
         then pass 'min'.
         By default, the heap property is
         set to 'min'.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -72,7 +76,10 @@ class DHeap(Heap):
     """
     __slots__ = ['_comp', 'heap', 'd', 'heap_property', '_last_pos_filled']
 
-    def __new__(cls, elements=None, heap_property="min", d=4):
+    def __new__(cls, elements=None, heap_property="min", d=4,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = Heap.__new__(cls)
         obj.heap_property = heap_property
         obj.d = d
@@ -142,7 +149,6 @@ class DHeap(Heap):
 
         key
             The key for comparison.
-
         data
             The data to be inserted.
 
@@ -172,7 +178,7 @@ class DHeap(Heap):
         Returns
         =======
 
-        root_element : TreeNode
+        root_element: TreeNode
             The TreeNode at the root of the heap,
             if the heap is not empty.
 
@@ -218,11 +224,10 @@ class BinaryHeap(DHeap):
     Parameters
     ==========
 
-    elements : list, tuple
+    elements: list, tuple
         Optional, by default 'None'.
         List/tuple of initial elements in Heap.
-
-    heap_property : str
+    heap_property: str
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -233,6 +238,10 @@ class BinaryHeap(DHeap):
         then pass 'min'.
         By default, the heap property is
         set to 'min'.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -263,7 +272,10 @@ class BinaryHeap(DHeap):
 
     .. [1] https://en.m.wikipedia.org/wiki/Binary_heap
     """
-    def __new__(cls, elements=None, heap_property="min"):
+    def __new__(cls, elements=None, heap_property="min",
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = DHeap.__new__(cls, elements, heap_property, 2)
         return obj
 
@@ -279,11 +291,10 @@ class TernaryHeap(DHeap):
     Parameters
     ==========
 
-    elements : list, tuple
+    elements: list, tuple
         Optional, by default 'None'.
         List/tuple of initial elements in Heap.
-
-    heap_property : str
+    heap_property: str
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -294,6 +305,10 @@ class TernaryHeap(DHeap):
         then pass 'min'.
         By default, the heap property is
         set to 'min'.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -327,7 +342,10 @@ class TernaryHeap(DHeap):
     .. [1] https://en.wikipedia.org/wiki/D-ary_heap
     .. [2] https://ece.uwaterloo.ca/~dwharder/aads/Algorithms/d-ary_heaps/Ternary_heaps/
     """
-    def __new__(cls, elements=None, heap_property="min"):
+    def __new__(cls, elements=None, heap_property="min",
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = DHeap.__new__(cls, elements, heap_property, 3)
         return obj
 
@@ -347,6 +365,10 @@ class BinomialHeap(Heap):
         By default, []
         The list of BinomialTree object references
         in sorted order.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -367,7 +389,9 @@ class BinomialHeap(Heap):
     """
     __slots__ = ['root_list']
 
-    def __new__(cls, root_list=None):
+    def __new__(cls, root_list=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if root_list is None:
             root_list = []
         if not all((_check_type(root, BinomialTree))
@@ -528,7 +552,6 @@ class BinomialHeap(Heap):
 
         node: BinomialTreeNode
             The node whose key is to be reduced.
-
         new_key
             The new key of the given node,
             should be less than the current key.

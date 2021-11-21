@@ -1,5 +1,7 @@
 from pydatastructs.linear_data_structures.arrays import (
     DynamicOneDimensionalArray, OneDimensionalArray)
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
 
 __all__ = [
     'find'
@@ -7,7 +9,7 @@ __all__ = [
 
 PRIME_NUMBER, MOD = 257, 1000000007
 
-def find(text, query, algorithm):
+def find(text, query, algorithm, **kwargs):
     """
     Finds occurrence of a query string within the text string.
 
@@ -27,6 +29,10 @@ def find(text, query, algorithm):
         'kmp' -> Knuth-Morris-Pratt as given in [1].
 
         'rabin_karp' -> Rabin–Karp algorithm as given in [2].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -59,6 +65,8 @@ def find(text, query, algorithm):
     .. [1] https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
     .. [2] https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
     """
+    raise_if_backend_is_not_python(
+            find, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.strings.algorithms as algorithms
     func = "_" + algorithm
     if not hasattr(algorithms, func):

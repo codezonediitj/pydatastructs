@@ -1,4 +1,6 @@
-from pydatastructs.utils.misc_util import _check_type, NoneType
+from pydatastructs.utils.misc_util import (
+    _check_type, NoneType, Backend,
+    raise_if_backend_is_not_python)
 
 __all__ = [
     'OneDimensionalArray',
@@ -7,14 +9,14 @@ __all__ = [
 ]
 
 class Array(object):
-    '''
+    """
     Abstract class for arrays in pydatastructs.
-    '''
+    """
     def __str__(self) -> str:
         return str(self._data)
 
 class OneDimensionalArray(Array):
-    '''
+    """
     Represents one dimensional static arrays of
     fixed size.
 
@@ -32,6 +34,10 @@ class OneDimensionalArray(Array):
         The inital value with which the element has
         to be initialized. By default none, used only
         when the data is not given.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Raises
     ======
@@ -64,11 +70,13 @@ class OneDimensionalArray(Array):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Array_data_structure#One-dimensional_arrays
-    '''
+    """
 
     __slots__ = ['_size', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         if len(args) not in (1, 2):
@@ -152,6 +160,10 @@ class MultiDimensionalArray(Array):
         A valid object type.
     *args: int
         The dimensions of the array.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Raises
     ======
@@ -185,6 +197,8 @@ class MultiDimensionalArray(Array):
     __slots__ = ['_sizes', '_data', '_dtype']
 
     def __new__(cls, dtype: type = NoneType, *args, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         elif not args:
@@ -291,6 +305,10 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         The number below which if the ratio, Num(T)/Size(T)
         falls then the array is contracted such that at
         most only half the positions are filled.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Raises
     ======
@@ -338,6 +356,8 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     __slots__ = ['_load_factor', '_num', '_last_pos_filled', '_size']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = super().__new__(cls, dtype, *args, **kwargs)
         obj._load_factor = float(kwargs.get('load_factor', 0.25))
         obj._num = 0 if obj._size == 0 or obj[0] is None else obj._size
@@ -412,6 +432,14 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
 class ArrayForTrees(DynamicOneDimensionalArray):
     """
     Utility dynamic array for storing nodes of a tree.
+
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     See Also
     ========

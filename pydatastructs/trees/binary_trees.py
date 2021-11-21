@@ -1,11 +1,11 @@
+import random
+from collections import deque as Queue
 from pydatastructs.utils import TreeNode, CartesianTreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
-from pydatastructs.linear_data_structures import (
-    OneDimensionalArray, DynamicOneDimensionalArray)
+from pydatastructs.linear_data_structures import OneDimensionalArray
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
-from collections import deque as Queue
-import random
-from copy import deepcopy
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
 
 __all__ = [
     'AVLTree',
@@ -29,22 +29,23 @@ class BinaryTree(object):
     key
         Required if tree is to be instantiated with
         root otherwise not needed.
-
     root_data
         Optional, the root node of the binary tree.
         If not of type TreeNode, it will consider
         root as data and a new root node will
         be created.
-
     comp: lambda/function
         Optional, A lambda function which will be used
         for comparison of keys. Should return a
         bool value. By default it implements less
         than operator.
-
     is_order_statistic: bool
         Set it to True, if you want to use the
         order statistic features of the tree.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     References
     ==========
@@ -56,7 +57,9 @@ class BinaryTree(object):
                  'is_order_statistic']
 
     def __new__(cls, key=None, root_data=None, comp=None,
-                is_order_statistic=False):
+                is_order_statistic=False, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
@@ -106,7 +109,6 @@ class BinaryTree(object):
         key
             The key of the node which is
             to be deleted.
-
         balancing_info: bool
             Optional, by default, False
             The information needed for updating
@@ -141,7 +143,6 @@ class BinaryTree(object):
 
         key
             The key for searching.
-
         parent: bool
             If true then returns index of the
             parent of the node with the passed
@@ -1411,6 +1412,10 @@ class BinaryTreeTraversal(object):
     tree: BinaryTree
         The binary tree for whose traversal
         is to be done.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Traversals
     ==========
@@ -1449,7 +1454,9 @@ class BinaryTreeTraversal(object):
 
     __slots__ = ['tree']
 
-    def __new__(cls, tree):
+    def __new__(cls, tree, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if not isinstance(tree, BinaryTree):
             raise TypeError("%s is not a binary tree"%(tree))
         obj = object.__new__(cls)
@@ -1557,7 +1564,6 @@ class BinaryTreeTraversal(object):
         return getattr(self, '_' + order)(node)
 
     def breadth_first_search(self, node=None, strategy='queue'):
-        # TODO: IMPLEMENT ITERATIVE DEEPENING-DEPTH FIRST SEARCH STRATEGY
         """
         Computes the breadth first search traversal of a binary tree.
 
@@ -1578,6 +1584,7 @@ class BinaryTreeTraversal(object):
         list
             Each element of the list is of type `TreeNode`.
         """
+        # TODO: IMPLEMENT ITERATIVE DEEPENING-DEPTH FIRST SEARCH STRATEGY
         strategies = ('queue',)
         if strategy not in strategies:
             raise NotImplementedError(
@@ -1606,6 +1613,10 @@ class BinaryIndexedTree(object):
     array: list/tuple
         The array whose elements are to be
         considered for the queries.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -1626,8 +1637,9 @@ class BinaryIndexedTree(object):
 
     __slots__ = ['tree', 'array', 'flag']
 
-    def __new__(cls, array):
-
+    def __new__(cls, array, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.array = OneDimensionalArray(type(array[0]), array)
         obj.tree = [0] * (obj.array._size + 2)
