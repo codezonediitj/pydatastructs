@@ -130,7 +130,7 @@ def test_public_api():
                                     _class, method
                                 ))
 
-def test_backend_argument():
+def test_backend_argument_message():
 
     def call_and_raise(api, pos_args_count=0):
         try:
