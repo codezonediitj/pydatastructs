@@ -20,7 +20,8 @@ __all__ = [
     'lower_bound',
     'longest_increasing_subsequence',
     'next_permutation',
-    'prev_permutation'
+    'prev_permutation',
+    'bubble_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1205,3 +1206,44 @@ def prev_permutation(array, **kwargs):
 
     return _permutation_util(array, start, end, comp,
                              _prev_permutation_comp)
+
+
+def bubble_sort(array,start = 0,):
+    """
+    Sorts the provided array by bubble sort algorith. In
+    which it checks consecutive two elements and if the prior
+    one is greater than the other then it swaps them and 
+    returns sorted array
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+    >>> from pydatastructs import bubble_sort
+    >>> bubble_sort([3,5,4,1,2])     
+    [1, 2, 3, 4, 5]
+    >>> bubble_sort([8,3,5,2,6,1,9],3) 
+    [8, 3, 5, 1, 2, 6, 9]
+
+    """
+    arr_len = len(array)
+    for i in range(arr_len - 1):
+        for j in range(start , arr_len - i - 1):
+            if array[j] > array[j + 1] :
+                array[j], array[j + 1] = array[j + 1], array[j]
+    return array
+

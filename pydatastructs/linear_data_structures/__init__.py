@@ -38,6 +38,7 @@ from .algorithms import (
     lower_bound,
     longest_increasing_subsequence,
     next_permutation,
-    prev_permutation
+    prev_permutation,
+    bubble_sort,
 )
 __all__.extend(algorithms.__all__)
