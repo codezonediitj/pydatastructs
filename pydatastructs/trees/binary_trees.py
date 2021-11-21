@@ -1,11 +1,11 @@
+import random
+from collections import deque as Queue
 from pydatastructs.utils import TreeNode, CartesianTreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
-from pydatastructs.linear_data_structures import (
-    OneDimensionalArray, DynamicOneDimensionalArray)
+from pydatastructs.linear_data_structures import OneDimensionalArray
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
-from collections import deque as Queue
-import random
-from copy import deepcopy
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
 
 __all__ = [
     'AVLTree',
@@ -56,7 +56,9 @@ class BinaryTree(object):
                  'is_order_statistic']
 
     def __new__(cls, key=None, root_data=None, comp=None,
-                is_order_statistic=False):
+                is_order_statistic=False, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
@@ -1449,7 +1451,9 @@ class BinaryTreeTraversal(object):
 
     __slots__ = ['tree']
 
-    def __new__(cls, tree):
+    def __new__(cls, tree, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if not isinstance(tree, BinaryTree):
             raise TypeError("%s is not a binary tree"%(tree))
         obj = object.__new__(cls)
@@ -1557,7 +1561,6 @@ class BinaryTreeTraversal(object):
         return getattr(self, '_' + order)(node)
 
     def breadth_first_search(self, node=None, strategy='queue'):
-        # TODO: IMPLEMENT ITERATIVE DEEPENING-DEPTH FIRST SEARCH STRATEGY
         """
         Computes the breadth first search traversal of a binary tree.
 
@@ -1578,6 +1581,7 @@ class BinaryTreeTraversal(object):
         list
             Each element of the list is of type `TreeNode`.
         """
+        # TODO: IMPLEMENT ITERATIVE DEEPENING-DEPTH FIRST SEARCH STRATEGY
         strategies = ('queue',)
         if strategy not in strategies:
             raise NotImplementedError(
@@ -1626,8 +1630,9 @@ class BinaryIndexedTree(object):
 
     __slots__ = ['tree', 'array', 'flag']
 
-    def __new__(cls, array):
-
+    def __new__(cls, array, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.array = OneDimensionalArray(type(array[0]), array)
         obj.tree = [0] * (obj.array._size + 2)

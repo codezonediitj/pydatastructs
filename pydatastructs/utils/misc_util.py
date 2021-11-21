@@ -66,7 +66,9 @@ class TreeNode(Node):
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.left, obj.right, obj.parent, obj.height, obj.size = \
@@ -97,7 +99,9 @@ class CartesianTreeNode(TreeNode):
     """
     __slots__ = ['key', 'data', 'priority']
 
-    def __new__(cls, key, priority, data=None):
+    def __new__(cls, key, priority, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = TreeNode.__new__(cls, key, data)
         obj.priority = priority
         return obj
@@ -129,7 +133,9 @@ class RedBlackTreeNode(TreeNode):
     def methods(cls):
         return ['__new__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = TreeNode.__new__(cls, key, data)
         obj.color = 1
         return obj
@@ -167,7 +173,9 @@ class BinomialTreeNode(TreeNode):
     def methods(cls):
         return ['__new__', 'add_children', '__str__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
@@ -222,7 +230,9 @@ class MAryTreeNode(TreeNode):
     def methods(cls):
         return ['__new__', 'add_children', '__str__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         from pydatastructs.linear_data_structures.arrays import DynamicOneDimensionalArray
         obj = Node.__new__(cls)
         obj.data = data
@@ -263,7 +273,10 @@ class LinkedListNode(Node):
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, key, data=None, links=None, addrs=None):
+    def __new__(cls, key, data=None, links=None, addrs=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if links is None:
             links = ['next']
         if addrs is None:
@@ -301,7 +314,10 @@ class SkipNode(Node):
 
     __slots__ = ['key', 'data', 'next', 'down']
 
-    def __new__(cls, key, data=None, next=None, down=None):
+    def __new__(cls, key, data=None, next=None, down=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = Node.__new__(cls)
         obj.key, obj.data = key, data
         obj.next, obj.down = next, down
@@ -340,7 +356,10 @@ class AdjacencyListGraphNode(GraphNode):
         return ['__new__', 'add_adjacent_node',
                 'remove_adjacent_node']
 
-    def __new__(cls, name, data=None, adjacency_list=None):
+    def __new__(cls, name, data=None, adjacency_list=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = GraphNode.__new__(cls)
         obj.name, obj.data = str(name), data
         obj._impl = 'adjacency_list'
@@ -392,7 +411,10 @@ class AdjacencyMatrixGraphNode(GraphNode):
     def methods(cls):
         return ['__new__']
 
-    def __new__(cls, name, data=None):
+    def __new__(cls, name, data=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = GraphNode.__new__(cls)
         obj.name, obj.data, obj.is_connected = \
             str(name), data, None
@@ -415,7 +437,10 @@ class GraphEdge(object):
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, node1, node2, value=None):
+    def __new__(cls, node1, node2, value=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.source, obj.target = node1, node2
         obj.value = value
@@ -444,7 +469,10 @@ class Set(object):
     def methods(cls):
         return ['__new__']
 
-    def __new__(cls, key, data=None):
+    def __new__(cls, key, data=None,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.key = key
         obj.data = data
@@ -468,7 +496,9 @@ class TrieNode(Node):
     def methods(cls):
         return ['__new__', 'add_child', 'get_child', 'remove_child']
 
-    def __new__(cls, char=None):
+    def __new__(cls, char=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = Node.__new__(cls)
         obj.char = char
         obj._children = {}

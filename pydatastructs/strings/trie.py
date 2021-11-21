@@ -1,4 +1,6 @@
-from pydatastructs.utils.misc_util import TrieNode
+from pydatastructs.utils.misc_util import (
+    TrieNode, Backend,
+    raise_if_backend_is_not_python)
 from collections import deque
 import copy
 
@@ -41,7 +43,9 @@ class Trie(object):
         return ['__new__', 'insert', 'is_present', 'delete',
                 'strings_with_prefix']
 
-    def __new__(cls):
+    def __new__(cls, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         obj.root = TrieNode()
         return obj

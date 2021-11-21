@@ -1,6 +1,8 @@
 from pydatastructs.utils import TreeNode
 from collections import deque as Queue
-from pydatastructs.linear_data_structures.arrays import _check_type
+from pydatastructs.utils.misc_util import (
+    _check_type, Backend,
+    raise_if_backend_is_not_python)
 
 __all__ = [
     'OneDimensionalSegmentTree'
@@ -44,7 +46,9 @@ class OneDimensionalSegmentTree(object):
 
     __slots__ = ['segments', 'tree', 'root_idx', 'cache']
 
-    def __new__(cls, segs):
+    def __new__(cls, segs, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         if any((not isinstance(seg, (tuple, list, set)) or len(seg) != 2)
                 for seg in segs):

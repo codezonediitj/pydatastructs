@@ -1,5 +1,7 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
-from pydatastructs.utils.misc_util import _check_type, NoneType
+from pydatastructs.utils.misc_util import (
+    _check_type, NoneType, Backend,
+    raise_if_backend_is_not_python)
 from copy import deepcopy as dc
 
 __all__ = [
@@ -47,6 +49,8 @@ class Stack(object):
     """
 
     def __new__(cls, implementation='array', **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if implementation == 'array':
             return ArrayStack(
                 kwargs.get('items', None),

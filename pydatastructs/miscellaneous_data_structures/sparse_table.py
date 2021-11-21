@@ -1,6 +1,7 @@
 from pydatastructs.linear_data_structures.arrays import (
     MultiDimensionalArray, OneDimensionalArray)
-from pydatastructs.utils.misc_util import NoneType
+from pydatastructs.utils.misc_util import (
+    NoneType, Backend, raise_if_backend_is_not_python)
 import math
 
 __all__ = ['SparseTable']
@@ -50,7 +51,9 @@ class SparseTable(object):
 
     __slots__ = ['_table', 'func']
 
-    def __new__(cls, array, func):
+    def __new__(cls, array, func, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
 
         if len(array) == 0:
             raise ValueError("Input %s array is empty."%(array))

@@ -1,5 +1,7 @@
 from pydatastructs.utils import MAryTreeNode
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
 
 __all__ = [
     'MAryTree'
@@ -48,7 +50,10 @@ class MAryTree(object):
 
 
     def __new__(cls, key=None, root_data=None, comp=None,
-                is_order_statistic=False, max_children=2):
+                is_order_statistic=False, max_children=2,
+                **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')

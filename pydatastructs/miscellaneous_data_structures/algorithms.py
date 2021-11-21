@@ -1,5 +1,7 @@
 from pydatastructs.miscellaneous_data_structures.sparse_table import SparseTable
-from pydatastructs.utils.misc_util import _check_range_query_inputs
+from pydatastructs.utils.misc_util import (
+    _check_range_query_inputs, Backend,
+    raise_if_backend_is_not_python)
 
 __all__ = ['RangeQueryStatic']
 
@@ -69,7 +71,9 @@ class RangeQueryStatic:
     `RangeQueryStatic` object with this updated array.
     """
 
-    def __new__(cls, array, func, data_structure='sparse_table'):
+    def __new__(cls, array, func, data_structure='sparse_table', **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if len(array) == 0:
             raise ValueError("Input %s array is empty."%(array))
 
@@ -107,7 +111,9 @@ class RangeQueryStaticSparseTable(RangeQueryStatic):
 
     __slots__ = ["sparse_table", "bounds"]
 
-    def __new__(cls, array, func):
+    def __new__(cls, array, func, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
         sparse_table = SparseTable(array, func)
         obj.bounds = (0, len(array))
