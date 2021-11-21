@@ -129,10 +129,10 @@ def test_public_api():
                                     _class, method
                                 ))
 
-def test_backend_argument():
-    apis = _apis()
-    for api in apis:
-        try:
-            api()
-        except ValueError as error:
-            assert str(api) in error.args[0]
+# def test_backend_argument():
+#     apis = _apis()
+#     for api in apis:
+#         try:
+#             api()
+#         except ValueError as error:
+#             assert str(api) in error.args[0]

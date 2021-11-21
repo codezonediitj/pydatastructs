@@ -76,7 +76,7 @@ def breadth_first_search(
     >>> breadth_first_search(G, V1.name, f, V3.name)
     """
     raise_if_backend_is_not_python(
-        breadth_first_search, kwargs.get('backend', Backend))
+        breadth_first_search, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_breadth_first_search_" + graph._impl
     if not hasattr(algorithms, func):
