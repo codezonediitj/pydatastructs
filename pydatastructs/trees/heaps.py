@@ -26,12 +26,10 @@ class DHeap(Heap):
     Parameters
     ==========
 
-    elements : list, tuple, Array
+    elements: list, tuple, Array
         Optional, by default 'None'.
         list/tuple/Array of initial TreeNode in Heap.
-
-
-    heap_property : str
+    heap_property: str
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -42,6 +40,10 @@ class DHeap(Heap):
         then pass 'min'.
         By default, the heap property is
         set to 'min'.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -147,7 +149,6 @@ class DHeap(Heap):
 
         key
             The key for comparison.
-
         data
             The data to be inserted.
 
@@ -177,7 +178,7 @@ class DHeap(Heap):
         Returns
         =======
 
-        root_element : TreeNode
+        root_element: TreeNode
             The TreeNode at the root of the heap,
             if the heap is not empty.
 
@@ -223,11 +224,10 @@ class BinaryHeap(DHeap):
     Parameters
     ==========
 
-    elements : list, tuple
+    elements: list, tuple
         Optional, by default 'None'.
         List/tuple of initial elements in Heap.
-
-    heap_property : str
+    heap_property: str
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -238,6 +238,10 @@ class BinaryHeap(DHeap):
         then pass 'min'.
         By default, the heap property is
         set to 'min'.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -287,11 +291,10 @@ class TernaryHeap(DHeap):
     Parameters
     ==========
 
-    elements : list, tuple
+    elements: list, tuple
         Optional, by default 'None'.
         List/tuple of initial elements in Heap.
-
-    heap_property : str
+    heap_property: str
         If the key stored in each node is
         either greater than or equal to
         the keys in the node's children
@@ -302,6 +305,10 @@ class TernaryHeap(DHeap):
         then pass 'min'.
         By default, the heap property is
         set to 'min'.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -358,6 +365,10 @@ class BinomialHeap(Heap):
         By default, []
         The list of BinomialTree object references
         in sorted order.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -541,7 +552,6 @@ class BinomialHeap(Heap):
 
         node: BinomialTreeNode
             The node whose key is to be reduced.
-
         new_key
             The new key of the given node,
             should be less than the current key.

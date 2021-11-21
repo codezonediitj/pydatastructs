@@ -30,6 +30,10 @@ class Queue(object):
         Set to True if the queue should support
         additional, appendleft and pop operations
         from left and right sides respectively.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -282,11 +286,15 @@ class PriorityQueue(object):
         used for supporting operations
         of priority queue.
         The following implementations are supported,
+
         'linked_list' -> Linked list implementation.
+
         'binary_heap' -> Binary heap implementation.
+
         'binomial_heap' -> Binomial heap implementation.
             Doesn't support custom comparators, minimum
             key data is extracted in every pop.
+
         Optional, by default, 'binary_heap' implementation
         is used.
     comp: function
@@ -295,6 +303,10 @@ class PriorityQueue(object):
         By default, `lambda u, v: u < v` is used to compare
         priorities i.e., minimum priority elements are extracted
         by pop operation.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========

@@ -34,6 +34,10 @@ class OneDimensionalArray(Array):
         The inital value with which the element has
         to be initialized. By default none, used only
         when the data is not given.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Raises
     ======
@@ -156,6 +160,10 @@ class MultiDimensionalArray(Array):
         A valid object type.
     *args: int
         The dimensions of the array.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Raises
     ======
@@ -297,6 +305,10 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         The number below which if the ratio, Num(T)/Size(T)
         falls then the array is contracted such that at
         most only half the positions are filled.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Raises
     ======
@@ -420,6 +432,14 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
 class ArrayForTrees(DynamicOneDimensionalArray):
     """
     Utility dynamic array for storing nodes of a tree.
+
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     See Also
     ========

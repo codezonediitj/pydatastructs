@@ -210,6 +210,14 @@ class DoublyLinkedList(LinkedList):
     """
     Represents Doubly Linked List
 
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
     Examples
     ========
 
@@ -352,6 +360,14 @@ class SinglyLinkedList(LinkedList):
     """
     Represents Singly Linked List
 
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
     Examples
     ========
 
@@ -472,6 +488,14 @@ class SinglyCircularLinkedList(SinglyLinkedList):
     """
     Represents Singly Circular Linked List.
 
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
 
     Examples
     ========
@@ -531,6 +555,14 @@ class SinglyCircularLinkedList(SinglyLinkedList):
 class DoublyCircularLinkedList(DoublyLinkedList):
     """
     Represents Doubly Circular Linked List
+
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
@@ -602,6 +634,14 @@ class DoublyCircularLinkedList(DoublyLinkedList):
 class SkipList(object):
     """
     Represents Skip List
+
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========

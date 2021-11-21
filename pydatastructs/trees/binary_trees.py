@@ -29,22 +29,23 @@ class BinaryTree(object):
     key
         Required if tree is to be instantiated with
         root otherwise not needed.
-
     root_data
         Optional, the root node of the binary tree.
         If not of type TreeNode, it will consider
         root as data and a new root node will
         be created.
-
     comp: lambda/function
         Optional, A lambda function which will be used
         for comparison of keys. Should return a
         bool value. By default it implements less
         than operator.
-
     is_order_statistic: bool
         Set it to True, if you want to use the
         order statistic features of the tree.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     References
     ==========
@@ -108,7 +109,6 @@ class BinaryTree(object):
         key
             The key of the node which is
             to be deleted.
-
         balancing_info: bool
             Optional, by default, False
             The information needed for updating
@@ -143,7 +143,6 @@ class BinaryTree(object):
 
         key
             The key for searching.
-
         parent: bool
             If true then returns index of the
             parent of the node with the passed
@@ -1413,6 +1412,10 @@ class BinaryTreeTraversal(object):
     tree: BinaryTree
         The binary tree for whose traversal
         is to be done.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Traversals
     ==========
@@ -1610,6 +1613,10 @@ class BinaryIndexedTree(object):
     array: list/tuple
         The array whose elements are to be
         considered for the queries.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========

@@ -57,6 +57,10 @@ class TreeNode(Node):
         Optional, index of the left child node.
     right: int
         Optional, index of the right child node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
 
     __slots__ = ['key', 'data', 'left', 'right', 'is_root',
@@ -95,7 +99,10 @@ class CartesianTreeNode(TreeNode):
         Any valid data to be stored in the node.
     priority: int
         An integer value for heap property.
-
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     __slots__ = ['key', 'data', 'priority']
 
@@ -125,7 +132,10 @@ class RedBlackTreeNode(TreeNode):
         Any valid data to be stored in the node.
     color
         0 for black and 1 for red.
-
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     __slots__ = ['key', 'data', 'color']
 
@@ -151,6 +161,10 @@ class BinomialTreeNode(TreeNode):
         Required for comparison operations.
     data
         Any valid data to be stored in the node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -166,6 +180,10 @@ class BinomialTreeNode(TreeNode):
     is_root: bool, by default, False
         If the current node is a root of the tree then
         set it to True otherwise False.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     __slots__ = ['parent', 'key', 'children', 'data', 'is_root']
 
@@ -211,6 +229,10 @@ class MAryTreeNode(TreeNode):
         Required for comparison operations.
     data
         Any valid data to be stored in the node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -265,9 +287,15 @@ class LinkedListNode(Node):
     data
         Any valid data to be stored in the node.
     links
-        List of names of attributes which should be used as links to other nodes.
+        List of names of attributes which should
+        be used as links to other nodes.
     addrs
-        List of address of nodes to be assigned to each of the attributes in links.
+        List of address of nodes to be assigned to
+        each of the attributes in links.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     @classmethod
     def methods(cls):
@@ -305,11 +333,17 @@ class SkipNode(Node):
     data
         Any valid data to be stored in the node.
     next
-        Reference to the node lying just forward to the current node.
+        Reference to the node lying just forward
+        to the current node.
         Optional, by default, None.
     down
-        Reference to the node lying just below the current node.
+        Reference to the node lying just below the
+        current node.
         Optional, by default, None.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
 
     __slots__ = ['key', 'data', 'next', 'down']
@@ -350,6 +384,10 @@ class AdjacencyListGraphNode(GraphNode):
         Any valid iterator to initialize the adjacent
         nodes of the current node.
         Optional, by default, None
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     @classmethod
     def methods(cls):
@@ -404,6 +442,10 @@ class AdjacencyMatrixGraphNode(GraphNode):
         The index of the node in the AdjacencyMatrix.
     data
         The data to be stored at each graph node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     __slots__ = ['name', 'data']
 
@@ -432,6 +474,10 @@ class GraphEdge(object):
         The source node of the edge.
     node2: GraphNode or it's child classes
         The target node of the edge.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
     @classmethod
     def methods(cls):
@@ -461,6 +507,10 @@ class Set(object):
         the set.
     data: Python object
         The data to be stored in the set.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
 
     __slots__ = ['parent', 'size', 'key', 'data']
@@ -488,6 +538,10 @@ class TrieNode(Node):
 
     char: The character stored in the current node.
           Optional, by default None.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
     """
 
     __slots__ = ['char', '_children', 'is_terminal']

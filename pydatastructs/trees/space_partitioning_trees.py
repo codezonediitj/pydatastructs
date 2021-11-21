@@ -18,6 +18,10 @@ class OneDimensionalSegmentTree(object):
     segs: list/tuple/set
         The segs should contains tuples/list/set of size 2
         denoting the start and end points of the intervals.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========

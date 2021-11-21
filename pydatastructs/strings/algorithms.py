@@ -29,6 +29,10 @@ def find(text, query, algorithm, **kwargs):
         'kmp' -> Knuth-Morris-Pratt as given in [1].
 
         'rabin_karp' -> Rabin–Karp algorithm as given in [2].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======

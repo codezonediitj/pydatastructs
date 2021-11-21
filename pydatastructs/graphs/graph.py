@@ -26,6 +26,10 @@ class Graph(object):
     vertices: GraphNode(s)
         For AdjacencyList implementation vertices
         can be passed for initializing the graph.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========

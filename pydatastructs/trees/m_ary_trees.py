@@ -17,23 +17,19 @@ class MAryTree(object):
     key
         Required if tree is to be instantiated with
         root otherwise not needed.
-
     root_data
         Optional, the root node of the binary tree.
         If not of type MAryTreeNode, it will consider
         root as data and a new root node will
         be created.
-
     comp: lambda
         Optional, A lambda function which will be used
         for comparison of keys. Should return a
         bool value. By default it implements less
         than operator.
-
     is_order_statistic: bool
         Set it to True, if you want to use the
         order statistic features of the tree.
-
     max_children
         Optional, specifies the maximum number of children
         a node can have. Defaults to 2 in case nothing is
@@ -82,7 +78,6 @@ class MAryTree(object):
 
         key
             The key for comparison.
-
         data
             The data to be inserted.
 
@@ -132,7 +127,6 @@ class MAryTree(object):
 
         key
             The key for searching.
-
         parent: bool
             If true then returns index of the
             parent of the node with the passed

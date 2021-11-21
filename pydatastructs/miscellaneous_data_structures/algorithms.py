@@ -47,6 +47,10 @@ class RangeQueryStatic:
                           asymptotically.
 
         By default, 'sparse_table'.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========

@@ -14,6 +14,14 @@ class Trie(object):
     """
     Represents the trie data structure for storing strings.
 
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
     Examples
     ========
 

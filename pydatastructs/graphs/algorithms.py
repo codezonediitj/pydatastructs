@@ -51,6 +51,10 @@ def breadth_first_search(
         current node and the node next to current node.
         The rest of the arguments are optional and you can
         provide your own stuff there.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -135,6 +139,10 @@ def breadth_first_search_parallel(
         current node and the node next to current node.
         The rest of the arguments are optional and you can
         provide your own stuff there.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -280,6 +288,10 @@ def minimum_spanning_tree(graph, algorithm, **kwargs):
         'kruskal' -> Kruskal's algorithm as given in [1].
 
         'prim' -> Prim's algorithm as given in [2].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -418,6 +430,10 @@ def minimum_spanning_tree_parallel(graph, algorithm, num_threads, **kwargs):
         'prim' -> Prim's algorithm as given in [2].
     num_threads: int
         The number of threads to be used.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -531,6 +547,10 @@ def strongly_connected_components(graph, algorithm, **kwargs):
         supported,
 
         'kosaraju' -> Kosaraju's algorithm as given in [1].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -593,6 +613,10 @@ def depth_first_search(
         current node and the node next to current node.
         The rest of the arguments are optional and you can
         provide your own stuff there.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Note
     ====
@@ -681,6 +705,10 @@ def shortest_paths(graph: Graph, algorithm: str,
         The name of the target node.
         Optional, by default, all pair shortest paths
         are returned.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -797,6 +825,10 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str,
         are implemented,
 
         'floyd_warshall' -> Floyd Warshall algorithm as given in [1].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -882,6 +914,10 @@ def topological_sort(graph: Graph, algorithm: str,
         Currently, following are supported,
 
         'kahn' -> Kahn's algorithm as given in [1].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -959,6 +995,10 @@ def topological_sort_parallel(graph: Graph, algorithm: str, num_threads: int,
         'kahn' -> Kahn's algorithm as given in [1].
     num_threads: int
         The maximum number of threads to be used.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======

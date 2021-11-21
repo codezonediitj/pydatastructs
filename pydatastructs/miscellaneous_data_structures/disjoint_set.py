@@ -8,6 +8,14 @@ class DisjointSetForest(object):
     """
     Represents a forest of disjoint set trees.
 
+    Parameters
+    ==========
+
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
     Examples
     ========
 

@@ -19,6 +19,10 @@ class BinomialTree(object):
     order: int
         The order of the binomial tree.
         By default, None
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========

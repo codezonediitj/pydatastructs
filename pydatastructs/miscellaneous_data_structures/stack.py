@@ -28,6 +28,10 @@ class Stack(object):
         is None, otherwise takes the data
         type of DynamicOneDimensionalArray
         For array implementation.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Examples
     ========
