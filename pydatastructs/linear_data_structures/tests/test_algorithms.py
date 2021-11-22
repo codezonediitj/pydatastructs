@@ -4,9 +4,7 @@ from pydatastructs import (
     heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
-    prev_permutation)
-from pydatastructs.linear_data_structures.algorithms import bubble_sort
-
+    prev_permutation, bubble_sort)
 
 from pydatastructs.utils.raises_util import raises
 import random
