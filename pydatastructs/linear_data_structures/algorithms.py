@@ -1207,12 +1207,11 @@ def prev_permutation(array, **kwargs):
     return _permutation_util(array, start, end, comp,
                              _prev_permutation_comp)
 
-
-def bubble_sort(array,start = 0,**kwargs):
+def bubble_sort(array, start = 0, **kwargs):
     """
     Sorts the provided array by bubble sort algorith. In
     which it checks consecutive two elements and if the prior
-    one is greater than the other then it swaps them and 
+    one is greater than the other then it swaps them and
     returns sorted array
 
     Parameters
@@ -1246,13 +1245,13 @@ def bubble_sort(array,start = 0,**kwargs):
     Examples
     ========
     >>> from pydatastructs import bubble_sort
-    >>> bubble_sort([3,5,4,1,2])     
+    >>> bubble_sort([3,5,4,1,2])
     [1, 2, 3, 4, 5]
-    >>> bubble_sort([8,3,5,2,6,1,9],3) 
+    >>> bubble_sort([8,3,5,2,6,1,9],3)
     [8, 3, 5, 1, 2, 6, 9]
-    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],3,end = 6)                      
+    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],3,end = 6)
     [6, 9, 3, 0, 2, 4, 5, 7, 1, 8]
-    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],start = 3,end = 6)                      
+    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],start = 3,end = 6)
     [6, 9, 3, 0, 2, 4, 5, 7, 1, 8]
     """
     end = kwargs.get('end', len(array) - 1)
@@ -1260,9 +1259,8 @@ def bubble_sort(array,start = 0,**kwargs):
     arr_len = len(array)
     for i in range(arr_len - 1):
         for j in range(start , end):
-            if comp(array[j],array[j+1]) == False :
+            if comp(array[j], array[j + 1]) == False :
                 continue
             else:
                 array[j], array[j + 1] = array[j + 1], array[j]
     return array
-
