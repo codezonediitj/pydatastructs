@@ -1208,7 +1208,7 @@ def prev_permutation(array, **kwargs):
                              _prev_permutation_comp)
 
 
-def bubble_sort(array,start = 0,):
+def bubble_sort(array,start = 0,**kwargs):
     """
     Sorts the provided array by bubble sort algorith. In
     which it checks consecutive two elements and if the prior
@@ -1224,6 +1224,18 @@ def bubble_sort(array,start = 0,):
         The starting index of the portion
         which is to be sorted.
         Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
 
     Returns
     =======
@@ -1238,12 +1250,19 @@ def bubble_sort(array,start = 0,):
     [1, 2, 3, 4, 5]
     >>> bubble_sort([8,3,5,2,6,1,9],3) 
     [8, 3, 5, 1, 2, 6, 9]
-
+    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],3,end = 6)                      
+    [6, 9, 3, 0, 2, 4, 5, 7, 1, 8]
+    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],start = 3,end = 6)                      
+    [6, 9, 3, 0, 2, 4, 5, 7, 1, 8]
     """
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
     arr_len = len(array)
     for i in range(arr_len - 1):
-        for j in range(start , arr_len - i - 1):
-            if array[j] > array[j + 1] :
+        for j in range(start , end):
+            if comp(array[j],array[j+1]) == False :
+                continue
+            else:
                 array[j], array[j + 1] = array[j + 1], array[j]
     return array
 
