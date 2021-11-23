@@ -1207,7 +1207,7 @@ def prev_permutation(array, **kwargs):
     return _permutation_util(array, start, end, comp,
                              _prev_permutation_comp)
 
-def bubble_sort(array, start = 0, **kwargs):
+def bubble_sort(array, **kwargs):
     """
     Sorts the provided array by bubble sort algorith. In
     which it checks consecutive two elements and if the prior
@@ -1247,13 +1247,12 @@ def bubble_sort(array, start = 0, **kwargs):
     >>> from pydatastructs import bubble_sort
     >>> bubble_sort([3,5,4,1,2])
     [1, 2, 3, 4, 5]
-    >>> bubble_sort([8,3,5,2,6,1,9],3)
+    >>> bubble_sort([8,3,5,2,6,1,9],start = 3)
     [8, 3, 5, 1, 2, 6, 9]
-    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],3,end = 6)
-    [6, 9, 3, 0, 2, 4, 5, 7, 1, 8]
-    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],start = 3,end = 6)
+    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],start=3,end = 6)
     [6, 9, 3, 0, 2, 4, 5, 7, 1, 8]
     """
+    start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
     arr_len = len(array)
