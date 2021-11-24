@@ -39,6 +39,6 @@ from .algorithms import (
     longest_increasing_subsequence,
     next_permutation,
     prev_permutation,
-    bubble_sort,
+    bubble_sort
 )
 __all__.extend(algorithms.__all__)

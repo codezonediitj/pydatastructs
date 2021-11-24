@@ -1258,6 +1258,7 @@ def bubble_sort(array, **kwargs):
     arr_len = len(array)
     for i in range(arr_len - 1):
         for j in range(start , end):
-            if _comp(array[j], array[j + 1],comp) is False :
+            if not _comp(array[j], array[j + 1],  comp):
                 array[j], array[j + 1] = array[j + 1], array[j]
     return array
+
