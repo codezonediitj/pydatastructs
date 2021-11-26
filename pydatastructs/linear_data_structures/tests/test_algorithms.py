@@ -82,9 +82,6 @@ def test_quick_sort():
 
 def test_bubble_sort():
     _test_common_sort(bubble_sort)
-    
-def test_insertion_sort():
-    _test_common_sort(insertion_sort)
 
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray

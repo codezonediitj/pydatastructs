@@ -21,8 +21,7 @@ __all__ = [
     'longest_increasing_subsequence',
     'next_permutation',
     'prev_permutation',
-    'bubble_sort',
-    'insertion_sort'
+    'bubble_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1210,7 +1209,7 @@ def prev_permutation(array, **kwargs):
 
 def bubble_sort(array, **kwargs):
     """
-    Sorts the provided array by bubble sort algorith. In
+    Sorts the provided array by bubble sort algorithm. In
     which it checks consecutive two elements and if the prior
     one is greater than the other then it swaps them and
     returns sorted array
@@ -1261,85 +1260,6 @@ def bubble_sort(array, **kwargs):
         for j in range(start , end):
             if not _comp(array[j], array[j + 1], comp):
                 array[j], array[j + 1] = array[j + 1], array[j]
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
-    return array
-
-def insertion_sort(arr, **kwargs):
-    """
-    The array is virtually split into a sorted and an unsorted part.
-    Values from the unsorted part are picked and placed at the correct
-    position in the sorted part.
-
-    Parameters
-    ==========
-
-    array: Array
-        The array which is to be sorted.
-    start: int
-        The starting index of the portion
-        which is to be sorted.
-        Optional, by default 0
-    end: int
-        The ending index of the portion which
-        is to be sorted.
-        Optional, by default the index
-        of the last position filled.
-    comp: lambda/function
-        The comparator which is to be used
-        for sorting. If the function returns
-        False then only swapping is performed.
-        Optional, by default, less than or
-        equal to is used for comparing two
-        values.
-
-    Returns
-    =======
-
-    output: Array
-        The sorted array.
-
-    Examples
-    ========
-    >>> from pydatastructs import insertion_sort
-    >>> insertion_sort([7,5,9,2,5,1,3,0])
-    [0, 1, 2, 3, 5, 5, 7, 9]
-    >>> insertion_sort([7,5,9,2,5,1,3,0],end = 5)
-    [1, 2, 5, 5, 7, 9, 3, 0]
-    >>> insertion_sort([7,5,9,2,5,1,3,0],start = 2,end = 5)
-    [7, 5, 1, 2, 5, 9, 3, 0]
-    >>> insertion_sort([7,5,9,2,5,1,3,0],start = 2)
-    [7, 5, 0, 1, 2, 3, 5, 9]
-    """
-    start = kwargs.get('start',0)
-    end = kwargs.get('end',len(arr))
-    comp = kwargs.get("comp", lambda u, v: u < v)
-    arr1 = []
-    arr2 = []
-    arr3 = []
-    for i in range (start, end + 1):
-        try:
-            arr2.append(arr[i])
-        except:
-            pass
-    for j in range (0, start):
-        try:
-            arr1.append(arr[j])
-        except:
-            pass
-    for k in range (end + 1, len(arr)):
-        try:
-            arr3.append(arr[k])
-        except:
-            pass
-    for i in range(1, len(arr2)):
-        key = arr2[i]
-        j = i - 1
-        while j >= 0 and _comp(key, arr2[j], comp) is True:
-            arr2[j + 1] = arr2[j]
-            j -= 1
-        arr2[j + 1] = key
-    array = arr1 + arr2 + arr3
     if _check_type(array, DynamicArray):
         array._modify(force=True)
     return array
