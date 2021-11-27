@@ -1255,7 +1255,6 @@ def bubble_sort(array, **kwargs):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Bubble_sort
-    .. [2] https://www.javatpoint.com/bubble-sort
     """
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
@@ -1265,6 +1264,8 @@ def bubble_sort(array, **kwargs):
         for j in range(start , end):
             if not _comp(array[j], array[j + 1], comp):
                 array[j], array[j + 1] = array[j + 1], array[j]
+
     if _check_type(array, DynamicArray):
         array._modify(force=True)
+
     return array
