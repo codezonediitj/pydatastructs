@@ -1248,6 +1248,12 @@ def bubble_sort(array, **kwargs):
     [8, 3, 5, 1, 2, 6, 9]
     >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],start=3,end = 6)
     [6, 9, 3, 0, 2, 4, 5, 7, 1, 8]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bubble_sort
+    .. [2] https://www.javatpoint.com/bubble-sort
     """
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
