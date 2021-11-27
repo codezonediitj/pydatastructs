@@ -1241,13 +1241,15 @@ def bubble_sort(array, **kwargs):
 
     Examples
     ========
-    >>> from pydatastructs import bubble_sort
-    >>> bubble_sort([3,5,4,1,2])
-    [1, 2, 3, 4, 5]
-    >>> bubble_sort([8,3,5,2,6,1,9],start = 3)
-    [8, 3, 5, 1, 2, 6, 9]
-    >>> bubble_sort([6,9,3,2,5,4,0,7,1,8],start=3,end = 6)
-    [6, 9, 3, 0, 2, 4, 5, 7, 1, 8]
+
+    >>> from pydatastructs import OneDimensionalArray, bubble_sort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> out = bubble_sort(arr)
+    >>> str(out)
+    '[1, 2, 3]'
+    >>> out = bubble_sort(arr, comp=lambda u, v: u > v)
+    >>> str(out)
+    '[3, 2, 1]'
 
     References
     ==========
