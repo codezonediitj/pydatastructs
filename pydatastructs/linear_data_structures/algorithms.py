@@ -22,7 +22,8 @@ __all__ = [
     'lower_bound',
     'longest_increasing_subsequence',
     'next_permutation',
-    'prev_permutation'
+    'prev_permutation',
+    'bubble_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1299,3 +1300,66 @@ def prev_permutation(array, **kwargs):
 
     return _permutation_util(array, start, end, comp,
                              _prev_permutation_comp)
+
+def bubble_sort(array, **kwargs):
+    """
+    Implements bubble sort algorithm.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, bubble_sort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> out = bubble_sort(arr)
+    >>> str(out)
+    '[1, 2, 3]'
+    >>> out = bubble_sort(arr, comp=lambda u, v: u > v)
+    >>> str(out)
+    '[3, 2, 1]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bubble_sort
+    """
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    arr_len = len(array)
+    for i in range(arr_len - 1):
+        for j in range(start , end):
+            if not _comp(array[j], array[j + 1], comp):
+                array[j], array[j + 1] = array[j + 1], array[j]
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
+    return array

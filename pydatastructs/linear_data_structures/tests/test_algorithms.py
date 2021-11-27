@@ -4,8 +4,7 @@ from pydatastructs import (
     heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
-    prev_permutation)
-
+    prev_permutation, bubble_sort)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -80,6 +79,9 @@ def test_cocktail_shaker_sort():
 
 def test_quick_sort():
     _test_common_sort(quick_sort)
+
+def test_bubble_sort():
+    _test_common_sort(bubble_sort)
 
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray
