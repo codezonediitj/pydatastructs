@@ -1209,10 +1209,7 @@ def prev_permutation(array, **kwargs):
 
 def bubble_sort(array, **kwargs):
     """
-    Sorts the provided array by bubble sort algorithm. In
-    which it checks consecutive two elements and if the prior
-    one is greater than the other then it swaps them and
-    returns sorted array
+    Implements bubble sort algorithm.
 
     Parameters
     ==========
