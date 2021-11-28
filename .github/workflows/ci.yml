@@ -1,4 +1,4 @@
-name: PyDataStructs Continuous Integration Tests
+name: build
 
 on:
   push:
