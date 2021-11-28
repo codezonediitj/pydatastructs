@@ -19,6 +19,8 @@ Algorithms
 
 .. autofunction:: pydatastructs.quick_sort
 
+.. autofunction:: pydatastructs.bubble_sort
+
 .. autofunction:: pydatastructs.longest_common_subsequence
 
 .. autofunction:: pydatastructs.is_ordered

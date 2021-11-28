@@ -1326,6 +1326,10 @@ def bubble_sort(array, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
 
     Returns
     =======
@@ -1350,6 +1354,8 @@ def bubble_sort(array, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Bubble_sort
     """
+    raise_if_backend_is_not_python(
+            bubble_sort, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
