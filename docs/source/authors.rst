@@ -25,3 +25,5 @@ Prashant Rawat <prashant.rawat216@gmail.com>
 Harsheet <harsheetkakar@gmail.com>
 
 Pratik Goyal <pratikgoyal2712@gmail.com>
+
+Jay Thorat <j.thorat10@gmail.com>
