@@ -1,7 +1,7 @@
 PyDataStructs
 =============
 
-![Build Status](https://github.com/codezonediitj/pydatastructs/actions/workflows/ci.yml/badge.svg) [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/PwY7wQDG5G) [![Join the chat at https://gitter.im/codezonediitj/pydatastructs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codezoned2017/Lobby) [![Discuss at pydatastructs@googlegroups.com](https://img.shields.io/badge/discuss-pydatastructs%40googlegroups.com-blue.svg)](https://groups.google.com/forum/#!forum/pydatastructs) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codezonediitj/pydatastructs/pulls) [![codecov](https://codecov.io/gh/codezonediitj/pydatastructs/branch/master/graph/badge.svg)](https://codecov.io/gh/codezonediitj/pydatastructs)
+[![Build Status](https://github.com/codezonediitj/pydatastructs/actions/workflows/ci.yml/badge.svg)](https://github.com/codezonediitj/pydatastructs/actions) [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/PwY7wQDG5G) [![Join the chat at https://gitter.im/codezonediitj/pydatastructs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codezoned2017/Lobby) [![Discuss at pydatastructs@googlegroups.com](https://img.shields.io/badge/discuss-pydatastructs%40googlegroups.com-blue.svg)](https://groups.google.com/forum/#!forum/pydatastructs) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/codezonediitj/pydatastructs/pulls) [![codecov](https://codecov.io/gh/codezonediitj/pydatastructs/branch/master/graph/badge.svg)](https://codecov.io/gh/codezonediitj/pydatastructs)
 
 About
 -----
