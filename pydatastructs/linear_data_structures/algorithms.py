@@ -1326,13 +1326,10 @@ def bubble_sort(array, **kwargs):
         Optional, by default, less than or
         equal to is used for comparing two
         values.
-<<<<<<< HEAD
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
         backend is used.
-=======
->>>>>>> master
 
     Returns
     =======
