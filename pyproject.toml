@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cz-pydatastructs"
+name = "pydatastructs"
 version = "1.0.1-dev"
 description = "A python package for data structures"
 authors = ["PyDataStructs Development Team"]
