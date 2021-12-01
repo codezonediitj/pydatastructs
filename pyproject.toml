@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "cz-pydatastructs"
+version = "1.0.1-dev"
+description = "A python package for data structures"
+authors = ["PyDataStructs Development Team"]
+readme = "README.md"
+repository = "https://github.com/codezonediitj/pydatastructs"
+documentation = "https://pydatastructs.readthedocs.io/en/stable/"
+keywords = [
+    "data structures",
+    "algorithms",
+    "graphs",
+    "array",
+    "list",
+    "queue",
+    "stack",
+    "heap",
+    "string",
+    "dijkstra",
+    "bellman-ford",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.6,<4.0"
+Sphinx = "^4.3.1"
+sphinx-readable-theme = "^1.3.0"
+myst-nb = "^0.13.1"
+
+[tool.poetry.dev-dependencies]
+codecov = "^2.1.12"
+pytest-cov = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
