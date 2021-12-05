@@ -1,7 +1,7 @@
 import os, re, sys, pydatastructs, inspect
 from typing import Type
 
-def _list_files():
+def _list_files(checker):
     root_path = os.path.abspath(
                 os.path.join(
                 os.path.split(__file__)[0],
@@ -9,13 +9,14 @@ def _list_files():
     code_files = []
     for (dirpath, _, filenames) in os.walk(root_path):
         for _file in filenames:
-            if (re.match(r".*\.py$", _file) or
-                re.match(r".*\.cpp$", _file) or
-                re.match(r".*\.hpp$", _file)):
+            if checker(_file):
                 code_files.append(os.path.join(dirpath, _file))
     return code_files
 
-code_files = _list_files()
+checker = lambda _file: (re.match(r".*\.py$", _file) or
+                         re.match(r".*\.cpp$", _file) or
+                         re.match(r".*\.hpp$", _file))
+code_files = _list_files(checker)
 
 def test_trailing_white_spaces():
     for file_path in code_files:
@@ -47,6 +48,8 @@ def test_final_new_lines():
         file.close()
 
 def test_comparison_True_False_None():
+    checker = lambda _file: re.match(r".*\.py$", _file)
+    py_files = _list_files(checker)
     for file_path in code_files:
         if file_path.find("test_code_quality.py") == -1:
             file = open(file_path, "r")
