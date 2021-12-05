@@ -1,5 +1,5 @@
 import setuptools
-from pydatastructs.linear_data_structures import setup as lsetup
+from pydatastructs import linear_data_structures
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -23,5 +23,7 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries"
     ],
     python_requires='>=3.5',
-    ext_modules=[lsetup.arrays_extension]
+    ext_modules=[
+        linear_data_structures._extensions.extension
+    ]
 )
