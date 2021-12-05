@@ -3,7 +3,8 @@ __all__ = []
 from . import (
     arrays,
     linked_lists,
-    algorithms
+    algorithms,
+    _extensions
 )
 
 from .arrays import (
