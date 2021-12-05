@@ -3,13 +3,13 @@
 
 static struct PyModuleDef arrays_struct = {
     PyModuleDef_HEAD_INIT,
-    "arrays",
+    "_arrays",
     0,
     -1,
     NULL,
 };
 
-PyMODINIT_FUNC PyInit_arrays(void) {
+PyMODINIT_FUNC PyInit__arrays(void) {
     Py_Initialize();
     PyObject *arrays = PyModule_Create(&arrays_struct);
 
