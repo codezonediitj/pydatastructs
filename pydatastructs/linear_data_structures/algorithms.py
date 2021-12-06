@@ -1369,3 +1369,82 @@ def bubble_sort(array, **kwargs):
         array._modify(force=True)
 
     return array
+
+
+# Under evaluation currently
+def radix_sort(array, **kwargs):
+    """
+        Performs Radix Sort on given input array
+        Current limitations: Works for integers >= 0
+        Parameters
+        ==========
+
+        array: Array
+            The array which is to be sorted.
+
+        backend: pydatastructs.Backend
+            The backend to be used.
+            Optional, by default, the best available
+            backend is used.
+
+        Returns
+        =======
+
+        clean_array: Array
+            The sorted array devoid of null values
+
+        Examples
+        ========
+        >>> from pydatastructs import DynamicOneDimensionalArray as DODA, bucket_sort
+        >>> arr = DODA(int, [2,235,344,14,5000,12,44,73,91,33,8,0])
+        >>> print(*(radix_sort(arr)))
+    """
+    raise_if_backend_is_not_python(
+        radix_sort, kwargs.get('backend', Backend.PYTHON))
+
+    # def clean(x):
+    # Auxiliary function to remove null values, fails while filtering when returns 0(considered False)
+    #     if x == 0:
+    #         return int(0)
+    #     if x is not None:
+    #         return x
+    # clean_array = list(filter(clean, array))
+
+    clean_array = list()
+    for i in array:
+        if i is not None:
+            clean_array.append(i)
+
+    if len(clean_array) <= 1:
+        return array
+    # print(*clean_array)  # debugging
+
+    radix = list()
+    maxnum = max(clean_array)
+    passes = 0
+    while(maxnum > 0):  # To find optimum number of passes to sort
+        passes += 1
+        maxnum /= 10
+
+    for i in range(1, passes+1):
+        radix = [[] for _ in range(10)]
+        for num in clean_array:
+            digit = (num % (10 ** i)) // (10 ** (i - 1))  # Finds digit corresponding to iteration number
+            radix[digit].append(num);
+        clean_array.clear()  # Using the clean array to store and output
+
+        for j in range(len(radix)):
+            clean_array.extend(radix[j])
+
+        radix.clear()  # to re-use the radix array for the next iteration
+
+    clean_array = type(array)(clean_array)
+    if _check_type(clean_array, DynamicArray):
+        clean_array._modify(force=True)
+
+    return clean_array
+
+# For Local Testing ONLY
+if __name__ == '__main__':
+    arr = [2,235,344,14,5000,12,44,73,91,33,8,0]
+    print(*(radix_sort(arr)))
