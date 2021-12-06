@@ -83,6 +83,9 @@ def test_quick_sort():
 def test_bubble_sort():
     _test_common_sort(bubble_sort)
 
+def test_radix_sort():  # Added test from common sorting tests - Ishaan
+    _test_common_sort(radix_sort)
+
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray
 
