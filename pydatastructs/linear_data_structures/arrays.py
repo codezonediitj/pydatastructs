@@ -31,7 +31,7 @@ class OneDimensionalArray(Array):
         The elements in the array, all should
         be of same type.
     init: a python type
-        The inital value with which the element has
+        The initial value with which the element has
         to be initialized. By default none, used only
         when the data is not given.
     backend: pydatastructs.Backend
