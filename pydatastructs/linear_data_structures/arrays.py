@@ -126,7 +126,7 @@ class OneDimensionalArray(Array):
     @classmethod
     def methods(cls):
         return ['__new__', '__getitem__',
-        '__setitem__', 'fill', '__len__']
+        '__setitem__', 'fill', '__len__', 'search']
 
     def __getitem__(self, i):
         if i >= self._size or i < 0:
@@ -148,6 +148,50 @@ class OneDimensionalArray(Array):
 
     def __len__(self):
         return self._size
+
+    def search(self, elem, sortedOrder, comparator = None):
+        if not isinstance(sortedOrder, (int, float)):
+            raise TypeError("Sorted Order is expected as int/float")
+        
+        if sortedOrder == 0:
+            for i in range(self._size):
+                if self._data[i] == elem:
+                    return i
+            return -1
+        L = 0
+        R = self._size - 1
+        if sortedOrder > 0:
+            while L <= R:
+                M = int((L+R)/2)
+                if self._data[M] is elem:
+                        return M
+                if comparator is None:
+                    if self._data[M] < elem:
+                        L = M + 1
+                    else:
+                        R = M - 1
+                else:
+                    if comparator(self._data[M], elem):
+                        L = M + 1
+                    else:
+                        R = M - 1
+        else:
+            while L <= R:
+                M = int((L+R)/2)
+                if self._data[M] is elem:
+                        return M
+                if comparator is None:
+                    if self._data[M] > elem:
+                        L = M + 1
+                    else:
+                        R = M - 1
+                else:
+                    if not comparator(self._data[M], elem):
+                        L = M + 1
+                    else:
+                        R = M - 1
+        return -1               
+        
 
 class MultiDimensionalArray(Array):
     """
