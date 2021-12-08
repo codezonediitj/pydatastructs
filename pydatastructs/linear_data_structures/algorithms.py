@@ -4,7 +4,7 @@ from pydatastructs.utils.misc_util import (
     _check_type, _comp, Backend,
     raise_if_backend_is_not_python)
 from concurrent.futures import ThreadPoolExecutor
-from math import log, floor
+from math import log, floor, sqrt
 
 __all__ = [
     'merge_sort_parallel',
@@ -23,7 +23,10 @@ __all__ = [
     'longest_increasing_subsequence',
     'next_permutation',
     'prev_permutation',
-    'bubble_sort'
+    'bubble_sort',
+    'linear_search',
+    'binary_search',
+    'jump_search'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1369,3 +1372,58 @@ def bubble_sort(array, **kwargs):
         array._modify(force=True)
 
     return array
+
+def linear_search(array, elem):
+    for i in range(array._size):
+        if array._data[i] == elem:
+            return i
+    return -1
+
+def binary_search(array, elem, comp = None):
+    L = 0
+    R = array._size - 1
+    while L <= R:
+        M = int((L+R)/2)
+        if array._data[M] is elem:
+                return M
+        if comp is None:
+            if array._data[M] < elem:
+                L = M + 1
+            else:
+                R = M - 1
+        else:
+            if comp(array._data[M], elem):
+                L = M + 1
+            else:
+                R = M - 1
+    return -1
+
+def jump_search(array, elem, comp = None):
+    step = int(sqrt(array._size))
+    pos = step
+    prev = 0
+    if comp is None:
+        while array._data[min(pos, array._size)-1] < elem:
+            prev = pos
+            pos += step
+            if prev >= array._size:
+                return -1
+        while array._data[prev] < elem:
+            prev += 1
+            if prev == min(pos, array._size):
+                return -1
+        if array._data[prev] == elem:
+            return prev
+    else:
+        while comp(array._data[min(pos, array._size)-1], elem):
+            prev = pos
+            pos += step
+            if prev >= array._size:
+                return -1
+        while comp(array._data[prev], elem):
+            prev += 1
+            if prev == min(pos, array._size):
+                return -1
+        if array._data[prev] == elem:
+            return prev
+    return -1
