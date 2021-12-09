@@ -323,7 +323,7 @@ def test_next_prev_permutation():
         _, orig_array = next_permutation(prev_array)
         assert str(orig_array) == str(array)
 
-def _test_common_search(search):
+def _test_common_search(search_func):
     ODA = OneDimensionalArray
 
     array = ODA(int, [1, 2, 5, 7, 10, 29, 40])
