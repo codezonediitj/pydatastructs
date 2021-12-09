@@ -1373,57 +1373,71 @@ def bubble_sort(array, **kwargs):
 
     return array
 
-def linear_search(array, elem):
-    for i in range(array._size):
-        if array._data[i] == elem:
+def linear_search(array, elem, **kwargs):
+    raise_if_backend_is_not_python(
+            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    for i in range(start, end+1):
+        if array.data[i] == elem:
             return i
     return -1
 
-def binary_search(array, elem, comp = None):
-    L = 0
-    R = array._size - 1
-    while L <= R:
-        M = int((L+R)/2)
-        if array._data[M] is elem:
-                return M
+def binary_search(array, elem, **kwargs):
+    raise_if_backend_is_not_python(
+            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    Left = start
+    Right = end
+    while Left <= Right:
+        Middle = int((Left+Right)/2)
+        if array.data[Middle] is elem:
+                return Middle
         if comp is None:
-            if array._data[M] < elem:
-                L = M + 1
+            if array.data[Middle] < elem:
+                Left = Middle + 1
             else:
-                R = M - 1
+                Right = Middle - 1
         else:
-            if comp(array._data[M], elem):
-                L = M + 1
+            if comp(array.data[Middle], elem):
+                Left = Middle + 1
             else:
-                R = M - 1
+                Right = Middle - 1
     return -1
 
-def jump_search(array, elem, comp = None):
-    step = int(sqrt(array._size))
-    pos = step
-    prev = 0
+def jump_search(array, elem, **kwargs):
+    raise_if_backend_is_not_python(
+            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    step = int(sqrt(end - start))
+    current_position = step
+    prev = start
     if comp is None:
-        while array._data[min(pos, array._size)-1] < elem:
-            prev = pos
-            pos += step
-            if prev >= array._size:
+        while array.data[min(current_position, end)] < elem:
+            prev = current_position
+            current_position += step
+            if prev >= end:
                 return -1
-        while array._data[prev] < elem:
+        while array.data[prev] < elem:
             prev += 1
-            if prev == min(pos, array._size):
+            if prev == min(current_position, end):
                 return -1
-        if array._data[prev] == elem:
+        if array.data[prev] == elem:
             return prev
     else:
-        while comp(array._data[min(pos, array._size)-1], elem):
-            prev = pos
-            pos += step
-            if prev >= array._size:
+        while comp(array.data[min(current_position, end)], elem):
+            prev = current_position
+            current_position += step
+            if prev > end:
                 return -1
-        while comp(array._data[prev], elem):
+        while comp(array.data[prev], elem):
             prev += 1
-            if prev == min(pos, array._size):
+            if prev == min(current_position, end):
                 return -1
-        if array._data[prev] == elem:
+        if array.data[prev] == elem:
             return prev
     return -1
