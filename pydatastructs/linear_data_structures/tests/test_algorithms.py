@@ -335,7 +335,7 @@ def _test_common_search(search):
         assert checker_array[i] == search(array, array[i], start=2, end=5)
 
 def test_linear_search():
-    _test_common_search(test_linear_search)
+    _test_common_search(linear_search)
 
 def test_binary_search():
     _test_common_search(test_binary_search)
