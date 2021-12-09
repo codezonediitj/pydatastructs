@@ -338,7 +338,7 @@ def test_linear_search():
     _test_common_search(linear_search)
 
 def test_binary_search():
-    _test_common_search(test_binary_search)
+    _test_common_search(binary_search)
 
 def test_jump_search():
     _test_common_search(test_jump_search)
