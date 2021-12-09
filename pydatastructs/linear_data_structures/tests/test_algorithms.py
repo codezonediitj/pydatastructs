@@ -323,23 +323,22 @@ def test_next_prev_permutation():
         _, orig_array = next_permutation(prev_array)
         assert str(orig_array) == str(array)
 
-def test_linear_search():
+def _test_common_search(search):
     ODA = OneDimensionalArray
 
     array = ODA(int, [1, 2, 5, 7, 10, 29, 40])
     for i in range(len(array)):
-        assert i == linear_search(array, array[i])
+        assert i == search(array, array[i])
+    
+    checker_array = [-1, -1, 2, 3, 4, 5, -1]
+    for i in range(len(array)):
+        assert checker_array[i] == search(array, array[i], start=2, end=5)
+
+def test_linear_search():
+    _test_common_search(test_linear_search)
 
 def test_binary_search():
-    ODA = OneDimensionalArray
-
-    array = ODA(int, [1, 2, 5, 7, 10, 29, 40])
-    for i in range(len(array)):
-        assert i == binary_search(array, array[i])
+    _test_common_search(test_binary_search)
 
 def test_jump_search():
-    ODA = OneDimensionalArray
-
-    array = ODA(int, [1, 2, 5, 7, 10, 29, 40])
-    for i in range(len(array)):
-        assert i == jump_search(array, array[i])
+    _test_common_search(test_jump_search)

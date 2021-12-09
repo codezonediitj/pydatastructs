@@ -1409,8 +1409,7 @@ def linear_search(array, elem, **kwargs):
 
     >>> from pydatastructs import OneDimensionalArray, linear_search
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
-    >>> out = linear_search(arr, 2)
-    >>> print(out)
+    >>> linear_search(arr, 2)
     1
 
     References
@@ -1470,8 +1469,7 @@ def binary_search(array, elem, **kwargs):
 
     >>> from pydatastructs import OneDimensionalArray, binary_search
     >>> arr = OneDimensionalArray(int,[1, 2, 3, 5, 10, 12])
-    >>> out = binary_search(arr, 5)
-    >>> print(out)
+    >>> binary_search(arr, 5)
     3
 
     References
@@ -1487,7 +1485,7 @@ def binary_search(array, elem, **kwargs):
     Left = start
     Right = end
     while Left <= Right:
-        Middle = int((Left+Right)/2)
+        Middle = Left//2 + Right//2 + Left % 2 * Right % 2
         if array[Middle] == elem:
                 return Middle
         if comp(array[Middle], elem):
@@ -1539,8 +1537,7 @@ def jump_search(array, elem, **kwargs):
 
     >>> from pydatastructs import OneDimensionalArray, jump_search
     >>> arr = OneDimensionalArray(int,[1, 2, 3, 5, 10, 12])
-    >>> out = linear_search(arr, 5)
-    >>> print(out)
+    >>> linear_search(arr, 5)
     3
 
     References
