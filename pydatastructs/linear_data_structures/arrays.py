@@ -148,7 +148,6 @@ class OneDimensionalArray(Array):
 
     def __len__(self):
         return self._size
-    
 
 class MultiDimensionalArray(Array):
     """
