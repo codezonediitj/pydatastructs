@@ -4,7 +4,7 @@ from pydatastructs.utils.misc_util import (
     _check_type, _comp, Backend,
     raise_if_backend_is_not_python)
 from concurrent.futures import ThreadPoolExecutor
-from math import log, floor
+from math import log, floor, sqrt
 
 __all__ = [
     'merge_sort_parallel',
@@ -23,7 +23,10 @@ __all__ = [
     'longest_increasing_subsequence',
     'next_permutation',
     'prev_permutation',
-    'bubble_sort'
+    'bubble_sort',
+    'linear_search',
+    'binary_search',
+    'jump_search'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1369,3 +1372,73 @@ def bubble_sort(array, **kwargs):
         array._modify(force=True)
 
     return array
+
+def linear_search(array, elem, **kwargs):
+    raise_if_backend_is_not_python(
+            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    for i in range(start, end+1):
+        if array.data[i] == elem:
+            return i
+    return -1
+
+def binary_search(array, elem, **kwargs):
+    raise_if_backend_is_not_python(
+            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    Left = start
+    Right = end
+    while Left <= Right:
+        Middle = int((Left+Right)/2)
+        if array.data[Middle] is elem:
+                return Middle
+        if comp is None:
+            if array.data[Middle] < elem:
+                Left = Middle + 1
+            else:
+                Right = Middle - 1
+        else:
+            if comp(array.data[Middle], elem):
+                Left = Middle + 1
+            else:
+                Right = Middle - 1
+    return -1
+
+def jump_search(array, elem, **kwargs):
+    raise_if_backend_is_not_python(
+            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    step = int(sqrt(end - start))
+    current_position = step
+    prev = start
+    if comp is None:
+        while array.data[min(current_position, end)] < elem:
+            prev = current_position
+            current_position += step
+            if prev >= end:
+                return -1
+        while array.data[prev] < elem:
+            prev += 1
+            if prev == min(current_position, end):
+                return -1
+        if array.data[prev] == elem:
+            return prev
+    else:
+        while comp(array.data[min(current_position, end)], elem):
+            prev = current_position
+            current_position += step
+            if prev > end:
+                return -1
+        while comp(array.data[prev], elem):
+            prev += 1
+            if prev == min(current_position, end):
+                return -1
+        if array.data[prev] == elem:
+            return prev
+    return -1
+
