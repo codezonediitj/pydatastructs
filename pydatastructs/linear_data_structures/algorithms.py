@@ -1409,8 +1409,7 @@ def linear_search(array, elem, **kwargs):
 
     >>> from pydatastructs import OneDimensionalArray, linear_search
     >>> arr = OneDimensionalArray(int,[3, 2, 1])
-    >>> out = linear_search(arr, 2)
-    >>> print(out)
+    >>> linear_search(arr, 2)
     1
 
     References
