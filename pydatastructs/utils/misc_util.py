@@ -29,7 +29,7 @@ class Backend(Enum):
         return self.value
 
 def raise_if_backend_is_not_python(api, backend):
-    if backend != Backend.PYTHON:
+    if backend != str(Backend.PYTHON):
         raise ValueError("As of {} version, only {} backend is supported for {} API".format(
                             pydatastructs.__version__, str(Backend.PYTHON), api))
 
