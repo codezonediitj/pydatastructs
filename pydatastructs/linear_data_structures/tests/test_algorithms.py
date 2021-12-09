@@ -328,7 +328,7 @@ def _test_common_search(search_func):
 
     array = ODA(int, [1, 2, 5, 7, 10, 29, 40])
     for i in range(len(array)):
-        assert i == search(array, array[i])
+        assert i == search_func(array, array[i])
     
     checker_array = [-1, -1, 2, 3, 4, 5, -1]
     for i in range(len(array)):
