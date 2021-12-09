@@ -332,7 +332,7 @@ def _test_common_search(search_func):
     
     checker_array = [-1, -1, 2, 3, 4, 5, -1]
     for i in range(len(array)):
-        assert checker_array[i] == search(array, array[i], start=2, end=5)
+        assert checker_array[i] == search_func(array, array[i], start=2, end=5)
 
 def test_linear_search():
     _test_common_search(linear_search)
