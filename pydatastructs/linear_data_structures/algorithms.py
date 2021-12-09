@@ -1374,18 +1374,113 @@ def bubble_sort(array, **kwargs):
     return array
 
 def linear_search(array, elem, **kwargs):
+    """
+    Implements linear search algorithm.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array which is to be sorted.
+    elem: same as that of the array
+    start: int
+        The starting index of the portion
+        which is to be searched.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be searched.
+        Optional, by default the index
+        of the last position filled.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: int
+        The index of elem if found.
+        If not found, returns -1.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, linear_search
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> out = linear_search(arr, 2)
+    >>> print(out)
+    1
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Linear_search
+    """
     raise_if_backend_is_not_python(
-            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+            linear_search, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     for i in range(start, end+1):
-        if array.data[i] == elem:
+        if array[i] == elem:
             return i
     return -1
 
 def binary_search(array, elem, **kwargs):
+    """
+    Implements binary search algorithm ON A SORTED ARRAY.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array which is to be sorted.
+    elem: same as that of the array
+    start: int
+        The starting index of the portion
+        which is to be searched.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be searched.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: int
+        The index of elem if found.
+        If not found, returns -1.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, binary_search
+    >>> arr = OneDimensionalArray(int,[1, 2, 3, 5, 10, 12])
+    >>> out = binary_search(arr, 5)
+    >>> print(out)
+    3
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Binary_search_algorithm
+    """
     raise_if_backend_is_not_python(
-            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+            binary_search, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
@@ -1393,51 +1488,81 @@ def binary_search(array, elem, **kwargs):
     Right = end
     while Left <= Right:
         Middle = int((Left+Right)/2)
-        if array.data[Middle] is elem:
+        if array[Middle] == elem:
                 return Middle
-        if comp is None:
-            if array.data[Middle] < elem:
-                Left = Middle + 1
-            else:
-                Right = Middle - 1
+        if comp(array[Middle], elem):
+            Left = Middle + 1
         else:
-            if comp(array.data[Middle], elem):
-                Left = Middle + 1
-            else:
-                Right = Middle - 1
+            Right = Middle - 1
     return -1
 
 def jump_search(array, elem, **kwargs):
+    """
+    Implements jump search algorithm ON A SORTED ARRAY.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array which is to be sorted.
+    elem: same as that of the array
+    start: int
+        The starting index of the portion
+        which is to be searched.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be searched.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: int
+        The index of elem if found.
+        If not found, returns -1.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, jump_search
+    >>> arr = OneDimensionalArray(int,[1, 2, 3, 5, 10, 12])
+    >>> out = linear_search(arr, 5)
+    >>> print(out)
+    3
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Jump_search
+    """
     raise_if_backend_is_not_python(
             bubble_sort, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
-    comp = kwargs.get("comp", lambda u, v: u <= v)
-    step = int(sqrt(end - start))
+    comp = kwargs.get("comp", lambda u, v: u < v)
+    step = int(sqrt(end - start + 1))
     current_position = step
     prev = start
-    if comp is None:
-        while array.data[min(current_position, end)] < elem:
-            prev = current_position
-            current_position += step
-            if prev >= end:
-                return -1
-        while array.data[prev] < elem:
-            prev += 1
-            if prev == min(current_position, end):
-                return -1
-        if array.data[prev] == elem:
+    while comp(array[min(current_position, end)], elem):
+        prev = current_position
+        current_position += step
+        if prev > end:
+            return -1
+    while prev <= min(current_position, end):
+        if array[prev] == elem:
             return prev
-    else:
-        while comp(array.data[min(current_position, end)], elem):
-            prev = current_position
-            current_position += step
-            if prev > end:
-                return -1
-        while comp(array.data[prev], elem):
-            prev += 1
-            if prev == min(current_position, end):
-                return -1
-        if array.data[prev] == elem:
-            return prev
+        prev += 1
     return -1
