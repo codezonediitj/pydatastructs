@@ -4,7 +4,7 @@ from pydatastructs import (
     heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
-    prev_permutation, bubble_sort)
+    prev_permutation, bubble_sort, linear_search, binary_search, jump_search)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -322,3 +322,39 @@ def test_next_prev_permutation():
         _, prev_array = prev_permutation(array)
         _, orig_array = next_permutation(prev_array)
         assert str(orig_array) == str(array)
+
+def _test_common_search(search_func, sort_array=True):
+    ODA = OneDimensionalArray
+
+    array = ODA(int, [1, 2, 5, 7, 10, 29, 40])
+    for i in range(len(array)):
+        assert i == search_func(array, array[i])
+
+    checker_array = [None, None, 2, 3, 4, 5, None]
+    for i in range(len(array)):
+        assert checker_array[i] == search_func(array, array[i], start=2, end=5)
+
+    random.seed(1000)
+
+    for i in range(25):
+        data = list(set(random.sample(range(1, 10000), 100)))
+
+        if sort_array:
+            data.sort()
+
+        array = ODA(int, list(data))
+
+        for i in range(len(array)):
+            assert search_func(array, array[i]) == i
+
+        for _ in range(50):
+            assert search_func(array, random.randint(10001, 50000)) is None
+
+def test_linear_search():
+    _test_common_search(linear_search, sort_array=False)
+
+def test_binary_search():
+    _test_common_search(binary_search)
+
+def test_jump_search():
+    _test_common_search(jump_search)

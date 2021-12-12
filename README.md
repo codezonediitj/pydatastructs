@@ -25,6 +25,9 @@ For development purposes, you can use the option `e` as shown below,
 python -m pip install -e .
 ```
 
+In the above commands, `.` in the end means the current directory. So, make sure you change your working directory
+to `pydatastructs` before executing any of the above commands.
+
 Make sure that your python version is above `3.5`.
 
 Testing

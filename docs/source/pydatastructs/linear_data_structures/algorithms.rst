@@ -34,3 +34,9 @@ Algorithms
 .. autofunction:: pydatastructs.next_permutation
 
 .. autofunction:: pydatastructs.prev_permutation
+
+.. autofunction:: pydatastructs.linear_search
+
+.. autofunction:: pydatastructs.binary_search
+
+.. autofunction:: pydatastructs.jump_search
