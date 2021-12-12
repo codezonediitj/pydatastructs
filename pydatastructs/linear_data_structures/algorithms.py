@@ -1566,7 +1566,7 @@ def jump_search(array, value, **kwargs):
     to be searched is already sorted.
     """
     raise_if_backend_is_not_python(
-            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+            jump_search, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u < v)
@@ -1578,7 +1578,7 @@ def jump_search(array, value, **kwargs):
         prev = current_position
         current_position += step
         if prev > end:
-            return -1
+            return None
     while prev <= min(current_position, end):
         if array[prev] == value:
             return prev
