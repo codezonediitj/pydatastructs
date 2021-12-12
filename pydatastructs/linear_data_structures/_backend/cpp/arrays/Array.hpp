@@ -6,14 +6,14 @@ typedef struct {
 } Array;
 
 static void Array_dealloc(Array *self) {
-  Py_TYPE(self)->tp_free((PyObject *)self);
+  Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
 static PyObject* Array___new__(PyTypeObject* type, PyObject *args,
                             PyObject *kwds) {
   Array *self;
-  self = (Array*)type->tp_alloc(type, 0);
-  return (PyObject*)self;
+  self = reinterpret_cast<Array*>(type->tp_alloc(type, 0));
+  return reinterpret_cast<PyObject*>(self);
 }
 
 static PyObject* Array___str__(Array *self) {
