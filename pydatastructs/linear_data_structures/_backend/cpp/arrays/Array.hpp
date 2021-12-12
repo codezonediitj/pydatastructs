@@ -1,19 +1,23 @@
+#ifndef LINEAR_DATA_STRUCTURES_ARRAY_HPP
+#define LINEAR_DATA_STRUCTURES_ARRAY_HPP
+
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
 
 typedef struct {
-   PyObject_HEAD
+    PyObject_HEAD
 } Array;
 
 static void Array_dealloc(Array *self) {
-  Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
+    Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
 static PyObject* Array___new__(PyTypeObject* type, PyObject *args,
                             PyObject *kwds) {
-  Array *self;
-  self = reinterpret_cast<Array*>(type->tp_alloc(type, 0));
-  return reinterpret_cast<PyObject*>(self);
+    Array *self;
+    self = reinterpret_cast<Array*>(type->tp_alloc(type, 0));
+    return reinterpret_cast<PyObject*>(self);
 }
 
 static PyObject* Array___str__(Array *self) {
@@ -63,3 +67,5 @@ static PyTypeObject ArrayType = {
     /* tp_alloc */ 0,
     /* tp_new */ Array___new__,
 };
+
+#endif

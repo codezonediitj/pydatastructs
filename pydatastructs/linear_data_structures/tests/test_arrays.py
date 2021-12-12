@@ -1,5 +1,6 @@
 from pydatastructs.linear_data_structures import (
-    OneDimensionalArray, DynamicOneDimensionalArray, MultiDimensionalArray)
+    OneDimensionalArray, DynamicOneDimensionalArray,
+    MultiDimensionalArray)
 from pydatastructs.utils.raises_util import raises
 
 
