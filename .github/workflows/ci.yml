@@ -7,18 +7,15 @@ on:
     branches: [master]
 
 jobs:
-  test:
+  test-ubuntu-py38:
     runs-on: ${{matrix.os}}
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         python-version:
-          - "3.7"
           - "3.8"
-          - "3.9"
-          - "3.10"
 
     steps:
       - uses: actions/checkout@v2
@@ -57,6 +54,87 @@ jobs:
           name: codecov-umbrella
           path_to_write_report: ./coverage/codecov_report.txt
           verbose: true
+
+      - name: Build Documentation
+        run: |
+          sphinx-build -b html docs/source/ docs/build/html
+
+  test-ubuntu-py39-py310:
+    runs-on: ${{matrix.os}}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version:
+          - "3.9"
+          - "3.10"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip version
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+          pip install -r docs/requirements.txt
+
+      - name: Build package
+        run: |
+          python -m pip install .
+
+      - name: Run tests
+        run: |
+          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+
+      - name: Build Documentation
+        run: |
+          sphinx-build -b html docs/source/ docs/build/html
+
+  test-macos-windows:
+    runs-on: ${{matrix.os}}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip version
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+          pip install -r docs/requirements.txt
+
+      - name: Build package
+        run: |
+          python -m pip install .
+
+      - name: Run tests
+        run: |
+          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
 
       - name: Build Documentation
         run: |
