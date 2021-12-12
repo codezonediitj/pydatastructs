@@ -1373,7 +1373,7 @@ def bubble_sort(array, **kwargs):
 
     return array
 
-def linear_search(array, elem, **kwargs):
+def linear_search(array, value, **kwargs):
     """
     Implements linear search algorithm.
 
@@ -1381,8 +1381,10 @@ def linear_search(array, elem, **kwargs):
     ==========
 
     array: OneDimensionalArray
-        The array which is to be sorted.
-    elem: same as that of the array
+        The array which is to be searched.
+    value:
+        The value which is to be searched
+        inside the array.
     start: int
         The starting index of the portion
         which is to be searched.
@@ -1401,8 +1403,8 @@ def linear_search(array, elem, **kwargs):
     =======
 
     output: int
-        The index of elem if found.
-        If not found, returns -1.
+        The index of value if found.
+        If not found, returns None.
 
     Examples
     ========
@@ -1421,21 +1423,25 @@ def linear_search(array, elem, **kwargs):
             linear_search, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
-    for i in range(start, end+1):
-        if array[i] == elem:
-            return i
-    return -1
 
-def binary_search(array, elem, **kwargs):
+    for i in range(start, end + 1):
+        if array[i] == value:
+            return i
+
+    return None
+
+def binary_search(array, value, **kwargs):
     """
-    Implements binary search algorithm ON A SORTED ARRAY.
+    Implements binary search algorithm.
 
     Parameters
     ==========
 
     array: OneDimensionalArray
-        The array which is to be sorted.
-    elem: same as that of the array
+        The array which is to be searched.
+    value:
+        The value which is to be searched
+        inside the array.
     start: int
         The starting index of the portion
         which is to be searched.
@@ -1447,8 +1453,7 @@ def binary_search(array, elem, **kwargs):
         of the last position filled.
     comp: lambda/function
         The comparator which is to be used
-        for sorting. If the function returns
-        False then only swapping is performed.
+        for performing comparisons.
         Optional, by default, less than or
         equal to is used for comparing two
         values.
@@ -1462,7 +1467,7 @@ def binary_search(array, elem, **kwargs):
 
     output: int
         The index of elem if found.
-        If not found, returns -1.
+        If not found, returns None.
 
     Examples
     ========
@@ -1476,34 +1481,44 @@ def binary_search(array, elem, **kwargs):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Binary_search_algorithm
+
+    Note
+    ====
+
+    This algorithm assumes that the portion of the array
+    to be searched is already sorted.
     """
     raise_if_backend_is_not_python(
             binary_search, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
-    Left = start
-    Right = end
-    while Left <= Right:
-        Middle = Left//2 + Right//2 + Left % 2 * Right % 2
-        if array[Middle] == elem:
-                return Middle
-        if comp(array[Middle], elem):
-            Left = Middle + 1
-        else:
-            Right = Middle - 1
-    return -1
 
-def jump_search(array, elem, **kwargs):
+    left = start
+    right = end
+    while left <= right:
+        middle = left//2 + right//2 + left % 2 * right % 2
+        if array[middle] == value:
+                return middle
+        if comp(array[middle], value):
+            left = middle + 1
+        else:
+            right = middle - 1
+
+    return None
+
+def jump_search(array, value, **kwargs):
     """
-    Implements jump search algorithm ON A SORTED ARRAY.
+    Implements jump search algorithm.
 
     Parameters
     ==========
 
     array: OneDimensionalArray
-        The array which is to be sorted.
-    elem: same as that of the array
+        The array which is to be searched.
+    value:
+        The value which is to be searched
+        inside the array.
     start: int
         The starting index of the portion
         which is to be searched.
@@ -1515,8 +1530,7 @@ def jump_search(array, elem, **kwargs):
         of the last position filled.
     comp: lambda/function
         The comparator which is to be used
-        for sorting. If the function returns
-        False then only swapping is performed.
+        for performing comparisons.
         Optional, by default, less than or
         equal to is used for comparing two
         values.
@@ -1530,7 +1544,7 @@ def jump_search(array, elem, **kwargs):
 
     output: int
         The index of elem if found.
-        If not found, returns -1.
+        If not found, returns None.
 
     Examples
     ========
@@ -1544,22 +1558,30 @@ def jump_search(array, elem, **kwargs):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Jump_search
+
+    Note
+    ====
+
+    This algorithm assumes that the portion of the array
+    to be searched is already sorted.
     """
     raise_if_backend_is_not_python(
             bubble_sort, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u < v)
+
     step = int(sqrt(end - start + 1))
     current_position = step
     prev = start
-    while comp(array[min(current_position, end)], elem):
+    while comp(array[min(current_position, end)], value):
         prev = current_position
         current_position += step
         if prev > end:
             return -1
     while prev <= min(current_position, end):
-        if array[prev] == elem:
+        if array[prev] == value:
             return prev
         prev += 1
-    return -1
+
+    return None
