@@ -1506,7 +1506,7 @@ def insertion_sort(array, **kwargs):
     for i in range(start+1, end+1):
         temp = array[i]
         j = i
-        while j > 0 and not _comp(array[j-1], temp, comp):
+        while j > start and not _comp(array[j-1], temp, comp):
             array[j] = array[j-1]
             j -= 1
         array[j] = temp
