@@ -40,3 +40,5 @@ Algorithms
 .. autofunction:: pydatastructs.binary_search
 
 .. autofunction:: pydatastructs.jump_search
+
+.. autofunction:: pydatastructs.selection_sort

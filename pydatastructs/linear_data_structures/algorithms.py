@@ -26,7 +26,8 @@ __all__ = [
     'bubble_sort',
     'linear_search',
     'binary_search',
-    'jump_search'
+    'jump_search',
+    'selection_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1373,6 +1374,76 @@ def bubble_sort(array, **kwargs):
 
     return array
 
+def selection_sort(array, **kwargs):
+    """
+    Implements selection sort algorithm.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, selection_sort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> out = selection_sort(arr)
+    >>> str(out)
+    '[1, 2, 3]'
+    >>> out = selection_sort(arr, comp=lambda u, v: u > v)
+    >>> str(out)
+    '[3, 2, 1]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Selection_sort
+    """
+    raise_if_backend_is_not_python(
+            selection_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    for i in range(start, end+1):
+        k = i
+        for j in range(i+1, end+1):
+            if not _comp(array[k], array[j], comp):
+                k = j
+        array[i], array[k] = array[k], array[i]
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
+    return array
+
 def linear_search(array, value, **kwargs):
     """
     Implements linear search algorithm.
@@ -1427,6 +1498,83 @@ def linear_search(array, value, **kwargs):
     for i in range(start, end + 1):
         if array[i] == value:
             return i
+
+    return None
+
+def binary_search(array, value, **kwargs):
+    """
+    Implements binary search algorithm.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array which is to be searched.
+    value:
+        The value which is to be searched
+        inside the array.
+    start: int
+        The starting index of the portion
+        which is to be searched.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be searched.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for performing comparisons.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: int
+        The index of elem if found.
+        If not found, returns None.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, binary_search
+    >>> arr = OneDimensionalArray(int,[1, 2, 3, 5, 10, 12])
+    >>> binary_search(arr, 5)
+    3
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Binary_search_algorithm
+
+    Note
+    ====
+
+    This algorithm assumes that the portion of the array
+    to be searched is already sorted.
+    """
+    raise_if_backend_is_not_python(
+            binary_search, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+
+    left = start
+    right = end
+    while left <= right:
+        middle = left//2 + right//2 + left % 2 * right % 2
+        if array[middle] == value:
+                return middle
+        if comp(array[middle], value):
+            left = middle + 1
+        else:
+            right = middle - 1
 
     return None
 
