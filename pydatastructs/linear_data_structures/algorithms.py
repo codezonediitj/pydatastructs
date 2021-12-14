@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from math import log, floor, sqrt
 
 __all__ = [
+    'merge_sort',
     'merge_sort_parallel',
     'brick_sort',
     'brick_sort_parallel',
@@ -58,6 +59,74 @@ def _merge(array, sl, el, sr, er, end, comp):
         array[k] = r[j]
         j += 1
         k += 1
+
+def merge_sort(array: Array, **kwargs) -> Array:
+    """
+    Implements merge sort.
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, merge_sort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> out = merge_sort(arr)
+    >>> str(out)
+    '[1, 2, 3]'
+    >>> out = merge_sort(arr, comp=lambda u, v: u > v)
+    >>> str(out)
+    '[3, 2, 1]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Merge_sort
+    """
+    raise_if_backend_is_not_python(
+            merge_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get("comp", lambda u, v: u <= v)
+    if start >= end:
+        return
+    mid = start + (end - start) // 2
+    merge_sort(array, comp=comp, start=start, end=mid, backend=kwargs.get('backend', Backend.PYTHON))
+    merge_sort(array, comp=comp, start=mid+1, end=end, backend=kwargs.get('backend', Backend.PYTHON))
+    _merge(array, start, mid, mid+1, end, len(array)-1, comp)
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
+    return array
 
 def merge_sort_parallel(array, num_threads, **kwargs):
     """

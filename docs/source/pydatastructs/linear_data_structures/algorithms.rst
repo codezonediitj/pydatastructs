@@ -1,6 +1,8 @@
 Algorithms
 ==========
 
+.. autofunction:: pydatastructs.merge_sort
+
 .. autofunction:: pydatastructs.merge_sort_parallel
 
 .. autofunction:: pydatastructs.brick_sort

@@ -1,5 +1,5 @@
 from pydatastructs import (
-    merge_sort_parallel, DynamicOneDimensionalArray,
+    merge_sort, merge_sort_parallel, DynamicOneDimensionalArray,
     OneDimensionalArray, brick_sort, brick_sort_parallel,
     heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
@@ -44,6 +44,9 @@ def _test_common_sort(sort, *args, **kwargs):
                     709, 910]
     sort(arr, *args, **kwargs, start=2, end=5)
     assert arr._data == expected_arr
+
+def test_merge_sort():
+    _test_common_sort(merge_sort)
 
 def test_merge_sort_parallel():
     _test_common_sort(merge_sort_parallel, num_threads=5)
