@@ -29,6 +29,8 @@ def find(text, query, algorithm, **kwargs):
         'kmp' -> Knuth-Morris-Pratt as given in [1].
 
         'rabin_karp' -> Rabin–Karp algorithm as given in [2].
+
+        'boyer_moore' -> Boyer-Moore algorithm as given in [3].
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -64,6 +66,7 @@ def find(text, query, algorithm, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
     .. [2] https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
+    .. [3] https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
     """
     raise_if_backend_is_not_python(
             find, kwargs.get('backend', Backend.PYTHON))
@@ -164,6 +167,9 @@ def _rabin_karp(text, query):
 
 # Boyer-Moore Implementation for string pattern matching
 
+# Python3 Program for Bad Character Heuristic
+# of Boyer Moore String Matching Algorithm
+
 NO_OF_CHARS = 256
 
 def badCharHeuristic(string, size):
@@ -175,7 +181,7 @@ def badCharHeuristic(string, size):
 
 	return badChar
 
-def bmsearch(txt, pat):
+def boyer_moore(txt, pat):
 	
 	m = len(pat)
 	n = len(txt)
@@ -183,15 +189,16 @@ def bmsearch(txt, pat):
 	badChar = badCharHeuristic(pat, m)
 
 	s = 0
+	a = []
 	while(s <= n-m):
 		j = m-1
 
 		while j>=0 and pat[j] == txt[s+j]:
 			j -= 1
-
 		if j<0:
-			print("Pattern occur at shift = {}".format(s))
+			a.append(s)
 			s += (m-badChar[ord(txt[s+m])] if s+m<n else 1)
 		else:
 			s += max(1, j-badChar[ord(txt[s+j])])
+	return a
 
