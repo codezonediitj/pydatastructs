@@ -163,36 +163,24 @@ def _rabin_karp(text, query):
     return positions
 
 
-
-
 # Boyer-Moore Implementation for string pattern matching
-
-# Python3 Program for Bad Character Heuristic
-# of Boyer Moore String Matching Algorithm
 
 NO_OF_CHARS = 256
 
 def badCharHeuristic(string, size):
-
 	badChar = [-1]*NO_OF_CHARS
-
 	for i in range(size):
 		badChar[ord(string[i])] = i
-
 	return badChar
 
-def boyer_moore(txt, pat):
-	
+def search(txt, pat):
 	m = len(pat)
 	n = len(txt)
-
 	badChar = badCharHeuristic(pat, m)
-
 	s = 0
 	a = []
 	while(s <= n-m):
 		j = m-1
-
 		while j>=0 and pat[j] == txt[s+j]:
 			j -= 1
 		if j<0:
@@ -201,4 +189,3 @@ def boyer_moore(txt, pat):
 		else:
 			s += max(1, j-badChar[ord(txt[s+j])])
 	return a
-
