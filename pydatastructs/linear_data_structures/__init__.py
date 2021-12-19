@@ -43,6 +43,8 @@ from .algorithms import (
     bubble_sort,
     linear_search,
     binary_search,
-    jump_search
+    jump_search,
+    selection_sort,
+    insertion_sort
 )
 __all__.extend(algorithms.__all__)
