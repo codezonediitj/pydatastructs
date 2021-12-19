@@ -26,7 +26,9 @@ __all__ = [
     'bubble_sort',
     'linear_search',
     'binary_search',
-    'jump_search'
+    'jump_search',
+    'selection_sort',
+    'insertion_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1367,6 +1369,150 @@ def bubble_sort(array, **kwargs):
         for j in range(start , end):
             if not _comp(array[j], array[j + 1], comp):
                 array[j], array[j + 1] = array[j + 1], array[j]
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
+    return array
+
+def selection_sort(array, **kwargs):
+    """
+    Implements selection sort algorithm.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, selection_sort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> out = selection_sort(arr)
+    >>> str(out)
+    '[1, 2, 3]'
+    >>> out = selection_sort(arr, comp=lambda u, v: u > v)
+    >>> str(out)
+    '[3, 2, 1]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Selection_sort
+    """
+    raise_if_backend_is_not_python(
+            selection_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get('comp', lambda u, v: u <= v)
+
+    for i in range(start, end + 1):
+        jMin = i
+        for j in range(i + 1, end + 1):
+            if not _comp(array[jMin], array[j], comp):
+                jMin = j
+        if jMin != i:
+            array[i], array[jMin] = array[jMin], array[i]
+
+    if _check_type(array, DynamicArray):
+        array._modify(force=True)
+
+    return array
+
+def insertion_sort(array, **kwargs):
+    """
+    Implements insertion sort algorithm.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, insertion_sort
+    >>> arr = OneDimensionalArray(int,[3, 2, 1])
+    >>> out = insertion_sort(arr)
+    >>> str(out)
+    '[1, 2, 3]'
+    >>> out = insertion_sort(arr, comp=lambda u, v: u > v)
+    >>> str(out)
+    '[3, 2, 1]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Insertion_sort
+    """
+    raise_if_backend_is_not_python(
+            insertion_sort, kwargs.get('backend', Backend.PYTHON))
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get('comp', lambda u, v: u <= v)
+
+    for i in range(start + 1, end + 1):
+        temp = array[i]
+        j = i
+        while j > start and not _comp(array[j - 1], temp, comp):
+            array[j] = array[j - 1]
+            j -= 1
+        array[j] = temp
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
