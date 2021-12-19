@@ -1,7 +1,7 @@
 from pydatastructs.utils.misc_util import (
     _check_type, NoneType, Backend,
     raise_if_backend_is_not_python)
-from pydatastructs.linear_data_structures._backend import cpp
+from pydatastructs.linear_data_structures._backend.cpp import _arrays
 
 __all__ = [
     'OneDimensionalArray',
@@ -78,7 +78,7 @@ class OneDimensionalArray(Array):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         backend = kwargs.get('backend', Backend.PYTHON)
         if backend == Backend.CPP:
-            return cpp._arrays.OneDimensionalArrayCpp(dtype, *args, **kwargs)
+            return _arrays.OneDimensionalArrayCpp(dtype, *args, **kwargs)
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         if len(args) not in (1, 2):
