@@ -5,13 +5,13 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
-#include "pydatastructs/utils/_backend/cpp/utils.hpp"
+#include "../../../../utils/_backend/cpp/utils.hpp"
 
 typedef struct {
     PyObject_HEAD
-    int _size,
-    PyObject** _data,
-    PyObject* _dtype
+    size_t _size;
+    PyObject** _data;
+    PyObject* _dtype;
 } OneDimensionalArray;
 
 static void OneDimensionalArray_dealloc(OneDimensionalArray *self) {
@@ -41,7 +41,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
     }
 
     char* format = NULL;
-    if( len_arg == 3 ) {
+    if( len_args == 3 ) {
         PyObject *args0 = PyObject_GetItem(args, PyOne);
         PyObject *args1 = PyObject_GetItem(args, PyTwo);
         size_t size;
@@ -60,33 +60,33 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                             "expected type of data is list/tuple.");
             return NULL;
         }
-        size_t len_data = PyLong_AsUnsignedLong(PyObject_Length(data));
+        size_t len_data = PyObject_Length(data);
         if( size != len_data ) {
             PyErr_Format(PyExc_ValueError,
                          "Conflict in the size, %d and length of data, %d",
-                         size, length_of_data);
+                         size, len_data);
             return NULL;
         }
         self->_size = size;
-        self->_data = reinterpret_cast<PyObject*>(std::malloc(size * sizeof(PyObject*)));
+        self->_data = reinterpret_cast<PyObject**>(std::malloc(size * sizeof(PyObject*)));
         for( size_t i = 0; i < size; i++ ) {
             self->_data[i] = PyObject_GetItem(data, PyLong_FromSize_t(i));
         }
-    } else if( len_arg == 2 ) {
+    } else if( len_args == 2 ) {
         PyObject *args0 = PyObject_GetItem(args, PyOne);
         if( PyLong_Check(args0) ) {
-            self->_size = PyLong_AsUnsignedLong(args0);
-            init = PyObject_GetItem(kwds, PyBytes_FromString("init"));
+            self->_size = PyLong_AsSize_t(args0);
+            PyObject* init = PyObject_GetItem(kwds, PyBytes_FromString("init"));
             if( init == nullptr ) {
                 init = Py_None;
             }
-            self->_data = reinterpret_cast<PyObject*>(std::malloc(size * sizeof(PyObject*)));
-            for( size_t i = 0; i < size; i++ ) {
-                self->_data[i] = PyObject_GetItem(data, init);
+            self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));
+            for( size_t i = 0; i < self->_size; i++ ) {
+                self->_data[i] = init;
             }
         } else if( (PyList_Check(args0) || PyTuple_Check(args0)) ) {
-            self->_size = PyLong_AsUnsignedLong(PyObject_Length(args0));
-            self->_data = reinterpret_cast<PyObject*>(std::malloc(self->_size * sizeof(PyObject*)));
+            self->_size = PyObject_Length(args0);
+            self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));
             for( size_t i = 0; i < self->_size; i++ ) {
                 self->_data[i] = PyObject_GetItem(args0, PyLong_FromSize_t(i));
             }

@@ -1,5 +1,6 @@
 #include <Python.h>
 #include "Array.hpp"
+#include "OneDimensionalArray.hpp"
 
 static struct PyModuleDef arrays_struct = {
     PyModuleDef_HEAD_INIT,
