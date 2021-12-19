@@ -1,10 +1,13 @@
 __all__ = []
 
+from . import _extensions
+
+_extensions.add_dummy_submodules()
+
 from . import (
     arrays,
     linked_lists,
-    algorithms,
-    _extensions
+    algorithms
 )
 
 from .arrays import (
@@ -48,3 +51,5 @@ from .algorithms import (
     insertion_sort
 )
 __all__.extend(algorithms.__all__)
+
+_extensions.delete_dummy_submodules()

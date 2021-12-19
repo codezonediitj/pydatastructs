@@ -78,7 +78,7 @@ class OneDimensionalArray(Array):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         backend = kwargs.get('backend', Backend.PYTHON)
         if backend == Backend.CPP:
-            return _arrays.OneDimensionalArrayCpp(dtype, *args, **kwargs)
+            return _arrays.OneDimensionalArray(dtype, *args, **kwargs)
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         if len(args) not in (1, 2):

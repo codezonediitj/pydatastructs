@@ -1,12 +1,12 @@
 import setuptools
-from pydatastructs.linear_data_structures import _extensions as linear_data_structures__extensions
+from pydatastructs import linear_data_structures
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 extensions = []
 
-extensions.extend(linear_data_structures__extensions.extensions)
+extensions.extend(linear_data_structures._extensions.extensions)
 
 setuptools.setup(
     name="cz-pydatastructs",
