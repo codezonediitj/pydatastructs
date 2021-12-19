@@ -173,7 +173,7 @@ def badCharHeuristic(string, size):
 		badChar[ord(string[i])] = i
 	return badChar
 
-def search(txt, pat):
+def boyer_moore(txt, pat):
 	m = len(pat)
 	n = len(txt)
 	badChar = badCharHeuristic(pat, m)
