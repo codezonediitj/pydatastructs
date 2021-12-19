@@ -4,6 +4,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
+#include <cstdlib>
 #include "pydatastructs/utils/_backend/cpp/utils.hpp"
 
 typedef struct {
@@ -47,12 +48,12 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         PyObject *data = NULL;
         if( (PyList_Check(args0) || PyTuple_Check(args0)) &&
              PyLong_Check(args1) ) {
-                 size = PyLong_AsUnsignedLong(args1);
-                 data = args0;
+            size = PyLong_AsUnsignedLong(args1);
+            data = args0;
         } else if( (PyList_Check(args1) || PyTuple_Check(args1)) &&
                     PyLong_Check(args0) ) {
-                        size = PyLong_AsUnsignedLong(args0);
-                        data = args1;
+            size = PyLong_AsUnsignedLong(args0);
+            data = args1;
         } else {
             PyErr_SetString(PyExc_TypeError,
                             "Expected type of size is int and "
@@ -66,12 +67,29 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                          size, length_of_data);
             return NULL;
         }
+        self->_size = size;
+        self->_data = reinterpret_cast<PyObject*>(std::malloc(size * sizeof(PyObject*)));
+        for( size_t i = 0; i < size; i++ ) {
+            self->_data[i] = PyObject_GetItem(data, PyLong_FromSize_t(i));
+        }
     } else if( len_arg == 2 ) {
         PyObject *args0 = PyObject_GetItem(args, PyOne);
         if( PyLong_Check(args0) ) {
-
-        } else if( PyLong_Check(args1) ) {
-
+            self->_size = PyLong_AsUnsignedLong(args0);
+            init = PyObject_GetItem(kwds, PyBytes_FromString("init"));
+            if( init == nullptr ) {
+                init = Py_None;
+            }
+            self->_data = reinterpret_cast<PyObject*>(std::malloc(size * sizeof(PyObject*)));
+            for( size_t i = 0; i < size; i++ ) {
+                self->_data[i] = PyObject_GetItem(data, init);
+            }
+        } else if( (PyList_Check(args0) || PyTuple_Check(args0)) ) {
+            self->_size = PyLong_AsUnsignedLong(PyObject_Length(args0));
+            self->_data = reinterpret_cast<PyObject*>(std::malloc(self->_size * sizeof(PyObject*)));
+            for( size_t i = 0; i < self->_size; i++ ) {
+                self->_data[i] = PyObject_GetItem(args0, PyLong_FromSize_t(i));
+            }
         } else {
             PyErr_SetString(PyExc_TypeError,
                             "Expected type of size is int and "
@@ -84,11 +102,11 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
 }
 
 static PyObject* OneDimensionalArray___str__(OneDimensionalArray *self) {
-    PyObject* self__data = PyObject_GetAttrString(reinterpret_cast<PyObject*>(self), "_data");
+    PyObject** self__data = self->_data;
     if( !self__data ) {
         return NULL;
     }
-    return PyObject_Str(self__data);
+    return __str__(self__data, self->_size);
 }
 
 static PyTypeObject OneDimensionalArrayType = {
@@ -121,7 +139,7 @@ static PyTypeObject OneDimensionalArrayType = {
     /* tp_methods */ 0,
     /* tp_members */ 0,
     /* tp_getset */ 0,
-    /* tp_base */ &PyBaseObject_Type,
+    /* tp_base */ &ArrayType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,
     /* tp_descr_set */ 0,
