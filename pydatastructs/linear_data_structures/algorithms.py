@@ -1432,13 +1432,15 @@ def selection_sort(array, **kwargs):
             selection_sort, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
-    comp = kwargs.get("comp", lambda u, v: u <= v)
-    for i in range(start, end+1):
-        k = i
-        for j in range(i+1, end+1):
-            if not _comp(array[k], array[j], comp):
-                k = j
-        array[i], array[k] = array[k], array[i]
+    comp = kwargs.get('comp', lambda u, v: u <= v)
+
+    for i in range(start, end + 1):
+        jMin = i
+        for j in range(i + 1, end + 1):
+            if not _comp(array[jMin], array[j], comp):
+                jMin = j
+        if jMin != i:
+            array[i], array[jMin] = array[jMin], array[i]
 
     if _check_type(array, DynamicArray):
         array._modify(force=True)
@@ -1502,12 +1504,13 @@ def insertion_sort(array, **kwargs):
             insertion_sort, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
-    comp = kwargs.get("comp", lambda u, v: u <= v)
-    for i in range(start+1, end+1):
+    comp = kwargs.get('comp', lambda u, v: u <= v)
+
+    for i in range(start + 1, end + 1):
         temp = array[i]
         j = i
-        while j > start and not _comp(array[j-1], temp, comp):
-            array[j] = array[j-1]
+        while j > start and not _comp(array[j - 1], temp, comp):
+            array[j] = array[j - 1]
             j -= 1
         array[j] = temp
 
