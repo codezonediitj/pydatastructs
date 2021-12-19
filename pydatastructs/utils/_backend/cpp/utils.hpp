@@ -8,18 +8,21 @@
 PyObject *PyZero = PyLong_FromLong(0);
 PyObject *PyOne = PyLong_FromLong(1);
 PyObject *PyTwo = PyLong_FromLong(2);
+const char* _encoding = "utf-8";
+const char* _invalid_char = "<invalid-character>";
 
 static PyObject* __str__(PyObject** array, size_t size) {
     std::string array___str__ = "[";
     for( size_t i = 0; i < size; i++ ) {
-        char* i___str__ = PyBytes_AS_STRING(PyObject_Str(array[i]));
+        PyObject* array_i = PyObject_Str(array[i]);
+        char* i___str__ = PyBytes_AS_STRING(PyUnicode_AsEncodedString(array_i, _encoding, _invalid_char));
         array___str__.append(std::string(i___str__));
         if( i + 1 != size ) {
             array___str__.append(", ");
         }
     }
     array___str__.push_back(']');
-    return PyBytes_FromString(array___str__.c_str());
+    return PyUnicode_FromString(array___str__.c_str());
 }
 
 #endif

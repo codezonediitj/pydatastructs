@@ -15,6 +15,7 @@ typedef struct {
 } OneDimensionalArray;
 
 static void OneDimensionalArray_dealloc(OneDimensionalArray *self) {
+    std::free(self->_data);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -32,7 +33,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
     }
     self->_dtype = dtype;
 
-    if( len_args != 2 || len_args != 3 ) {
+    if( len_args != 2 && len_args != 3 ) {
         PyErr_SetString(PyExc_ValueError,
                         "Too few arguments to create a 1D array,"
                         " pass either size of the array"
@@ -40,7 +41,6 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         return NULL;
     }
 
-    char* format = NULL;
     if( len_args == 3 ) {
         PyObject *args0 = PyObject_GetItem(args, PyOne);
         PyObject *args1 = PyObject_GetItem(args, PyTwo);
@@ -76,8 +76,9 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         PyObject *args0 = PyObject_GetItem(args, PyOne);
         if( PyLong_Check(args0) ) {
             self->_size = PyLong_AsSize_t(args0);
-            PyObject* init = PyObject_GetItem(kwds, PyBytes_FromString("init"));
+            PyObject* init = PyObject_GetItem(kwds, PyUnicode_FromString("init"));
             if( init == nullptr ) {
+                PyErr_Clear();
                 init = Py_None;
             }
             self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));

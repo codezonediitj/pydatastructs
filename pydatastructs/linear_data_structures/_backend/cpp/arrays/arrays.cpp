@@ -18,7 +18,13 @@ PyMODINIT_FUNC PyInit__arrays(void) {
         return NULL;
     }
     Py_INCREF(&ArrayType);
-    PyModule_AddObject(arrays, "Array", (PyObject*) &ArrayType);
+    PyModule_AddObject(arrays, "Array", reinterpret_cast<PyObject*>(&ArrayType));
+
+    if (PyType_Ready(&OneDimensionalArrayType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&OneDimensionalArrayType);
+    PyModule_AddObject(arrays, "OneDimensionalArray", reinterpret_cast<PyObject*>(&OneDimensionalArrayType));
 
     return arrays;
 }
