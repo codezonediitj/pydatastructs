@@ -26,6 +26,7 @@ def test_AdjacencyMatrix():
     assert neighbors == [v_1]
     g.remove_edge(0, 1)
     assert g.is_adjacent(0, 1) is False
-
     assert raises(ValueError, lambda: g.add_edge('u', 'v'))
     assert raises(ValueError, lambda: g.add_edge('v', 'x'))
+    assert raises(ValueError, lambda: g.add_edge(2, 3))
+    assert raises(ValueError, lambda: g.add_edge(3, 2))
