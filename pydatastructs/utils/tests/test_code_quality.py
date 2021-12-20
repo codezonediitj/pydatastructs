@@ -203,6 +203,9 @@ def test_public_api():
 
 def test_backend_argument_message():
 
+    import pydatastructs as pyds
+    backend_implemented = [pyds.OneDimensionalArray]
+
     def call_and_raise(api, pos_args_count=0):
         try:
             if pos_args_count == 0:
@@ -222,4 +225,5 @@ def test_backend_argument_message():
 
     apis = _apis()
     for api in apis:
-        call_and_raise(api, 0)
+        if api not in backend_implemented:
+            call_and_raise(api, 0)

@@ -1,5 +1,4 @@
 from setuptools import Extension
-import os
 
 project = 'pydatastructs'
 
@@ -20,10 +19,3 @@ arrays_sources = ['/'.join([project, module, backend, cpp,
 extensions = [
     Extension(arrays, sources=arrays_sources)
 ]
-
-def delete_dummy_submodule():
-    os.remove('/'.join([project, module, backend, cpp, dummy_submodule]))
-
-def add_dummy_submodule():
-    dummy_file = open('/'.join([project, module, backend, cpp, dummy_submodule]), 'w+')
-    dummy_file.close()

@@ -36,7 +36,7 @@ jobs:
 
       - name: Build package
         run: |
-          python -m pip install .
+          python scripts/build/install.py
 
       - name: Run tests
         run: |
@@ -89,7 +89,7 @@ jobs:
 
       - name: Build package
         run: |
-          python -m pip install .
+          python scripts/build/install.py
 
       - name: Run tests
         run: |
@@ -130,7 +130,7 @@ jobs:
 
       - name: Build package
         run: |
-          python -m pip install .
+          python scripts/build/install.py
 
       - name: Run tests
         run: |
