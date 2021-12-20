@@ -1,3 +1,8 @@
-from pydatastructs import linear_data_structures
+from dummy_submodules_data import (project, modules, backend,
+    cpp, dummy_submodules)
 
-linear_data_structures._extensions.add_dummy_submodule()
+def add_dummy_submodules():
+    for module, dummy_submodule in zip(modules, dummy_submodules):
+        open('/'.join([project, module, backend, cpp, dummy_submodule]), 'w+').close()
+
+add_dummy_submodules()
