@@ -132,7 +132,8 @@ class OneDimensionalArray(Array):
 
     def __getitem__(self, i):
         if i >= self._size or i < 0:
-            raise IndexError("Index out of range.")
+            raise IndexError(("Index, {} out of range, "
+                              "[{}, {}).".format(i, 0, self._size)))
         return self._data.__getitem__(i)
 
     def __setitem__(self, idx, elem):

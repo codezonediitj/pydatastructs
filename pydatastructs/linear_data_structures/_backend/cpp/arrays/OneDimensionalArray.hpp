@@ -102,6 +102,58 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
     return reinterpret_cast<PyObject*>(self);
 }
 
+static PyObject* OneDimensionalArray___getitem__(OneDimensionalArray *self,
+                                                 PyObject* arg) {
+    size_t idx = PyLong_AsUnsignedLong(arg);
+    if( idx >= self->_size ) {
+        PyErr_Format(PyExc_IndexError,
+                     "Index, %d, out of range, [%d, %d)",
+                     idx, 0, self->_size);
+        return NULL;
+    }
+    return self->_data[idx];
+}
+
+static int OneDimensionalArray___setitem__(OneDimensionalArray *self,
+                                                 PyObject* arg, PyObject* value) {
+    size_t idx = PyLong_AsUnsignedLong(arg);
+    if( value == Py_None ) {
+        self->_data[idx] = value;
+    } else {
+        if( PyObject_IsInstance(value, self->_dtype) ) {
+            self->_data[idx] = value;
+        } else {
+            PyErr_WriteUnraisable(
+                PyErr_Format(PyExc_TypeError,
+                "Unable to store %s object in %s type array.",
+                PyObject_AsString(PyObject_Repr(PyObject_Type(value))),
+                PyObject_AsString(PyObject_Repr(self->_dtype))));
+        }
+    }
+    return 0;
+}
+
+static PyObject* OneDimensionalArray_fill(OneDimensionalArray *self, PyObject *args) {
+    PyObject* value = PyObject_GetItem(args, PyZero);
+    if( !PyObject_IsInstance(value, self->_dtype) ) {
+        PyErr_WriteUnraisable(
+            PyErr_Format(PyExc_TypeError,
+            "Unable to store %s object in %s type array.",
+            PyObject_AsString(PyObject_Repr(PyObject_Type(value))),
+            PyObject_AsString(PyObject_Repr(self->_dtype))));
+    }
+
+    for( size_t i = 0; i < self->_size; i++ ) {
+        self->_data[i] = value;
+    }
+
+    Py_RETURN_NONE;
+}
+
+static Py_ssize_t OneDimensionalArray___len__(OneDimensionalArray *self) {
+    return self->_size;
+}
+
 static PyObject* OneDimensionalArray___str__(OneDimensionalArray *self) {
     PyObject** self__data = self->_data;
     if( !self__data ) {
@@ -109,6 +161,17 @@ static PyObject* OneDimensionalArray___str__(OneDimensionalArray *self) {
     }
     return __str__(self__data, self->_size);
 }
+
+static PyMappingMethods OneDimensionalArray_PyMappingMethods = {
+    (lenfunc) OneDimensionalArray___len__,
+    (binaryfunc) OneDimensionalArray___getitem__,
+    (objobjargproc) OneDimensionalArray___setitem__,
+};
+
+static struct PyMethodDef OneDimensionalArray_PyMethodDef[] = {
+    {"fill", (PyCFunction) OneDimensionalArray_fill, METH_VARARGS, NULL},
+    {NULL}
+};
 
 static PyTypeObject OneDimensionalArrayType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "OneDimensionalArray",
@@ -122,7 +185,7 @@ static PyTypeObject OneDimensionalArrayType = {
     /* tp_repr */ 0,
     /* tp_as_number */ 0,
     /* tp_as_sequence */ 0,
-    /* tp_as_mapping */ 0,
+    /* tp_as_mapping */ &OneDimensionalArray_PyMappingMethods,
     /* tp_hash  */ 0,
     /* tp_call */ 0,
     /* tp_str */ (reprfunc) OneDimensionalArray___str__,
@@ -137,7 +200,7 @@ static PyTypeObject OneDimensionalArrayType = {
     /* tp_weaklistoffset */ 0,
     /* tp_iter */ 0,
     /* tp_iternext */ 0,
-    /* tp_methods */ 0,
+    /* tp_methods */ OneDimensionalArray_PyMethodDef,
     /* tp_members */ 0,
     /* tp_getset */ 0,
     /* tp_base */ &ArrayType,
