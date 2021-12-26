@@ -1,6 +1,7 @@
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray,
     MultiDimensionalArray)
+from pydatastructs.utils.misc_util import Backend
 from pydatastructs.utils.raises_util import raises
 
 
@@ -13,6 +14,24 @@ def test_OneDimensionalArray():
     assert ODA(int, [1.0, 2, 3, 4, 5], 5)
     assert ODA(int, 5)
     assert ODA(int, [1.0, 2, 3])
+    assert raises(IndexError, lambda: A[7])
+    assert raises(IndexError, lambda: A[-1])
+    assert raises(ValueError, lambda: ODA())
+    assert raises(ValueError, lambda: ODA(int, 1, 2, 3))
+    assert raises(TypeError, lambda: ODA(int, 5.0, set([1, 2, 3])))
+    assert raises(TypeError, lambda: ODA(int, 5.0))
+    assert raises(TypeError, lambda: ODA(int, set([1, 2, 3])))
+    assert raises(ValueError, lambda: ODA(int, 3, [1]))
+
+    A = ODA(int, 5, [1, 2, 3, 4, 5], init=6, backend=Backend.CPP)
+    A[1] = 2
+    assert str(A) == '[1, 2, 3, 4, 5]'
+    assert A
+    assert ODA(int, [1, 2, 3, 4, 5], 5, backend=Backend.CPP)
+    assert ODA(int, 5, backend=Backend.CPP)
+    assert ODA(int, [1, 2, 3], backend=Backend.CPP)
+    assert raises(TypeError, ODA(int, [1.0, 2, 3, 4, 5], 5, backend=Backend.CPP))
+    assert raises(TypeError, ODA(int, [1.0, 2, 3], backend=Backend.CPP))
     assert raises(IndexError, lambda: A[7])
     assert raises(IndexError, lambda: A[-1])
     assert raises(ValueError, lambda: ODA())
