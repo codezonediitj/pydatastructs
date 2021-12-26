@@ -70,7 +70,11 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         self->_size = size;
         self->_data = reinterpret_cast<PyObject**>(std::malloc(size * sizeof(PyObject*)));
         for( size_t i = 0; i < size; i++ ) {
-            self->_data[i] = PyObject_GetItem(data, PyLong_FromSize_t(i));
+            PyObject* value = PyObject_GetItem(data, PyLong_FromSize_t(i));
+            if( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
+                return NULL;
+            }
+            self->_data[i] = value;
         }
     } else if( len_args == 2 ) {
         PyObject *args0 = PyObject_GetItem(args, PyOne);
@@ -80,6 +84,8 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
             if( init == nullptr ) {
                 PyErr_Clear();
                 init = Py_None;
+            } else if( raise_exception_if_dtype_mismatch(init, self->_dtype) ) {
+                return NULL;
             }
             self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));
             for( size_t i = 0; i < self->_size; i++ ) {
@@ -89,7 +95,11 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
             self->_size = PyObject_Length(args0);
             self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));
             for( size_t i = 0; i < self->_size; i++ ) {
-                self->_data[i] = PyObject_GetItem(args0, PyLong_FromSize_t(i));
+                PyObject* value = PyObject_GetItem(args0, PyLong_FromSize_t(i));
+                if( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
+                    return NULL;
+                }
+                self->_data[i] = value;
             }
         } else {
             PyErr_SetString(PyExc_TypeError,
@@ -119,28 +129,16 @@ static int OneDimensionalArray___setitem__(OneDimensionalArray *self,
     size_t idx = PyLong_AsUnsignedLong(arg);
     if( value == Py_None ) {
         self->_data[idx] = value;
-    } else {
-        if( PyObject_IsInstance(value, self->_dtype) ) {
-            self->_data[idx] = value;
-        } else {
-            PyErr_WriteUnraisable(
-                PyErr_Format(PyExc_TypeError,
-                "Unable to store %s object in %s type array.",
-                PyObject_AsString(PyObject_Repr(PyObject_Type(value))),
-                PyObject_AsString(PyObject_Repr(self->_dtype))));
-        }
+    } else if( !set_exception_if_dtype_mismatch(value, self->_dtype) ) {
+        self->_data[idx] = value;
     }
     return 0;
 }
 
 static PyObject* OneDimensionalArray_fill(OneDimensionalArray *self, PyObject *args) {
     PyObject* value = PyObject_GetItem(args, PyZero);
-    if( !PyObject_IsInstance(value, self->_dtype) ) {
-        PyErr_WriteUnraisable(
-            PyErr_Format(PyExc_TypeError,
-            "Unable to store %s object in %s type array.",
-            PyObject_AsString(PyObject_Repr(PyObject_Type(value))),
-            PyObject_AsString(PyObject_Repr(self->_dtype))));
+    if( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
+        return NULL;
     }
 
     for( size_t i = 0; i < self->_size; i++ ) {

@@ -34,12 +34,14 @@ def test_OneDimensionalArray():
     assert raises(TypeError, lambda: ODA(int, [1.0, 2, 3], backend=Backend.CPP))
     assert raises(IndexError, lambda: A[7])
     assert raises(IndexError, lambda: A[-1])
-    assert raises(ValueError, lambda: ODA())
-    assert raises(ValueError, lambda: ODA(int, 1, 2, 3))
-    assert raises(TypeError, lambda: ODA(int, 5.0, set([1, 2, 3])))
-    assert raises(TypeError, lambda: ODA(int, 5.0))
-    assert raises(TypeError, lambda: ODA(int, set([1, 2, 3])))
-    assert raises(ValueError, lambda: ODA(int, 3, [1]))
+    assert raises(ValueError, lambda: ODA(backend=Backend.CPP))
+    assert raises(ValueError, lambda: ODA(int, 1, 2, 3, backend=Backend.CPP))
+    assert raises(TypeError, lambda: ODA(int, 5.0, set([1, 2, 3]), backend=Backend.CPP))
+    assert raises(TypeError, lambda: ODA(int, 5.0, backend=Backend.CPP))
+    assert raises(TypeError, lambda: ODA(int, set([1, 2, 3]), backend=Backend.CPP))
+    assert raises(ValueError, lambda: ODA(int, 3, [1], backend=Backend.CPP))
+    assert raises(ValueError, lambda: ODA(int, 3, [1], backend=Backend.CPP))
+    assert raises(TypeError, lambda: A.fill(2.0))
 
 
 def test_MultiDimensionalArray():

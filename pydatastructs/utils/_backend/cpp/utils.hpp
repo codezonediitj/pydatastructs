@@ -29,4 +29,27 @@ static PyObject* __str__(PyObject** array, size_t size) {
     return PyUnicode_FromString(array___str__.c_str());
 }
 
+static int set_exception_if_dtype_mismatch(PyObject* value, PyObject* dtype) {
+    if( !PyObject_IsInstance(value, dtype) ) {
+        PyErr_WriteUnraisable(
+            PyErr_Format(PyExc_TypeError,
+            "Unable to store %s object in %s type array.",
+            PyObject_AsString(PyObject_Repr(PyObject_Type(value))),
+            PyObject_AsString(PyObject_Repr(dtype))));
+        return 1;
+    }
+    return 0;
+}
+
+static int raise_exception_if_dtype_mismatch(PyObject* value, PyObject* dtype) {
+    if( !PyObject_IsInstance(value, dtype) ) {
+        PyErr_Format(PyExc_TypeError,
+        "Unable to store %s object in %s type array.",
+        PyObject_AsString(PyObject_Repr(PyObject_Type(value))),
+        PyObject_AsString(PyObject_Repr(dtype)));
+        return 1;
+    }
+    return 0;
+}
+
 #endif
