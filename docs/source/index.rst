@@ -6,14 +6,14 @@
 Welcome to PyDataStructs's documentation!
 =========================================
 
-This project aims to be a Python package for various data 
-structures in computer science. We are also working on the 
-development of algorithms including their parallel implementations. 
-To the best of our knowledge, a well-designed library/package which 
+This project aims to be a Python package for various data
+structures in computer science. We are also working on the
+development of algorithms including their parallel implementations.
+To the best of our knowledge, a well-designed library/package which
 has covered most of the data structures and algorithms doesn't exist yet.
 
-Once the software design becomes more stable after a few releases of 
-this package in the near future, we also aim to provide APIs for the 
+Once the software design becomes more stable after a few releases of
+this package in the near future, we also aim to provide APIs for the
 code in C++ and Java as well.
 
 .. note::
@@ -23,14 +23,14 @@ code in C++ and Java as well.
 Installation
 ============
 
-After changing your directory to project root, you can 
+After changing your directory to project root, you can
 install the package by running the following command,
 
-``python -m pip install .``
+``python scripts/build/install.py``
 
-For development purposes, you can use the option `e` as shown below,
+For development purposes, i.e., if you intend to be a contributor,
 
-``python -m pip install -e .``
+``python scripts/build/develop.py``
 
 For building documentation execute the following commands one after
 the other,
@@ -58,13 +58,13 @@ So, **you can easily rely on PyDataStructs** for any data structure or algorithm
 Why do we use Python?
 =====================
 
-As we know Python is an interpreted language and hence is 
-slow compared to C++, the most popular language for competitive programming. 
-We still decided to use Python because the software development can happen 
-at a much faster pace and it is much easier to test various software designs 
-and APIs as coding them out takes no time. However, keeping the need of the 
-users in mind, we will shift to C++ backend,  which will happen quickly as 
-we would be required to just translate the tested code rather than writing it 
+As we know Python is an interpreted language and hence is
+slow compared to C++, the most popular language for competitive programming.
+We still decided to use Python because the software development can happen
+at a much faster pace and it is much easier to test various software designs
+and APIs as coding them out takes no time. However, keeping the need of the
+users in mind, we will shift to C++ backend,  which will happen quickly as
+we would be required to just translate the tested code rather than writing it
 from scratch, after a few releases with APIs available for all the languages.
 
 Contents
