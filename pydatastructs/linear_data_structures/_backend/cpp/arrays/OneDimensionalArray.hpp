@@ -121,6 +121,7 @@ static PyObject* OneDimensionalArray___getitem__(OneDimensionalArray *self,
                      idx, 0, self->_size);
         return NULL;
     }
+    Py_INCREF(self->_data[idx]);
     return self->_data[idx];
 }
 
