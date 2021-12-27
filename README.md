@@ -16,13 +16,13 @@ Installation
 You can install the library by running the following command,
 
 ```python
-python -m pip install .
+python scripts/build/install.py
 ```
 
-For development purposes, you can use the option `e` as shown below,
+For development purposes i.e., if you intend to be a contributor,
 
 ```python
-python -m pip install -e .
+python scripts/build/develop.py
 ```
 
 In the above commands, `.` in the end means the current directory. So, make sure you change your working directory
