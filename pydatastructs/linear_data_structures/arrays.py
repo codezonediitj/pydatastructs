@@ -1,6 +1,7 @@
 from pydatastructs.utils.misc_util import (
     _check_type, NoneType, Backend,
     raise_if_backend_is_not_python)
+from pydatastructs.linear_data_structures._backend.cpp import _arrays
 
 __all__ = [
     'OneDimensionalArray',
@@ -75,8 +76,9 @@ class OneDimensionalArray(Array):
     __slots__ = ['_size', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            return _arrays.OneDimensionalArray(dtype, *args, **kwargs)
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         if len(args) not in (1, 2):
@@ -130,7 +132,8 @@ class OneDimensionalArray(Array):
 
     def __getitem__(self, i):
         if i >= self._size or i < 0:
-            raise IndexError("Index out of range.")
+            raise IndexError(("Index, {} out of range, "
+                              "[{}, {}).".format(i, 0, self._size)))
         return self._data.__getitem__(i)
 
     def __setitem__(self, idx, elem):

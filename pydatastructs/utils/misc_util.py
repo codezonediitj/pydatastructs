@@ -24,6 +24,7 @@ __all__ = [
 class Backend(Enum):
 
     PYTHON = 'Python'
+    CPP = 'Cpp'
 
     def __str__(self):
         return self.value
