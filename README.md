@@ -25,10 +25,7 @@ For development purposes i.e., if you intend to be a contributor,
 python scripts/build/develop.py
 ```
 
-In the above commands, `.` in the end means the current directory. So, make sure you change your working directory
-to `pydatastructs` before executing any of the above commands.
-
-Make sure that your python version is above `3.5`.
+Make sure you change your working directory to `pydatastructs` before executing any of the above commands. Also, your python version should be at least `3.8`.
 
 Testing
 -------
