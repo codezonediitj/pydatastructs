@@ -15,6 +15,7 @@ typedef struct {
     double _load_factor;
     long _num;
     long _last_pos_filled;
+    long _size;
 } DynamicOneDimensionalArray;
 
 static void DynamicOneDimensionalArray_dealloc(DynamicOneDimensionalArray *self) {
@@ -115,6 +116,7 @@ static PyObject* DynamicOneDimensionalArray__modify(DynamicOneDimensionalArray *
         self->_last_pos_filled = j - 1;
         self->_one_dimensional_array->_data = arr_new;
         self->_one_dimensional_array->_size = new_size;
+        self->_size = new_size;
     }
 
     Py_RETURN_NONE;
@@ -137,6 +139,7 @@ static PyObject* DynamicOneDimensionalArray_append(DynamicOneDimensionalArray *s
         }
         arr_new[self->_last_pos_filled + 1] = el;
         self->_one_dimensional_array->_size = new_size;
+        self->_size = new_size;
         self->_one_dimensional_array->_data = arr_new;
     } else {
         _data[self->_last_pos_filled + 1] = el;
@@ -185,6 +188,12 @@ static struct PyMethodDef DynamicOneDimensionalArray_PyMethodDef[] = {
     {NULL}
 };
 
+static struct PyMemberDef DynamicOneDimensionalArray_PyMemberDef[] = {
+    {"size", offsetof(DynamicOneDimensionalArray, _size),
+     T_LONG, READONLY, NULL},
+    {NULL},
+};
+
 static PyTypeObject DynamicOneDimensionalArrayType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "DynamicOneDimensionalArray",
     /* tp_basicsize */ sizeof(DynamicOneDimensionalArray),
@@ -213,7 +222,7 @@ static PyTypeObject DynamicOneDimensionalArrayType = {
     /* tp_iter */ 0,
     /* tp_iternext */ 0,
     /* tp_methods */ DynamicOneDimensionalArray_PyMethodDef,
-    /* tp_members */ 0,
+    /* tp_members */ DynamicOneDimensionalArray_PyMemberDef,
     /* tp_getset */ 0,
     /* tp_base */ &DynamicArrayType,
     /* tp_dict */ 0,
