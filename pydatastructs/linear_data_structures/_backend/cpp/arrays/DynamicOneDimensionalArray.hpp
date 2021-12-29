@@ -77,9 +77,13 @@ static PyObject* DynamicOneDimensionalArray___str__(DynamicOneDimensionalArray *
 }
 
 static PyObject* DynamicOneDimensionalArray__modify(DynamicOneDimensionalArray *self,
-                                                    PyObject* args, PyObject* kwds) {
-    PyObject* force = PyObject_GetItem(args, PyZero);
+                                                    PyObject* args) {
+    PyObject* force;
+    if( args ) {
+        force = PyObject_GetItem(args, PyZero);
+    }
     if( !force ) {
+        PyErr_Clear();
         force = Py_False;
     }
 
@@ -116,6 +120,57 @@ static PyObject* DynamicOneDimensionalArray__modify(DynamicOneDimensionalArray *
     Py_RETURN_NONE;
 }
 
+static PyObject* DynamicOneDimensionalArray_append(DynamicOneDimensionalArray *self,
+                                                    PyObject* args) {
+    PyObject* el = PyObject_GetItem(args, PyZero);
+    if( !el ) {
+        return NULL;
+    }
+
+    long _size = self->_one_dimensional_array->_size;
+    PyObject** _data = self->_one_dimensional_array->_data;
+    if( self->_last_pos_filled + 1 == _size ) {
+        long new_size = 2 * _size + 1;
+        PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
+        for( long i = 0; i <= self->_last_pos_filled; i++ ) {
+            arr_new[i] = _data[i];
+        }
+        arr_new[self->_last_pos_filled + 1] = el;
+        self->_one_dimensional_array->_size = new_size;
+        self->_one_dimensional_array->_data = arr_new;
+    } else {
+        _data[self->_last_pos_filled + 1] = el;
+    }
+    self->_last_pos_filled += 1;
+    self->_num += 1;
+    return DynamicOneDimensionalArray__modify(self, NULL);
+}
+
+static PyObject* DynamicOneDimensionalArray_delete(DynamicOneDimensionalArray *self,
+                                                   PyObject* args) {
+    PyObject* idx_pyobject = PyObject_GetItem(args, PyZero);
+    if( !idx_pyobject ) {
+        return NULL;
+    }
+    long idx = PyLong_AsLong(idx_pyobject);
+    if( idx == -1 ) {
+        return NULL;
+    }
+
+    PyObject** _data = self->_one_dimensional_array->_data;
+    if( idx <= self->_last_pos_filled && idx >= 0 &&
+        _data[idx] != Py_None) {
+        _data[idx] = Py_None;
+        self->_num -= 1;
+        if( self->_last_pos_filled == idx ) {
+            self->_last_pos_filled -= 1;
+        }
+        return DynamicOneDimensionalArray__modify(self, NULL);
+    }
+
+    Py_RETURN_NONE;
+}
+
 static PyMappingMethods DynamicOneDimensionalArray_PyMappingMethods = {
     (lenfunc) DynamicOneDimensionalArray___len__,
     (binaryfunc) DynamicOneDimensionalArray___getitem__,
@@ -125,6 +180,8 @@ static PyMappingMethods DynamicOneDimensionalArray_PyMappingMethods = {
 static struct PyMethodDef DynamicOneDimensionalArray_PyMethodDef[] = {
     {"fill", (PyCFunction) DynamicOneDimensionalArray_fill, METH_VARARGS, NULL},
     {"_modify", (PyCFunction) DynamicOneDimensionalArray__modify, METH_VARARGS, NULL},
+    {"append", (PyCFunction) DynamicOneDimensionalArray_append, METH_VARARGS, NULL},
+    {"delete", (PyCFunction) DynamicOneDimensionalArray_delete, METH_VARARGS, NULL},
     {NULL}
 };
 
