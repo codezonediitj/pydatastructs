@@ -76,6 +76,46 @@ static PyObject* DynamicOneDimensionalArray___str__(DynamicOneDimensionalArray *
     return OneDimensionalArray___str__(self->_one_dimensional_array);
 }
 
+static PyObject* DynamicOneDimensionalArray__modify(DynamicOneDimensionalArray *self,
+                                                    PyObject* args, PyObject* kwds) {
+    PyObject* force = PyObject_GetItem(args, PyZero);
+    if( !force ) {
+        force = Py_False;
+    }
+
+    long i;
+    PyObject** _data = self->_one_dimensional_array->_data;
+    long _size = self->_one_dimensional_array->_size;
+    if( force == Py_True ) {
+        i = -1;
+        while( _data[i] == Py_None) {
+            i--;
+        }
+        long _last_pos_filled = std::abs(i) % _size;
+        if( i < 0 ) {
+            _last_pos_filled += _size;
+        }
+        self->_last_pos_filled = _last_pos_filled;
+    }
+
+    if( self->_num/_size < self->_load_factor) {
+        long new_size = 2 * self->_num + 1;
+        PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
+        long j = 0;
+        for( i = 0; i <= self->_last_pos_filled; i++ ) {
+            if( _data[i] != Py_None ) {
+                arr_new[j] = _data[i];
+                j += 1;
+            }
+        }
+        self->_last_pos_filled = j - 1;
+        self->_one_dimensional_array->_data = arr_new;
+        self->_one_dimensional_array->_size = new_size;
+    }
+
+    Py_RETURN_NONE;
+}
+
 static PyMappingMethods DynamicOneDimensionalArray_PyMappingMethods = {
     (lenfunc) DynamicOneDimensionalArray___len__,
     (binaryfunc) DynamicOneDimensionalArray___getitem__,
@@ -84,6 +124,7 @@ static PyMappingMethods DynamicOneDimensionalArray_PyMappingMethods = {
 
 static struct PyMethodDef DynamicOneDimensionalArray_PyMethodDef[] = {
     {"fill", (PyCFunction) DynamicOneDimensionalArray_fill, METH_VARARGS, NULL},
+    {"_modify", (PyCFunction) DynamicOneDimensionalArray__modify, METH_VARARGS, NULL},
     {NULL}
 };
 
