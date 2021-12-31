@@ -204,7 +204,10 @@ def test_public_api():
 def test_backend_argument_message():
 
     import pydatastructs as pyds
-    backend_implemented = [pyds.OneDimensionalArray]
+    backend_implemented = [
+        pyds.OneDimensionalArray,
+        pyds.DynamicOneDimensionalArray
+    ]
 
     def call_and_raise(api, pos_args_count=0):
         try:

@@ -25,7 +25,7 @@ def test_OneDimensionalArray():
 
     A = ODA(int, 5, [1, 2, 3, 4, 5], init=6, backend=Backend.CPP)
     A[1] = 2
-    assert str(A) == '[1, 2, 3, 4, 5]'
+    assert str(A) == "['1', '2', '3', '4', '5']"
     assert A
     assert ODA(int, [1, 2, 3, 4, 5], 5, backend=Backend.CPP)
     assert ODA(int, 5, backend=Backend.CPP)
@@ -103,3 +103,27 @@ def test_DynamicOneDimensionalArray():
     b.append(5)
     assert b._data == [1, 2, 3, 4, 5, None, None]
     assert list(reversed(b)) == [5, 4, 3, 2, 1]
+
+    A = DODA(int, 0, backend=Backend.CPP)
+    A.append(1)
+    A.append(2)
+    A.append(3)
+    A.append(4)
+    assert str(A) == "['1', '2', '3', '4']"
+    A.delete(0)
+    A.delete(0)
+    A.delete(15)
+    A.delete(-1)
+    A.delete(1)
+    A.delete(2)
+    assert [A[i] for i in range(A.size)] == [4, None, None]
+    assert A.size == 3
+    A.fill(4)
+    assert [A[0], A[1], A[2]] == [4, 4, 4]
+    b = DODA(int, 0, backend=Backend.CPP)
+    b.append(1)
+    b.append(2)
+    b.append(3)
+    b.append(4)
+    b.append(5)
+    assert [b[i] for i in range(b.size)] == [1, 2, 3, 4, 5, None, None]
