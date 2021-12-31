@@ -155,4 +155,4 @@ def test_DynamicOneDimensionalArray():
 
     size = int(os.environ.get("PYDATASTRUCTS_BENCHMARK_SIZE", "1000"))
     _test_append(size)
-    _test_delete(size)
+    _test_delete(size * 4)
