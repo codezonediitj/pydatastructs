@@ -58,7 +58,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         } else {
             PyErr_SetString(PyExc_TypeError,
                             "Expected type of size is int and "
-                            "expected type of data is list/tuple. 61");
+                            "expected type of data is list/tuple.");
             return NULL;
         }
         size_t len_data = PyObject_Length(data);
@@ -105,7 +105,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         } else {
             PyErr_SetString(PyExc_TypeError,
                             "Expected type of size is int and "
-                            "expected type of data is list/tuple. 108");
+                            "expected type of data is list/tuple.");
             return NULL;
         }
     }
