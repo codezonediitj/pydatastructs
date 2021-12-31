@@ -32,7 +32,7 @@ static PyObject* DynamicOneDimensionalArray___new__(PyTypeObject* type, PyObject
         return NULL;
     }
     self->_one_dimensional_array = reinterpret_cast<OneDimensionalArray*>(_one_dimensional_array);
-    self->_size = self->_one_dimensional_array->_size;
+    self->_size = (long) self->_one_dimensional_array->_size;
 
     PyObject* _load_factor = PyObject_GetItem(kwds, PyUnicode_FromString("load_factor"));
     if( _load_factor == nullptr ) {
@@ -45,11 +45,11 @@ static PyObject* DynamicOneDimensionalArray___new__(PyTypeObject* type, PyObject
         }
         self->_load_factor = PyFloat_AS_DOUBLE(_load_factor);
     }
-    if( self->_one_dimensional_array->_size == 0 or
+    if( self->_one_dimensional_array->_size == 0 ||
         self->_one_dimensional_array->_data[0] == Py_None ) {
         self->_num = 0;
     } else {
-        self->_num = self->_one_dimensional_array->_size;
+        self->_num = (long) self->_one_dimensional_array->_size;
     }
     self->_last_pos_filled = (long) self->_num - 1;
 
@@ -92,7 +92,7 @@ static PyObject* DynamicOneDimensionalArray__modify(DynamicOneDimensionalArray *
 
     long i;
     PyObject** _data = self->_one_dimensional_array->_data;
-    long _size = self->_one_dimensional_array->_size;
+    long _size = (long) self->_one_dimensional_array->_size;
     if( force == Py_True ) {
         i = -1;
         while( _data[i] == Py_None) {
@@ -134,7 +134,7 @@ static PyObject* DynamicOneDimensionalArray_append(DynamicOneDimensionalArray *s
         return NULL;
     }
 
-    long _size = self->_one_dimensional_array->_size;
+    long _size = (long) self->_one_dimensional_array->_size;
     PyObject** _data = self->_one_dimensional_array->_data;
     if( self->_last_pos_filled + 1 == _size ) {
         long new_size = 2 * _size + 1;
