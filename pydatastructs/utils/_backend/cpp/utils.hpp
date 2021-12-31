@@ -15,13 +15,18 @@ static char* PyObject_AsString(PyObject* obj) {
     return PyBytes_AS_STRING(PyUnicode_AsEncodedString(obj, _encoding, _invalid_char));
 }
 
-static PyObject* __str__(PyObject** array, size_t size) {
+static PyObject* __str__(PyObject** array, size_t size, long last_pos_filled=-1) {
     std::string array___str__ = "[";
-    for( size_t i = 0; i < size; i++ ) {
-        PyObject* array_i = PyObject_Str(array[i]);
-        char* i___str__ = PyObject_AsString(array_i);
-        array___str__.append(std::string(i___str__));
-        if( i + 1 != size ) {
+    size_t end = last_pos_filled == -1 ? size : (size_t) (last_pos_filled + 1);
+    for( size_t i = 0; i < end; i++ ) {
+        if( array[i] == Py_None ) {
+            array___str__.append("''");
+        } else {
+            PyObject* array_i = PyObject_Str(array[i]);
+            char* i___str__ = PyObject_AsString(array_i);
+            array___str__.append("'" + std::string(i___str__) + "'");
+        }
+        if( i + 1 != end ) {
             array___str__.append(", ");
         }
     }

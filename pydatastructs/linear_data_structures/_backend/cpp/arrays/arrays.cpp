@@ -1,6 +1,8 @@
 #include <Python.h>
 #include "Array.hpp"
 #include "OneDimensionalArray.hpp"
+#include "DynamicArray.hpp"
+#include "DynamicOneDimensionalArray.hpp"
 
 static struct PyModuleDef arrays_struct = {
     PyModuleDef_HEAD_INIT,
@@ -25,6 +27,18 @@ PyMODINIT_FUNC PyInit__arrays(void) {
     }
     Py_INCREF(&OneDimensionalArrayType);
     PyModule_AddObject(arrays, "OneDimensionalArray", reinterpret_cast<PyObject*>(&OneDimensionalArrayType));
+
+    if (PyType_Ready(&DynamicArrayType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&DynamicArrayType);
+    PyModule_AddObject(arrays, "DynamicArray", reinterpret_cast<PyObject*>(&DynamicArrayType));
+
+    if (PyType_Ready(&DynamicOneDimensionalArrayType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&DynamicOneDimensionalArrayType);
+    PyModule_AddObject(arrays, "DynamicOneDimensionalArray", reinterpret_cast<PyObject*>(&DynamicOneDimensionalArrayType));
 
     return arrays;
 }

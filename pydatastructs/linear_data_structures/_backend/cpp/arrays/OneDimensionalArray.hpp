@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
+#include "Array.hpp"
 #include "../../../../utils/_backend/cpp/utils.hpp"
 
 typedef struct {
@@ -57,7 +58,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         } else {
             PyErr_SetString(PyExc_TypeError,
                             "Expected type of size is int and "
-                            "expected type of data is list/tuple.");
+                            "expected type of data is list/tuple. 61");
             return NULL;
         }
         size_t len_data = PyObject_Length(data);
@@ -104,7 +105,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         } else {
             PyErr_SetString(PyExc_TypeError,
                             "Expected type of size is int and "
-                            "expected type of data is list/tuple.");
+                            "expected type of data is list/tuple. 108");
             return NULL;
         }
     }
@@ -155,9 +156,6 @@ static Py_ssize_t OneDimensionalArray___len__(OneDimensionalArray *self) {
 
 static PyObject* OneDimensionalArray___str__(OneDimensionalArray *self) {
     PyObject** self__data = self->_data;
-    if( !self__data ) {
-        return NULL;
-    }
     return __str__(self__data, self->_size);
 }
 
