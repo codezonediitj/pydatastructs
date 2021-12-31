@@ -120,6 +120,7 @@ def test_DynamicOneDimensionalArray():
         doda_python = DynamicOneDimensionalArray(float, data)
         python_list = [datum for datum in data]
         list_indices = [i for i in range(size)]
+        random.seed(0)
         random.shuffle(list_indices)
 
         def _list_remove(obj, index):
