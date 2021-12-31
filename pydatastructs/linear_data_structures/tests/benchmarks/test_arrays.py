@@ -119,27 +119,36 @@ def test_DynamicOneDimensionalArray():
         doda_cpp = DynamicOneDimensionalArray(float, data, backend=Backend.CPP)
         doda_python = DynamicOneDimensionalArray(float, data)
         python_list = [datum for datum in data]
-        indices = [i for i in range(size)]
-        random.shuffle(indices)
+        list_indices = [i for i in range(size)]
+        random.shuffle(list_indices)
 
         def _list_remove(obj, index):
             del obj[index]
 
-        cpp_backend, python_backend, list_time = (0, 0, 0)
+        list_time = 0
         for i in range(size):
-            idx = indices[i]
-            timer_cpp = timeit.Timer(functools.partial(doda_cpp.delete, idx))
-            cpp_backend += min(timer_cpp.repeat(1, 1))
-
-            timer_python = timeit.Timer(functools.partial(doda_python.delete, idx))
-            python_backend += min(timer_python.repeat(1, 1))
+            idx = list_indices[i]
 
             timer_list = timeit.Timer(functools.partial(_list_remove, python_list, idx))
             list_time += min(timer_list.repeat(1, 1))
 
             for j in range(i + 1, size):
-                if indices[j] > idx:
-                    indices[j] -= 1
+                if list_indices[j] > idx:
+                    list_indices[j] -= 1
+
+        cpp_backend, python_backend = (0, 0)
+        while doda_cpp._num > 0:
+            indices = [i for i in range(doda_cpp._last_pos_filled + 1)]
+            random.shuffle(indices)
+            for idx in indices:
+                timer_cpp = timeit.Timer(functools.partial(doda_cpp.delete, idx))
+                cpp_backend += min(timer_cpp.repeat(1, 1))
+
+                timer_python = timeit.Timer(functools.partial(doda_python.delete, idx))
+                python_backend += min(timer_python.repeat(1, 1))
+
+                if doda_cpp._num == 0:
+                    break
 
         assert cpp_backend < python_backend
         assert cpp_backend < list_time

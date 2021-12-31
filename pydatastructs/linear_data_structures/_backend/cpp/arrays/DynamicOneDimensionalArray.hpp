@@ -32,6 +32,7 @@ static PyObject* DynamicOneDimensionalArray___new__(PyTypeObject* type, PyObject
         return NULL;
     }
     self->_one_dimensional_array = reinterpret_cast<OneDimensionalArray*>(_one_dimensional_array);
+    self->_size = self->_one_dimensional_array->_size;
 
     PyObject* _load_factor = PyObject_GetItem(kwds, PyUnicode_FromString("load_factor"));
     if( _load_factor == nullptr ) {
@@ -199,6 +200,12 @@ static struct PyMethodDef DynamicOneDimensionalArray_PyMethodDef[] = {
 static struct PyMemberDef DynamicOneDimensionalArray_PyMemberDef[] = {
     {"size", T_LONG,
      offsetof(DynamicOneDimensionalArray, _size),
+     READONLY, NULL},
+    {"_num", T_LONG,
+     offsetof(DynamicOneDimensionalArray, _num),
+     READONLY, NULL},
+    {"_last_pos_filled", T_LONG,
+     offsetof(DynamicOneDimensionalArray, _last_pos_filled),
      READONLY, NULL},
     {NULL},
 };
