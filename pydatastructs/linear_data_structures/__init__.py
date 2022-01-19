@@ -3,7 +3,8 @@ __all__ = []
 from . import (
     arrays,
     linked_lists,
-    algorithms
+    algorithms,
+    _extensions
 )
 
 from .arrays import (
@@ -39,6 +40,11 @@ from .algorithms import (
     longest_increasing_subsequence,
     next_permutation,
     prev_permutation,
-    bubble_sort
+    bubble_sort,
+    linear_search,
+    binary_search,
+    jump_search,
+    selection_sort,
+    insertion_sort
 )
 __all__.extend(algorithms.__all__)
