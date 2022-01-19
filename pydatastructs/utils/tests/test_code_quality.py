@@ -1,48 +1,36 @@
 import os, re, sys, pydatastructs, inspect
 from typing import Type
 
-def _list_files(checker):
+def _list_files():
     root_path = os.path.abspath(
                 os.path.join(
                 os.path.split(__file__)[0],
                 os.pardir, os.pardir))
-    code_files = []
+    py_files = []
     for (dirpath, _, filenames) in os.walk(root_path):
         for _file in filenames:
-            if checker(_file):
-                code_files.append(os.path.join(dirpath, _file))
-    return code_files
+            if re.match(r".*\.py$", _file):
+                py_files.append(os.path.join(dirpath, _file))
+    return py_files
 
-checker = lambda _file: (re.match(r".*\.py$", _file) or
-                         re.match(r".*\.cpp$", _file) or
-                         re.match(r".*\.hpp$", _file))
-code_files = _list_files(checker)
+py_files = _list_files()
 
 def test_trailing_white_spaces():
-    messages = [("The following places in your code "
-                 "end with white spaces.")]
-    msg = "{}:{}"
-    for file_path in code_files:
+    for file_path in py_files:
         file = open(file_path, "r")
         line = file.readline()
         line_number = 1
         while line != "":
             if line.endswith(" \n") or line.endswith("\t\n") \
                 or line.endswith(" ") or line.endswith("\t"):
-                messages.append(msg.format(file_path, line_number))
+                assert False, "%s:%d : %s"\
+                               %(file_path, line_number, line)
             line = file.readline()
             line_number += 1
         file.close()
 
-    if len(messages) > 1:
-        assert False, '\n'.join(messages)
-
 def test_final_new_lines():
-    messages = [("The following files in your code "
-                 "do not end with a single new line.")]
-    msg1 = "No new line in {}:{}"
-    msg2 = "More than one new line in {}:{}"
-    for file_path in code_files:
+    for file_path in py_files:
         file = open(file_path, "r")
         lines = []
         line = file.readline()
@@ -51,21 +39,12 @@ def test_final_new_lines():
             line = file.readline()
         if lines:
             if lines[-1][-1] != "\n":
-                messages.append(msg1.format(file_path, len(lines)))
+                assert False, "%s doesn't contain new line at the end."%(file_path)
             if lines[-1] == "\n" and lines[-2][-1] == "\n":
-                messages.append(msg2.format(file_path, len(lines)))
+                assert False, "%s contains multiple new lines at the end."%(file_path)
         file.close()
 
-    if len(messages) > 1:
-        assert False, '\n'.join(messages)
-
 def test_comparison_True_False_None():
-    messages = [("The following places in your code "
-                 "use `!=` or `==` for comparing True/False/None."
-                 "Please use `is` instead.")]
-    msg = "{}:{}"
-    checker = lambda _file: re.match(r".*\.py$", _file)
-    py_files = _list_files(checker)
     for file_path in py_files:
         if file_path.find("test_code_quality.py") == -1:
             file = open(file_path, "r")
@@ -78,72 +57,24 @@ def test_comparison_True_False_None():
                     (line.find("!= True") != -1) or
                     (line.find("!= False") != -1) or
                     (line.find("!= None") != -1)):
-                    messages.append(msg.format(file_path, line_number))
+                    assert False, "%s compares True/False/None using by "\
+                                "value, should be done by reference at line number %d: %s"\
+                                %(file_path, line_number, line)
                 line = file.readline()
                 line_number += 1
             file.close()
 
-    if len(messages) > 1:
-        assert False, '\n'.join(messages)
-
-def test_reinterpret_cast():
-
-    def is_variable(str):
-        for ch in str:
-            if not (ch == '_' or ch.isalnum()):
-                return False
-        return True
-
-    checker = lambda _file: (re.match(r".*\.cpp$", _file) or
-                             re.match(r".*\.hpp$", _file))
-    cpp_files = _list_files(checker)
-    messages = [("The following lines should use reinterpret_cast"
-                 " to cast pointers from one type to another")]
-    msg = "Casting to {} at {}:{}"
-    for file_path in cpp_files:
-        file = open(file_path, "r")
-        line = file.readline()
-        line_number = 1
-        while line != "":
-            found_open = False
-            between_open_close = ""
-            for char in line:
-                if char == '(':
-                    found_open = True
-                elif char == ')':
-                    if (between_open_close and
-                        between_open_close[-1] == '*' and
-                        is_variable(between_open_close[:-1])):
-                        messages.append(msg.format(between_open_close[:-1],
-                                                   file_path, line_number))
-                    between_open_close = ""
-                    found_open = False
-                elif char != ' ' and found_open:
-                    between_open_close += char
-            line = file.readline()
-            line_number += 1
-        file.close()
-
-    if len(messages) > 1:
-        assert False, '\n'.join(messages)
-
 def test_presence_of_tabs():
-    messages = [("The following places in your code "
-                 "use tabs instead of spaces.")]
-    msg = "{}:{}"
-    for file_path in code_files:
+    for file_path in py_files:
         file = open(file_path, "r")
-        line_number = 1
         line = file.readline()
         while line != "":
-            if (line.find('\t') != -1):
-                messages.append(msg.format(file_path, line_number))
             line = file.readline()
-            line_number += 1
+            if (line.find('\t') != -1):
+                assert False, "Tab present at %s in %s. " \
+                            "Configure your editor to use " \
+                            "white spaces."%(line, file_path)
         file.close()
-
-    if len(messages) > 1:
-        assert False, '\n'.join(messages)
 
 def _apis():
     import pydatastructs as pyds
@@ -172,8 +103,7 @@ def _apis():
     pyds.AdjacencyMatrixGraphNode, pyds.GraphEdge, pyds.Set, pyds.BinaryIndexedTree,
     pyds.CartesianTree, pyds.CartesianTreeNode, pyds.Treap, pyds.RedBlackTreeNode, pyds.RedBlackTree,
     pyds.Trie, pyds.TrieNode, pyds.SkipList, pyds.RangeQueryStatic, pyds.SparseTable,
-    pyds.bubble_sort, pyds.linear_search, pyds.binary_search, pyds.jump_search,
-    pyds.selection_sort, pyds.insertion_sort]
+    pyds.bubble_sort]
 
 def test_public_api():
     pyds = pydatastructs
@@ -203,12 +133,6 @@ def test_public_api():
 
 def test_backend_argument_message():
 
-    import pydatastructs as pyds
-    backend_implemented = [
-        pyds.OneDimensionalArray,
-        pyds.DynamicOneDimensionalArray
-    ]
-
     def call_and_raise(api, pos_args_count=0):
         try:
             if pos_args_count == 0:
@@ -228,5 +152,4 @@ def test_backend_argument_message():
 
     apis = _apis()
     for api in apis:
-        if api not in backend_implemented:
-            call_and_raise(api, 0)
+        call_and_raise(api, 0)

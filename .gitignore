@@ -63,7 +63,6 @@ __pycache__/
 ################
 .idea/
 build/
-!scripts/build
 dist/
 venv/
 *.gem

@@ -16,16 +16,16 @@ Installation
 You can install the library by running the following command,
 
 ```python
-python scripts/build/install.py
+python -m pip install .
 ```
 
-For development purposes i.e., if you intend to be a contributor,
+For development purposes, you can use the option `e` as shown below,
 
 ```python
-python scripts/build/develop.py
+python -m pip install -e .
 ```
 
-Make sure you change your working directory to `pydatastructs` before executing any of the above commands. Also, your python version should be at least `3.8`.
+Make sure that your python version is above `3.5`.
 
 Testing
 -------

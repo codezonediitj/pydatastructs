@@ -1,7 +1,6 @@
 from pydatastructs.utils.misc_util import (
     _check_type, NoneType, Backend,
     raise_if_backend_is_not_python)
-from pydatastructs.linear_data_structures._backend.cpp import _arrays
 
 __all__ = [
     'OneDimensionalArray',
@@ -32,7 +31,7 @@ class OneDimensionalArray(Array):
         The elements in the array, all should
         be of same type.
     init: a python type
-        The initial value with which the element has
+        The inital value with which the element has
         to be initialized. By default none, used only
         when the data is not given.
     backend: pydatastructs.Backend
@@ -76,9 +75,8 @@ class OneDimensionalArray(Array):
     __slots__ = ['_size', '_data', '_dtype']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
-        backend = kwargs.get('backend', Backend.PYTHON)
-        if backend == Backend.CPP:
-            return _arrays.OneDimensionalArray(dtype, *args, **kwargs)
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         if len(args) not in (1, 2):
@@ -132,8 +130,7 @@ class OneDimensionalArray(Array):
 
     def __getitem__(self, i):
         if i >= self._size or i < 0:
-            raise IndexError(("Index, {} out of range, "
-                              "[{}, {}).".format(i, 0, self._size)))
+            raise IndexError("Index out of range.")
         return self._data.__getitem__(i)
 
     def __setitem__(self, idx, elem):
@@ -359,9 +356,8 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     __slots__ = ['_load_factor', '_num', '_last_pos_filled', '_size']
 
     def __new__(cls, dtype=NoneType, *args, **kwargs):
-        backend = kwargs.get("backend", Backend.PYTHON)
-        if backend == Backend.CPP:
-            return _arrays.DynamicOneDimensionalArray(dtype, *args, **kwargs)
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
         obj = super().__new__(cls, dtype, *args, **kwargs)
         obj._load_factor = float(kwargs.get('load_factor', 0.25))
         obj._num = 0 if obj._size == 0 or obj[0] is None else obj._size
@@ -423,7 +419,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         return self._size
 
     def __str__(self):
-        to_be_printed = ['' for _ in range(self._last_pos_filled + 1)]
+        to_be_printed = ['' for i in range(self._last_pos_filled + 1)]
         for i in range(self._last_pos_filled + 1):
             if self._data[i] is not None:
                 to_be_printed[i] = str(self._data[i])

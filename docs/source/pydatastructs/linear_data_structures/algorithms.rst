@@ -21,10 +21,6 @@ Algorithms
 
 .. autofunction:: pydatastructs.bubble_sort
 
-.. autofunction:: pydatastructs.selection_sort
-
-.. autofunction:: pydatastructs.insertion_sort
-
 .. autofunction:: pydatastructs.longest_common_subsequence
 
 .. autofunction:: pydatastructs.is_ordered
@@ -38,9 +34,3 @@ Algorithms
 .. autofunction:: pydatastructs.next_permutation
 
 .. autofunction:: pydatastructs.prev_permutation
-
-.. autofunction:: pydatastructs.linear_search
-
-.. autofunction:: pydatastructs.binary_search
-
-.. autofunction:: pydatastructs.jump_search
