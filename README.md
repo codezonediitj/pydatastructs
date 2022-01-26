@@ -6,7 +6,7 @@ PyDataStructs
 About
 -----
 
-- The project aims to be a `Python package` for various data structures in computer science.
+- **PyDataStructs** project aims to be a `Python package` for various data structures in computer science.
 - We are also working on the development of algorithms including their parallel implementations.
 - To the best of our knowledge, a well-designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist yet.
 
