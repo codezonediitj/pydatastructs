@@ -6,11 +6,18 @@ PyDataStructs
 About
 -----
 
-- **PyDataStructs** project aims to be a `Python package` for various data structures in computer science.
-- We are also working on the development of algorithms including their parallel implementations.
-- To the best of our knowledge, a well-designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist yet.
+- **PyDataStructs** project aims to be a Python package for various data structures and algorithms (including their parallel implementations).
 
-- Once the software design becomes more stable after a few releases of this package in the near future, we also aim to provide APIs for the code in C++ and Java as well.
+- We are also working on providing C++ backend via Python C-API for high performance use cases.
+
+Why PyDataStructs?
+-------------------
+
+- **Single package for all your data structures and algorithms**
+
+- **Consistent and Clean Interface** - The APIs we have provided are consistent with each other, clean and easy to use. We make sure of that before adding any new data structure or algorithm.
+
+- **Well Tested** - We thoroughly test our code before making any new addition to PyDataStructs. 99 percent lines of our code have already been tested by us.
 
 Setup
 ------------
@@ -19,7 +26,7 @@ To setup the common environment for this project
 run the following commands
 
 ``` shell
-conda env create --file environment.yml 
+conda env create --file environment.yml
 conda activate pyds-env
 ```
 
