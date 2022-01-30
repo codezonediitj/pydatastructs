@@ -3,10 +3,11 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.9
-  - codecov
-  - pytest-cov
-  - sphinx=4.2.0
-  - myst-nb=0.13.1
+  - python=3.8
+  - pip
   - pip:
-    - sphinx-readable-theme=1.3.0
+    - codecov
+    - pytest-cov
+    - sphinx==4.2.0
+    - sphinx-readable-theme==1.3.0
+    - myst_nb==0.13.1
