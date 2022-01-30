@@ -33,6 +33,13 @@ conda activate pyds-env
 Installation
 ------------
 
+If you are using Anaconda/Mamba, you can setup your development environment by executing the following commands,
+
+```bash
+conda env create --file environment.yml
+conda activate pyds-env
+```
+
 You can install the library by running the following command,
 
 ```python
