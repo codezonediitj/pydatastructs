@@ -6,9 +6,18 @@ PyDataStructs
 About
 -----
 
-This project aims to be a Python package for various data structures in computer science. We are also working on the development of algorithms including their parallel implementations. To the best of our knowledge, a well-designed library/package which has covered most of the data structures and algorithms including their parallel implementation doesn't exist yet.
+- **PyDataStructs** project aims to be a Python package for various data structures and algorithms (including their parallel implementations).
 
-Once the software design becomes more stable after a few releases of this package in the near future, we also aim to provide APIs for the code in C++ and Java as well.
+- We are also working on providing C++ backend via Python C-API for high performance use cases.
+
+Why PyDataStructs?
+-------------------
+
+- **Single package for all your data structures and algorithms**
+
+- **Consistent and Clean Interface** - The APIs we have provided are consistent with each other, clean and easy to use. We make sure of that before adding any new data structure or algorithm.
+
+- **Well Tested** - We thoroughly test our code before making any new addition to PyDataStructs. 99 percent lines of our code have already been tested by us.
 
 Installation
 ------------
@@ -43,23 +52,29 @@ For testing your patch locally follow the steps given below,
 2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
 
 For a good visualisation of the different data structures and algorithms, refer the following websites:
-- https://visualgo.net/
-- https://www.cs.usfca.edu/~galles/visualization/
+
+- <https://visualgo.net/>
+- <https://www.cs.usfca.edu/~galles/visualization/>
 
 You can use the examples given in the following book as tests for your code:
+
 - [https://opendatastructures.org/ods-python.pdf](https://opendatastructures.org/ods-python.pdf)
 
 Why do we use Python?
 ------------------
 
-As we know Python is an interpreted language and hence is slow compared to C++, the most popular language for competitive programming. We still decided to use Python because the software development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time. However, keeping the need of the users in mind, we will shift to C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch, after a few releases with APIs available for all the languages.
+- As we know Python is an interpreted language and hence executing programs in it is slower as compared to C++.
+
+- We still decided to use Python because the software development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time in Python.
+
+- However, keeping the need of the users in mind, we are also working on providing a C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch.
 
 How to contribute?
 ------------------
 
 Follow the steps given below,
 
-1. Fork, https://github.com/codezonediitj/pydatastructs/
+1. Fork, <https://github.com/codezonediitj/pydatastructs/>
 2. Execute, `git clone https://github.com/codezonediitj/pydatastructs/`
 3. Change your working directory to `../pydatastructs`.
 4. Execute, `git remote add origin_user https://github.com/<your-github-username>/pydatastructs/`
@@ -81,11 +96,10 @@ It is recommended to go through the following links before you start working.
 - [Pull Request Policy](https://github.com/codezonediitj/pydatastructs/wiki/Pull-Request-Policy)
 - [Plan of Action for the Projects](https://github.com/codezonediitj/pydatastructs/wiki/Plan-of-Action-for-the-Projects)
 
-
 Guidelines
 ----------
 
-We recommend you to join our [gitter channel](https://gitter.im/codezoned2017/Lobby) for discussing anything related to the project.
+We recommend you to join our [discord channel](https://discord.gg/PwY7wQDG5G) for discussing anything related to the project.
 
 Please follow the rules and guidelines given below,
 
@@ -107,12 +121,4 @@ Keep contributing!!
 
 Thanks to these wonderful people ✨✨:
 
-<table>
-    <tr>
-        <td>
-            <a href="https://github.com/codezonediitj/pydatastructs/graphs/contributors">
-                  <img src="https://contrib.rocks/image?repo=codezonediitj/pydatastructs" />
-            </a>
-        </td>
-    </tr>
-</table>
+![https://github.com/codezonediitj/pydatastructs/graphs/contributors](https://contrib.rocks/image?repo=codezonediitj/pydatastructs)
