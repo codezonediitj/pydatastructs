@@ -1,0 +1,13 @@
+name: pyds-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - pip
+  - pip:
+    - codecov
+    - pytest-cov
+    - sphinx==4.2.0
+    - sphinx-readable-theme==1.3.0
+    - myst_nb==0.13.1
