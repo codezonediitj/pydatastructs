@@ -2,7 +2,6 @@ import random, timeit, functools, os, pytest
 from pydatastructs import (OneDimensionalArray, Backend,
     DynamicOneDimensionalArray)
 
-@pytest.mark.xfail
 def _test_OneDimensionalArray_DynamicOneDimensionalArray(array_type):
     cpp = Backend.CPP
     repeat = 2
