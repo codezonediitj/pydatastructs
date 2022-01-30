@@ -19,17 +19,6 @@ Why PyDataStructs?
 
 - **Well Tested** - We thoroughly test our code before making any new addition to PyDataStructs. 99 percent lines of our code have already been tested by us.
 
-Setup
-------------
-
-To setup the common environment for this project
-run the following commands
-
-``` shell
-conda env create --file environment.yml
-conda activate pyds-env
-```
-
 Installation
 ------------
 
@@ -59,8 +48,8 @@ Testing
 
 For testing your patch locally follow the steps given below,
 
-<!-- 1. Install [pytest-cov](https://pypi.org/project/pytest-cov/). Skip this step if you are already having the package. -->
-1. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
+1. Install [pytest-cov](https://pypi.org/project/pytest-cov/). Skip this step if you are already having the package.
+2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
 
 For a good visualisation of the different data structures and algorithms, refer the following websites:
 
@@ -74,9 +63,11 @@ You can use the examples given in the following book as tests for your code:
 Why do we use Python?
 ------------------
 
-- As we know Python is an interpreted language and hence it is slow compared to C++, the most popular language for competitive programming.
-- We still decided to use Python because the software development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time.
-- However, keeping the need of the users in mind, we will shift to C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch, after a few releases with APIs available for all the languages.
+- As we know Python is an interpreted language and hence executing programs in it is slower as compared to C++.
+
+- We still decided to use Python because the software development can happen at a much faster pace and it is much easier to test various software designs and APIs as coding them out takes no time in Python.
+
+- However, keeping the need of the users in mind, we are also working on providing a C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch.
 
 How to contribute?
 ------------------
@@ -108,7 +99,7 @@ It is recommended to go through the following links before you start working.
 Guidelines
 ----------
 
-We recommend you to join our [gitter channel](https://gitter.im/codezoned2017/Lobby) for discussing anything related to the project.
+We recommend you to join our [discord channel](https://discord.gg/PwY7wQDG5G) for discussing anything related to the project.
 
 Please follow the rules and guidelines given below,
 
