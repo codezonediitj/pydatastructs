@@ -35,7 +35,6 @@ static PyObject* quick_sort(PyObject* self, PyObject* args, PyObject* kwds) {
     int is_DynamicOneDimensionalArray = _check_type(args0, &DynamicOneDimensionalArrayType);
     int is_OneDimensionalArray = _check_type(args0, &OneDimensionalArrayType);
     if( !is_DynamicOneDimensionalArray && !is_OneDimensionalArray ) {
-        std::cout<<"args0.type: "<<args0->ob_type->tp_name<<" "<<DynamicOneDimensionalArrayType.tp_name<<std::endl;
         raise_exception_if_not_array(args0);
         return NULL;
     }
@@ -71,7 +70,6 @@ static PyObject* quick_sort(PyObject* self, PyObject* args, PyObject* kwds) {
         array = reinterpret_cast<OneDimensionalArray*>(args0);
     }
 
-    std::cout<<lower<<" "<<upper<<std::endl;
     array = quick_sort_impl(array, lower, upper, comp, pick_pivot_element);
     if( force_modify ) {
         DynamicOneDimensionalArray__modify(reinterpret_cast<DynamicOneDimensionalArray*>(args0),
