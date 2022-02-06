@@ -6,4 +6,4 @@ backend = '_backend'
 
 cpp = 'cpp'
 
-dummy_submodules = ['_arrays.py']
+dummy_submodules_list = [('_arrays.py', '_algorithms.py')]
