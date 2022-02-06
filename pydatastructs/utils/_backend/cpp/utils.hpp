@@ -3,6 +3,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <cstring>
 #include <string>
 
 PyObject *PyZero = PyLong_FromLong(0);
@@ -64,6 +65,10 @@ static int raise_exception_if_not_array(PyObject* arg) {
         PyObject_AsString(PyObject_Repr(PyObject_Type(arg)))
     );
     return 1;
+}
+
+static int _check_type(PyObject* arg, PyTypeObject* type) {
+    return strcmp(arg->ob_type->tp_name, type->tp_name);
 }
 
 static int _comp(PyObject* u, PyObject* v, PyObject* tcomp) {
