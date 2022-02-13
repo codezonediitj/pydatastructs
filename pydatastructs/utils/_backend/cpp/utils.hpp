@@ -68,7 +68,7 @@ static int raise_exception_if_not_array(PyObject* arg) {
 }
 
 static int _check_type(PyObject* arg, PyTypeObject* type) {
-    return strcmp(arg->ob_type->tp_name, type->tp_name);
+    return strcmp(arg->ob_type->tp_name, type->tp_name) == 0;
 }
 
 static int _comp(PyObject* u, PyObject* v, PyObject* tcomp) {

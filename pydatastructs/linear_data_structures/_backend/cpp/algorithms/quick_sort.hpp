@@ -7,23 +7,70 @@
 #include "../arrays/DynamicOneDimensionalArray.hpp"
 #include "../../../../utils/_backend/cpp/utils.hpp"
 #include <stack>
-#include <iostream>
 
 static PyObject* call_pick_pivot_element(PyObject* pick_pivot_element,
-    size_t low, size_t high,
-    OneDimensionalArray* array) {
+    size_t low, size_t high, PyObject* array) {
+    PyObject* high_PyObject = PyLong_FromSize_t(high);
     if( pick_pivot_element ) {
         return PyObject_CallFunctionObjArgs(pick_pivot_element,
                                             PyLong_FromSize_t(low),
-                                            PyLong_FromSize_t(high),
-                                            reinterpret_cast<PyObject*>(array));
+                                            high_PyObject,
+                                            array);
     }
 
-    return array->_data[high];
+    return PyObject_GetItem(array, high_PyObject);
 }
 
-OneDimensionalArray* quick_sort_impl(OneDimensionalArray* array, size_t lower, size_t upper,
+static size_t quick_sort_partition(size_t low, size_t high,
+    PyObject* pick_pivot_element, PyObject* comp, PyObject* array) {
+    int64_t i = low - 1;
+    PyObject* x = call_pick_pivot_element(pick_pivot_element, low, high, array);
+    for( size_t j = low; j < high; j++ ) {
+        PyObject* j_PyObject = PyLong_FromSize_t(j);
+        if( _comp(PyObject_GetItem(array, j_PyObject), x, comp) == 1 ) {
+            i = i + 1;
+            PyObject* i_PyObject = PyLong_FromLongLong(i);
+            PyObject* tmp = PyObject_GetItem(array, i_PyObject);
+            PyObject_SetItem(array, i_PyObject,
+                             PyObject_GetItem(array, j_PyObject));
+            PyObject_SetItem(array, j_PyObject, tmp);
+        }
+    }
+    PyObject* i_PyObject = PyLong_FromLongLong(i + 1);
+    PyObject* high_PyObject = PyLong_FromSize_t(high);
+    PyObject* tmp = PyObject_GetItem(array, i_PyObject);
+    PyObject_SetItem(array, i_PyObject,
+                        PyObject_GetItem(array, high_PyObject));
+    PyObject_SetItem(array, high_PyObject, tmp);
+    return i + 1;
+}
+
+static PyObject* quick_sort_impl(PyObject* array, size_t lower, size_t upper,
     PyObject* comp, PyObject* pick_pivot_element) {
+
+    size_t low, high, p;
+    std::stack<size_t> rstack;
+
+    rstack.push(lower);
+    rstack.push(upper);
+
+    while( !rstack.empty() ) {
+        high = rstack.top();
+        rstack.pop();
+        low = rstack.top();
+        rstack.pop();
+        p = quick_sort_partition(low, high, pick_pivot_element,
+                                 comp, array);
+        if( p - 1 > low ) {
+            rstack.push(low);
+            rstack.push(p - 1);
+        }
+        if( p + 1 < high ) {
+            rstack.push(p + 1);
+            rstack.push(high);
+        }
+    }
+
     return array;
 }
 
@@ -61,21 +108,12 @@ static PyObject* quick_sort(PyObject* self, PyObject* args, PyObject* kwds) {
         upper = PyLong_AsSize_t(end);
     }
 
-    OneDimensionalArray* array = NULL;
-    int force_modify = 0;
+    args0 = quick_sort_impl(args0, lower, upper, comp, pick_pivot_element);
     if( is_DynamicOneDimensionalArray ) {
-        array = reinterpret_cast<DynamicOneDimensionalArray*>(args0)->_one_dimensional_array;
-        force_modify = 1;
-    } else {
-        array = reinterpret_cast<OneDimensionalArray*>(args0);
+        PyObject_CallMethod(args0, "_modify", "O", Py_True);
     }
-
-    array = quick_sort_impl(array, lower, upper, comp, pick_pivot_element);
-    if( force_modify ) {
-        DynamicOneDimensionalArray__modify(reinterpret_cast<DynamicOneDimensionalArray*>(args0),
-                                           PyTuple_Pack(1, Py_True));
-    }
-    return reinterpret_cast<PyObject*>(array);
+    Py_INCREF(args0);
+    return args0;
 }
 
 #endif
