@@ -3,6 +3,7 @@ from collections import deque as Queue
 from pydatastructs.utils import TreeNode, CartesianTreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import OneDimensionalArray
+from pydatastructs.linear_data_structures import MultiDimensionalArray
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
@@ -1728,3 +1729,46 @@ class BinaryIndexedTree(object):
                    self.get_prefix_sum(left_index - 1)
         else:
             return self.get_prefix_sum(right_index)
+
+    class BinaryIndexedTree2D(object):
+        __slots__ = ['tree', 'array', ]
+
+        def __new__(cls, array, **kwargs):
+            raise_if_backend_is_not_python(cls, kwargs.get('backend', Backend.PYTHON))
+            obj = object.__new__(cls)
+            obj.array = MultiDimensionalArray(type(array[0]), len(array) ,len(array[0]))
+
+            obj.tree = [len(array[0]) *[0]] * len(array)
+
+            for i in range(array):
+                for j in range(array[0]):
+                    obj.update(i ,j , obj.array[i][j])
+
+            return obj
+
+        @classmethod
+        def methods(cls):
+            return ['update', 'get_prefix_sum','get_rectangle']
+        def update(self ,x , y , val ):
+            i = x+1
+            while i<= len(self.tree):
+                j = y+1
+                while j<= len(self.tree[0]):
+                    self.tree[i-1][j-1] += val
+                    j+= j & (-j)
+                i += i &(-i)
+
+        def get_prefix_sum(self , x , y ):
+            res =0
+            i = x + 1
+            while i <= len(self.tree):
+                j = y + 1
+                while j <= len(self.tree[0]):
+                    res += self.tree[i - 1][j - 1]
+                    j += j & (-j)
+                i += i & (-i)
+            return res
+
+        def get_rectangle(self,  start_x ,start_y ,end_x , end_y ):
+            return self.get_prefix_sum(end_x ,end_y)- self.get_prefix_sum(end_x , start_y-1 )\
+                   -self.get_prefix_sum(start_x -1 ,end_y) + self.get_prefix_sum(start_x-1 , start_y-1)
