@@ -1,8 +1,9 @@
 from pydatastructs.trees.binary_trees import (
     BinarySearchTree, BinaryTreeTraversal, AVLTree,
-    ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree, CartesianTree, Treap, RedBlackTree)
+    ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree, CartesianTree, Treap, RedBlackTree , )
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
+from pydatastructs.trees.binary_trees import BinaryIndexedTree2D
 from copy import deepcopy
 import random
 
@@ -684,3 +685,27 @@ def test_RedBlackTree():
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == [2, 5, 6, 15, 20]
     assert [node.key for node in pre_order] == [6, 5, 2, 20, 15]
+
+
+def test_BinaryIndexedTree2D():
+    sample = [
+        [1 ,2 ,3 ,4 ],
+        [5 , 6,7 ,8 ],
+        [9 ,10 ,11 ,12],
+        [13 ,14 ,15 ,16]
+    ]
+    BIT = BinaryIndexedTree2D
+    bit2d = BIT(sample)
+    def sumRect(i , j ):
+        sum =0
+        for x in range (0, i +1 ):
+            for y in range (0, j+1 ):
+                sum += sample[x][y]
+        return sum
+
+    for i in range(0 , len(sample)) :
+        for j in range(0 , len(sample[0]) ) :
+            assert sumRect(i ,j ) == bit2d.get_prefix_sum(i , j )
+
+
+

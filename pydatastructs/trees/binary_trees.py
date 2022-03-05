@@ -17,7 +17,8 @@ __all__ = [
     'CartesianTree',
     'Treap',
     'SplayTree',
-    'RedBlackTree'
+    'RedBlackTree',
+    'BinaryIndexedTree2D'
 ]
 
 class BinaryTree(object):
@@ -1730,45 +1731,61 @@ class BinaryIndexedTree(object):
         else:
             return self.get_prefix_sum(right_index)
 
-    class BinaryIndexedTree2D(object):
-        __slots__ = ['tree', 'array' ]
+class BinaryIndexedTree2D(object):
+    """
+    2D Fenwick tree aka Binary indexed tree(BIT)
 
-        def __new__(cls, array, **kwargs):
-            raise_if_backend_is_not_python(cls, kwargs.get('backend', Backend.PYTHON))
-            obj = object.__new__(cls)
-            obj.array = MultiDimensionalArray(type(array[0]), len(array) ,len(array[0]))
+    """
+    __slots__ = ['tree', 'array' , 'n' ,'m']
 
-            obj.tree = [len(array[0]) *[0]] * len(array)
+    def __new__(cls, array, **kwargs):
+        raise_if_backend_is_not_python(cls, kwargs.get('backend', Backend.PYTHON))
+        obj = object.__new__(cls)
+        obj.n = len(array)
+        obj.m = len(array[0])
+        obj.array = [[0 for i in range(obj.m+1)] for j in range(obj.n+1)]
+        obj.tree = [[0 for i in range(obj.m+1 )] for j in range(obj.n+1 )]
 
-            for i in range(array):
-                for j in range(array[0]):
-                    obj.update(i ,j , obj.array[i][j])
 
-            return obj
+        for i in obj.array:
+            for j in i :
+                j = 0
+        for i in obj.tree:
+            for j in i:
+                j = 0
 
-        @classmethod
-        def methods(cls):
-            return ['update', 'get_prefix_sum','get_rectangle']
-        def update(self ,x , y , val ):
-            i = x+1
-            while i<= len(self.tree):
-                j = y+1
-                while j<= len(self.tree[0]):
-                    self.tree[i-1][j-1] += val
-                    j+= j & (-j)
-                i += i &(-i)
+        for i in range(obj.n):
+            for j in range(obj.m):
+                obj.array[i][j] = array[i][j]
 
-        def get_prefix_sum(self , x , y ):
-            res =0
-            i = x + 1
-            while i <= len(self.tree):
-                j = y + 1
-                while j <= len(self.tree[0]):
-                    res += self.tree[i - 1][j - 1]
-                    j += j & (-j)
-                i += i & (-i)
-            return res
+        for i in range(obj.n):
+            for j in range(obj.m):
+                obj.update(i ,j , obj.array[i][j])
+        return obj
 
-        def get_rectangle(self,  start_x ,start_y ,end_x , end_y ):
-            return self.get_prefix_sum(end_x ,end_y)- self.get_prefix_sum(end_x , start_y-1 )\
-                   -self.get_prefix_sum(start_x -1 ,end_y) + self.get_prefix_sum(start_x-1 , start_y-1)
+    @classmethod
+    def methods(cls):
+        return ['update', 'get_prefix_sum','get_rectangle']
+    def update(self ,x , y , val ):
+        i = x +1
+        while i<= self.n:
+            j = y +1
+            while j<= self.m:
+                self.tree[i-1][j-1] += val
+                j+= j & (-j)
+            i += i &(-i)
+
+    def get_prefix_sum(self , x , y ):
+        res =0
+        i = x +1
+        while i >0:
+            j = y +1
+            while j >0 :
+                res += self.tree[i - 1][j - 1]
+                j -= j & (-j)
+            i -= i & (-i)
+        return res
+
+    def get_rectangle(self,  start_x ,start_y ,end_x , end_y ):
+        return self.get_prefix_sum(end_x ,end_y)- self.get_prefix_sum(end_x , start_y-1 )\
+               -self.get_prefix_sum(start_x -1 ,end_y) + self.get_prefix_sum(start_x-1 , start_y-1)
