@@ -1731,7 +1731,7 @@ class BinaryIndexedTree(object):
             return self.get_prefix_sum(right_index)
 
     class BinaryIndexedTree2D(object):
-        __slots__ = ['tree', 'array', ]
+        __slots__ = ['tree', 'array' ]
 
         def __new__(cls, array, **kwargs):
             raise_if_backend_is_not_python(cls, kwargs.get('backend', Backend.PYTHON))
