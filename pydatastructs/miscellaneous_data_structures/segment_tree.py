@@ -219,8 +219,13 @@ class SegmentTree :
 
         return self.__rangeQuery__(1, 0, self._treeSize_ // 2 - 1, _left_, _right_)
 
+    def printTree(self) :
+
+        print("Seg Tree : ", self._tree_)
+        print("Lazy Tree : ", self._lazy_)
+
     """
-    Example for using the SegmentTree class (with testcase) :
+    Example for using the SegmentTree class :
     
             a = [3, 5, 4, 8, 1, 4] => List of elements.
             tree = SegmentTree(a) => New object of class Segment Tree by passing the list.
