@@ -3,6 +3,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <cstring>
 #include <string>
 
 PyObject *PyZero = PyLong_FromLong(0);
@@ -55,6 +56,54 @@ static int raise_exception_if_dtype_mismatch(PyObject* value, PyObject* dtype) {
         return 1;
     }
     return 0;
+}
+
+static int raise_exception_if_not_array(PyObject* arg) {
+    PyErr_Format(PyExc_TypeError,
+        ("Unable to sort %s data structure. "
+         "Only accepted types are OneDimensionalArray and DynamicOneDinesionalArray"),
+        PyObject_AsString(PyObject_Repr(PyObject_Type(arg)))
+    );
+    return 1;
+}
+
+static int _check_type(PyObject* arg, PyTypeObject* type) {
+    return strcmp(arg->ob_type->tp_name, type->tp_name) == 0;
+}
+
+static int _comp(PyObject* u, PyObject* v, PyObject* tcomp) {
+    int u_isNone = u == Py_None;
+    int v_isNone = v == Py_None;
+    if( u_isNone && !v_isNone) {
+        return 0;
+    }
+    if( !u_isNone && v_isNone ) {
+        return 1;
+    }
+    if( u_isNone && v_isNone ) {
+        return 0;
+    }
+    if( tcomp ) {
+        PyObject* result_PyObject = PyObject_CallFunctionObjArgs(tcomp, u, v, NULL);
+        if( !result_PyObject ) {
+            PyErr_Format(PyExc_ValueError,
+                "Unable to compare %s object with %s object.",
+                PyObject_AsString(PyObject_Repr(PyObject_Type(u))),
+                PyObject_AsString(PyObject_Repr(PyObject_Type(v)))
+            );
+        }
+        return result_PyObject == Py_True;
+    }
+
+    int result = PyObject_RichCompareBool(u, v, Py_LE);
+    if( result == -1 ) {
+        PyErr_Format(PyExc_ValueError,
+            "Unable to compare %s object with %s object.",
+            PyObject_AsString(PyObject_Repr(PyObject_Type(u))),
+            PyObject_AsString(PyObject_Repr(PyObject_Type(v)))
+        );
+    }
+    return result;
 }
 
 #endif

@@ -4,7 +4,8 @@ from pydatastructs import (
     heapsort, matrix_multiply_parallel, counting_sort, bucket_sort,
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
-    prev_permutation, bubble_sort, linear_search, binary_search, jump_search, selection_sort, insertion_sort)
+    prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
+    selection_sort, insertion_sort, Backend)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -14,36 +15,69 @@ def _test_common_sort(sort, *args, **kwargs):
 
     n = random.randint(10, 20)
     arr = DynamicOneDimensionalArray(int, 0)
+    generated_ints = []
     for _ in range(n):
-        arr.append(random.randint(1, 1000))
+        integer = random.randint(1, 1000)
+        generated_ints.append(integer)
+        arr.append(integer)
     for _ in range(n//3):
-        arr.delete(random.randint(0, n//2))
-    expected_arr = [686, 779, 102, 134, 362, 448,
+        integer = random.randint(0, n//2)
+        generated_ints.append(integer)
+        arr.delete(integer)
+    expected_arr_1 = [686, 779, 102, 134, 362, 448,
                     480, 548, None, None, None,
                     228, 688, 247, 373, 696, None,
                     None, None, None, None, None,
                     None, None, None, None, None,
                     None, None, None, None]
     sort(arr, *args, **kwargs, start=2, end=10)
-    assert arr._data == expected_arr
+    assert arr._data == expected_arr_1
     sort(arr, *args, **kwargs)
-    expected_arr = [102, 134, 228, 247, 362, 373, 448,
+    expected_arr_2 = [102, 134, 228, 247, 362, 373, 448,
                     480, 548, 686, 688, 696, 779,
                     None, None, None, None, None, None,
                     None, None, None, None, None,
                     None, None, None, None, None, None, None]
-    assert arr._data == expected_arr
+    assert arr._data == expected_arr_2
     assert (arr._last_pos_filled, arr._num, arr._size) == (12, 13, 31)
+
+    arr = DynamicOneDimensionalArray(int, 0, backend=Backend.CPP)
+    int_idx = 0
+    for _ in range(n):
+        arr.append(generated_ints[int_idx])
+        int_idx += 1
+    for _ in range(n//3):
+        arr.delete(generated_ints[int_idx])
+        int_idx += 1
+    sort(arr, *args, **kwargs, start=2, end=10)
+    for i in range(len(expected_arr_1)):
+        assert arr[i] == expected_arr_1[i]
+    sort(arr, *args, **kwargs)
+    for i in range(len(expected_arr_2)):
+        assert arr[i] == expected_arr_2[i]
+    assert (arr._last_pos_filled, arr._num, arr.size) == (12, 13, 31)
 
     n = random.randint(10, 20)
     arr = OneDimensionalArray(int, n)
+    generated_ints.clear()
     for i in range(n):
-        arr[i] = random.randint(1, 1000)
-    expected_arr = [42, 695, 147, 500, 768,
+        integer = random.randint(1, 1000)
+        arr[i] = integer
+        generated_ints.append(integer)
+    expected_arr_3 = [42, 695, 147, 500, 768,
                     998, 473, 732, 728, 426,
                     709, 910]
     sort(arr, *args, **kwargs, start=2, end=5)
-    assert arr._data == expected_arr
+    assert arr._data == expected_arr_3
+
+    arr = OneDimensionalArray(int, n, backend=Backend.CPP)
+    int_idx = 0
+    for i in range(n):
+        arr[i] = generated_ints[int_idx]
+        int_idx += 1
+    sort(arr, *args, **kwargs, start=2, end=5)
+    for i in range(len(expected_arr_3)):
+        assert arr[i] == expected_arr_3[i]
 
 def test_merge_sort_parallel():
     _test_common_sort(merge_sort_parallel, num_threads=5)
@@ -79,6 +113,7 @@ def test_cocktail_shaker_sort():
 
 def test_quick_sort():
     _test_common_sort(quick_sort)
+    _test_common_sort(quick_sort, backend=Backend.CPP)
 
 def test_bubble_sort():
     _test_common_sort(bubble_sort)

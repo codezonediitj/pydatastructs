@@ -1,5 +1,6 @@
 from pydatastructs.linear_data_structures.arrays import (
     OneDimensionalArray, DynamicArray, DynamicOneDimensionalArray, Array)
+from pydatastructs.linear_data_structures._backend.cpp import _algorithms, _arrays
 from pydatastructs.utils.misc_util import (
     _check_type, _comp, Backend,
     raise_if_backend_is_not_python)
@@ -129,8 +130,8 @@ def merge_sort_parallel(array, num_threads, **kwargs):
                     end, comp).result()
                 i = i + 2*pow_2
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
 def brick_sort(array, **kwargs):
     """
@@ -195,8 +196,8 @@ def brick_sort(array, **kwargs):
                 array[i], array[i+1] = array[i+1], array[i]
                 is_sorted = False
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
 def _brick_sort_swap(array, i, j, comp, is_sorted):
     if _comp(array[j], array[i], comp):
@@ -269,8 +270,8 @@ def brick_sort_parallel(array, num_threads, **kwargs):
             for i in range(start, end, 2):
                 Executor.submit(_brick_sort_swap, array, i, i + 1, comp, is_sorted).result()
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
 def heapsort(array, **kwargs):
     """
@@ -333,8 +334,8 @@ def heapsort(array, **kwargs):
         array[i] = h.extract().key
         i += 1
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
 def counting_sort(array: Array, **kwargs) -> Array:
     """
@@ -596,8 +597,8 @@ def bucket_sort(array: Array, **kwargs) -> Array:
         array[i] = None
     for i in range(start, end - number_of_null_values + 1):
         array[i] = sorted_list[i-start]
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
     return array
 
 def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
@@ -679,8 +680,8 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
                 swapping = False
         lower = lower + 1
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
     return array
 
@@ -747,8 +748,9 @@ def quick_sort(array: Array, **kwargs) -> Array:
 
     .. [1] https://en.wikipedia.org/wiki/Quicksort
     """
-    raise_if_backend_is_not_python(
-        quick_sort, kwargs.get('backend', Backend.PYTHON))
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.quick_sort(array, **kwargs)
     from pydatastructs import Stack
     comp = kwargs.get("comp", lambda u, v: u <= v)
     pick_pivot_element = kwargs.get("pick_pivot_element",
@@ -782,8 +784,8 @@ def quick_sort(array: Array, **kwargs) -> Array:
             stack.push(p + 1)
             stack.push(high)
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
     return array
 
@@ -1370,8 +1372,8 @@ def bubble_sort(array, **kwargs):
             if not _comp(array[j], array[j + 1], comp):
                 array[j], array[j + 1] = array[j + 1], array[j]
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
     return array
 
@@ -1442,8 +1444,8 @@ def selection_sort(array, **kwargs):
         if jMin != i:
             array[i], array[jMin] = array[jMin], array[i]
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
     return array
 
@@ -1514,8 +1516,8 @@ def insertion_sort(array, **kwargs):
             j -= 1
         array[j] = temp
 
-    if _check_type(array, DynamicArray):
-        array._modify(force=True)
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
 
     return array
 
