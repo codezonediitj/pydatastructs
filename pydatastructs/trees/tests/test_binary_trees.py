@@ -688,24 +688,41 @@ def test_RedBlackTree():
 
 
 def test_BinaryIndexedTree2D():
-    sample = [
-        [1 ,2 ,3 ,4 ],
-        [5 , 6,7 ,8 ],
-        [9 ,10 ,11 ,12],
-        [13 ,14 ,15 ,16]
-    ]
+
+    n = random.randint(10, 40)
+    m = random.randint(10 ,40)
+    sample = [[random.randint(0, 10000) for i in range(m)] for j in range(n)]
+
     BIT = BinaryIndexedTree2D
     bit2d = BIT(sample)
-    def sumRect(i , j ):
+    def sumRect(sample ,i , j , l ,k  ):
         sum =0
-        for x in range (0, i +1 ):
-            for y in range (0, j+1 ):
+        for x in range (l, i +1 ):
+            for y in range (k, j+1 ):
                 sum += sample[x][y]
         return sum
 
-    for i in range(0 , len(sample)) :
-        for j in range(0 , len(sample[0]) ) :
-            assert sumRect(i ,j ) == bit2d.get_prefix_sum(i , j )
+    for i in range(0 , len(sample)):
+        for j in range(0 , len(sample[0]) ):
+            for l in range (i , len(sample) ):
+                for k in range (j , len(sample[0])):
+                    message = f"for (i , j ) = ({i} ,{j}) ,(l , k ) = ({l} ,{k})"
+                    assert sumRect(sample , l , k , i , j ) == bit2d.get_area(i, j , l ,k ) , message
+
+    for i in range(20) :
+        x = random.randint(0 , n-1)
+        y = random.randint(0 , m-1)
+        val = random.randint(0 , 100)
+        bit2d.add(x , y , val )
+        sample[x][y] += val
+
+    for i in range(0 , len(sample)):
+        for j in range(0 , len(sample[0]) ):
+            for l in range (i , len(sample) ):
+                for k in range (j , len(sample[0])):
+                    message = f"for (i , j ) = ({i} ,{j}) ,(l , k ) = ({l} ,{k}) , After randoms updates"
+                    assert sumRect(sample , l , k , i , j ) == bit2d.get_area(i, j , l ,k ) , message
+
 
 
 

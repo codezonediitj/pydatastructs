@@ -10,4 +10,4 @@ Modules
    graphs/graphs.rst
    strings/strings.rst
    trees/trees.rst
-   miscellaneous_data_structures/miscellaneous_data_structures.rst
+   miscellaneous_data_structures/miscellaneous_data_structures.rst 
