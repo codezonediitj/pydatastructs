@@ -18,7 +18,9 @@ __all__ = [
     'Treap',
     'SplayTree',
     'RedBlackTree',
-    'BinaryIndexedTree2D'
+    'BinaryIndexedTree2D',
+    'BinaryIndexedTreeNd'
+
 ]
 
 class BinaryTree(object):
@@ -1857,3 +1859,73 @@ class BinaryIndexedTree2D(object):
         """
         return self._get_sum_to_origin(end_x ,end_y)- self._get_sum_to_origin(end_x , start_y-1 )\
                -self._get_sum_to_origin(start_x -1 ,end_y) + self._get_sum_to_origin(start_x-1 , start_y-1)
+
+
+class BinaryIndexedTreeNd(object):
+    __slots__ = ['tree' , 'array' , 'limits' , 'backtrack_ind']
+
+    def __new__(cls, array, **kwargs):
+        raise_if_backend_is_not_python(cls , kwargs.get('backend' , Backend.PYTHON))
+        obj = object.__new__(cls)
+        current_dimension = array
+        obj.limits =[]
+        while type(current_dimension)==list or type(current_dimension)==tuple :
+            obj.limits.append(len(current_dimension))
+            current_dimension = current_dimension[0]
+        obj.array =[]
+        obj.array = obj.fillNdArray(0)
+        obj.tree = obj._fillNdArray(0)
+        obj.backtrack_ind =[]
+    @classmethod
+    def methods(cls):
+        return ['add','get_sum']
+
+    def _fillNdArray(self , number:int , ind:int =0 )->list:
+        level = []
+        for i in range(self.limits[ind]):
+            if ind+1 < len(self.limits):
+                level.append(self.fillNdArray(number , ind+1))
+            else :
+                level.append(number)
+        return level
+    def _get_element(self , position:tuple , arr:list) :
+        ind = 0
+        cur = arr
+        while ind < len(self.limits):
+            cur = arr[position[ind]]
+            ind+=1
+        return cur
+    def _add_to_element(self , val:int,position:tuple , arr:list):
+        ind =0
+        cur = arr
+        while ind < len(self.limits):
+            cur = arr[position[ind]]
+            ind+=1
+        cur += val
+
+    def add(self , position:tuple , val:int , ind:int =0 ):
+        if ind == len(self.limits):
+            self._add_to_element(val, tuple(self.backtrack_ind), self.tree)
+            return
+
+        i = position[ind] =1
+        while i < self.limits[ind] :
+
+            self.backtrack_ind.append(i)
+            self.add(position , val , ind+1 )
+            self.backtrack_ind.pop()
+
+            i -= i &(-i)
+
+    def get_sum(self , position:tuple , ind :int ):
+        res =0
+        if ind == len(self.limits):
+            res = self.get_sum(tuple(self.backtrack_ind))
+        else :
+            i = position[ind]+1
+            while i>0 :
+                self.backtrack_ind.append(i)
+                res += self.get_sum(position , ind+1 )
+                self.backtrack_ind.pop()
+                i-= i& (-i)
+        return res
