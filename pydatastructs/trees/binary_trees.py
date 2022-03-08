@@ -1876,9 +1876,21 @@ class BinaryIndexedTreeNd(object):
         obj.array = obj.fillNdArray(0)
         obj.tree = obj._fillNdArray(0)
         obj.backtrack_ind =[]
+        obj.init_sum()
+
     @classmethod
     def methods(cls):
         return ['add','get_sum']
+
+    def init_sum(self ,  ind =0 ):
+        if ind == len(self.limits):
+            self.add(tuple(self.backtrack_ind) , self._get_element(tuple(list) ,self.array))
+        else :
+            for i in range(len(self.limits[ind])):
+                self.backtrack_ind.append(i)
+                self.init_sum(ind+1 )
+                self.backtrack_ind.pop()
+
 
     def _fillNdArray(self , number:int , ind:int =0 )->list:
         level = []
@@ -1888,6 +1900,7 @@ class BinaryIndexedTreeNd(object):
             else :
                 level.append(number)
         return level
+
     def _get_element(self , position:tuple , arr:list) :
         ind = 0
         cur = arr
@@ -1895,6 +1908,7 @@ class BinaryIndexedTreeNd(object):
             cur = arr[position[ind]]
             ind+=1
         return cur
+
     def _add_to_element(self , val:int,position:tuple , arr:list):
         ind =0
         cur = arr
@@ -1917,7 +1931,7 @@ class BinaryIndexedTreeNd(object):
 
             i -= i &(-i)
 
-    def get_sum(self , position:tuple , ind :int ):
+    def _get_sum_to_origin(self , position:tuple , ind :int ):
         res =0
         if ind == len(self.limits):
             res = self.get_sum(tuple(self.backtrack_ind))
@@ -1929,3 +1943,6 @@ class BinaryIndexedTreeNd(object):
                 self.backtrack_ind.pop()
                 i-= i& (-i)
         return res
+
+    def get_sum(self):
+        pass 

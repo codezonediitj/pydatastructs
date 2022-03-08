@@ -4,6 +4,7 @@ from pydatastructs.trees.binary_trees import (
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from pydatastructs.trees.binary_trees import BinaryIndexedTree2D
+from pydatastructs.trees.binary_trees import BinaryIndexedTreeNd
 from copy import deepcopy
 import random
 
@@ -725,4 +726,19 @@ def test_BinaryIndexedTree2D():
 
 
 
+
+def test_BinaryIndexedTreeNd():
+    n = random.randint(2, 3)
+    m = random.randint(2, 3)
+    k = random.randint(2, 3)
+    arr =[]
+    for i in range(n):
+        level1 = []
+        for j in range(m):
+            level2 = []
+            for l in range(k):
+                level2.append(random.randint(5 ,12))
+            level1.append(level2)
+        arr.append(level1)
+    bits = BinaryIndexedTreeNd(arr)
 
