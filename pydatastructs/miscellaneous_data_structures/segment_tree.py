@@ -1,246 +1,220 @@
-class SegmentTree :
-
+class SegmentTree:
     """
-    Represents the Segment Tree Data Structure
+    Represents the Segment Tree
 
-    Functions :
+    Parameters
+    ==========
 
-        -- Use case with example of all functions (including internal)
-           is specified below each of their respective declarations --
+    inp_list: Initial list of values to build the tree.
 
-        -- All Internal functions required to maintain the Segment Tree are represented as __[function_name]__
+    Examples
+    ========
 
-        -------------------------------------------------------------------------------------------------------------
-
-        Range Query => Returns the respective query(sum, min, gcd ...) in the range [L, R]
-                       as specified in the function parameter.
-
-        Point Update => Updates the element value at the specified position [pos] by replacing
-                        it with the new value [newVal], thereby updating the tree.
-
-        Range Update => Adds new value [newVal] to each of the elements in the range [L, R] ensuring
-                        the required updates using lazy propagation
-
-        -------------------------------------------------------------------------------------------------------------
-
-        Time Complexity : Each of the above functions of the tree is performed in O(log(N)), due to the height
-                          of the tree being log(N).
-
-        Space Complexity : The size of the main tree [tree] and the lazy tree [lazy] both consume O(2*N) memory
-                           to represent each of the 2 * N - 1 nodes in the tree.
-
-        -------------------------------------------------------------------------------------------------------------
-
-
-    """
-
-    """
-        Represents the default constructor call with the initial [list]
-        being the parameter in order to build the tree.
-    """
-
-    def __init__(self, _list_) :
-
-        """
-            -- Returns the closest power of 2 from the [size] of
-            the initial [list]. --
-
-            -- The return value of this function will be the size of the segment tree [tree] as well as the
-            lazy tree [lazy] there by having 2 * [returned size] as the size of the array. --
-
-        Example :
-
-            -- Let the list size be 19, then the closest power would be 32. --
-            -- Hence, the new size of the tree would be 32 before the build function is called --
-        """
-
-        def __getLen__(_size_) :
-
-            if _size_ and _size_ & (_size_ - 1) == 0 :
-
-                return _size_
-            else :
-
-                _bitLen_ = len(bin(_size_)) - 2
-                return 1 << _bitLen_
-
-        self._treeSize_ = 2 * __getLen__(len(_list_))
-
-        self._tree_ = [0 for i in range(self._treeSize_)]
-        self._lazy_ = [0 for i in range(self._treeSize_)]
-
-        """
-            -- Performs the build procedure for the tree
-            to initialize the tree with the respective values in each of the 2 * N nodes. --
-        
-        Example :
-        
-                                    -- General Representation of the Tree --
-        
-                                                        |1|
-                                          |2|                        |3|
-                                   |4|          |5|           |6|           |7|
-                                |8|   |9|   |10|   |11|   |12|   |13|   |14|   |15|
-                                
-            -- In the above example tree, the nodes 8...15 would store the initial [list] with additional nodes storing
-            appropriate dummy values [ex: For sum => 0, For min => inf, etc.]. --
-            
-            -- Each of the parent nodes would then be updated by traversing in a bottom-up manner. --
-        """
-
-        def __build__(_list_) :
-
-            _listSize_ = len(_list_)
-
-            for i in range(_listSize_) :
-
-                self._tree_[self._treeSize_ // 2 + i] = _list_[i]
-
-            for i in range(_listSize_, self._treeSize_ // 2) :
-
-                self._tree_[self._treeSize_ // 2 + i] = 0
-
-            for i in range(self._treeSize_ // 2 - 1, 0, -1) :
-
-                self._tree_[i] = self._tree_[2 * i] + self._tree_[2 * i + 1]
-
-            self._root_ = self._tree_[1]
-
-        __build__(_list_)
-
-    """
+    >>> from segment_tree import SegmentTree
     
-        Returns the query value for the specified range [L, R] for a particular [node].
+    >>> t = SegmentTree([3, 4, 8, 10, 1])
+    >>> t.tree
+    [0, 26, 25, 1, 7, 18, 1, 0, 3, 4, 8, 10, 1, 0, 0, 0]
+    >>> t.lazy
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    >>> n = t.get_list_len()
     
-        [Internally called by the rangeQuery(l, r) function]
+    >>> t.query(1, 0, n - 1, 2, 4)
+    19
+    >>> t.point_update(3, 29)
+    >>> t.tree
+    [0, 45, 44, 1, 7, 37, 1, 0, 3, 4, 8, 29, 1, 0, 0, 0]
+    >>> t.range_update(1, 0, n - 1, 0, 3, -4)
+    >>> t.tree
+    [0, 29, 28, 1, 7, 37, 1, 0, 3, 4, 8, 29, 1, 0, 0, 0]
+    >>> t.lazy
+    [0, 0, 0, 0, -4, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    >>> t.query(1, 0, n - 1, 1, 3)
+    29
+
+    Note
+    ====
+
+    The tree can be modified accordingly to get the [sum, max, min, gcd, etc.]
+    or any other compatible function or query type.
+
+    References
+    ==========
+
+    https://cp-algorithms.com/data_structures/segment_tree.html
+
     """
 
-    def __rangeQuery__(self, _node_, _treeLeft_, _treeRight_, _left_, _right_) :
+    def __init__(self, inp_list):
 
-        if self._lazy_[_node_] :
+        def get_len(size):
+            """
+            Returns the new list size (the closest power of 2).
 
-            self._tree_[_node_] += self._lazy_[_node_] * (_treeRight_ - _treeLeft_ + 1)
+            Parameters
+            ==========
 
-            if _treeLeft_ != _treeRight_ :
+            size: Size of the initial list.
 
-                self._lazy_[2 * _node_] += self._lazy_[_node_]
-                self._lazy_[2 * _node_ + 1] += self._lazy_[_node_]
+            """
 
-            self._lazy_[_node_] = 0
+            if size and size & (size - 1) == 0:
 
-        if _treeLeft_ >= _left_ and _treeRight_ <= _right_ :
+                return size
+            else:
 
-            return self._tree_[_node_]
+                bit_len = len(bin(size)) - 2
+                return 1 << bit_len
 
-        elif _treeLeft_ > _right_ or _treeRight_ < _left_ :
+        self.tree_size = 2 * get_len(len(inp_list))
+
+        self.tree = [0 for _ in range(self.tree_size)]
+        self.lazy = [0 for _ in range(self.tree_size)]
+
+        def build(init_list):
+            """
+            Builds the tree using the initial list.
+
+            Parameters
+            ==========
+
+            init_list: Initial list passed in the object declaration.
+
+            """
+
+            list_size = len(init_list)
+
+            for i in range(list_size):
+
+                self.tree[self.tree_size // 2 + i] = init_list[i]
+
+            for i in range(list_size, self.tree_size // 2):
+
+                self.tree[self.tree_size // 2 + i] = 0
+
+            for i in range(self.tree_size // 2 - 1, 0, -1):
+
+                self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
+
+            self.root = self.tree[1]
+
+        build(inp_list)
+
+    def query(self, node, tree_left, tree_right, left, right):
+        """
+        Returns the query value for the range [L, R].
+
+        Parameters
+        ==========
+
+        node: Root Node (Initial call : 1).
+        tree_left: Left index of the node (Initial call : 0).
+        tree_right: Right index of the node (Initial call : [object].get_list_len() - 1).
+        left: Query index left.
+        right: Query index right.
+
+        """
+
+        if self.lazy[node]:
+
+            self.tree[node] += self.lazy[node] * (tree_right - tree_left + 1)
+
+            if tree_left != tree_right:
+
+                self.lazy[2 * node] += self.lazy[node]
+                self.lazy[2 * node + 1] += self.lazy[node]
+
+            self.lazy[node] = 0
+
+        if tree_left >= left and tree_right <= right:
+
+            return self.tree[node]
+
+        elif tree_left > right or tree_right < left:
 
             return 0
 
-        else :
+        else:
 
-            _mid_ = (_treeLeft_ + _treeRight_) // 2
+            mid = (tree_left + tree_right) // 2
 
             return \
-                self.__rangeQuery__(2 * _node_, _treeLeft_, _mid_, _left_, _right_) + \
-                self.__rangeQuery__(2 * _node_ + 1, _mid_ + 1, _treeRight_, _left_, _right_)
+                self.query(2 * node, tree_left, mid, left, right) + \
+                self.query(2 * node + 1, mid + 1, tree_right, left, right)
 
-    """
-        Updates the tree accordingly for the specified range [L, R] for a particular [node] and [newVal].
-    
-        [Internally called by the rangeUpdate(l, r) function]
-    """
+    def range_update(self, node, tree_left, tree_right, left, right, new_val):
+        """
+        Adds the new value to the range [L, R].
 
-    def __rangeUpdate__(self, _node_, _treeLeft_, _treeRight_, _left_, _right_, _newVal_) :
+        Parameters
+        ==========
 
-        if self._lazy_[_node_] :
+        node: Node (Initial call : 1 {Root Node}).
+        tree_left: Left index of the node (Initial call : 0).
+        tree_right: Right index of the node (Initial call : [object].get_list_len() - 1).
+        left: Query index left.
+        right: Query Range right.
+        new_val: New Value to be added.
 
-            self._tree_[_node_] += self._lazy_[_node_] * (_treeRight_ - _treeLeft_ + 1)
+        """
 
-            if _treeLeft_ != _treeRight_ :
+        if self.lazy[node]:
 
-                self._lazy_[2 * _node_] += self._lazy_[_node_]
-                self._lazy_[2 * _node_ + 1] += self._lazy_[_node_]
+            self.tree[node] += self.lazy[node] * (tree_right - tree_left + 1)
 
-            self._lazy_[_node_] = 0
+            if tree_left != tree_right:
 
-        if _treeLeft_ >= _left_ and _treeRight_ <= _right_ :
+                self.lazy[2 * node] += self.lazy[node]
+                self.lazy[2 * node + 1] += self.lazy[node]
 
-            self._tree_[_node_] += _newVal_ * (_treeRight_ - _treeLeft_ + 1)
+            self.lazy[node] = 0
 
-            if _treeLeft_ != _treeRight_ :
+        if tree_left >= left and tree_right <= right:
 
-                self._lazy_[2 * _node_] += _newVal_
-                self._lazy_[2 * _node_ + 1] += _newVal_
+            self.tree[node] += new_val * (tree_right - tree_left + 1)
 
-        elif _treeLeft_ > _right_ or _treeRight_ < _left_ :
+            if tree_left != tree_right:
+
+                self.lazy[2 * node] += new_val
+                self.lazy[2 * node + 1] += new_val
+
+        elif tree_left > right or tree_right < left:
 
             return
+        else:
 
-        else :
+            mid = (tree_left + tree_right) // 2
 
-            _mid_ = (_treeLeft_ + _treeRight_) // 2
+            self.range_update(2 * node, tree_left, mid, left, right, new_val)
+            self.range_update(2 * node + 1, mid + 1, tree_right, left, right, new_val)
 
-            self.__rangeUpdate__(2 * _node_, _treeLeft_, _mid_, _left_, _right_, _newVal_)
-            self.__rangeUpdate__(2 * _node_ + 1, _mid_ + 1, _treeRight_, _left_, _right_, _newVal_)
+            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
 
-            self._tree_[_node_] = self._tree_[2 * _node_] + self._tree_[2 * _node_ + 1]
+    def point_update(self, pos, new_val):
+        """
+        Updates the specified position in the tree with the new value.
 
-    """
-        Updates the tree accordingly for the specified position [pos] with the [newVal].
-    
-        [Internally called by the pointUpdate(l, r) function]
-    """
+        Parameters
+        ==========
 
-    def __pointUpdate__(self, _pos_, _newVal_) :
+        pos: Position to be updated.
+        new_val: The new value.
 
-        self._tree_[self._treeSize_ // 2 + _pos_] = _newVal_
+        """
 
-        _node_ = (self._treeSize_ // 2 + _pos_) // 2
+        self.tree[self.tree_size // 2 + pos] = new_val
 
-        while _node_ >= 1 :
+        node = (self.tree_size // 2 + pos) // 2
 
-            self._tree_[_node_] = self._tree_[2 * _node_] + self._tree_[2 * _node_ + 1]
-            _node_ //= 2
+        while node >= 1:
 
-    """
-    -- All functions below are the User Functions which invoke the necessary
-       Internal Functions as mentioned earlier. --
-    """
+            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+            node //= 2
 
-    def rangeUpdate(self, _left_, _right_, _newVal_) :
+    def get_list_len(self):
+        """
+        Returns the new list size as modified in the get_len(size) function.
 
-        self.__rangeUpdate__(1, 0, self._treeSize_ // 2 - 1, _left_, _right_, _newVal_)
-
-    def pointUpdate(self, _pos_, _newVal_) :
-
-        self.__pointUpdate__(_pos_, _newVal_)
-
-    def rangeQuery(self, _left_, _right_) :
-
-        return self.__rangeQuery__(1, 0, self._treeSize_ // 2 - 1, _left_, _right_)
-
-    def printTree(self) :
-
-        print("Seg Tree : ", self._tree_)
-        print("Lazy Tree : ", self._lazy_)
-
-    """
-    Example for using the SegmentTree class :
-    
-            a = [3, 5, 4, 8, 1, 4] => List of elements.
-            tree = SegmentTree(a) => New object of class Segment Tree by passing the list.
+        """
         
-            print(tree.rangeQuery(2, 4)) => Sum of [2, 4] = 13
-         
-        [Let's say we want to update the element at position 3 with the value 18]
-        
-            tree.pointUpdate(3, 18)
-         
-            print(tree.rangeQuery(2, 5)) => Sum of [2, 5] = 27
-        
-        [Let's say we want to add 9 to elements in the range [0, 2]]
-        
-            tree.rangeUpdate(0, 2, 9)
-        
-            print(tree.rangeQuery(0, 4) => Sum of [0, 4] = 58
-    """
+        return self.tree_size // 2
