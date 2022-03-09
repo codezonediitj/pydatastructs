@@ -1,3 +1,7 @@
+__all__ = [
+    'SegmentTree'
+]
+
 class SegmentTree:
     """
     Represents the Segment Tree
