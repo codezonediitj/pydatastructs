@@ -209,3 +209,4 @@ class SegmentTree:
         Returns the new list size as modified in the get_len(size) function.
         """
         return self.tree_size // 2
+
