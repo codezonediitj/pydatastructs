@@ -1,5 +1,5 @@
 import random
-from segment_tree import SegmentTree
+from pydatastructs.miscellaneous_data_structures.segment_tree import SegmentTree
 
 
 def gen_range(list_size):
