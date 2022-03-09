@@ -5,9 +5,7 @@ from pydatastructs.miscellaneous_data_structures.segment_tree import SegmentTree
 def gen_range(list_size):
     """
     Generates range [L, R] for querying.
-    
     """
-    
     left = random.randint(0, list_size - 1)
     right = random.randint(left, list_size - 1)
 
@@ -18,9 +16,7 @@ def random_test():
     """
     Random test for the Segment Tree using random list
     of values, random range queries.
-     
     """
-    
     random_list = [random.randint(-10 ** 6, 10 ** 6) for _ in range(10 ** 5)]
     t = SegmentTree(random_list)
 
@@ -51,9 +47,7 @@ def static_test():
     """
     Static test with known changes during updates
     and queries of the tree with appropriate assertions.
-    
     """
-    
     static_list = [3, 6, 9, 10, 4]
     t = SegmentTree(static_list)
 

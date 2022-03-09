@@ -46,9 +46,7 @@ class SegmentTree:
     ==========
 
     https://cp-algorithms.com/data_structures/segment_tree.html
-
     """
-
     def __init__(self, inp_list):
 
         def get_len(size):
@@ -59,9 +57,7 @@ class SegmentTree:
             ==========
 
             size: Size of the initial list.
-
             """
-
             if size and size & (size - 1) == 0:
 
                 return size
@@ -83,9 +79,7 @@ class SegmentTree:
             ==========
 
             init_list: Initial list passed in the object declaration.
-
             """
-
             list_size = len(init_list)
 
             for i in range(list_size):
@@ -116,7 +110,6 @@ class SegmentTree:
         tree_right: Right index of the node (Initial call : [object].get_list_len() - 1).
         left: Query index left.
         right: Query index right.
-
         """
 
         if self.lazy[node]:
@@ -159,9 +152,7 @@ class SegmentTree:
         left: Query index left.
         right: Query Range right.
         new_val: New Value to be added.
-
         """
-
         if self.lazy[node]:
 
             self.tree[node] += self.lazy[node] * (tree_right - tree_left + 1)
@@ -203,9 +194,7 @@ class SegmentTree:
 
         pos: Position to be updated.
         new_val: The new value.
-
         """
-
         self.tree[self.tree_size // 2 + pos] = new_val
 
         node = (self.tree_size // 2 + pos) // 2
@@ -218,7 +207,5 @@ class SegmentTree:
     def get_list_len(self):
         """
         Returns the new list size as modified in the get_len(size) function.
-
         """
-        
         return self.tree_size // 2
