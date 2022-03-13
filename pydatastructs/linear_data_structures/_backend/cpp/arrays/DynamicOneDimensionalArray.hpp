@@ -90,30 +90,30 @@ static PyObject* DynamicOneDimensionalArray__modify(DynamicOneDimensionalArray *
         force = Py_False;
     }
 
-    long i;
+    long i, j;
     PyObject** _data = self->_one_dimensional_array->_data;
     long _size = (long) self->_one_dimensional_array->_size;
     if( force == Py_True ) {
         i = -1;
-        while( _data[i] == Py_None) {
+        j = _size - 1;
+        while( _data[j] == Py_None) {
             i--;
+            j--;
         }
-        long _last_pos_filled = std::abs(i) % _size;
-        if( i < 0 ) {
-            _last_pos_filled += _size;
-        }
-        self->_last_pos_filled = _last_pos_filled;
+        self->_last_pos_filled = i + _size;
     }
 
     if( ((float) self->_num)/((float) _size) < self->_load_factor ) {
         long new_size = 2 * self->_num + 1;
         PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
         for( i = 0; i < new_size; i++ ) {
+            Py_INCREF(Py_None);
             arr_new[i] = Py_None;
         }
         long j = 0;
         for( i = 0; i <= self->_last_pos_filled; i++ ) {
             if( _data[i] != Py_None ) {
+                Py_INCREF(Py_None);
                 arr_new[j] = _data[i];
                 j += 1;
             }
