@@ -15,7 +15,7 @@ Why PyDataStructs?
 
 - **Single package for all your data structures and algorithms**
 
-- **Consistent and Clean Interface** - The APIs we have provided are consistent with each other, clean and easy to use. We make sure of that before adding any new data structure or algorithm.
+- **Consistent and Clean Interface** - The APIs we have provided are consistent with each other, clean, and easy to use. We make sure of that before adding any new data structure or algorithm.
 
 - **Well Tested** - We thoroughly test our code before making any new addition to PyDataStructs. 99 percent lines of our code have already been tested by us.
 
@@ -104,7 +104,7 @@ We recommend you to join our [discord channel](https://discord.gg/PwY7wQDG5G) fo
 Please follow the rules and guidelines given below,
 
 1. Follow the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html).
-2. If you are planning to contribute a new data structure then first raise an **issue** for discussing the API, rather than directly making a PR. Please go through [Plan of Action for Adding New Data Structures](https://github.com/codezonediitj/pydatastructs/wiki/Plan-of-Action-for-Adding-New-Data-Structures)
+2. If you are planning to contribute a new data structure then first raise an **issue** for discussing the API, rather than directly making a PR. Please go through [Plan of Action for Adding New Data Structures](https://github.com/codezonediitj/pydatastructs/wiki/Plan-of-Action-for-Adding-New-Data-Structures).
 3. For the first-time contributors we recommend not to take a complex data structure, rather start with `beginner` or `easy`.
 4. We don't assign issues to any individual. Instead, we follow First Come First Serve for taking over issues, i.e., if one contributor has already shown interest then no comment should be made after that as it won't be considered. Anyone willing to work on an issue can comment on the thread that he/she is working on and raise a PR for the same.
 5. Any open PR must be provided with some updates after being reviewed. If it is stalled for more than 4 days, it will be labeled as `Please take over`, meaning that anyone willing to continue that PR can start working on it.
@@ -114,7 +114,7 @@ The following parameters are to be followed to pass the code quality tests for y
 
 1. There should not be any trailing white spaces at any line of code.
 2. Each `.py` file should end with exactly one new line.
-3. Comparisons involving `True`, `False` and `None` should be done by
+3. Comparisons involving `True`, `False`, and `None` should be done by
 reference (using `is`, `is not`) and not by value(`==`, `!=`).
 
 Keep contributing!!
