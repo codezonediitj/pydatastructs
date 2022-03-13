@@ -18,6 +18,10 @@ class ArraySegmentTree(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
+    def update(self, index, value):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
     def __str__(self):
         recursion_stack = Stack(implementation='linked_list')
         recursion_stack.push(self._root)
@@ -49,6 +53,10 @@ class OneDimensionalArraySegmentTree(ArraySegmentTree):
         obj._backend = backend
         return obj
 
+    @property
+    def is_ready(self):
+        return self._root is not None
+
     def build(self):
         recursion_stack = Stack(implementation='linked_list')
         node = TreeNode((0, len(self._array) - 1), None, backend=self._backend)
@@ -78,3 +86,36 @@ class OneDimensionalArraySegmentTree(ArraySegmentTree):
                     right_node = TreeNode((mid + 1, end), None)
                     node.right = right_node
                     recursion_stack.push(right_node)
+
+    def update(self, index, value):
+        if not self.is_ready:
+            raise ValueError("{} tree is not built yet. ".format(self) +
+                             "Call .build method to prepare the segment tree.")
+
+        recursion_stack = Stack(implementation='linked_list')
+        recursion_stack.push((self._root, None))
+
+        while not recursion_stack.is_empty:
+            node, child = recursion_stack.peek.key
+            start, end = node.key
+            if start == end:
+                self._array[index] = value
+                node.data = value
+                recursion_stack.pop()
+                if not recursion_stack.is_empty:
+                    parent_node = recursion_stack.pop()
+                    recursion_stack.push((parent_node.key[0], node))
+                continue
+
+            if child is not None:
+                node.data = self._func((node.left.data, node.right.data))
+                recursion_stack.pop()
+                if not recursion_stack.is_empty:
+                    parent_node = recursion_stack.pop()
+                    recursion_stack.push((parent_node.key[0], node))
+            else:
+                mid = (start + end) // 2
+                if start <= index and index <= mid:
+                    recursion_stack.push((node.left, None))
+                else:
+                    recursion_stack.push((node.right, None))
