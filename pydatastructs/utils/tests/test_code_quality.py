@@ -172,7 +172,7 @@ def _apis():
     pyds.AdjacencyMatrixGraphNode, pyds.GraphEdge, pyds.Set, pyds.BinaryIndexedTree,
     pyds.CartesianTree, pyds.CartesianTreeNode, pyds.Treap, pyds.RedBlackTreeNode, pyds.RedBlackTree,
     pyds.Trie, pyds.TrieNode, pyds.SkipList, pyds.RangeQueryStatic, pyds.SparseTable,
-    pyds.ArraySegmentTree,
+    pyds.miscellaneous_data_structures.segment_tree.OneDimensionalArraySegmentTree,
     pyds.bubble_sort, pyds.linear_search, pyds.binary_search, pyds.jump_search,
     pyds.selection_sort, pyds.insertion_sort]
 

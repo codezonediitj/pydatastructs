@@ -57,6 +57,11 @@ class OneDimensionalArraySegmentTree(ArraySegmentTree):
         obj._backend = backend
         return obj
 
+    @classmethod
+    def methods(self):
+        return ['__new__', 'build', 'update',
+                'query']
+
     @property
     def is_ready(self):
         return self._root is not None
