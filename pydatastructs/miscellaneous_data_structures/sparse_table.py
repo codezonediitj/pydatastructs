@@ -58,6 +58,7 @@ class SparseTable(object):
         raise_if_backend_is_not_python(
             cls, kwargs.get('backend', Backend.PYTHON))
 
+        # TODO: If possible remove the following check.
         if len(array) == 0:
             raise ValueError("Input %s array is empty."%(array))
 

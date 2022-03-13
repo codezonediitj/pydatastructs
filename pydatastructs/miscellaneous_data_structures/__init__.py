@@ -34,6 +34,11 @@ from .sparse_table import (
 )
 __all__.extend(sparse_table.__all__)
 
+from .segment_tree import (
+    ArraySegmentTree,
+)
+__all__.extend(segment_tree.__all__)
+
 from .algorithms import (
     RangeQueryStatic
 )

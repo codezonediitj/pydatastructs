@@ -1,212 +1,80 @@
-__all__ = [
-    'SegmentTree'
-]
+from .stack import Stack
+from pydatastructs.utils.misc_util import (TreeNode,
+    Backend, raise_if_backend_is_not_python)
 
-class SegmentTree:
-    """
-    Represents the Segment Tree
+__all__ = ['ArraySegmentTree']
 
-    Parameters
-    ==========
+class ArraySegmentTree(object):
+    def __new__(cls, array, func, **kwargs):
 
-    inp_list: Initial list of values to build the tree.
+        dimensions = kwargs.pop("dimensions", None)
+        if dimensions is None:
+            return OneDimensionalArraySegmentTree(array, func, **kwargs)
+        else:
+            raise NotImplementedError("ArraySegmentTree do not support "
+                                      "{}-dimensional arrays as of now.".format(dimensions))
 
-    Examples
-    ========
+    def build(self):
+        raise NotImplementedError(
+            "This is an abstract method.")
 
-    >>> from segment_tree import SegmentTree
-    
-    >>> t = SegmentTree([3, 4, 8, 10, 1])
-    >>> t.tree
-    [0, 26, 25, 1, 7, 18, 1, 0, 3, 4, 8, 10, 1, 0, 0, 0]
-    >>> t.lazy
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    >>> n = t.get_list_len()
-    
-    >>> t.query(1, 0, n - 1, 2, 4)
-    19
-    >>> t.point_update(3, 29)
-    >>> t.tree
-    [0, 45, 44, 1, 7, 37, 1, 0, 3, 4, 8, 29, 1, 0, 0, 0]
-    >>> t.range_update(1, 0, n - 1, 0, 3, -4)
-    >>> t.tree
-    [0, 29, 28, 1, 7, 37, 1, 0, 3, 4, 8, 29, 1, 0, 0, 0]
-    >>> t.lazy
-    [0, 0, 0, 0, -4, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    >>> t.query(1, 0, n - 1, 1, 3)
-    29
-
-    Note
-    ====
-
-    The tree can be modified accordingly to get the [sum, max, min, gcd, etc.]
-    or any other compatible function or query type.
-
-    References
-    ==========
-
-    https://cp-algorithms.com/data_structures/segment_tree.html
-    """
-    def __init__(self, inp_list):
-
-        def get_len(size):
-            """
-            Returns the new list size (the closest power of 2).
-
-            Parameters
-            ==========
-
-            size: Size of the initial list.
-            """
-            if size and size & (size - 1) == 0:
-
-                return size
+    def __str__(self):
+        recursion_stack = Stack(implementation='linked_list')
+        recursion_stack.push(self._root)
+        to_be_printed = []
+        while not recursion_stack.is_empty:
+            node = recursion_stack.pop().key
+            if node is not None:
+                to_be_printed.append(str((node.key, node.data)))
             else:
+                to_be_printed.append('')
+            if node is not None:
+                recursion_stack.push(node.right)
+                recursion_stack.push(node.left)
+        return str(to_be_printed)
 
-                bit_len = len(bin(size)) - 2
-                return 1 << bit_len
 
-        self.tree_size = 2 * get_len(len(inp_list))
+class OneDimensionalArraySegmentTree(ArraySegmentTree):
 
-        self.tree = [0 for _ in range(self.tree_size)]
-        self.lazy = [0 for _ in range(self.tree_size)]
+    __slots__ = ["_func", "_array", "_root", "_backend"]
 
-        def build(init_list):
-            """
-            Builds the tree using the initial list.
+    def __new__(cls, array, func, **kwargs):
+        backend = kwargs.get('backend', Backend.PYTHON)
+        raise_if_backend_is_not_python(cls, backend)
 
-            Parameters
-            ==========
+        obj = object.__new__(cls)
+        obj._func = func
+        obj._array = array
+        obj._root = None
+        obj._backend = backend
+        return obj
 
-            init_list: Initial list passed in the object declaration.
-            """
-            list_size = len(init_list)
+    def build(self):
+        recursion_stack = Stack(implementation='linked_list')
+        node = TreeNode((0, len(self._array) - 1), None, backend=self._backend)
+        node.is_root = True
+        self._root = node
+        recursion_stack.push(node)
 
-            for i in range(list_size):
+        while not recursion_stack.is_empty:
+            node = recursion_stack.peek.key
+            start, end = node.key
+            if start == end:
+                node.data = self._array[start]
+                recursion_stack.pop()
+                continue
 
-                self.tree[self.tree_size // 2 + i] = init_list[i]
-
-            for i in range(list_size, self.tree_size // 2):
-
-                self.tree[self.tree_size // 2 + i] = 0
-
-            for i in range(self.tree_size // 2 - 1, 0, -1):
-
-                self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
-
-            self.root = self.tree[1]
-
-        build(inp_list)
-
-    def query(self, node, tree_left, tree_right, left, right):
-        """
-        Returns the query value for the range [L, R].
-
-        Parameters
-        ==========
-
-        node: Root Node (Initial call : 1).
-        tree_left: Left index of the node (Initial call : 0).
-        tree_right: Right index of the node (Initial call : [object].get_list_len() - 1).
-        left: Query index left.
-        right: Query index right.
-        """
-
-        if self.lazy[node]:
-
-            self.tree[node] += self.lazy[node] * (tree_right - tree_left + 1)
-
-            if tree_left != tree_right:
-
-                self.lazy[2 * node] += self.lazy[node]
-                self.lazy[2 * node + 1] += self.lazy[node]
-
-            self.lazy[node] = 0
-
-        if tree_left >= left and tree_right <= right:
-
-            return self.tree[node]
-
-        elif tree_left > right or tree_right < left:
-
-            return 0
-
-        else:
-
-            mid = (tree_left + tree_right) // 2
-
-            return \
-                self.query(2 * node, tree_left, mid, left, right) + \
-                self.query(2 * node + 1, mid + 1, tree_right, left, right)
-
-    def range_update(self, node, tree_left, tree_right, left, right, new_val):
-        """
-        Adds the new value to the range [L, R].
-
-        Parameters
-        ==========
-
-        node: Node (Initial call : 1 {Root Node}).
-        tree_left: Left index of the node (Initial call : 0).
-        tree_right: Right index of the node (Initial call : [object].get_list_len() - 1).
-        left: Query index left.
-        right: Query Range right.
-        new_val: New Value to be added.
-        """
-        if self.lazy[node]:
-
-            self.tree[node] += self.lazy[node] * (tree_right - tree_left + 1)
-
-            if tree_left != tree_right:
-
-                self.lazy[2 * node] += self.lazy[node]
-                self.lazy[2 * node + 1] += self.lazy[node]
-
-            self.lazy[node] = 0
-
-        if tree_left >= left and tree_right <= right:
-
-            self.tree[node] += new_val * (tree_right - tree_left + 1)
-
-            if tree_left != tree_right:
-
-                self.lazy[2 * node] += new_val
-                self.lazy[2 * node + 1] += new_val
-
-        elif tree_left > right or tree_right < left:
-
-            return
-        else:
-
-            mid = (tree_left + tree_right) // 2
-
-            self.range_update(2 * node, tree_left, mid, left, right, new_val)
-            self.range_update(2 * node + 1, mid + 1, tree_right, left, right, new_val)
-
-            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
-
-    def point_update(self, pos, new_val):
-        """
-        Updates the specified position in the tree with the new value.
-
-        Parameters
-        ==========
-
-        pos: Position to be updated.
-        new_val: The new value.
-        """
-        self.tree[self.tree_size // 2 + pos] = new_val
-
-        node = (self.tree_size // 2 + pos) // 2
-
-        while node >= 1:
-
-            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
-            node //= 2
-
-    def get_list_len(self):
-        """
-        Returns the new list size as modified in the get_len(size) function.
-        """
-        return self.tree_size // 2
-
+            if (node.left is not None and
+                node.right is not None):
+                recursion_stack.pop()
+                node.data = self._func((node.left.data, node.right.data))
+            else:
+                mid = (start + end) // 2
+                if node.left is None:
+                    left_node = TreeNode((start, mid), None)
+                    node.left = left_node
+                    recursion_stack.push(left_node)
+                if node.right is None:
+                    right_node = TreeNode((mid + 1, end), None)
+                    node.right = right_node
+                    recursion_stack.push(right_node)
