@@ -22,6 +22,10 @@ class ArraySegmentTree(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
+    def query(self, start, end):
+        raise NotImplementedError(
+            "This is an abstract method.")
+
     def __str__(self):
         recursion_stack = Stack(implementation='linked_list')
         recursion_stack.push(self._root)
@@ -119,3 +123,19 @@ class OneDimensionalArraySegmentTree(ArraySegmentTree):
                     recursion_stack.push((node.left, None))
                 else:
                     recursion_stack.push((node.right, None))
+
+    def _query(self, node, start, end, l, r):
+        if r < start or end < l:
+            return None
+
+        if l <= start and end <= r:
+            return node.data
+
+        mid = (start + end) // 2
+        left_result = self._query(node.left, start, mid, l, r)
+        right_result = self._query(node.right, mid + 1, end, l, r)
+        return self._func((left_result, right_result))
+
+    def query(self, start, end):
+        return self._query(self._root, 0, len(self._array) - 1,
+                           start, end)
