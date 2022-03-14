@@ -1733,3 +1733,31 @@ def jump_search(array, value, **kwargs):
         prev += 1
 
     return None
+    
+def stair_case_search(search_list, val):
+    """
+    Implements Stair_Case Search Algorithm
+
+    Parameters
+    ==========
+    search_list: 2-D List.
+    val: Search Value.
+
+    Returns
+    =======
+
+    output: int
+        The index of the search element.
+
+    """
+    n, m = len(search_list), len(search_list)
+
+    for i in range(n):
+
+        for j in range(m):
+
+            if search_list[i][j] == val:
+
+                return [i, j]
+
+    return False
