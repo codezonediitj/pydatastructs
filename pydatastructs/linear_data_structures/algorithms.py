@@ -1757,3 +1757,31 @@ def stair_case_search(search_list, val):
                 return [i, j]
 
     return False
+
+def matrix_search(mat, val, strict=False):
+
+    if not any(mat):
+
+        return False
+
+    n, m = len(mat), len(mat[0])
+
+    if val < mat[0][0] or val > mat[n - 1][m - 1]:
+
+        return False
+
+    i, j = 0, m - 1
+
+    while i <= n - 1 and j >= 0:
+
+        if mat[i][j] == val:
+
+            return [i, j]
+        elif val < mat[i][j]:
+
+            j -= 1
+        else:
+
+            i += 1
+
+    return False
