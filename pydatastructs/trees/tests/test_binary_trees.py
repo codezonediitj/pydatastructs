@@ -725,20 +725,15 @@ def test_BinaryIndexedTree2D():
                     assert sumRect(sample , l , k , i , j ) == bit2d.get_area(i, j , l ,k ) , message
 
 
-
-
 def test_BinaryIndexedTreeNd():
     n = random.randint(2, 3)
     m = random.randint(2, 3)
-    k = random.randint(2, 3)
+
     arr =[]
     for i in range(n):
         level1 = []
         for j in range(m):
-            level2 = []
-            for l in range(k):
-                level2.append(random.randint(5 ,12))
-            level1.append(level2)
+                level1.append(random.randint(5 ,12))
         arr.append(level1)
     bits = BinaryIndexedTreeNd(arr)
-
+    

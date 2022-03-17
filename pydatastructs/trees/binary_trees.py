@@ -1862,6 +1862,9 @@ class BinaryIndexedTree2D(object):
 
 
 class BinaryIndexedTreeNd(object):
+    """
+    testing
+    """
     __slots__ = ['tree' , 'array' , 'limits' , 'backtrack_ind']
 
     def __new__(cls, array, **kwargs):
@@ -1872,77 +1875,102 @@ class BinaryIndexedTreeNd(object):
         while type(current_dimension)==list or type(current_dimension)==tuple :
             obj.limits.append(len(current_dimension))
             current_dimension = current_dimension[0]
-        obj.array =[]
-        obj.array = obj.fillNdArray(0)
-        obj.tree = obj._fillNdArray(0)
         obj.backtrack_ind =[]
-        obj.init_sum()
 
+        obj.array =[]
+        obj.array = obj._fillNdArray(0 , 0 , array)
+        obj.tree = obj._fillNdArray(0 , 0, None)
+        obj.init_sum()
+        return obj
     @classmethod
     def methods(cls):
-        return ['add','get_sum']
+        return ['add','get_sum' ]
 
-    def init_sum(self ,  ind =0 ):
+
+
+    def init_sum(self ,  ind =0 , curPosition = []):
         if ind == len(self.limits):
-            self.add(tuple(self.backtrack_ind) , self._get_element(tuple(list) ,self.array))
+            self.add(tuple(curPosition) , self._get_element(tuple(curPosition) ,self.array))
         else :
-            for i in range(len(self.limits[ind])):
-                self.backtrack_ind.append(i)
-                self.init_sum(ind+1 )
-                self.backtrack_ind.pop()
+            for i in range(self.limits[ind]):
+                self.init_sum(ind+1 , curPosition + [i])
 
 
-    def _fillNdArray(self , number:int , ind:int =0 )->list:
+
+    def _fillNdArray(self ,ind:int ,number:int  , array:list , curPosition = [] )->list:
         level = []
-        for i in range(self.limits[ind]):
-            if ind+1 < len(self.limits):
-                level.append(self.fillNdArray(number , ind+1))
-            else :
-                level.append(number)
+        if ind == len(self.limits):
+            level = number
+            if array != None :
+                level = self._get_element(tuple(curPosition) , array)
+        else :
+            for i in range(self.limits[ind]):
+                level.append(self._fillNdArray(ind+1 , number , array , curPosition +[i]))
+
         return level
+
+
 
     def _get_element(self , position:tuple , arr:list) :
         ind = 0
         cur = arr
         while ind < len(self.limits):
-            cur = arr[position[ind]]
+            cur = cur[position[ind]]
             ind+=1
         return cur
 
+
+
     def _add_to_element(self , val:int,position:tuple , arr:list):
         ind =0
-        cur = arr
-        while ind < len(self.limits):
-            cur = arr[position[ind]]
+        cur = self.tree
+        while ind +1< len(self.limits):
+            cur = cur[position[ind]]
             ind+=1
-        cur += val
+        cur[position[ind]] = cur[position[ind]] +val
 
-    def add(self , position:tuple , val:int , ind:int =0 ):
+
+    def add(self , position:tuple , val:int , ind:int =0 , curPosition = []):
         if ind == len(self.limits):
-            self._add_to_element(val, tuple(self.backtrack_ind), self.tree)
+            newPosition =  [i-1  for i in curPosition]
+            self._add_to_element(val, tuple(newPosition), self.tree)
             return
 
-        i = position[ind] =1
-        while i < self.limits[ind] :
+        i = position[ind] +1
+        while i <= self.limits[ind] :
+            self.add(position , val , ind+1 , curPosition +[i])
+            i += i &(-i)
 
-            self.backtrack_ind.append(i)
-            self.add(position , val , ind+1 )
-            self.backtrack_ind.pop()
-
-            i -= i &(-i)
-
-    def _get_sum_to_origin(self , position:tuple , ind :int ):
+    def _get_sum_to_origin(self , position:tuple , ind  =0 , curPosition = []  ):
         res =0
         if ind == len(self.limits):
-            res = self.get_sum(tuple(self.backtrack_ind))
+            newPosition = [(i-1)  for i in curPosition]
+            res = self._get_element(tuple(newPosition) ,self.tree)
         else :
             i = position[ind]+1
             while i>0 :
-                self.backtrack_ind.append(i)
-                res += self.get_sum(position , ind+1 )
-                self.backtrack_ind.pop()
+                res += self._get_sum_to_origin(position , ind+1 , curPosition+ [i])
                 i-= i& (-i)
         return res
 
-    def get_sum(self):
-        pass 
+    def _get_sum(self , start:tuple , end:tuple ,ind:int , numberOfElements:int , resPoint :list , sign:int ):
+        if ind == len(start) :
+            if numberOfElements != 0 :
+                    return 0
+            res = self._get_sum_to_origin(tuple(resPoint))
+            print(resPoint)
+            return sign *(res)
+        else :
+            res =0
+            if numberOfElements -1 >=0 :
+                res += self._get_sum(start ,end , ind+1 , numberOfElements -1 , resPoint +[end[ind] -1 ], sign )
+            res += self._get_sum(start ,end , ind+1 , numberOfElements , resPoint+[start[ind] ] ,sign )
+            return  res
+    def get_sum(self , start:tuple , end:tuple ):
+        res =0
+        for i in range( 1 + len(self.limits)):
+            res += self._get_sum(start , end , 0 , i , [] , (-1)**i )
+        return  res
+
+
+
