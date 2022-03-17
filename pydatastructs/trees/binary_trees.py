@@ -1863,9 +1863,30 @@ class BinaryIndexedTree2D(object):
 
 class BinaryIndexedTreeNd(object):
     """
-    testing
+    ND Fenwick tree aka Binary Indexed Tree (BIT)
+
+    Parameters
+    ============
+    array :list
+        array of any dimintions.
+     backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+    Examples
+    =============
+    >>> from pydatastructs import BinaryIndexedTreeNd
+    >>> bit = BinaryIndexedTree([[1, 2, 3] ,\
+                                [2 , 3 ,4 ] ,\
+                                 [8 ,6 ,7 ]])
+    >>> bit.get_sum((1, 1) , (0 ,0) )
+    8
+    >>> bit.add((1 ,1) , 3)
+    >>> bit.get_sum((1, 1) , (0 , 0) )
+    11
+
     """
-    __slots__ = ['tree' , 'array' , 'limits' , 'backtrack_ind']
+    __slots__ = ['tree' , 'array' , 'limits' ]
 
     def __new__(cls, array, **kwargs):
         raise_if_backend_is_not_python(cls , kwargs.get('backend' , Backend.PYTHON))
@@ -1875,7 +1896,6 @@ class BinaryIndexedTreeNd(object):
         while type(current_dimension)==list or type(current_dimension)==tuple :
             obj.limits.append(len(current_dimension))
             current_dimension = current_dimension[0]
-        obj.backtrack_ind =[]
 
         obj.array =[]
         obj.array = obj._fillNdArray(0 , 0 , array)
@@ -1931,6 +1951,21 @@ class BinaryIndexedTreeNd(object):
 
 
     def add(self , position:tuple , val:int , ind:int =0 , curPosition = []):
+        """
+
+        Parameters
+        ==========
+        position : tuple
+            position of value you want to add to.
+
+        val :int
+            value you want to add.
+
+        Returns
+        ===========
+        None
+
+        """
         if ind == len(self.limits):
             newPosition =  [i-1  for i in curPosition]
             self._add_to_element(val, tuple(newPosition), self.tree)
@@ -1958,7 +1993,6 @@ class BinaryIndexedTreeNd(object):
             if numberOfElements != 0 :
                     return 0
             res = self._get_sum_to_origin(tuple(resPoint))
-            print(resPoint)
             return sign *(res)
         else :
             res =0
@@ -1967,6 +2001,20 @@ class BinaryIndexedTreeNd(object):
             res += self._get_sum(start ,end , ind+1 , numberOfElements , resPoint+[start[ind] ] ,sign )
             return  res
     def get_sum(self , start:tuple , end:tuple ):
+        """
+
+        Parameters
+        ----------
+        start:tuple
+            point near orignal point.
+        end : tuple
+            point far from orignal point.
+        Returns
+        -------
+        sum :int
+            sum of element between two points.
+
+        """
         res =0
         for i in range( 1 + len(self.limits)):
             res += self._get_sum(start , end , 0 , i , [] , (-1)**i )

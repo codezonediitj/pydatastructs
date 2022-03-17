@@ -726,14 +726,66 @@ def test_BinaryIndexedTree2D():
 
 
 def test_BinaryIndexedTreeNd():
-    n = random.randint(2, 3)
-    m = random.randint(2, 3)
+    size = random.randint(1 , 4 )
+    limits = []
+    for i in range(size):
+        limits.append(random.randint(2 ,4 ))
 
-    arr =[]
-    for i in range(n):
-        level1 = []
-        for j in range(m):
-                level1.append(random.randint(5 ,12))
-        arr.append(level1)
+    def makeArr(ind = 0 ):
+        if ind   == size :
+            return random.randint(0 ,12)
+        else :
+            level = []
+            for i in range(limits[ind]):
+                level.append(makeArr(ind +1 ))
+            return level
+
+    arr =makeArr()
     bits = BinaryIndexedTreeNd(arr)
-    
+    assert arr == bits.array
+
+    def getItem(ind , postion:tuple ):
+        ind = 0
+        cur = arr
+        while ind  <= len(postion) -1 :
+            cur = cur[postion[ind]]
+            ind+=1
+        return cur
+
+    def sum(ind , start:tuple , end:tuple ,position =[]):
+        if ind == size:
+            return getItem(0 , tuple(position))
+        res =0
+        for i in range(end[ind] , start[ind] +1 ):
+            res += sum(ind +1 , start , end , position +[i])
+        return res
+
+    def traverse(ind = 0 , position = []):
+        if ind == size :
+            f = lambda x : random.randint(0 , x )
+            end = [f(position[i]) for i in range(size)]
+            message = f"{tuple(position)} and {tuple(end)}"
+            assert bits.get_sum(tuple(position) , tuple(end) ) == sum(0 , tuple(position) , tuple(end)) , message
+            assert bits.get_sum(tuple(position) , tuple(position)) == getItem(0 , tuple(position))
+        else:
+            for i in range(limits[ind]):
+                traverse(ind+1 , position + [i])
+    traverse()
+    def add(ind , position:tuple , val):
+        ind =0
+        cur = arr
+        while ind +1 < size   :
+            cur = cur[position[ind]]
+            ind +=1
+        cur[position[ind]] += val
+
+    for _ in range(0 ,10 ):
+        position =[]
+        for i in range(size):
+            position.append(random.randint(0,  limits[i]-1 ))
+        bits.add(position , 10 )
+        add(0 ,position , 10)
+
+    traverse()
+
+
