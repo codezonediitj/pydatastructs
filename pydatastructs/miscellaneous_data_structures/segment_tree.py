@@ -5,6 +5,61 @@ from pydatastructs.utils.misc_util import (TreeNode,
 __all__ = ['ArraySegmentTree']
 
 class ArraySegmentTree(object):
+    """
+    Represents the segment tree data structure,
+    defined on arrays.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array to be used for filling the segment tree.
+    func: callable
+        The function to be used for filling the segment tree.
+        It should accept only one tuple as an argument. The
+        size of the tuple will be either 1 or 2 and any one
+        of the elements can be `None`. You can treat `None` in
+        whatever way you want. For example, in case of minimum
+        values, `None` can be treated as infinity. We provide
+        the following which can be used as an argument value for this
+        parameter,
+
+        `minimum` - For range minimum queries.
+
+        `greatest_common_divisor` - For queries finding greatest
+                                    common divisor of a range.
+
+        `summation` - For range sum queries.
+    dimensions: int
+        The number of dimensions of the array to be used
+        for the segment tree.
+        Optional, by default 1.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import ArraySegmentTree, minimum
+    >>> from pydatastructs import OneDimensionalArray
+    >>> arr = OneDimensionalArray(int, [1, 2, 3, 4, 5])
+    >>> s_t = ArraySegmentTree(arr, minimum)
+    >>> s_t.build()
+    >>> s_t.query(0, 1)
+    1
+    >>> s_t.query(1, 3)
+    2
+    >>> s_t.update(2, -1)
+    >>> s_t.query(1, 3)
+    -1
+
+    References
+    ==========
+
+    .. [1] https://cp-algorithms.com/data_structures/segment_tree.html
+    """
     def __new__(cls, array, func, **kwargs):
 
         dimensions = kwargs.pop("dimensions", 1)
@@ -15,14 +70,26 @@ class ArraySegmentTree(object):
                                       "{}-dimensional arrays as of now.".format(dimensions))
 
     def build(self):
+        """
+        Generates segment tree nodes when called.
+        Nothing happens if nodes are already generated.
+        """
         raise NotImplementedError(
             "This is an abstract method.")
 
     def update(self, index, value):
+        """
+        Updates the value at given index.
+        """
         raise NotImplementedError(
             "This is an abstract method.")
 
     def query(self, start, end):
+        """
+        Queries [start, end] range according
+        to the function provided while constructing
+        `ArraySegmentTree` object.
+        """
         raise NotImplementedError(
             "This is an abstract method.")
 
@@ -67,6 +134,9 @@ class OneDimensionalArraySegmentTree(ArraySegmentTree):
         return self._root is not None
 
     def build(self):
+        if self.is_ready:
+            return
+
         recursion_stack = Stack(implementation='linked_list')
         node = TreeNode((0, len(self._array) - 1), None, backend=self._backend)
         node.is_root = True

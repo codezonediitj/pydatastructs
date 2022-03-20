@@ -228,7 +228,7 @@ class RangeQueryDynamic:
     >>> RMQ.query(0, 2)
     1
     >>> RMQ.update(2, 0)
-    >>> RMQ.update(0, 2)
+    >>> RMQ.query(0, 2)
     0
 
     Note
