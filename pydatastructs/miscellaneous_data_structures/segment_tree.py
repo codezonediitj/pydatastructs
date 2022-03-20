@@ -54,6 +54,11 @@ class ArraySegmentTree(object):
     >>> s_t.update(2, -1)
     >>> s_t.query(1, 3)
     -1
+    >>> arr = OneDimensionalArray(int, [1, 2])
+    >>> s_t = ArraySegmentTree(arr, minimum)
+    >>> s_t.build()
+    >>> str(s_t)
+    "['((0, 1), 1)', '((0, 0), 1)', '', '', '((1, 1), 2)', '', '']"
 
     References
     ==========
