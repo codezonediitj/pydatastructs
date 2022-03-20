@@ -40,6 +40,7 @@ from .segment_tree import (
 __all__.extend(segment_tree.__all__)
 
 from .algorithms import (
-    RangeQueryStatic
+    RangeQueryStatic,
+    RangeQueryDynamic
 )
 __all__.extend(algorithms.__all__)

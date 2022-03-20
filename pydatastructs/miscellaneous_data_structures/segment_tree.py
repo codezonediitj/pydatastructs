@@ -7,8 +7,8 @@ __all__ = ['ArraySegmentTree']
 class ArraySegmentTree(object):
     def __new__(cls, array, func, **kwargs):
 
-        dimensions = kwargs.pop("dimensions", None)
-        if dimensions is None:
+        dimensions = kwargs.pop("dimensions", 1)
+        if dimensions == 1:
             return OneDimensionalArraySegmentTree(array, func, **kwargs)
         else:
             raise NotImplementedError("ArraySegmentTree do not support "
@@ -142,5 +142,9 @@ class OneDimensionalArraySegmentTree(ArraySegmentTree):
         return self._func((left_result, right_result))
 
     def query(self, start, end):
+        if not self.is_ready:
+            raise ValueError("{} tree is not built yet. ".format(self) +
+                             "Call .build method to prepare the segment tree.")
+
         return self._query(self._root, 0, len(self._array) - 1,
                            start, end)
