@@ -6,18 +6,18 @@ PyDataStructs
 About
 -----
 
-- **PyDataStructs** project aims to be a Python package for various data structures and algorithms (including their parallel implementations).
+- **PyDataStructs** project aims to be a Python package for various data structures and algorithms _(including their parallel implementations)._
 
 - We are also working on providing C++ backend via Python C-API for high performance use cases.
 
-Why PyDataStructs?
+Why PyDataStructs❓
 -------------------
 
 - **Single package for all your data structures and algorithms**
 
-- **Consistent and Clean Interface** - The APIs we have provided are consistent with each other, clean, and easy to use. We make sure of that before adding any new data structure or algorithm.
+- **Consistent and Clean Interface** - The APIs we have provided are consistent with each other, clean, and easy to use. We take care of that part before adding any new data structure or algorithm.
 
-- **Well Tested** - We thoroughly test our code before making any new addition to PyDataStructs. 99 percent lines of our code have already been tested by us.
+- **Well Tested** - We thoroughly test our code before making any new addition to PyDataStructs. 99% of the lines of our code have already been tested by us.
 
 Installation
 ------------
@@ -35,13 +35,13 @@ You can install the library by running the following command,
 python scripts/build/install.py
 ```
 
-For development purposes i.e., if you intend to be a contributor,
+For development purposes i.e. if you intend to contribute,
 
 ```python
 python scripts/build/develop.py
 ```
 
-Make sure you change your working directory to `pydatastructs` before executing any of the above commands. Also, your python version should be at least `3.8`.
+Make sure you change your working directory to `pydatastructs` before executing any of the above commands. Also, make sure your python version is at least `3.8` or newer.
 
 Testing
 -------
@@ -49,7 +49,8 @@ Testing
 For testing your patch locally follow the steps given below,
 
 1. Install [pytest-cov](https://pypi.org/project/pytest-cov/). Skip this step if you are already having the package.
-2. Run, `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`. Look for, `htmlcov/index.html` and open it in your browser, which will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
+
+2. Run `python3 -m pytest --doctest-modules --cov=./ --cov-report=html`, Look for `htmlcov/index.html` and open it in your browser, it will show the coverage report. Try to ensure that the coverage is not decreasing by more than 1% for your patch.
 
 For a good visualisation of the different data structures and algorithms, refer the following websites:
 
@@ -60,7 +61,7 @@ You can use the examples given in the following book as tests for your code:
 
 - [https://opendatastructures.org/ods-python.pdf](https://opendatastructures.org/ods-python.pdf)
 
-Why do we use Python?
+Why do we use Python❓
 ------------------
 
 - As we know Python is an interpreted language and hence executing programs in it is slower as compared to C++.
@@ -69,26 +70,26 @@ Why do we use Python?
 
 - However, keeping the need of the users in mind, we are also working on providing a C++ backend,  which will happen quickly as we would be required to just translate the tested code rather than writing it from scratch.
 
-How to contribute?
+How to contribute❓
 ------------------
 
-Follow the steps given below,
+Follow the steps given below:
 
-1. Fork, <https://github.com/codezonediitj/pydatastructs/>
-2. Execute, `git clone https://github.com/codezonediitj/pydatastructs/`
-3. Change your working directory to `../pydatastructs`.
-4. Execute, `git remote add origin_user https://github.com/<your-github-username>/pydatastructs/`
-5. Execute, `git checkout -b <your-new-branch-for-working>`.
-6. Make changes to the code.
-7. Add your name and email to the AUTHORS, if you wish to.
-8. Execute, `git add .`.
-9. Execute, `git commit -m "your-commit-message"`.
-10. Execute, `git push origin_user <your-current-branch>`.
-11. Make PR.
+1. Fork <https://github.com/codezonediitj/pydatastructs/>
+2. Execute `git clone https://github.com/codezonediitj/pydatastructs/`
+3. Change your working directory to `../pydatastructs`
+4. Execute `git remote add origin_user https://github.com/<your-github-username>/pydatastructs/`
+5. Execute `git checkout -b <your-new-branch-for-working>`
+6. Make changes to the code
+7. Add your name and email to the AUTHORS _(if you wish to)_
+8. Execute `git add .`
+9. Execute `git commit -m "your-commit-message"`
+10. Execute `git push origin_user <your-current-branch>`
+11. Make a PR _(pull request)_.
 
 That's it, 10 easy steps for your first contribution. For future contributions just follow steps 5 to 10. Make sure that before starting work, always checkout to master and pull the recent changes using the remote `origin` and then start following steps 5 to 10.
 
-See you soon with your first PR.
+See you soon with your first PR❗
 
 It is recommended to go through the following links before you start working.
 
@@ -117,8 +118,8 @@ The following parameters are to be followed to pass the code quality tests for y
 3. Comparisons involving `True`, `False`, and `None` should be done by
 reference (using `is`, `is not`) and not by value(`==`, `!=`).
 
-Keep contributing!!
+Keep contributing‼️
 
-Thanks to these wonderful people ✨✨:
+Thanks to these wonderful people✨✨✨:
 
 ![https://github.com/codezonediitj/pydatastructs/graphs/contributors](https://contrib.rocks/image?repo=codezonediitj/pydatastructs)
