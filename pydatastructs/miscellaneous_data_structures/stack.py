@@ -193,3 +193,31 @@ class LinkedListStack(Stack):
             elements.append(str(current_node))
             current_node = current_node.next
         return str(elements[::-1])
+
+
+class MonotonicStack(Stack):
+    __slots__ = ["stack"]
+    def __new__(cls, *args, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
+        obj = object.__new__(cls)
+        obj.stack = ArrayStack()
+        obj.stack.push((1e9 , 1e9  ))
+
+        return obj
+
+    def push(self , element):
+        self.stack.push((element , max(element , self.stack.peek[1] )))
+
+    def pop(self):
+        self.stack.pop()
+
+    def __sizeof__(self):
+        return self.stack.__sizeof__()
+
+    def max(self):
+        return self.stack.peek[0]
+
+    def is_empty(self):
+        return self.stack.__sizeof__() ==1
+
