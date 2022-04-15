@@ -158,3 +158,29 @@ def _rabin_karp(text, query):
             positions.append(i)
 
     return positions
+
+def _boyer_moore(text, query):
+    t = len(text)
+    q = len(query)
+
+    heur = OneDimensionalArray(int, 256)
+    for i in range(256):
+        heur[i]=-1
+    for i in range(q):
+        heur[ord(query[i])] = i
+    
+    sft = 0
+    bm = DynamicOneDimensionalArray(int,0)
+    while sft <= t-q:
+        j = q-1
+
+        while j>=0 and query[j] == text[sft+j]:
+            j -= 1
+        if j<0:
+            
+            bm.append(sft)
+            sft += (t-heur[ord(text[sft+t])] if sft+t<q else 1)
+        
+        else:
+            sft += max(1,j-heur[ord(text[sft+j])])
+    return bm  
