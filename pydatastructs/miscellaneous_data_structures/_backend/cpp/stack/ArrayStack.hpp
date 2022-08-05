@@ -46,11 +46,11 @@ static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject 
             Py_DECREF(self);
             return NULL;
         }
-        items = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, extended_args, kwds);
+        items = _PyObject_New(&DynamicOneDimensionalArrayType);
     }
     else {
         // If the user provides dtype and initial values list, let the array initializer handle the checks.
-        items = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, args, kwds);
+        items = PyObject_CallObject(reinterpret_cast<PyObject*>(&DynamicOneDimensionalArrayType), args);
     }
     if (!items) {
         Py_DECREF(self);
