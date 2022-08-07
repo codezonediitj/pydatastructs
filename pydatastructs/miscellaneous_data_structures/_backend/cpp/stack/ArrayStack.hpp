@@ -21,13 +21,10 @@ static void ArrayStack_dealloc(ArrayStack *self) {
 static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject *kwds) {
     // args can be just the data type or the data type and a list of initial values
 
-    ArrayStack *self;
-    self = reinterpret_cast<ArrayStack*>(type->tp_alloc(type, 0));
-
+    ArrayStack *self = reinterpret_cast<ArrayStack*>(type->tp_alloc(type, 0));
     size_t len_args = PyObject_Length(args);
 
     if (len_args != 1 && len_args != 2) {
-        Py_DECREF(self);
         PyErr_SetString(PyExc_ValueError,
                         "Too few arguments to create the stack,"
                         " pass either only the dtype, or"
@@ -35,32 +32,28 @@ static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject 
         return NULL;
     }
 
-    PyObject* items;
+    PyObject* items = NULL;
+    PyObject* doda_kwds = Py_BuildValue("{}");
     if (len_args == 1) {
         // If the only argument is the dtype, redefine the args as a tuple (dtype, 0)
         // where 0 is the initial array size
         PyObject* dtype = PyObject_GetItem(args, PyZero);
         PyObject* extended_args = PyTuple_Pack(2, dtype, PyLong_FromLong(0));
 
-        if (extended_args == NULL) {
-            Py_DECREF(self);
-            return NULL;
-        }
-        items = _PyObject_New(&DynamicOneDimensionalArrayType);
-    }
-    else {
+        items = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, args, doda_kwds);
+    } else {
         // If the user provides dtype and initial values list, let the array initializer handle the checks.
-        items = PyObject_CallObject(reinterpret_cast<PyObject*>(&DynamicOneDimensionalArrayType), args);
+
+        PyObject* doda_args = PyTuple_Pack(2, PyObject_GetItem(args, PyOne), PyObject_GetItem(args, PyZero));
+        items = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, doda_args, doda_kwds);
     }
+
     if (!items) {
-        Py_DECREF(self);
         return NULL;
     }
 
     DynamicOneDimensionalArray* tmp = self->_items;
-    Py_INCREF(items);
     self->_items = reinterpret_cast<DynamicOneDimensionalArray*>(items);
-    Py_XDECREF(tmp);
 
     return reinterpret_cast<PyObject*>(self);
 }

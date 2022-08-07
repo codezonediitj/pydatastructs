@@ -8,6 +8,7 @@
 #include "DynamicArray.hpp"
 #include "OneDimensionalArray.hpp"
 #include "../../../../utils/_backend/cpp/utils.hpp"
+#include <iostream>
 
 typedef struct {
     PyObject_HEAD
