@@ -19,32 +19,34 @@ static void ArrayStack_dealloc(ArrayStack *self) {
 }
 
 static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-    // args can be just the data type or a list of initial values and the data type
-
     ArrayStack *self = reinterpret_cast<ArrayStack*>(type->tp_alloc(type, 0));
-    size_t len_args = PyObject_Length(args);
 
-    if (len_args != 1 && len_args != 2) {
-        PyErr_SetString(PyExc_ValueError,
-                        "Too few arguments to create the stack,"
-                        " pass either only the dtype, or"
-                        " a list of initial values and the dtype");
+    static char *kwlist[] = {"items", "dtype", NULL};
+    PyObject *initial_values = Py_None, *dtype = Py_None;
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OO", kwlist, &initial_values, &dtype)) {
+        PyErr_SetString(PyExc_ValueError, "Error creating ArrayStack");
+        return NULL;
+    }
+
+    if (initial_values != Py_None && PyType_Check(initial_values)) {
+        PyErr_SetString(PyExc_TypeError, "`items` must be an instance of list or tuple, received a type instead\n"
+                                         "Did you mean to instantiate an ArrayStack with only the data type? "
+                                         "if so, send the type parameter as a named argument "
+                                         "for example: dtype=int");
         return NULL;
     }
 
     PyObject* items = NULL;
     PyObject* doda_kwds = Py_BuildValue("{}");
-    if (len_args == 1) {
+    if (initial_values == Py_None) {
         // If the only argument is the dtype, redefine the args as a tuple (dtype, 0)
         // where 0 is the initial array size
-        PyObject* dtype = PyObject_GetItem(args, PyZero);
         PyObject* extended_args = PyTuple_Pack(2, dtype, PyLong_FromLong(0));
 
         items = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, extended_args, doda_kwds);
     } else {
         // If the user provides dtype and initial values list, let the array initializer handle the checks.
-
-        PyObject* doda_args = PyTuple_Pack(2, PyObject_GetItem(args, PyOne), PyObject_GetItem(args, PyZero));
+        PyObject* doda_args = PyTuple_Pack(2, dtype, initial_values);
         items = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, doda_args, doda_kwds);
     }
 

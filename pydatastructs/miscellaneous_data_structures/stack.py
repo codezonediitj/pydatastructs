@@ -59,10 +59,7 @@ class Stack(object):
             items = kwargs.get('items', None)
             dtype = kwargs.get('dtype', int)
             if backend == Backend.CPP:
-                if items is None:
-                    return _stack.ArrayStack(dtype)
-                else:
-                    return _stack.ArrayStack(items, dtype)
+                return _stack.ArrayStack(items, dtype)
             else:
                 return ArrayStack(items, dtype)
         if implementation == 'linked_list':
