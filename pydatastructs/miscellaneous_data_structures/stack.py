@@ -1,4 +1,5 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
+from pydatastructs.miscellaneous_data_structures._backend.cpp import _stack
 from pydatastructs.utils.misc_util import (
     _check_type, NoneType, Backend,
     raise_if_backend_is_not_python)
@@ -53,18 +54,25 @@ class Stack(object):
     """
 
     def __new__(cls, implementation='array', **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+        backend = kwargs.get('backend', Backend.PYTHON)
         if implementation == 'array':
-            return ArrayStack(
-                kwargs.get('items', None),
-                kwargs.get('dtype', int))
+            items = kwargs.get('items', None)
+            dtype = kwargs.get('dtype', int)
+            if backend == Backend.CPP:
+                if items is None:
+                    return _stack.ArrayStack(dtype)
+                else:
+                    return _stack.ArrayStack(items, dtype)
+            else:
+                return ArrayStack(items, dtype)
         if implementation == 'linked_list':
+            raise_if_backend_is_not_python(cls, backend)
+
             return LinkedListStack(
-                kwargs.get('items',None)
+                kwargs.get('items', None)
             )
         raise NotImplementedError(
-                "%s hasn't been implemented yet."%(implementation))
+            "%s hasn't been implemented yet."%(implementation))
 
     @classmethod
     def methods(cls):
