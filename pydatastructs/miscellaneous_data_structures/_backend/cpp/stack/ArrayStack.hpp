@@ -19,7 +19,7 @@ static void ArrayStack_dealloc(ArrayStack *self) {
 }
 
 static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-    // args can be just the data type or the data type and a list of initial values
+    // args can be just the data type or a list of initial values and the data type
 
     ArrayStack *self = reinterpret_cast<ArrayStack*>(type->tp_alloc(type, 0));
     size_t len_args = PyObject_Length(args);
@@ -28,7 +28,7 @@ static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject 
         PyErr_SetString(PyExc_ValueError,
                         "Too few arguments to create the stack,"
                         " pass either only the dtype, or"
-                        " the dtype and a list of initial values");
+                        " a list of initial values and the dtype");
         return NULL;
     }
 
@@ -40,7 +40,7 @@ static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject 
         PyObject* dtype = PyObject_GetItem(args, PyZero);
         PyObject* extended_args = PyTuple_Pack(2, dtype, PyLong_FromLong(0));
 
-        items = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, args, doda_kwds);
+        items = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, extended_args, doda_kwds);
     } else {
         // If the user provides dtype and initial values list, let the array initializer handle the checks.
 
@@ -58,9 +58,26 @@ static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject 
     return reinterpret_cast<PyObject*>(self);
 }
 
+static PyObject* ArrayStack_push(ArrayStack *self, PyObject* args) {
+    size_t len_args = PyObject_Length(args);
+    if (len_args != 1) {
+        PyErr_SetString(PyExc_ValueError, "Expected one argument");
+        return NULL;
+    }
+
+    DynamicOneDimensionalArray_append(self->_items, args);
+
+    Py_RETURN_NONE;
+}
+
 static PyObject* ArrayStack__str__(ArrayStack* self){
     return DynamicOneDimensionalArray___str__(self->_items);
 }
+
+static struct PyMethodDef ArrayStack_PyMethodDef[] = {
+        {"push", (PyCFunction) ArrayStack_push, METH_VARARGS, NULL},
+        {NULL}
+};
 
 static PyTypeObject ArrayStackType = {
         /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "ArrayStack",
@@ -89,7 +106,7 @@ static PyTypeObject ArrayStackType = {
         /* tp_weaklistoffset */ 0,
         /* tp_iter */ 0,
         /* tp_iternext */ 0,
-        /* tp_methods */ 0,
+        /* tp_methods */ ArrayStack_PyMethodDef,
         /* tp_members */ 0,
         /* tp_getset */ 0,
         /* tp_base */ 0,
