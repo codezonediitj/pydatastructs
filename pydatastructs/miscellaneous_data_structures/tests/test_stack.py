@@ -1,7 +1,9 @@
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.miscellaneous_data_structures.stack import ArrayStack, LinkedListStack
+from pydatastructs.miscellaneous_data_structures._backend.cpp import _stack
 from pydatastructs.utils.raises_util import raises
-from pydatastructs.utils.misc_util import _check_type
+from pydatastructs.utils.misc_util import _check_type, Backend
+
 
 def test_Stack():
     s = Stack(implementation='array')
@@ -11,6 +13,11 @@ def test_Stack():
     s2 = Stack(implementation='linked_list')
     assert _check_type(s2, LinkedListStack) is True
     assert raises(NotImplementedError, lambda: Stack(implementation=''))
+
+    s3 = Stack(backend=Backend.CPP)
+    assert _check_type(s3, _stack.ArrayStack) is True
+    s4 = Stack(implementation="array", backend=Backend.CPP)
+    assert _check_type(s4, _stack.ArrayStack) is True
 
 def test_ArrayStack():
     s = Stack(implementation='array')
@@ -27,6 +34,22 @@ def test_ArrayStack():
     _s = Stack(items=[1, 2, 3])
     assert str(_s) == '[1, 2, 3]'
     assert len(_s) == 3
+
+    # Cpp test
+    s1 = Stack(implementation="array", backend=Backend.CPP)
+    s1.push(1)
+    s1.push(2)
+    s1.push(3)
+    assert s1.peek == 3
+    assert str(s1) == "['1', '2', '3']"
+    assert s1.pop() == 3
+    assert s1.pop() == 2
+    assert s1.pop() == 1
+    assert s1.is_empty is True
+    assert raises(IndexError, lambda : s1.pop())
+    _s1 = Stack(items=[1, 2, 3], backend=Backend.CPP)
+    assert str(_s1) == "['1', '2', '3']"
+    assert len(_s1) == 3
 
 def test_LinkedListStack():
     s = Stack(implementation='linked_list')
