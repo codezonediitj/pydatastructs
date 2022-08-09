@@ -58,6 +58,16 @@ static PyObject* ArrayStack__new__(PyTypeObject *type, PyObject *args, PyObject 
     return reinterpret_cast<PyObject*>(self);
 }
 
+static PyObject* ArrayStack_is_empty(ArrayStack *self) {
+    bool is_empty = self->_items->_last_pos_filled == -1;
+
+    if (is_empty) {
+        Py_RETURN_TRUE;
+    }
+
+    Py_RETURN_FALSE;
+}
+
 static PyObject* ArrayStack_push(ArrayStack *self, PyObject* args) {
     size_t len_args = PyObject_Length(args);
     if (len_args != 1) {
@@ -65,9 +75,40 @@ static PyObject* ArrayStack_push(ArrayStack *self, PyObject* args) {
         return NULL;
     }
 
+    if (PyObject_IsTrue(ArrayStack_is_empty(self))) {
+        self->_items->_one_dimensional_array->_dtype = reinterpret_cast<PyObject*>(
+            Py_TYPE(PyObject_GetItem(args, PyZero))
+        );
+    }
+
     DynamicOneDimensionalArray_append(self->_items, args);
 
     Py_RETURN_NONE;
+}
+
+static PyObject* ArrayStack_pop(ArrayStack *self) {
+    if (PyObject_IsTrue(ArrayStack_is_empty(self))) {
+        PyErr_SetString(PyExc_IndexError, "Stack is empty");
+        return NULL;
+    }
+
+    PyObject *top_element = DynamicOneDimensionalArray___getitem__(
+        self->_items, PyLong_FromLong(self->_items->_last_pos_filled)
+    );
+
+    PyObject* last_pos_arg = PyTuple_Pack(1, PyLong_FromLong(self->_items->_last_pos_filled));
+    DynamicOneDimensionalArray_delete(self->_items, last_pos_arg);
+    return top_element;
+}
+
+static PyObject* ArrayStack_peek(ArrayStack *self, void *closure) {
+    return DynamicOneDimensionalArray___getitem__(
+        self->_items, PyLong_FromLong(self->_items->_last_pos_filled)
+    );
+}
+
+static Py_ssize_t ArrayStack__len__(ArrayStack *self) {
+    return self->_items->_num;
 }
 
 static PyObject* ArrayStack__str__(ArrayStack* self){
@@ -75,8 +116,19 @@ static PyObject* ArrayStack__str__(ArrayStack* self){
 }
 
 static struct PyMethodDef ArrayStack_PyMethodDef[] = {
-        {"push", (PyCFunction) ArrayStack_push, METH_VARARGS, NULL},
-        {NULL}
+    {"push", (PyCFunction) ArrayStack_push, METH_VARARGS, NULL},
+    {"pop", (PyCFunction) ArrayStack_pop, METH_VARARGS, NULL},
+    {NULL}
+};
+
+static PyMappingMethods ArrayStack_PyMappingMethods = {
+    (lenfunc) ArrayStack__len__,
+};
+
+static PyGetSetDef ArrayStack_GetterSetters[] = {
+    {"peek", (getter) ArrayStack_peek, NULL, "peek top value", NULL},
+    {"is_empty", (getter) ArrayStack_is_empty, NULL, "check if the stack is empty", NULL},
+    {NULL}  /* Sentinel */
 };
 
 static PyTypeObject ArrayStackType = {
@@ -91,7 +143,7 @@ static PyTypeObject ArrayStackType = {
         /* tp_repr */ 0,
         /* tp_as_number */ 0,
         /* tp_as_sequence */ 0,
-        /* tp_as_mapping */ 0,
+        /* tp_as_mapping */ &ArrayStack_PyMappingMethods,
         /* tp_hash  */ 0,
         /* tp_call */ 0,
         /* tp_str */ (reprfunc) ArrayStack__str__,
@@ -108,7 +160,7 @@ static PyTypeObject ArrayStackType = {
         /* tp_iternext */ 0,
         /* tp_methods */ ArrayStack_PyMethodDef,
         /* tp_members */ 0,
-        /* tp_getset */ 0,
+        /* tp_getset */ ArrayStack_GetterSetters,
         /* tp_base */ 0,
         /* tp_dict */ 0,
         /* tp_descr_get */ 0,
