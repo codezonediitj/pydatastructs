@@ -5,7 +5,8 @@ from . import (
     binomial_trees,
     queue,
     disjoint_set,
-    sparse_table
+    sparse_table,
+    _extensions,
 )
 
 from .binomial_trees import (
