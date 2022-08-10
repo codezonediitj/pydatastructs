@@ -60,8 +60,8 @@ class Stack(object):
             dtype = kwargs.get('dtype', int)
             if backend == Backend.CPP:
                 return _stack.ArrayStack(items, dtype)
-            else:
-                return ArrayStack(items, dtype)
+
+            return ArrayStack(items, dtype)
         if implementation == 'linked_list':
             raise_if_backend_is_not_python(cls, backend)
 
