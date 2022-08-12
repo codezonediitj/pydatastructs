@@ -1,6 +1,6 @@
 __all__ = []
 
-from . import graph
+from . import graph, _extensions
 from .graph import (
     Graph
 )

@@ -1,6 +1,7 @@
 import setuptools
 from pydatastructs import linear_data_structures
 from pydatastructs import miscellaneous_data_structures
+from pydatastructs import graphs
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -9,6 +10,7 @@ extensions = []
 
 extensions.extend(linear_data_structures._extensions.extensions)
 extensions.extend(miscellaneous_data_structures._extensions.extensions)
+extensions.extend(graphs._extensions.extensions)
 
 setuptools.setup(
     name="cz-pydatastructs",
