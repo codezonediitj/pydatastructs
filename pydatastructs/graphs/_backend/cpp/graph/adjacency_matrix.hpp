@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
+#include <string>
 #include "../../../../utils/_backend/cpp/utils.hpp"
 
 typedef struct {
@@ -17,8 +18,6 @@ typedef struct {
 
 static void AdjacencyMatrix_dealloc(AdjacencyMatrix *self) {
     std::free(self->vertices);
-    std::free(self->matrix);
-    std::free(self->edge_weights);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -40,7 +39,7 @@ static PyObject* AdjacencyMatrix__new__(PyTypeObject* type, PyObject *vertices_o
         self->vertices[i] = vertex_name;
 
         if (PyObject_SetAttr(reinterpret_cast<PyObject*>(self), vertex_name, vertex_i) == -1) {
-            PyErr_SetString(PyExc_ValueError, "Cannot add vertex to graph");
+            PyErr_SetString(PyExc_ValueError, ("Cannot add vertex index #"+std::to_string(i)+" to graph").c_str());
         }
 
         PyObject *new_empty_dict = PyDict_New();
