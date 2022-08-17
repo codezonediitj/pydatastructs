@@ -12,6 +12,13 @@ PyObject *PyTwo = PyLong_FromLong(2);
 const char* _encoding = "utf-8";
 const char* _invalid_char = "<invalid-character>";
 
+static std::string PyObject_AsStdString(PyObject* obj) {
+    std::wstring name_wide_str(PyUnicode_AsWideCharString(PyUnicode_FromFormat("%S", PyObject_Str(obj)), NULL));
+    std::string name_str = std::string(name_wide_str.begin(), name_wide_str.end());
+
+    return name_str;
+}
+
 static char* PyObject_AsString(PyObject* obj) {
     return PyBytes_AS_STRING(PyUnicode_AsEncodedString(obj, _encoding, _invalid_char));
 }
