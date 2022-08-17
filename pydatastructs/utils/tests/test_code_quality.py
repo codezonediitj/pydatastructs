@@ -208,6 +208,9 @@ def test_backend_argument_message():
     backend_implemented = [
         pyds.OneDimensionalArray,
         pyds.DynamicOneDimensionalArray,
+        pyds.miscellaneous_data_structures.stack.ArrayStack,
+        pyds.GraphEdge,
+        pyds.AdjacencyMatrixGraphNode,
         pyds.quick_sort
     ]
 
