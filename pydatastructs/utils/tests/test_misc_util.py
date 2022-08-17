@@ -1,6 +1,9 @@
 from pydatastructs.utils import (AdjacencyListGraphNode, AdjacencyMatrixGraphNode,
                                 GraphEdge, BinomialTreeNode, MAryTreeNode, CartesianTreeNode, RedBlackTreeNode, SkipNode)
 from pydatastructs.utils.raises_util import raises
+from pydatastructs import Backend
+from pydatastructs.utils._backend.cpp import _utils
+
 
 def test_AdjacencyListGraphNode():
     g_1 = AdjacencyListGraphNode('g_1', 1)
@@ -21,11 +24,23 @@ def test_AdjacencyMatrixGraphNode():
     g = AdjacencyMatrixGraphNode("1", 3)
     assert str(g) == "('1', 3)"
 
+    # Cpp
+    g_cpp = AdjacencyMatrixGraphNode("1", 3, backend=Backend.CPP)
+    assert isinstance(g_cpp, _utils.AdjacencyMatrixGraphNodeCpp)
+    assert str(g_cpp) == "('1', 3)"
+
 def test_GraphEdge():
     g_1 = AdjacencyListGraphNode('g_1', 1)
     g_2 = AdjacencyListGraphNode('g_2', 2)
     e = GraphEdge(g_1, g_2, value=2)
     assert str(e) == "('g_1', 'g_2')"
+
+    # Cpp
+    g_1_cpp = AdjacencyMatrixGraphNode("g_1_cpp", 1, backend=Backend.CPP)
+    g_2_cpp = AdjacencyMatrixGraphNode("g_2_cpp", 2, backend=Backend.CPP)
+    e_cpp = GraphEdge(g_1_cpp, g_2_cpp, value=2, backend=Backend.CPP)
+    assert isinstance(e_cpp, _utils.GraphEdgeCpp)
+    assert str(e_cpp) == "('g_1_cpp', 'g_2_cpp')"
 
 def test_BinomialTreeNode():
     b = BinomialTreeNode(1,1)
