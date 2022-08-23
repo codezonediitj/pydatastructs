@@ -6,61 +6,76 @@
 #include <structmember.h>
 #include <cstdlib>
 #include <string>
+#include <map>
+#include <utility>
+#include <vector>
 #include "../../../../utils/_backend/cpp/utils.hpp"
+#include "../../../../utils/_backend/cpp/GraphEdge.hpp"
+#include "../../../../utils/_backend/cpp/AdjacencyMatrixGraphNode.hpp"
+#include "../../../../utils/_backend/cpp/GraphNode.hpp"
 
 typedef struct {
     PyObject_HEAD
     size_t n_vertices;
-    PyObject** vertices;
-    PyObject* matrix;
-    PyObject* edge_weights;
+    std::map<int, int> mp;
+//    AdjacencyMatrixGraphNodeCpp
+//    std::map<std::string, PyObject*> vertices;
+//    std::map<std::pair<std::string, std::string>, bool> matrix;
+    // GraphEdgeCpp
+//    std::map<std::pair<std::string, std::string>, PyObject*> edge_weights;
 } AdjacencyMatrix;
 
 static void AdjacencyMatrix_dealloc(AdjacencyMatrix *self) {
-    std::free(self->vertices);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
 static PyObject* AdjacencyMatrix__new__(PyTypeObject* type, PyObject *vertices_objs, PyObject *kwds) {
+    PyObject* utils_module = PyImport_Import(PyUnicode_FromString("pydatastructs.utils._backend.cpp._utils"));
+    PyObject* module_dict = PyModule_GetDict(utils_module);
+    PyObject* ImportedAdjacencyMatrixGraphNodeCpp = PyDict_GetItemString(module_dict, "AdjacencyMatrixGraphNodeCpp");
+
     AdjacencyMatrix *self;
     self = reinterpret_cast<AdjacencyMatrix *>(type->tp_alloc(type, 0));
 
     self->n_vertices = PyObject_Length(vertices_objs);
-    self->vertices = reinterpret_cast<PyObject**>(std::malloc(self->n_vertices * sizeof(PyObject*)));
 
-    self->matrix = PyDict_New();
-    if (self->matrix == NULL) {
-        PyErr_SetString(PyExc_ValueError, "Cannot initialize matrix");
-    }
     for (long i = 0; i < self->n_vertices; i++) {
         PyObject *vertex_i = PyObject_GetItem(vertices_objs, PyLong_FromLong(i));
-        PyObject *vertex_name = PyObject_GetAttrString(vertex_i, "name");
 
-        self->vertices[i] = vertex_name;
-
-        if (PyObject_SetAttr(reinterpret_cast<PyObject*>(self), vertex_name, vertex_i) == -1) {
-            PyErr_SetString(PyExc_ValueError, ("Cannot add vertex index #"+std::to_string(i)+" to graph").c_str());
+        if (vertex_i == NULL || !PyObject_IsInstance(vertex_i, ImportedAdjacencyMatrixGraphNodeCpp)) {
+            PyErr_SetString(
+                PyExc_TypeError,
+                ("Element #"+std::to_string(i)+" of the vertex list is not an instance of GraphNodeCpp").c_str()
+            );
+            return NULL;
         }
 
-        PyObject *new_empty_dict = PyDict_New();
-        if (new_empty_dict == NULL) {
-            PyErr_SetString(PyExc_ValueError, "Cannot instantiate empty dict");
-        }
-        if (PyDict_SetItem(self->matrix, vertex_name, new_empty_dict) == -1) {
-            PyErr_SetString(PyExc_ValueError, "Cannot add vertex to matrix");
-        }
-    }
+        std::string vertex_name = reinterpret_cast<AdjacencyMatrixGraphNodeCpp*>(vertex_i)->super.name;
+        printf("vertex_name: %s\n", vertex_name.c_str());
+        printf("%s\n", PyObject_AsStdString(PyObject_Type(vertex_i)).c_str());
 
-    self->edge_weights = PyDict_New();
-    if (self->edge_weights == NULL) {
-        PyErr_SetString(PyExc_ValueError, "Cannot initialize edge weights dict");
+//        self->vertices[vertex_name] = vertex_i;
+        self->mp[0] = 1;
+        printf("AA\n");
     }
 
     return reinterpret_cast<PyObject*>(self);
 }
 
 static PyObject* AdjacencyMatrix__str__(AdjacencyMatrix *self) {
-    return __str__(self->vertices, self->n_vertices);
+    int i = 0;
+    std::string array__str__ = "[";
+//    for (auto x: self->vertices) {
+//        array__str__.append(PyObject_AsStdString(x.second)));
+//        if( i + 1 != self->n_vertices ) {
+//            array__str__.append(", ");
+//        }
+//
+//        i++;
+//    }
+    array__str__.append("]");
+
+    return PyUnicode_FromString(array__str__.c_str());
 }
 
 static PyTypeObject AdjacencyMatrixType = {

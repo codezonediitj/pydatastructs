@@ -1,5 +1,7 @@
 #include <Python.h>
 #include "adjacency_matrix.hpp"
+#include "../../../../utils/_backend/cpp/AdjacencyMatrixGraphNode.hpp"
+#include "../../../../utils/_backend/cpp/GraphNode.hpp"
 
 static struct PyModuleDef graph_struct = {
         PyModuleDef_HEAD_INIT,

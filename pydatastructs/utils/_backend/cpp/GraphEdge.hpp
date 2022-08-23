@@ -61,7 +61,7 @@ static int GraphEdgeCpp_set_source(GraphEdgeCpp* self, PyObject *value, void *cl
         return -1;
     }
     if (!PyObject_IsInstance(value, reinterpret_cast<PyObject*>(&GraphNodeCppType))) {
-        PyErr_SetString(PyExc_TypeError, "value is must be a GraphNodeCpp instance");
+        PyErr_SetString(PyExc_TypeError, "value must be a GraphNodeCpp instance");
         return -1;
     }
 
@@ -83,7 +83,7 @@ static int GraphEdgeCpp_set_target(GraphEdgeCpp* self, PyObject *value, void *cl
         return -1;
     }
     if (!PyObject_IsInstance(value, reinterpret_cast<PyObject*>(&GraphNodeCppType))) {
-        PyErr_SetString(PyExc_TypeError, "value is must be a GraphNodeCpp instance");
+        PyErr_SetString(PyExc_TypeError, "value must be a GraphNodeCpp instance");
         return -1;
     }
 
