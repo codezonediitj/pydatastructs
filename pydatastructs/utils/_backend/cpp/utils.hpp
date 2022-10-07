@@ -220,6 +220,16 @@ public:
 
         return out.str();
     }
+
+    ~LinearProbingMap() {
+        for (size_t i = 0; i < capacity; i++) {
+            delete key_list[i];
+            delete value_list[i];
+        }
+
+        delete[] key_list;
+        delete[] value_list;
+    }
 };
 
 #endif
