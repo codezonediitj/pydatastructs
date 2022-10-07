@@ -125,15 +125,16 @@ private:
     void write(K* key, V* value, K** key_list_, V** value_list_, bool rehashed) {
         size_t key_hash = hash(*key);
         size_t pos = key_hash;
-        while (key_list_[pos] != nullptr && *(key_list_[key_hash]) != *key) {
+
+        while (key_list_[pos] != nullptr && *(key_list_[pos]) != *key) {
             pos = (pos + 1) % capacity;
         }
 
+        if (!rehashed && key_list_[pos] == nullptr)
+            n++;
+
         key_list_[pos] = key;
         value_list_[pos] = value;
-
-        if (!rehashed || key_list_[pos] == nullptr)
-            n++;
     }
 
     void rehash() {
@@ -141,10 +142,11 @@ private:
             return;
         }
 
-        size_t new_capacity = 2*capacity + 1;
-        K** new_key_list = new K*[new_capacity]();
-        V** new_value_list = new V*[new_capacity]();
-        for (size_t i = 0; i < capacity; i++) {
+        size_t old_capacity = capacity;
+        capacity = 2*capacity + 1;
+        K** new_key_list = new K*[capacity]();
+        V** new_value_list = new V*[capacity]();
+        for (size_t i = 0; i < old_capacity; i++) {
             K* key = key_list[i];
             V* value = value_list[i];
 
@@ -157,7 +159,6 @@ private:
 
         key_list = new_key_list;
         value_list = new_value_list;
-        capacity = new_capacity;
     }
 
 public:
@@ -172,8 +173,7 @@ public:
     void add(K key, V value) {
         rehash();
 
-        K* key_ptr = new K();
-        *key_ptr = key;
+        K* key_ptr = new K(key);
         V* value_ptr = new V(value);
         write(key_ptr, value_ptr, key_list, value_list, false);
     }

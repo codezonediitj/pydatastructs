@@ -29,5 +29,12 @@ int main() {
         }
     }
 
+    print("");
+
+    map.add(":D", 25);
+    map.add("aaa", 0);
+    map.add("hello", -44);
+    print(map.get_to_string());
+
     return 0;
 }
