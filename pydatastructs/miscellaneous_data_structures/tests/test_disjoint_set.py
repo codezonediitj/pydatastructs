@@ -9,9 +9,11 @@ def test_DisjointSetForest():
 
     dst.union(1, 2)
     dst.union(1, 5)
+    assert dst.find_size(2) == 3
     dst.union(1, 6)
     dst.union(1, 8)
     dst.union(3, 4)
+    assert dst.find_size(3) == 2
 
     assert (dst.find_root(1) == dst.find_root(2) ==
             dst.find_root(5) == dst.find_root(6) == dst.find_root(8))
@@ -19,6 +21,7 @@ def test_DisjointSetForest():
     assert dst.find_root(7).key == 7
 
     assert raises(KeyError, lambda: dst.find_root(9))
+    assert raises(KeyError, lambda: dst.find_size(9))
     dst.union(3, 1)
     assert dst.find_root(3).key == 1
     assert dst.find_root(5).key == 1

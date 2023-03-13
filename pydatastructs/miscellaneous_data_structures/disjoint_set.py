@@ -115,3 +115,12 @@ class DisjointSetForest(object):
             key_set.size = all_set_size
             # Make parent of key as itself
             key_set.parent = key_set
+
+    def find_size(self, key):
+        """
+        Finds the size of set to which the key belongs.
+        """
+        if self.tree.get(key, None) is None:
+            raise KeyError("Invalid key, %s"%(key))
+
+        return self.find_root(key).size
