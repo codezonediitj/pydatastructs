@@ -1,6 +1,4 @@
-from pydatastructs.utils.misc_util import (
-    TrieNode, Backend,
-    raise_if_backend_is_not_python)
+from pydatastructs.utils.misc_util import TrieNode
 from collections import deque
 import copy
 
@@ -13,14 +11,6 @@ Stack = Queue = deque
 class Trie(object):
     """
     Represents the trie data structure for storing strings.
-
-    Parameters
-    ==========
-
-    backend: pydatastructs.Backend
-        The backend to be used.
-        Optional, by default, the best available
-        backend is used.
 
     Examples
     ========
@@ -51,9 +41,7 @@ class Trie(object):
         return ['__new__', 'insert', 'is_present', 'delete',
                 'strings_with_prefix']
 
-    def __new__(cls, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+    def __new__(cls):
         obj = object.__new__(cls)
         obj.root = TrieNode()
         return obj
@@ -82,7 +70,7 @@ class Trie(object):
                 walk = walk.get_child(char)
         walk.is_terminal = True
 
-    def is_present(self, string: str) -> bool:
+    def is_prefix_present(self, string: str) -> bool:
         """
         Checks if the given string is present as a prefix in the trie.
 
@@ -103,6 +91,28 @@ class Trie(object):
                 return False
             walk = walk.get_child(char)
         return True
+
+    def is_present(self, string: str) -> bool:
+        """
+        Checks if the given string is present in the trie.
+
+        Parameters
+        ==========
+
+        string: str
+
+        Returns
+        =======
+
+        True if the given string is present in trie;
+        False in all other cases.
+        """
+        walk = self.root
+        for char in string:
+            if walk.get_child(char) is None:
+                return False
+            walk = walk.get_child(char)
+        return walk.is_terminal
 
     def delete(self, string: str) -> bool:
         """
