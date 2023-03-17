@@ -11,11 +11,11 @@ def test_Trie():
     prefix_strings = ["te", "t", "Am", "snb"]
 
     for string in strings:
-        assert trie.is_present(string)
+        assert trie.is_inserted(string)
 
     for string in prefix_strings:
-        assert trie.is_prefix_present(string)
-        assert not trie.is_present(string)
+        assert trie.is_present(string)
+        assert not trie.is_inserted(string)
 
     assert sorted(trie.strings_with_prefix("t")) == ['tea', 'ted', 'ten', 'to']
     assert sorted(trie.strings_with_prefix("te")) == ["tea", "ted", "ten"]
@@ -30,8 +30,8 @@ def test_Trie():
         trie.delete(string)
         for present in strings:
             if present == string:
-                assert not trie.is_present(present)
+                assert not trie.is_inserted(present)
             else:
-                assert trie.is_present(present)
+                assert trie.is_inserted(present)
         strings.remove(string)
      

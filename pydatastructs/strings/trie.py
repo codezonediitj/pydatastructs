@@ -82,7 +82,7 @@ class Trie(object):
                 walk = walk.get_child(char)
         walk.is_terminal = True
 
-    def is_prefix_present(self, string: str) -> bool:
+    def is_present(self, string: str) -> bool:
         """
         Checks if the given string is present as a prefix in the trie.
 
@@ -104,14 +104,18 @@ class Trie(object):
             walk = walk.get_child(char)
         return True
 
-    def is_present(self, string: str) -> bool:
+    def is_inserted(self, string: str) -> bool:
         """
-        Checks if the given string is present in the trie.
+        Checks if the given string was inserted in the trie.
+
         Parameters
         ==========
+
         string: str
+
         Returns
         =======
+
         True if the given string is present in trie;
         False in all other cases.
         """
