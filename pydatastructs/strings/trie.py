@@ -116,7 +116,7 @@ class Trie(object):
         Returns
         =======
 
-        True if the given string is present in trie;
+        True if the given string was inserted in trie;
         False in all other cases.
         """
         walk = self.root
