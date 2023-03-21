@@ -7,6 +7,9 @@ def test_kmp():
 
 def test_rka():
     _test_common_string_matching('rabin_karp')
+    
+def test_bm():
+    _test_common_string_matching('boyer_moore')
 
 def _test_common_string_matching(algorithm):
     true_text_pattern_dictionary = {
