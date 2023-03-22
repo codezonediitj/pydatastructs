@@ -12,6 +12,9 @@ def test_Trie():
 
     for string in strings:
         assert trie.is_inserted(string)
+    
+    for string in strings[::-1]:
+        assert trie.is_inserted(string)
 
     for string in prefix_strings:
         assert trie.is_present(string)
@@ -34,4 +37,3 @@ def test_Trie():
             else:
                 assert trie.is_inserted(present)
         strings.remove(string)
-     
