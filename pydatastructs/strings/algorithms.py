@@ -29,6 +29,8 @@ def find(text, query, algorithm, **kwargs):
         'kmp' -> Knuth-Morris-Pratt as given in [1].
 
         'rabin_karp' -> Rabin–Karp algorithm as given in [2].
+
+        'boyer_moore' -> Boyer-Moore algorithm as given in [3].
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -64,6 +66,7 @@ def find(text, query, algorithm, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
     .. [2] https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
+    .. [3] https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
     """
     raise_if_backend_is_not_python(
             find, kwargs.get('backend', Backend.PYTHON))
@@ -157,4 +160,39 @@ def _rabin_karp(text, query):
         if curr_hash == (query_hash * p_pow[i]) % MOD:
             positions.append(i)
 
+    return positions
+
+def _boyer_moore(text, query):
+    positions = DynamicOneDimensionalArray(int, 0)
+    text_length, query_length = len(text), len(query)
+
+    if text_length == 0 or query_length == 0:
+        return positions
+
+    # Preprocessing Step
+    bad_match_table = dict()
+    for i in range(query_length):
+        bad_match_table[query[i]] = i
+
+    shift = 0
+    # Matching procedure
+    while shift <= text_length-query_length:
+        j = query_length - 1
+        while j >= 0 and query[j] == text[shift + j]:
+            j -= 1
+        if j < 0:
+            positions.append(shift)
+            if shift + query_length < text_length:
+                if text[shift + query_length] in bad_match_table:
+                    shift += query_length - bad_match_table[text[shift + query_length]]
+                else:
+                    shift += query_length + 1
+            else:
+                shift += 1
+        else:
+            letter_pos = text[shift + j]
+            if letter_pos in bad_match_table:
+                shift += max(1, j - bad_match_table[letter_pos])
+            else:
+                shift += max(1, j + 1)
     return positions
