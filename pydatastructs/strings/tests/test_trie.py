@@ -12,7 +12,7 @@ def test_Trie():
 
     for string in strings:
         assert trie.is_inserted(string)
-    
+
     for string in strings[::-1]:
         assert trie.is_inserted(string)
 
