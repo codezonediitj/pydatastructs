@@ -35,5 +35,15 @@ def test_Trie():
             if present == string:
                 assert not trie.is_inserted(present)
             else:
+                assert trie.is_present(present)
                 assert trie.is_inserted(present)
         strings.remove(string)
+
+    prefix_strings_1 = ["dict", "dicts", "dicts_lists_tuples"]
+    trie_1 = Trie()
+
+    for i in range(len(prefix_strings_1)):
+        trie_1.insert(prefix_strings_1[i])
+        for j in range(i + 1):
+            assert trie_1.is_inserted(prefix_strings_1[j])
+            assert trie_1.is_present(prefix_strings_1[j])
