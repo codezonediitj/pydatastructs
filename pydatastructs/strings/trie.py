@@ -104,6 +104,28 @@ class Trie(object):
             walk = walk.get_child(char)
         return True
 
+    def is_inserted(self, string: str) -> bool:
+        """
+        Checks if the given string was inserted in the trie.
+
+        Parameters
+        ==========
+
+        string: str
+
+        Returns
+        =======
+
+        True if the given string was inserted in trie;
+        False in all other cases.
+        """
+        walk = self.root
+        for char in string:
+            if walk.get_child(char) is None:
+                return False
+            walk = walk.get_child(char)
+        return walk.is_terminal
+
     def delete(self, string: str) -> bool:
         """
         Deletes the given string from the trie.
