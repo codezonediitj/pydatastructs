@@ -7,7 +7,7 @@ def test_kmp():
 
 def test_rka():
     _test_common_string_matching('rabin_karp')
-    
+
 def test_bm():
     _test_common_string_matching('boyer_moore')
 

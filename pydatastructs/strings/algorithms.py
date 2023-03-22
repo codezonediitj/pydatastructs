@@ -175,7 +175,6 @@ def _boyer_moore(text, query):
         bad_match_table[query[i]] = i
 
     shift = 0
-    
     # Matching procedure
     while shift <= text_length-query_length:
         j = query_length - 1
@@ -196,5 +195,4 @@ def _boyer_moore(text, query):
                 shift += max(1, j - bad_match_table[letter_pos])
             else:
                 shift += max(1, j + 1)
-    
     return positions
