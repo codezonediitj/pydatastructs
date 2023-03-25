@@ -124,3 +124,24 @@ class DisjointSetForest(object):
             raise KeyError("Invalid key, %s"%(key))
 
         return self.find_root(key).size
+
+    def groups(self):
+        """
+        Get the groups in DSU
+        """
+        result = dict()
+        for key, node in self.tree.items():
+            if node.parent == node:
+                parent = key
+            else:
+                parent = node.parent.key
+
+            members = result.get(parent, [])
+            members.append(key)
+            result[parent] = members
+        sorted_groups = []
+        for v in result.values():
+            sorted_groups.append(v)
+            sorted_groups[-1].sort()
+        sorted_groups.sort()
+        return sorted_groups
