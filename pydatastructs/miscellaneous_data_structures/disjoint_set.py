@@ -130,12 +130,8 @@ class DisjointSetForest(object):
         Get the disjoint sets in DSU
         """
         result = dict()
-        for key, node in self.tree.items():
-            if node.parent == node:
-                parent = key
-            else:
-                parent = self.find_root(key)
-
+        for key in self.tree.keys():
+            parent = self.find_root(key).key
             members = result.get(parent, [])
             members.append(key)
             result[parent] = members
