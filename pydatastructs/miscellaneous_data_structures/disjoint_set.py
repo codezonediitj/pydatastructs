@@ -125,16 +125,16 @@ class DisjointSetForest(object):
 
         return self.find_root(key).size
 
-    def groups(self):
+    def disjoint_sets(self):
         """
-        Get the groups in DSU
+        Get the disjoint sets in DSU
         """
         result = dict()
         for key, node in self.tree.items():
             if node.parent == node:
                 parent = key
             else:
-                parent = node.parent.key
+                parent = self.find_root(key)
 
             members = result.get(parent, [])
             members.append(key)
