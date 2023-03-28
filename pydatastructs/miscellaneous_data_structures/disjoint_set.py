@@ -124,3 +124,20 @@ class DisjointSetForest(object):
             raise KeyError("Invalid key, %s"%(key))
 
         return self.find_root(key).size
+
+    def disjoint_sets(self):
+        """
+        Returns a list of disjoint sets in the data structure.
+        """
+        result = dict()
+        for key in self.tree.keys():
+            parent = self.find_root(key).key
+            members = result.get(parent, [])
+            members.append(key)
+            result[parent] = members
+        sorted_groups = []
+        for v in result.values():
+            sorted_groups.append(v)
+            sorted_groups[-1].sort()
+        sorted_groups.sort()
+        return sorted_groups

@@ -17,6 +17,7 @@ def test_DisjointSetForest():
 
     assert (dst.find_root(1) == dst.find_root(2) ==
             dst.find_root(5) == dst.find_root(6) == dst.find_root(8))
+    assert dst.disjoint_sets() == [[1, 2, 5, 6, 8], [3, 4], [7]]
     assert dst.find_root(3) == dst.find_root(4)
     assert dst.find_root(7).key == 7
 
@@ -26,6 +27,7 @@ def test_DisjointSetForest():
     assert dst.find_root(3).key == 1
     assert dst.find_root(5).key == 1
     dst.make_root(6)
+    assert dst.disjoint_sets() == [[1, 2, 3, 4, 5, 6, 8], [7]]
     assert dst.find_root(3).key == 6
     assert dst.find_root(5).key == 6
     dst.make_root(5)
@@ -42,6 +44,7 @@ def test_DisjointSetForest():
     assert dst.tree[3].size == 1
     dst.union(1, 4)
     dst.union(2, 4)
+    assert dst.disjoint_sets() == [[0], [1, 2, 3, 4], [5]]
     # current tree
     ###############
     #       2
