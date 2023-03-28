@@ -127,7 +127,7 @@ class DisjointSetForest(object):
 
     def disjoint_sets(self):
         """
-        Get the disjoint sets in DSU
+        Returns a list of disjoint sets in the data structure.
         """
         result = dict()
         for key in self.tree.keys():
