@@ -243,5 +243,5 @@ def _z_function(text, query):
     for pos in range(len(fct)):
         if fct[pos] == len(query):
             positions.append(pos)
-            
+
     return positions
