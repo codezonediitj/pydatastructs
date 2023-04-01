@@ -205,7 +205,7 @@ def _z_function(text, query):
     if query == "":
         string = text
     else:
-        string = query + '$' + text
+        string = query + str("$") + text
 
     z_fct = OneDimensionalArray(int, len(string))
 
