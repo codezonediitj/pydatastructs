@@ -208,6 +208,7 @@ def _z_function(text, query):
         string = query + str("$") + text
 
     z_fct = OneDimensionalArray(int, len(string))
+    z_fct.fill(0)
 
     curr_pos = 1
     seg_left = 0
