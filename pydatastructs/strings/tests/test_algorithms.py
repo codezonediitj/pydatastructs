@@ -21,7 +21,7 @@ def _test_common_string_matching(algorithm):
         "aefcdfaecdaefaefcdaefeaefcdcdeae": "aefcdaefeaefcd",
         "aaaaaaaa": "aaa",
         "fullstringmatch": "fullstringmatch",
-        "z-function": "z-algo"
+        "z-function": "z-fun"
     }
     for test_case_key in true_text_pattern_dictionary:
         text = test_case_key
@@ -36,7 +36,7 @@ def _test_common_string_matching(algorithm):
         "abcabcabcabdabcabdabcabca": "qwertyuiopzxcvbnm",
         "aefcdfaecdaefaefcdaefeaefcdcdeae": "cdaefaefe",
         "fullstringmatch": "fullstrinmatch",
-        "z-function": "function",
+        "z-function": "function-",
         "abc": "",
         "": "abc"
     }
