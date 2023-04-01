@@ -11,13 +11,17 @@ def test_rka():
 def test_bm():
     _test_common_string_matching('boyer_moore')
 
+def test_zf():
+    _test_common_string_matching('z_function')
+
 def _test_common_string_matching(algorithm):
     true_text_pattern_dictionary = {
         "Knuth-Morris-Pratt": "-Morris-",
         "abcabcabcabdabcabdabcabca": "abcabdabcabca",
         "aefcdfaecdaefaefcdaefeaefcdcdeae": "aefcdaefeaefcd",
         "aaaaaaaa": "aaa",
-        "fullstringmatch": "fullstringmatch"
+        "fullstringmatch": "fullstringmatch",
+        "z-function": "z-algo"
     }
     for test_case_key in true_text_pattern_dictionary:
         text = test_case_key
@@ -32,6 +36,7 @@ def _test_common_string_matching(algorithm):
         "abcabcabcabdabcabdabcabca": "qwertyuiopzxcvbnm",
         "aefcdfaecdaefaefcdaefeaefcdcdeae": "cdaefaefe",
         "fullstringmatch": "fullstrinmatch",
+        "z-function": "function",
         "abc": "",
         "": "abc"
     }

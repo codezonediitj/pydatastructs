@@ -31,6 +31,9 @@ def find(text, query, algorithm, **kwargs):
         'rabin_karp' -> Rabin–Karp algorithm as given in [2].
 
         'boyer_moore' -> Boyer-Moore algorithm as given in [3].
+
+        'z_function' -> Z-function algorithm as given in [4].
+
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -67,6 +70,7 @@ def find(text, query, algorithm, **kwargs):
     .. [1] https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
     .. [2] https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
     .. [3] https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
+    .. [4] https://usaco.guide/CPH.pdf#page=257
     """
     raise_if_backend_is_not_python(
             find, kwargs.get('backend', Backend.PYTHON))
