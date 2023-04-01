@@ -201,7 +201,7 @@ def _boyer_moore(text, query):
                 shift += max(1, j + 1)
     return positions
 
-def _z_function(text, query):
+def _z_vector(text, query):
     if query == "":
         string = text
     else:
@@ -235,3 +235,13 @@ def _z_function(text, query):
         final_z_fct.append(z_fct[pos])
 
     return final_z_fct
+
+def _z_function(text, query):
+    fct = _z_vector(text, query)
+    positions = DynamicOneDimensionalArray(int, 0)
+
+    for pos in range(len(fct)):
+        if fct[pos] == len(query):
+            positions.append(pos)
+            
+    return positions
