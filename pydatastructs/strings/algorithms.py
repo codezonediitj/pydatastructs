@@ -240,7 +240,7 @@ def _z_function(text, query):
     positions = DynamicOneDimensionalArray(int, 0)
     if len(text) == 0 or len(query) == 0:
         return positions
-    
+
     fct = _z_vector(text, query)
     for pos in range(len(fct)):
         if fct[pos] == len(query):
