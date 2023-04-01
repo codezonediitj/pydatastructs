@@ -196,3 +196,24 @@ def _boyer_moore(text, query):
             else:
                 shift += max(1, j + 1)
     return positions
+
+def _z_function(string):
+    z_fct = DynamicOneDimensionalArray(int, len(string))
+
+    curr_pos = 1
+    seg_left = 0
+    seg_right = 0
+
+    for curr_pos in range(1,len(string)):
+        if curr_pos <= seg_right:
+            z_fct[curr_pos] = min(seg_right - curr_pos + 1, z_fct[curr_pos - seg_left])
+
+        while curr_pos + z_fct[curr_pos] < len(string) and \
+                string[z_fct[curr_pos]] == string[curr_pos + z_fct[curr_pos]]:
+            z_fct[curr_pos] += 1
+
+        if curr_pos + z_fct[curr_pos] - 1 > seg_right:
+            seg_left = curr_pos
+            seg_right = curr_pos + z_fct[curr_pos] - 1
+
+    return z_fct
