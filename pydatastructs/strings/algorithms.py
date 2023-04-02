@@ -202,9 +202,8 @@ def _boyer_moore(text, query):
     return positions
 
 def _z_vector(text, query):
-    if query == "":
-        string = text
-    else:
+    string = text
+    if query != "":
         string = query + str("$") + text
 
     z_fct = OneDimensionalArray(int, len(string))
@@ -227,9 +226,8 @@ def _z_vector(text, query):
             seg_right = curr_pos + z_fct[curr_pos] - 1
 
     final_z_fct = DynamicOneDimensionalArray(int, 0)
-    if query == "":
-        start_index = 0
-    else:
+    start_index = 0
+    if query != "":
         start_index = len(query) + 1
     for pos in range(start_index, len(string)):
         final_z_fct.append(z_fct[pos])
