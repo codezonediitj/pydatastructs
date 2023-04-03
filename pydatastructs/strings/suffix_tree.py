@@ -11,16 +11,16 @@ __all__ = [
 # Ukkonen's is an online algorithm, 
 # processing the input sequentially and producing a valid suffix tree at each character.
 
-class Node(object):
-    def __init__(self):
+class SuffixTreeNode(object):
+    def __new__(self):
         self.suffix_node = -1
 
     def __repr__(self):
         return "Node(suffix link: %d)" % self.suffix_node
 
 
-class Edge(object):
-    def __init__(self, first_char_index, last_char_index, source_node_index, dest_node_index):
+class SuffixTreeEdge(object):
+    def __new__(self, first_char_index, last_char_index, source_node_index, dest_node_index):
         self.first_char_index = first_char_index
         self.last_char_index = last_char_index
         self.source_node_index = source_node_index
@@ -36,7 +36,7 @@ class Edge(object):
 
 class Suffix(object):
 
-    def __init__(self, source_node_index, first_char_index, last_char_index):
+    def __new__(self, source_node_index, first_char_index, last_char_index):
         self.source_node_index = source_node_index
         self.first_char_index = first_char_index
         self.last_char_index = last_char_index
@@ -60,12 +60,12 @@ class SuffixTree(object):
     for construction.
     """
 
-    def __init__(self, string, case_insensitive=False):
+    def __new__(self, string, case_insensitive=False):
 
         self.string = string
         self.case_insensitive = case_insensitive
         self.N = len(string) - 1
-        self.nodes = [Node()]
+        self.nodes = [SuffixTreeNode()]
         self.edges = {}
         self.active = Suffix(0, 0, -1)
         if self.case_insensitive:
@@ -106,8 +106,8 @@ class SuffixTree(object):
                     break
                 parent_node = self._split_edge(e, self.active)
 
-            self.nodes.append(Node())
-            e = Edge(last_char_index, self.N, parent_node, len(self.nodes) - 1)
+            self.nodes.append(SuffixTreeNode())
+            e = SuffixTreeEdge(last_char_index, self.N, parent_node, len(self.nodes) - 1)
             self._insert_edge(e)
 
             if last_parent_node > 0:
@@ -133,8 +133,8 @@ class SuffixTree(object):
             (edge.source_node_index, self.string[edge.first_char_index]))
 
     def _split_edge(self, edge, suffix):
-        self.nodes.append(Node())
-        e = Edge(edge.first_char_index, edge.first_char_index + suffix.length, suffix.source_node_index,
+        self.nodes.append(SuffixTreeNode())
+        e = SuffixTreeEdge(edge.first_char_index, edge.first_char_index + suffix.length, suffix.source_node_index,
                  len(self.nodes) - 1)
         self._remove_edge(edge)
         self._insert_edge(e)
