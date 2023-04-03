@@ -1,3 +1,11 @@
+from pydatastructs.utils.misc_util import (
+    Backend, raise_if_backend_is_not_python)
+
+__all__ = [
+    'SuffixTree'
+]
+
+
 # Ukkonen's algorithm gives a O(n) + O(k) contruction time for a suffix tree, 
 # where n is the length of the string and k is the size of the alphabet of that string. 
 # Ukkonen's is an online algorithm, 
