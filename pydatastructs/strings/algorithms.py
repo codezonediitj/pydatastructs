@@ -31,6 +31,9 @@ def find(text, query, algorithm, **kwargs):
         'rabin_karp' -> Rabin–Karp algorithm as given in [2].
 
         'boyer_moore' -> Boyer-Moore algorithm as given in [3].
+
+        'z_function' -> Z-function algorithm as given in [4].
+
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -67,6 +70,7 @@ def find(text, query, algorithm, **kwargs):
     .. [1] https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
     .. [2] https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
     .. [3] https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
+    .. [4] https://usaco.guide/CPH.pdf#page=257
     """
     raise_if_backend_is_not_python(
             find, kwargs.get('backend', Backend.PYTHON))
@@ -195,4 +199,49 @@ def _boyer_moore(text, query):
                 shift += max(1, j - bad_match_table[letter_pos])
             else:
                 shift += max(1, j + 1)
+    return positions
+
+def _z_vector(text, query):
+    string = text
+    if query != "":
+        string = query + str("$") + text
+
+    z_fct = OneDimensionalArray(int, len(string))
+    z_fct.fill(0)
+
+    curr_pos = 1
+    seg_left = 0
+    seg_right = 0
+
+    for curr_pos in range(1,len(string)):
+        if curr_pos <= seg_right:
+            z_fct[curr_pos] = min(seg_right - curr_pos + 1, z_fct[curr_pos - seg_left])
+
+        while curr_pos + z_fct[curr_pos] < len(string) and \
+                string[z_fct[curr_pos]] == string[curr_pos + z_fct[curr_pos]]:
+            z_fct[curr_pos] += 1
+
+        if curr_pos + z_fct[curr_pos] - 1 > seg_right:
+            seg_left = curr_pos
+            seg_right = curr_pos + z_fct[curr_pos] - 1
+
+    final_z_fct = DynamicOneDimensionalArray(int, 0)
+    start_index = 0
+    if query != "":
+        start_index = len(query) + 1
+    for pos in range(start_index, len(string)):
+        final_z_fct.append(z_fct[pos])
+
+    return final_z_fct
+
+def _z_function(text, query):
+    positions = DynamicOneDimensionalArray(int, 0)
+    if len(text) == 0 or len(query) == 0:
+        return positions
+
+    fct = _z_vector(text, query)
+    for pos in range(len(fct)):
+        if fct[pos] == len(query):
+            positions.append(pos)
+
     return positions
