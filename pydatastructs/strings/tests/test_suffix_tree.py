@@ -1,5 +1,5 @@
 import unittest
-from suffix_tree import SuffixTree
+from pydatastructs.strings.suffix_tree import SuffixTree
 
 
 class SuffixTreeTest(unittest.TestCase):
