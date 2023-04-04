@@ -6,9 +6,9 @@ __all__ = [
 ]
 
 
-# Ukkonen's algorithm gives a O(n) + O(k) contruction time for a suffix tree, 
-# where n is the length of the string and k is the size of the alphabet of that string. 
-# Ukkonen's is an online algorithm, 
+# Ukkonen's algorithm gives a O(n) + O(k) contruction time for a suffix tree,
+# where n is the length of the string and k is the size of the alphabet of that string.
+# Ukkonen's is an online algorithm,
 # processing the input sequentially and producing a valid suffix tree at each character.
 
 class SuffixTreeNode(object):
@@ -71,10 +71,16 @@ class SuffixTree(object):
     """A suffix tree for string matching. Uses Ukkonen's algorithm
     for construction.
     """
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__init__', '__repr__', '_add_prefix',
+                '_insert_edge', '_remove_edge', '_split_edge', '_canonize_suffix',
+                'find_substring', 'has_substring']
+
     def __new__ (cls, *args, **kwargs):
         instance = super().__new__(cls)
         return instance
-    
+
     def __init__(self, string, case_insensitive=False):
 
         self.string = string
