@@ -12,7 +12,11 @@ __all__ = [
 # processing the input sequentially and producing a valid suffix tree at each character.
 
 class SuffixTreeNode(object):
-    def __new__(self):
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self):
         self.suffix_node = -1
 
     def __repr__(self):
@@ -20,7 +24,11 @@ class SuffixTreeNode(object):
 
 
 class SuffixTreeEdge(object):
-    def __new__(self, first_char_index, last_char_index, source_node_index, dest_node_index):
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self, first_char_index, last_char_index, source_node_index, dest_node_index):
         self.first_char_index = first_char_index
         self.last_char_index = last_char_index
         self.source_node_index = source_node_index
@@ -36,7 +44,11 @@ class SuffixTreeEdge(object):
 
 class Suffix(object):
 
-    def __new__(self, source_node_index, first_char_index, last_char_index):
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self, source_node_index, first_char_index, last_char_index):
         self.source_node_index = source_node_index
         self.first_char_index = first_char_index
         self.last_char_index = last_char_index
@@ -59,8 +71,11 @@ class SuffixTree(object):
     """A suffix tree for string matching. Uses Ukkonen's algorithm
     for construction.
     """
-
-    def __new__(self, string, case_insensitive=False):
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+    
+    def __init__(self, string, case_insensitive=False):
 
         self.string = string
         self.case_insensitive = case_insensitive
