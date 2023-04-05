@@ -1,5 +1,5 @@
 from pydatastructs.utils.misc_util import (
-    Backend, raise_if_backend_is_not_python)
+    SuffixTreeNode, SuffixTreeEdge, Suffix, Backend, raise_if_backend_is_not_python)
 
 __all__ = [
     'SuffixTree'
@@ -11,61 +11,6 @@ __all__ = [
 # Ukkonen's is an online algorithm,
 # processing the input sequentially and producing a valid suffix tree at each character.
 
-class SuffixTreeNode(object):
-    def __new__ (cls, *args, **kwargs):
-        instance = super().__new__(cls)
-        return instance
-
-    def __init__(self):
-        self.suffix_node = -1
-
-    def __repr__(self):
-        return "Node(suffix link: %d)" % self.suffix_node
-
-
-class SuffixTreeEdge(object):
-    def __new__ (cls, *args, **kwargs):
-        instance = super().__new__(cls)
-        return instance
-
-    def __init__(self, first_char_index, last_char_index, source_node_index, dest_node_index):
-        self.first_char_index = first_char_index
-        self.last_char_index = last_char_index
-        self.source_node_index = source_node_index
-        self.dest_node_index = dest_node_index
-
-    @property
-    def length(self):
-        return self.last_char_index - self.first_char_index
-
-    def __repr__(self):
-        return 'Edge(%d, %d, %d, %d)' % (self.source_node_index, self.dest_node_index, self.first_char_index, self.last_char_index)
-
-
-class Suffix(object):
-
-    def __new__ (cls, *args, **kwargs):
-        instance = super().__new__(cls)
-        return instance
-
-    def __init__(self, source_node_index, first_char_index, last_char_index):
-        self.source_node_index = source_node_index
-        self.first_char_index = first_char_index
-        self.last_char_index = last_char_index
-
-    @property
-    def length(self):
-        return self.last_char_index - self.first_char_index
-
-    def explicit(self):
-        """A suffix is explicit if it ends on a node. first_char_index
-        is set greater than last_char_index to indicate this.
-        """
-        return self.first_char_index > self.last_char_index
-
-    def implicit(self):
-        return self.last_char_index >= self.first_char_index
-
 
 class SuffixTree(object):
     """A suffix tree for string matching. Uses Ukkonen's algorithm
@@ -73,8 +18,7 @@ class SuffixTree(object):
     """
     @classmethod
     def methods(cls):
-        return ['__new__', '__init__', '__repr__', '_add_prefix',
-                '_insert_edge', '_remove_edge', '_split_edge', '_canonize_suffix',
+        return ['__new__', '__init__', '__repr__',
                 'find_substring', 'has_substring']
 
     def __new__ (cls, *args, **kwargs):

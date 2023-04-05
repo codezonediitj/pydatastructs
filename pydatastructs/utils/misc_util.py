@@ -569,6 +569,63 @@ class TrieNode(Node):
     def remove_child(self, char: str) -> None:
         self._children.pop(char)
 
+
+class SuffixTreeNode(object):
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self):
+        self.suffix_node = -1
+
+    def __repr__(self):
+        return "Node(suffix link: %d)" % self.suffix_node
+
+
+class SuffixTreeEdge(object):
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self, first_char_index, last_char_index, source_node_index, dest_node_index):
+        self.first_char_index = first_char_index
+        self.last_char_index = last_char_index
+        self.source_node_index = source_node_index
+        self.dest_node_index = dest_node_index
+
+    @property
+    def length(self):
+        return self.last_char_index - self.first_char_index
+
+    def __repr__(self):
+        return 'Edge(%d, %d, %d, %d)' % (self.source_node_index, self.dest_node_index, self.first_char_index, self.last_char_index)
+
+
+class Suffix(object):
+
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self, source_node_index, first_char_index, last_char_index):
+        self.source_node_index = source_node_index
+        self.first_char_index = first_char_index
+        self.last_char_index = last_char_index
+
+    @property
+    def length(self):
+        return self.last_char_index - self.first_char_index
+
+    def explicit(self):
+        """A suffix is explicit if it ends on a node. first_char_index
+        is set greater than last_char_index to indicate this.
+        """
+        return self.first_char_index > self.last_char_index
+
+    def implicit(self):
+        return self.last_char_index >= self.first_char_index
+
+
 def _comp(u, v, tcomp):
     """
     Overloaded comparator for comparing
