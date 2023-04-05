@@ -47,8 +47,7 @@ def test_suffix_tree():
     assert (repr(st) == str("\tStart \tEnd \tSuf \tFirst \tLast \tString\n\t0 \t1 \t-1 \t0 \t2 \taaa\n"))
 
     # check methods function
-    assert (st.methods == ['__new__', '__init__', '__repr__',
-                'find_substring', 'has_substring'])
+    assert (st.methods() == ['__new__', '__init__', '__repr__', 'find_substring', 'has_substring'])
 
 if __name__ == '__main__':
     test_suffix_tree()
