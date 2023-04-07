@@ -50,7 +50,7 @@ def test_suffix_tree():
     assert (st.methods() == ['__new__', '__init__', '__repr__', 'find_substring', 'has_substring'])
 
 def test_suffix_tree2():
-    f = open("long_string.txt")
+    f = open("./pydatastructs/strings/tests/long_string.txt")
     st = SuffixTree(f.read())
     assert (st.find_substring('Ukkonen') == 1498)
     assert (st.find_substring('Optimal') == 11131)
