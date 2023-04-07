@@ -49,5 +49,13 @@ def test_suffix_tree():
     # check methods function
     assert (st.methods() == ['__new__', '__init__', '__repr__', 'find_substring', 'has_substring'])
 
+def test_suffix_tree2():
+    f = open("long_string.txt")
+    st = SuffixTree(f.read())
+    assert (st.find_substring('Ukkonen') == 1498)
+    assert (st.find_substring('Optimal') == 11131)
+    assert (st.has_substring('ukkonen') is False)
+    f.close()
+
 if __name__ == '__main__':
     test_suffix_tree()
