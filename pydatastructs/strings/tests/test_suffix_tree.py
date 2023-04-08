@@ -85,7 +85,27 @@ def test_suffix_tree3():
     assert (suffix.explicit() is False)
     assert (suffix.implicit() is True)
 
+def test_suffix_tree4():
+    edge = SuffixTreeEdge(0, 5, -1, 1)
+    assert (edge.source_node_index == -1)
+    edge = SuffixTreeEdge(0, 5, 0, 1)
+    assert (edge.source_node_index == 0)
+    edge = SuffixTreeEdge(0, 5, 1, 2)
+    assert (edge.source_node_index == 1)
+    # Create a SuffixTree instance
+    string = "banana"
+    suffix_tree = SuffixTree(string)
+
+    # Add some edges to the suffix tree
+    edge1 = SuffixTreeEdge(-1, 1, -1, 1)
+    suffix_tree.edges[(0, "b")] = edge1
+
+    # Test the if condition
+    assert (edge1.source_node_index == -1)
+    assert (repr(suffix_tree) == "\tStart \tEnd \tSuf \tFirst \tLast \tString\n\t0 \t2 \t-1 \t1 \t5 \tanana\n\t0 \t3 \t-1 \t2 \t5 \tnana\n")
+
 if __name__ == '__main__':
     test_suffix_tree()
     test_suffix_tree2()
     test_suffix_tree3()
+    test_suffix_tree4()
