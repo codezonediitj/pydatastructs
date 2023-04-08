@@ -62,28 +62,28 @@ def test_suffix_tree3():
     # Test SuffixTreeNode
     node = SuffixTreeNode()
     assert isinstance(node, SuffixTreeNode)
-    assert node.suffix_node == -1
-    assert repr(node) == "Node(suffix link: -1)"
+    assert (node.suffix_node == -1)
+    assert (repr(node) == "Node(suffix link: -1)")
 
     # Test SuffixTreeEdge
     edge = SuffixTreeEdge(0, 3, 1, 2)
     assert isinstance(edge, SuffixTreeEdge)
-    assert edge.first_char_index == 0
-    assert edge.last_char_index == 3
-    assert edge.source_node_index == 1
-    assert edge.dest_node_index == 2
-    assert edge.length == 3
-    assert repr(edge) == "Edge(1, 2, 0, 3)"
+    assert (edge.first_char_index == 0)
+    assert (edge.last_char_index == 3)
+    assert (edge.source_node_index == 1)
+    assert (edge.dest_node_index == 2)
+    assert (edge.length == 3)
+    assert (repr(edge) == "Edge(1, 2, 0, 3)")
 
     # Test Suffix implicit() method
     suffix = Suffix(1, 2, 3)
     assert isinstance(suffix, Suffix)
-    assert suffix.source_node_index == 1
-    assert suffix.first_char_index == 2
-    assert suffix.last_char_index == 3
-    assert suffix.length == 1
-    assert suffix.explicit() == False
-    assert suffix.implicit() == True
+    assert (suffix.source_node_index == 1)
+    assert (suffix.first_char_index == 2)
+    assert (suffix.last_char_index == 3)
+    assert (suffix.length == 1)
+    assert (suffix.explicit() is False)
+    assert (suffix.implicit() is True)
 
 if __name__ == '__main__':
     test_suffix_tree()
