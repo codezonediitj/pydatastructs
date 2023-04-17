@@ -17,7 +17,8 @@ from .algorithms import (
     shortest_paths,
     all_pair_shortest_paths,
     topological_sort,
-    topological_sort_parallel
+    topological_sort_parallel,
+    lowest_common_ancestor
 )
 
 __all__.extend(algorithms.__all__)

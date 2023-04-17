@@ -1,8 +1,11 @@
+from math import exp
+from pydatastructs.linear_data_structures.algorithms import lower_bound
+from pydatastructs.graphs.algorithms import lowest_common_ancestor
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths, topological_sort,
-topological_sort_parallel)
+topological_sort_parallel, lowest_common_ancestor)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -369,3 +372,56 @@ def test_topological_sort():
 
     _test_topological_sort(topological_sort, "List", "kahn")
     _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)
+
+def test_lowest_common_ancestor():
+    def _test_lowest_common_ancestor(ds):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+
+        V1 = GraphNode(0)
+        V2 = GraphNode(1)
+        V3 = GraphNode(2)
+        V4 = GraphNode(3)
+        V5 = GraphNode(4)
+        V6 = GraphNode(5)
+        V7 = GraphNode(6)
+        V8 = GraphNode(7)
+
+        G1 = Graph(V1, V2, V3, V4, V5, V6, V7)
+
+        edges = [
+            (V1.name, V2.name),
+            (V1.name, V3.name),
+            (V3.name, V4.name),
+            (V3.name, V5.name),
+            (V5.name, V6.name),
+            (V5.name, V7.name),
+            (V2.name, V8.name)
+        ]
+
+        for edge in edges:
+            G1.add_edge(*edge)
+
+        lca = lowest_common_ancestor(G1, V6.name, V7.name)
+        expected_result = V5.name
+        assert(lca == expected_result)
+
+        lca2 = lowest_common_ancestor(G1, V4.name, V7.name)
+        expected_result = V3.name
+        assert(lca2 == expected_result)
+
+        lca3 = lowest_common_ancestor(G1, V7.name, V2.name)
+        expected_result = V1.name
+        assert(lca3 == expected_result)
+
+        lca4 = lowest_common_ancestor(G1, V1.name, V6.name)
+        expected_result = V1.name
+        assert(lca4 == expected_result)
+
+        lca5 = lowest_common_ancestor(G1, V3.name, V7.name)
+        expected_result = V3.name
+        assert(lca5 == expected_result)
+
+        lca6 = lowest_common_ancestor(G1, V7.name, V8.name)
+        expected_result = V1.name
+        assert(lca6 == expected_result)
