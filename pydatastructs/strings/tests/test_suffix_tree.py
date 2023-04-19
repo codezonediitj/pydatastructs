@@ -51,7 +51,7 @@ def test_suffix_tree():
 
     # check methods function
     assert (st.methods() == ['__new__', '__init__',
-            '__repr__', 'find_substring', 'has_substring'])
+            '__repr__', 'find', 'has'])
 
 
 def test_suffix_tree2():
