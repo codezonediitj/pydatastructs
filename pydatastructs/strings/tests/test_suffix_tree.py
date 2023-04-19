@@ -1,62 +1,68 @@
 from pydatastructs.strings.suffix_tree import SuffixTree
 from pydatastructs.utils.misc_util import SuffixTreeNode, SuffixTreeEdge, Suffix
 
+
 def test_suffix_tree():
     """Some functional tests.
     """
 
     # test_empty_string(self):
     st = SuffixTree('')
-    assert (st.find_substring('not there') == -1)
-    assert (st.find_substring('') == -1)
-    assert (st.has_substring('not there') is False)
-    assert (st.has_substring('') is False)
+    assert (st.find('not there') == -1)
+    assert (st.find('') == -1)
+    assert (st.has('not there') is False)
+    assert (st.has('') is False)
 
     # test_repeated_string(self):
     st = SuffixTree("aaa")
-    assert (st.find_substring('a') == 0)
-    assert (st.find_substring('aa') == 0)
-    assert (st.find_substring('aaa') == 0)
-    assert (st.find_substring('b') == -1)
-    assert (st.has_substring('a') is True)
-    assert (st.has_substring('aa') is True)
-    assert (st.has_substring('aaa') is True)
+    assert (st.find('a') == 0)
+    assert (st.find('aa') == 0)
+    assert (st.find('aaa') == 0)
+    assert (st.find('b') == -1)
+    assert (st.has('a') is True)
+    assert (st.has('aa') is True)
+    assert (st.has('aaa') is True)
 
-    assert (st.has_substring('aaaa') is False)
-    assert (st.has_substring('b') is False)
+    assert (st.has('aaaa') is False)
+    assert (st.has('b') is False)
     # case sensitive by default
-    assert (st.has_substring('A') is False)
-    assert (st.find_substring('x') == -1)
+    assert (st.has('A') is False)
+    assert (st.find('x') == -1)
 
     # test with case insensitve
     st = SuffixTree("aaa", True)
-    assert (st.find_substring('a') == 0)
-    assert (st.find_substring('aa') == 0)
-    assert (st.find_substring('aaa') == 0)
-    assert (st.find_substring('b') == -1)
-    assert (st.has_substring('a') is True)
-    assert (st.has_substring('aa') is True)
-    assert (st.has_substring('aaa') is True)
+    assert (st.find('a') == 0)
+    assert (st.find('aa') == 0)
+    assert (st.find('aaa') == 0)
+    assert (st.find('b') == -1)
+    assert (st.has('a') is True)
+    assert (st.has('aa') is True)
+    assert (st.has('aaa') is True)
 
-    assert (st.has_substring('aaaa') is False)
-    assert (st.has_substring('b') is False)
+    assert (st.has('aaaa') is False)
+    assert (st.has('b') is False)
     # case sensitive set manually
-    assert (st.has_substring('A') is True)
-    assert (st.find_substring('x') == -1)
+    assert (st.has('A') is True)
+    assert (st.find('x') == -1)
 
     # test repr method
-    assert (repr(st) == str("\tStart \tEnd \tSuf \tFirst \tLast \tString\n\t0 \t1 \t-1 \t0 \t2 \taaa\n"))
+    assert (repr(st) == str(
+        "\tStart \tEnd \tSuf \tFirst \tLast \tString\n\t0 \t1 \t-1 \t0 \t2 \taaa\n"))
 
     # check methods function
-    assert (st.methods() == ['__new__', '__init__', '__repr__', 'find_substring', 'has_substring'])
+    assert (st.methods() == ['__new__', '__init__',
+            '__repr__', 'find_substring', 'has_substring'])
+
 
 def test_suffix_tree2():
-    f = open("./pydatastructs/strings/tests/long_string.txt", encoding = "iso-8859-1")
+    f = open("./pydatastructs/strings/tests/long_string.txt",
+             encoding="iso-8859-1")
     st = SuffixTree(f.read())
-    assert (st.find_substring('Ukkonen') == 1498)
-    assert (st.find_substring('Optimal') == 11131)
-    assert (st.has_substring('ukkonen') is False)
+    assert (st.find('Ukkonen') == 1498)
+    assert (st.find('Optimal') == 11131)
+    assert (st.has('ukkonen') is False)
     f.close()
+
 
 def test_suffix_tree3():
     # Test SuffixTreeNode
@@ -85,6 +91,7 @@ def test_suffix_tree3():
     assert (suffix.explicit() is False)
     assert (suffix.implicit() is True)
 
+
 def test_suffix_tree4():
     edge = SuffixTreeEdge(0, 5, -1, 1)
     assert (edge.source_node_index == -1)
@@ -102,7 +109,9 @@ def test_suffix_tree4():
 
     # Test the if condition
     assert (edge1.source_node_index == -1)
-    assert (repr(suffix_tree) == "\tStart \tEnd \tSuf \tFirst \tLast \tString\n\t0 \t2 \t-1 \t1 \t5 \tanana\n\t0 \t3 \t-1 \t2 \t5 \tnana\n")
+    assert (repr(suffix_tree) ==
+            "\tStart \tEnd \tSuf \tFirst \tLast \tString\n\t0 \t2 \t-1 \t1 \t5 \tanana\n\t0 \t3 \t-1 \t2 \t5 \tnana\n")
+
 
 if __name__ == '__main__':
     test_suffix_tree()

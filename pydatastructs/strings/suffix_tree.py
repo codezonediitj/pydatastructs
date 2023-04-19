@@ -6,37 +6,48 @@ __all__ = [
 ]
 
 
-# Ukkonen's algorithm gives a O(n) + O(k) contruction time for a suffix tree,
-# where n is the length of the string and k is the size of the alphabet of that string.
-# Ukkonen's is an online algorithm,
-# processing the input sequentially and producing a valid suffix tree at each character.
-
-
 class SuffixTree(object):
-    """A suffix tree for string matching. Uses Ukkonen's algorithm
-    for construction.
+    """
+    Represents a suffix tree.
+
+    Parameters
+    ==========
+    string
+        Required, it represents the sequence of
+        characters around which the construction
+        of the suffix tree takes place
+
+    case_insensitive
+        Optional, through this parameter it's specified
+        if the suffix tree should consider the case of
+        the given characters; otherwise set to False,
+        meaning that 'A' is different from 'a'
+
+    References
+    ==========
+    .. [1] https://en.wikipedia.org/wiki/Suffix_tree
     """
     @classmethod
     def methods(cls):
         return ['__new__', '__init__', '__repr__',
-                'find_substring', 'has_substring']
+                'find', 'has']
 
-    def __new__ (cls, *args, **kwargs):
-        instance = super().__new__(cls)
-        return instance
+    def __new__(cls, string="", case_insensitive=False, **kwargs):
+        if string == "":
+            raise ValueError('Key required.')
 
-    def __init__(self, string, case_insensitive=False):
-
-        self.string = string
-        self.case_insensitive = case_insensitive
-        self.N = len(string) - 1
-        self.nodes = [SuffixTreeNode()]
-        self.edges = {}
-        self.active = Suffix(0, 0, -1)
-        if self.case_insensitive:
-            self.string = self.string.lower()
+        obj = object.__new__(cls)
+        obj.string = string
+        obj.case_insensitive = case_insensitive
+        obj.N = len(string) - 1
+        obj.nodes = [SuffixTreeNode()]
+        obj.edges = {}
+        obj.active = Suffix(0, 0, -1)
+        if obj.case_insensitive:
+            obj.string = obj.string.lower()
         for i in range(len(string)):
-            self._add_prefix(i)
+            obj._add_prefix(i)
+        return obj
 
     def __repr__(self):
 
@@ -55,7 +66,19 @@ class SuffixTree(object):
         return s
 
     def _add_prefix(self, last_char_index):
+        """
+        This method adds a prefix to the suffix tree using Ukkonen's algorithm.
+        It starts from the active node and iteratively inserts the prefix into the tree.
 
+        Parameters
+        ==========
+        last_char_index
+            The index of the last character to be added to the tree.
+
+        Returns
+        =======
+        None
+        """
         last_parent_node = -1
         while True:
             parent_node = self.active.source_node_index
@@ -72,7 +95,8 @@ class SuffixTree(object):
                 parent_node = self._split_edge(e, self.active)
 
             self.nodes.append(SuffixTreeNode())
-            e = SuffixTreeEdge(last_char_index, self.N, parent_node, len(self.nodes) - 1)
+            e = SuffixTreeEdge(last_char_index, self.N,
+                               parent_node, len(self.nodes) - 1)
             self._insert_edge(e)
 
             if last_parent_node > 0:
@@ -90,17 +114,58 @@ class SuffixTree(object):
         self._canonize_suffix(self.active)
 
     def _insert_edge(self, edge):
+        """
+        Inserts a new edge into the suffix tree using the Ukkonen's
+        algorithm.
+
+        Parameters
+        ==========
+        edge
+            The Edge object to be inserted.
+
+        Returns
+        =======
+        None
+        """
         self.edges[(edge.source_node_index,
                     self.string[edge.first_char_index])] = edge
 
     def _remove_edge(self, edge):
+        """
+        Removes the edge passed as parameter from the suffix tree using
+        the Ukkonen algorithm.
+
+        Parameters
+        ==========
+        edge
+            The edge to be removed.
+
+        Returns
+        =======
+        None
+        """
         self.edges.pop(
             (edge.source_node_index, self.string[edge.first_char_index]))
 
     def _split_edge(self, edge, suffix):
+        """
+        Inserts a new node and creates a new edge by splitting 
+        an existing edge in the suffix tree using Ukkonen algorithm.
+
+        Parameters
+        ==========
+        edge
+            The edge to be split.
+        suffix
+            The suffix to be inserted.
+
+        Returns
+        =======
+        None
+        """
         self.nodes.append(SuffixTreeNode())
         e = SuffixTreeEdge(edge.first_char_index, edge.first_char_index + suffix.length, suffix.source_node_index,
-                 len(self.nodes) - 1)
+                           len(self.nodes) - 1)
         self._remove_edge(edge)
         self._insert_edge(e)
         # need to add node for each edge
@@ -111,7 +176,19 @@ class SuffixTree(object):
         return e.dest_node_index
 
     def _canonize_suffix(self, suffix):
+        """
+        Canonize the given suffix using the iterative Ukkonen's algorithm
+        in the suffix tree.
 
+        Parameters
+        ==========
+        suffix
+            The suffix to be canonized.
+
+        Returns
+        =======
+        None
+        """
         if not suffix.explicit():
             e = self.edges[suffix.source_node_index,
                            self.string[suffix.first_char_index]]
@@ -121,8 +198,19 @@ class SuffixTree(object):
                 self._canonize_suffix(suffix)
 
     # Public methods
-    def find_substring(self, substring):
+    def find(self, substring):
+        """
+        Searches for the given substring in the suffix tree using Ukkonen's algorithm.
 
+        Parameters
+        ==========
+        substring
+            The substring to search for.
+
+        Returns
+        =======
+        None
+        """
         if not substring:
             return -1
         if self.case_insensitive:
@@ -140,5 +228,19 @@ class SuffixTree(object):
             curr_node = edge.dest_node_index
         return edge.first_char_index - len(substring) + ln
 
-    def has_substring(self, substring):
-        return self.find_substring(substring) != -1
+    def has(self, substring):
+        """
+        Checks if the given substring is present in the suffix tree using the
+        find() method and returns True if present, False otherwise.
+
+        Parameters
+        ==========
+        substring
+            The substring to be searched for in the suffix tree.
+
+        Returns
+        =======
+        bool
+            True if the substring is present in the suffix tree, False otherwise
+        """
+        return self.find(substring) != -1
