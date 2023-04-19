@@ -571,6 +571,16 @@ class TrieNode(Node):
 
 
 class SuffixTreeNode(object):
+    """
+    Represents a suffix tree node.
+
+    Parameters
+    ==========
+    suffix_node
+        Required, an integer representing the suffix link of the node,
+        if not provided, it takes value -1
+    """
+
     def __new__ (cls, *args, **kwargs):
         instance = super().__new__(cls)
         return instance
@@ -583,6 +593,30 @@ class SuffixTreeNode(object):
 
 
 class SuffixTreeEdge(object):
+    """
+    Represents a suffix tree edge.
+
+    Parameters
+    ==========
+    first_char_index
+        Required, an integer representing the index
+        of the first character of the substring represented
+        by the edge.
+
+    last_char_index
+        Required, an integer representing the index
+        of the last character of the substring represented
+        by the edge.
+
+    source_node_index
+        Required, an integer representing the index
+        of the node at the source end of the edge.
+
+    dest_node_index
+        Required, an integer representing the index
+        of the node at the destination end of the edge.
+    """
+
     def __new__ (cls, *args, **kwargs):
         instance = super().__new__(cls)
         return instance
@@ -602,7 +636,23 @@ class SuffixTreeEdge(object):
 
 
 class Suffix(object):
+    """
+    Represents a suffix.
 
+    Parameters
+    ==========
+    source_node_index
+        Requested, an integer representing the index of the
+        source node for the suffix.
+
+    first_char_index
+        Requested, an integer representing the index of the
+        first character in the suffix.
+
+    last_char_index
+        Requested, an integer representing the index of the
+        last character in the suffix.
+    """
     def __new__ (cls, *args, **kwargs):
         instance = super().__new__(cls)
         return instance
