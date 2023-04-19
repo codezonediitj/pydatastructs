@@ -33,10 +33,7 @@ class SuffixTree(object):
                 'find', 'has']
 
     def __new__(cls, string="", case_insensitive=False, **kwargs):
-        if string == "":
-            raise ValueError('Key required.')
-
-        obj = object.__new__(cls)
+        obj = super().__new__(cls)
         obj.string = string
         obj.case_insensitive = case_insensitive
         obj.N = len(string) - 1
@@ -50,7 +47,6 @@ class SuffixTree(object):
         return obj
 
     def __repr__(self):
-
         curr_index = self.N
         s = "\tStart \tEnd \tSuf \tFirst \tLast \tString\n"
         values = list(self.edges.values())
