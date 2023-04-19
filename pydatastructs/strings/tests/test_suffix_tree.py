@@ -50,8 +50,7 @@ def test_suffix_tree():
         "\tStart \tEnd \tSuf \tFirst \tLast \tString\n\t0 \t1 \t-1 \t0 \t2 \taaa\n"))
 
     # check methods function
-    assert (st.methods() == ['__new__', '__init__',
-            '__repr__', 'find', 'has'])
+    assert (st.methods() == ['__new__', '__repr__', 'find', 'has'])
 
 
 def test_suffix_tree2():
