@@ -33,7 +33,7 @@ class SuffixTree(object):
                 'find', 'has']
 
     def __new__(cls, string="", case_insensitive=False, **kwargs):
-        obj = super().__new__(cls)
+        obj = object.__new__(cls)
         obj.string = string
         obj.case_insensitive = case_insensitive
         obj.N = len(string) - 1
@@ -45,6 +45,9 @@ class SuffixTree(object):
         for i in range(len(string)):
             obj._add_prefix(i)
         return obj
+    
+    def __init__(self, string="", case_insensitive=False):
+        self = self.__new__(SuffixTree, string, case_insensitive)
 
     def __repr__(self):
         curr_index = self.N
