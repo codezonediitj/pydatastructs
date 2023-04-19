@@ -45,7 +45,7 @@ class SuffixTree(object):
         for i in range(len(string)):
             obj._add_prefix(i)
         return obj
-    
+
     def __init__(self, string="", case_insensitive=False):
         self = self.__new__(SuffixTree, string, case_insensitive)
 
@@ -148,7 +148,7 @@ class SuffixTree(object):
 
     def _split_edge(self, edge, suffix):
         """
-        Inserts a new node and creates a new edge by splitting 
+        Inserts a new node and creates a new edge by splitting
         an existing edge in the suffix tree using Ukkonen algorithm.
 
         Parameters
