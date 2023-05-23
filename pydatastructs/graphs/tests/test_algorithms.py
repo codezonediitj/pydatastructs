@@ -2,7 +2,7 @@ from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths, topological_sort,
-topological_sort_parallel)
+topological_sort_parallel, max_flow)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -369,3 +369,70 @@ def test_topological_sort():
 
     _test_topological_sort(topological_sort, "List", "kahn")
     _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)
+
+
+def test_max_flow():
+    def _test_max_flow(ds, algorithm):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+        e = GraphNode('e')
+
+        G = Graph(a, b, c, d, e)
+
+        G.add_edge('a', 'b', 3)
+        G.add_edge('a', 'c', 4)
+        G.add_edge('b', 'c', 2)
+        G.add_edge('b', 'd', 3)
+        G.add_edge('c', 'd', 1)
+        G.add_edge('d', 'e', 6)
+
+        assert max_flow(G, 'a', 'e', algorithm) == 4
+        assert max_flow(G, 'a', 'c', algorithm) == 6
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+        e = GraphNode('e')
+        f = GraphNode('f')
+
+        G2 = Graph(a, b, c, d, e, f)
+
+        G2.add_edge('a', 'b', 16)
+        G2.add_edge('a', 'c', 13)
+        G2.add_edge('b', 'c', 10)
+        G2.add_edge('b', 'd', 12)
+        G2.add_edge('c', 'b', 4)
+        G2.add_edge('c', 'e', 14)
+        G2.add_edge('d', 'c', 9)
+        G2.add_edge('d', 'f', 20)
+        G2.add_edge('e', 'd', 7)
+        G2.add_edge('e', 'f', 4)
+
+        assert max_flow(G2, 'a', 'f', algorithm) == 23
+        assert max_flow(G2, 'a', 'd', algorithm) == 19
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+
+        G3 = Graph(a, b, c, d)
+
+        G3.add_edge('a', 'b', 3)
+        G3.add_edge('a', 'c', 2)
+        G3.add_edge('b', 'c', 2)
+        G3.add_edge('b', 'd', 3)
+        G3.add_edge('c', 'd', 2)
+
+        assert max_flow(G3, 'a', 'd', algorithm) == 5
+        assert max_flow(G3, 'a', 'b', algorithm) == 3
+
+
+    _test_max_flow("List", "edmonds_karp")
+    _test_max_flow("Matrix", "edmonds_karp")
