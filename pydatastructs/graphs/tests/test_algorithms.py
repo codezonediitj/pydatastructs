@@ -17,6 +17,8 @@ def test_breadth_first_search():
 
         G1 = Graph(V1, V2, V3)
 
+        assert G1.num_vertices() == 3
+
         edges = [
             (V1.name, V2.name),
             (V2.name, V3.name),
@@ -25,6 +27,8 @@ def test_breadth_first_search():
 
         for edge in edges:
             G1.add_edge(*edge)
+
+        assert G1.num_edges() == len(edges)
 
         parent = {}
         def bfs_tree(curr_node, next_node, parent):
@@ -54,6 +58,8 @@ def test_breadth_first_search():
 
         for edge in edges:
             G2.add_edge(*edge)
+
+        assert G2.num_edges() == len(edges)
 
         path = []
         def path_finder(curr_node, next_node, dest_node, parent, path):
@@ -436,3 +442,5 @@ def test_max_flow():
 
     _test_max_flow("List", "edmonds_karp")
     _test_max_flow("Matrix", "edmonds_karp")
+    _test_max_flow("List", "dinic")
+    _test_max_flow("Matrix", "dinic")

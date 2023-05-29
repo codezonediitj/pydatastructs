@@ -1067,10 +1067,9 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
     return L
 
 
-def _breadth_first_search_max_flow(graph: Graph, source_node, sink_node, flow_passed):
+def _breadth_first_search_max_flow(graph: Graph, source_node, sink_node, flow_passed, for_dinic=False):
     bfs_queue = Queue()
     parent, currentPathC = {}, {}
-    parent[source_node] = -2
     currentPathC[source_node] = float('inf')
     bfs_queue.append(source_node)
     while len(bfs_queue) != 0:
@@ -1080,11 +1079,11 @@ def _breadth_first_search_max_flow(graph: Graph, source_node, sink_node, flow_pa
             for next_node in next_nodes:
                 capacity = graph.get_edge(curr_node, next_node.name).value
                 fp = flow_passed.get((curr_node, next_node.name), 0)
-                if capacity and parent.get(next_node.name, False) is False and capacity - fp> 0:
+                if capacity and parent.get(next_node.name, False) is False and capacity - fp > 0:
                     parent[next_node.name] = curr_node
                     next_flow = min(currentPathC[curr_node], capacity - fp)
                     currentPathC[next_node.name] = next_flow
-                    if next_node.name == sink_node:
+                    if next_node.name == sink_node and not for_dinic:
                         return (next_flow, parent)
                     bfs_queue.append(next_node.name)
     return (0, parent)
@@ -1106,6 +1105,51 @@ def _max_flow_edmonds_karp_(graph: Graph, source, sink):
             current = prev
         new_flow, parent = _breadth_first_search_max_flow(graph, source, sink, flow_passed)
     return m_flow
+
+
+def _depth_first_search_max_flow_dinic(graph: Graph, u, parent, sink_node, flow, flow_passed):
+    if u == sink_node:
+        return flow
+
+    next_nodes = graph.neighbors(u)
+    if len(next_nodes) != 0:
+        for next_node in next_nodes:
+            capacity = graph.get_edge(u, next_node.name).value
+            fp = flow_passed.get((u, next_node.name), 0)
+            parent_cond = parent.get(next_node.name, None)
+            if parent_cond and parent_cond == u and capacity - fp > 0:
+                path_flow = _depth_first_search_max_flow_dinic(graph,
+                                                               next_node.name,
+                                                               parent, sink_node,
+                                min(flow, capacity - fp), flow_passed)
+                if path_flow > 0:
+                    fp = flow_passed.get((u, next_node.name), 0)
+                    flow_passed[(u, next_node.name)] = fp + path_flow
+                    fp = flow_passed.get((next_node.name, u), 0)
+                    flow_passed[(next_node.name, u)] = fp - path_flow
+                    return path_flow
+    return 0
+
+
+def _max_flow_dinic_(graph: Graph, source, sink):
+    max_flow = 0
+    flow_passed = {}
+    while True:
+        next_flow, parent = _breadth_first_search_max_flow(graph, source, sink, flow_passed, True)
+        if parent.get(sink, False) is False:
+            break
+
+        while True:
+            path_flow = _depth_first_search_max_flow_dinic(graph, source,
+                                                           parent, sink,
+                                                           float('inf'),
+                                                           flow_passed)
+            if path_flow <= 0:
+                break
+            max_flow += path_flow
+
+    return max_flow
+
 
 def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
     raise_if_backend_is_not_python(
