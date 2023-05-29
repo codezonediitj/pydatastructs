@@ -35,6 +35,12 @@ class AdjacencyList(Graph):
         node1 = self.__getattribute__(node1)
         return hasattr(node1, node2)
 
+    def num_vertices(self):
+        return len(self.vertices)
+
+    def num_edges(self):
+        return sum(len(self.neighbors(v)) for v in self.vertices)
+
     def neighbors(self, node):
         node = self.__getattribute__(node)
         return [self.__getattribute__(name) for name in node.adjacent]
