@@ -147,3 +147,17 @@ class Graph(object):
         """
         raise NotImplementedError(
             "This is an abstract method.")
+
+    def num_vertices(self):
+        """
+        Number of vertices
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def num_edges(self):
+        """
+        Number of edges
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")

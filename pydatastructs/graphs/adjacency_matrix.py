@@ -40,6 +40,12 @@ class AdjacencyMatrix(Graph):
         row = self.matrix.get(node1, {})
         return row.get(node2, False) is not False
 
+    def num_vertices(self):
+        return len(self.vertices)
+
+    def num_edges(self):
+        return sum(len(v) for v in self.matrix.values())
+
     def neighbors(self, node):
         node = str(node)
         neighbors = []
