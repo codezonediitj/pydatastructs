@@ -8,6 +8,8 @@ import os
 import pathlib
 import glob
 
+__all__ = ['test']
+
 
 # Root pydatastructs directory
 ROOT_DIR = pathlib.Path(os.path.abspath(__file__)).parents[2]
