@@ -86,7 +86,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
-          pip install pytest-xdist
 
       - name: Build package
         run: |
@@ -94,7 +93,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test(n=4)"
+          python -c "import pydatastructs; pydatastructs.test()"
 
       - name: Build Documentation
         run: |
@@ -128,7 +127,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
-          pip install pytest-xdist
 
       - name: Build package
         run: |
@@ -136,7 +134,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test(n=4)"
+          python -c "import pydatastructs; pydatastructs.test()"
 
       - name: Build Documentation
         run: |
@@ -177,7 +175,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
-          pip install pytest-xdist
 
       - name: Build package
         run: |
@@ -185,7 +182,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test(n=4)"
+          python -c "import pydatastructs; pydatastructs.test()"
 
       - name: Build Documentation
         run: |
