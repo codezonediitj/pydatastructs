@@ -43,7 +43,7 @@ jobs:
           python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage/reports/
