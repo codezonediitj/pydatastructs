@@ -275,6 +275,36 @@ class BinarySearchTree(BinaryTree):
                 walk = self.tree[walk].right
         return (walk, parent) if ret_parent else walk
 
+    def _bound_helper(self, node_idx, bound_key, is_upper=False):
+        if node_idx is None:
+            return None
+        if self.tree[node_idx].key is None:
+            return None
+
+        if self.tree[node_idx].key == bound_key:
+            if not is_upper:
+                return self.tree[node_idx].key
+            else:
+                return self._bound_helper(self.tree[node_idx].right,
+                                            bound_key, is_upper)
+
+        if self.comparator(self.tree[node_idx].key, bound_key):
+            return self._bound_helper(self.tree[node_idx].right,
+                                            bound_key, is_upper)
+        else:
+            res_bound = self._bound_helper(self.tree[node_idx].left,
+                                                   bound_key, is_upper)
+            return res_bound if res_bound is not None else self.tree[node_idx].key
+
+
+    def lower_bound(self, key, **kwargs):
+        return self._bound_helper(self.root_idx, key)
+
+
+    def upper_bound(self, key, **kwargs):
+        return self._bound_helper(self.root_idx, key, True)
+
+
     def delete(self, key, **kwargs):
         (walk, parent) = self.search(key, parent=True)
         a = None
