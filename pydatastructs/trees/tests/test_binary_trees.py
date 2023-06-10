@@ -546,6 +546,10 @@ def test_RedBlackTree():
     assert tree.upper_bound(61) is None
 
     tree = RedBlackTree()
+
+    assert tree.lower_bound(1) is None
+    assert tree.upper_bound(0) is None
+
     tree.insert(10)
     tree.insert(20)
     tree.insert(30)
