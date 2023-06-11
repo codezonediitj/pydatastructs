@@ -319,7 +319,7 @@ class BinarySearchTree(BinaryTree):
         10
         >>> b.lower_bound(7)
         7
-        >>> b.lower_bound(20)
+        >>> print(b.lower_bound(20))
         None
 
         Returns
@@ -354,7 +354,7 @@ class BinarySearchTree(BinaryTree):
         10
         >>> b.upper_bound(7)
         10
-        >>> b.upper_bound(20)
+        >>> print(b.upper_bound(20))
         None
 
         Returns
