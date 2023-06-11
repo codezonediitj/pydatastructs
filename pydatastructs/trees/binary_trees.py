@@ -298,10 +298,72 @@ class BinarySearchTree(BinaryTree):
 
 
     def lower_bound(self, key, **kwargs):
+        """
+        Finds the lower bound of the given key in the tree
+
+        Parameters
+        ==========
+
+        key
+            The key for comparison
+
+        Examples
+        ========
+
+        >>> from pydatastructs.trees import BinarySearchTree as BST
+        >>> b = BST()
+        >>> b.insert(10, 10)
+        >>> b.insert(18, 18)
+        >>> b.insert(7, 7)
+        >>> b.lower_bound(9)
+        10
+        >>> b.lower_bound(7)
+        7
+        >>> b.lower_bound(20)
+        None
+
+        Returns
+        =======
+
+        value
+            The lower bound of the given key.
+            Returns None if the value doesn't exist
+        """
         return self._bound_helper(self.root_idx, key)
 
 
     def upper_bound(self, key, **kwargs):
+        """
+        Finds the upper bound of the given key in the tree
+
+        Parameters
+        ==========
+
+        key
+            The key for comparison
+
+        Examples
+        ========
+
+        >>> from pydatastructs.trees import BinarySearchTree as BST
+        >>> b = BST()
+        >>> b.insert(10, 10)
+        >>> b.insert(18, 18)
+        >>> b.insert(7, 7)
+        >>> b.upper_bound(9)
+        10
+        >>> b.upper_bound(7)
+        10
+        >>> b.upper_bound(20)
+        None
+
+        Returns
+        =======
+
+        value
+            The upper bound of the given key.
+            Returns None if the value doesn't exist
+        """
         return self._bound_helper(self.root_idx, key, True)
 
 
