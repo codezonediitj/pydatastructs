@@ -525,7 +525,31 @@ def test_RedBlackTree():
     assert [node.key for node in in_order] == [2, 6, 7, 10, 15, 16, 17, 18, 25, 30, 40, 60]
     assert [node.key for node in pre_order] == [16, 10, 6, 2, 7, 15, 25, 18, 17, 40, 30, 60]
 
+    assert tree.lower_bound(0) == 2
+    assert tree.lower_bound(2) == 2
+    assert tree.lower_bound(3) == 6
+    assert tree.lower_bound(7) == 7
+    assert tree.lower_bound(25) == 25
+    assert tree.lower_bound(32) == 40
+    assert tree.lower_bound(41) == 60
+    assert tree.lower_bound(60) == 60
+    assert tree.lower_bound(61) is None
+
+    assert tree.upper_bound(0) == 2
+    assert tree.upper_bound(2) == 6
+    assert tree.upper_bound(3) == 6
+    assert tree.upper_bound(7) == 10
+    assert tree.upper_bound(25) == 30
+    assert tree.upper_bound(32) == 40
+    assert tree.upper_bound(41) == 60
+    assert tree.upper_bound(60) is None
+    assert tree.upper_bound(61) is None
+
     tree = RedBlackTree()
+
+    assert tree.lower_bound(1) is None
+    assert tree.upper_bound(0) is None
+
     tree.insert(10)
     tree.insert(20)
     tree.insert(30)
