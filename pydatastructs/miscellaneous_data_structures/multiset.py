@@ -5,6 +5,7 @@ __all__ = [
 
 class Multiset:
     def __init__(self, *args):
+        # TODO: Implement dict in pydatastructs
         self.counter = dict()
         from pydatastructs.trees import RedBlackTree
         self.tree = RedBlackTree()
