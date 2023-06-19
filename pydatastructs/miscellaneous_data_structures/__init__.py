@@ -45,3 +45,8 @@ from .algorithms import (
     RangeQueryDynamic
 )
 __all__.extend(algorithms.__all__)
+
+from .multiset import (
+    Multiset
+)
+__all__.extend(multiset.__all__)
