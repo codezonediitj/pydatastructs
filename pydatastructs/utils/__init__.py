@@ -1,6 +1,6 @@
 __all__ = []
 
-from . import misc_util
+from . import misc_util, _extensions
 from .misc_util import (
     TreeNode,
     MAryTreeNode,

@@ -16,6 +16,10 @@ static char* PyObject_AsString(PyObject* obj) {
     return PyBytes_AS_STRING(PyUnicode_AsEncodedString(obj, _encoding, _invalid_char));
 }
 
+static std::string PyObject_AsStdString(PyObject* obj) {
+    return std::string(PyObject_AsString(PyObject_Str(obj)));
+}
+
 static PyObject* __str__(PyObject** array, size_t size, long last_pos_filled=-1) {
     std::string array___str__ = "[";
     size_t end = last_pos_filled == -1 ? size : (size_t) (last_pos_filled + 1);

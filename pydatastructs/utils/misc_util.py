@@ -1,5 +1,6 @@
 import math, pydatastructs
 from enum import Enum
+from pydatastructs.utils._backend.cpp import _utils
 
 __all__ = [
     'TreeNode',
@@ -456,13 +457,15 @@ class AdjacencyMatrixGraphNode(GraphNode):
 
     def __new__(cls, name, data=None,
                 **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
-        obj = GraphNode.__new__(cls)
-        obj.name, obj.data, obj.is_connected = \
-            str(name), data, None
-        obj._impl = 'adjacency_matrix'
-        return obj
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.PYTHON:
+            obj = GraphNode.__new__(cls)
+            obj.name, obj.data, obj.is_connected = \
+                str(name), data, None
+            obj._impl = 'adjacency_matrix'
+            return obj
+        else:
+            return _utils.AdjacencyMatrixGraphNodeCpp(str(name), data)
 
 class GraphEdge(object):
     """
@@ -486,12 +489,14 @@ class GraphEdge(object):
 
     def __new__(cls, node1, node2, value=None,
                 **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
-        obj = object.__new__(cls)
-        obj.source, obj.target = node1, node2
-        obj.value = value
-        return obj
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.PYTHON:
+            obj = object.__new__(cls)
+            obj.source, obj.target = node1, node2
+            obj.value = value
+            return obj
+        else:
+            return _utils.GraphEdgeCpp(node1, node2, value)
 
     def __str__(self):
         return str((self.source.name, self.target.name))
