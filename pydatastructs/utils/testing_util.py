@@ -15,7 +15,7 @@ __all__ = ['test']
 ROOT_DIR = pathlib.Path(os.path.abspath(__file__)).parents[2]
 
 
-SKIP_FILES = ['test_util.py']
+SKIP_FILES = ['testing_util.py']
 
 def test(submodules=None, **kwargs):
     """

@@ -1,7 +1,7 @@
 __all__ = []
 
 from . import misc_util
-from . import test_util
+from . import testing_util
 from .misc_util import (
     TreeNode,
     MAryTreeNode,
@@ -20,7 +20,7 @@ from .misc_util import (
     minimum,
     Backend
 )
-from .test_util import test
+from .testing_util import test
 
 __all__.extend(misc_util.__all__)
-__all__.extend(test_util.__all__)
+__all__.extend(testing_util.__all__)
