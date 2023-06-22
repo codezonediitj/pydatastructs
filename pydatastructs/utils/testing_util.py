@@ -17,7 +17,8 @@ ROOT_DIR = pathlib.Path(os.path.abspath(__file__)).parents[2]
 
 SKIP_FILES = ['testing_util.py']
 
-def test(submodules=None, include_benchmarks=False, **kwargs):
+def test(submodules=None, include_benchmarks=False,
+         benchmarks_size=1000, **kwargs):
     """
     Runs the library tests using pytest
 
@@ -28,6 +29,8 @@ def test(submodules=None, include_benchmarks=False, **kwargs):
         List of submodules test to run. By default runs
         all the tests
     """
+    # set benchmarks size
+    os.environ["PYDATASTRUCTS_BENCHMARK_SIZE"] = benchmarks_size
     test_files = []
     if submodules:
         if isinstance(submodules, str):
