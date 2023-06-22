@@ -7,6 +7,7 @@ except ImportError:
 import os
 import pathlib
 import glob
+import types
 
 __all__ = ['test']
 
@@ -33,7 +34,7 @@ def test(submodules=None, include_benchmarks=False,
     os.environ["PYDATASTRUCTS_BENCHMARK_SIZE"] = str(benchmarks_size)
     test_files = []
     if submodules:
-        if isinstance(submodules, str):
+        if not isinstance(submodules, (list, tuple)):
             submodules = [submodules]
         for path in glob.glob(f'{ROOT_DIR}/**/test_*.py', recursive=True):
             skip_test = False
@@ -43,7 +44,13 @@ def test(submodules=None, include_benchmarks=False,
                     break
             if skip_test:
                 continue
-            for sub in submodules:
+            for sub_var in submodules:
+                if isinstance(sub_var, types.ModuleType):
+                    sub = sub_var.__name__.split('.')[-1]
+                elif isinstance(sub_var, str):
+                    sub = sub_var
+                else:
+                    raise Exception("Submodule should be of type: str or module")
                 if sub in path:
                     if not include_benchmarks:
                         if not 'benchmarks' in path:
