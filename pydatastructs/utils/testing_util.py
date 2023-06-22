@@ -30,7 +30,7 @@ def test(submodules=None, include_benchmarks=False,
         all the tests
     """
     # set benchmarks size
-    os.environ["PYDATASTRUCTS_BENCHMARK_SIZE"] = benchmarks_size
+    os.environ["PYDATASTRUCTS_BENCHMARK_SIZE"] = str(benchmarks_size)
     test_files = []
     if submodules:
         if isinstance(submodules, str):
