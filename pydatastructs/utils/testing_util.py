@@ -17,7 +17,7 @@ ROOT_DIR = pathlib.Path(os.path.abspath(__file__)).parents[2]
 
 SKIP_FILES = ['testing_util.py']
 
-def test(submodules=None, **kwargs):
+def test(submodules=None, include_benchmarks=False, **kwargs):
     """
     Runs the library tests using pytest
 
@@ -42,7 +42,11 @@ def test(submodules=None, **kwargs):
                 continue
             for sub in submodules:
                 if sub in path:
-                    test_files.append(path)
+                    if not include_benchmarks:
+                        if not 'benchmarks' in path:
+                            test_files.append(path)
+                    else:
+                        test_files.append(path)
                     break
     else:
         for path in glob.glob(f'{ROOT_DIR}/**/test_*.py', recursive=True):
@@ -53,7 +57,11 @@ def test(submodules=None, **kwargs):
                     break
             if skip_test:
                 continue
-            test_files.append(path)
+            if not include_benchmarks:
+                if not 'benchmarks' in path:
+                    test_files.append(path)
+            else:
+                test_files.append(path)
 
     extra_args = []
     if not kwargs.get("n", False) is False:
