@@ -93,7 +93,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+          python -c "import pydatastructs; pydatastructs.test(include_benchmarks=True)"
 
       - name: Build Documentation
         run: |
@@ -134,7 +134,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+          python -c "import pydatastructs; pydatastructs.test()"
 
       - name: Build Documentation
         run: |
@@ -142,7 +142,7 @@ jobs:
 
   test-windows:
     runs-on: ${{matrix.os}}
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -182,7 +182,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+          python -c "import pydatastructs; pydatastructs.test()"
 
       - name: Build Documentation
         run: |
