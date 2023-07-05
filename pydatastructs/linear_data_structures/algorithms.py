@@ -1361,8 +1361,9 @@ def bubble_sort(array, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Bubble_sort
     """
-    raise_if_backend_is_not_python(
-            bubble_sort, kwargs.get('backend', Backend.PYTHON))
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.bubble_sort(array, **kwargs)
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
