@@ -1,8 +1,11 @@
 #include <Python.h>
 #include "quick_sort.hpp"
+#include "bubble_sort.hpp"
 
 static PyMethodDef algorithms_PyMethodDef[] = {
     {"quick_sort", (PyCFunction) quick_sort,
+     METH_VARARGS | METH_KEYWORDS, ""},
+    {"bubble_sort", (PyCFunction) bubble_sort,
      METH_VARARGS | METH_KEYWORDS, ""},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };

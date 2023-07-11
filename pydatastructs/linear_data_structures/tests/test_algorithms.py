@@ -117,6 +117,7 @@ def test_quick_sort():
 
 def test_bubble_sort():
     _test_common_sort(bubble_sort)
+    _test_common_sort(bubble_sort, backend=Backend.CPP)
 
 def test_selection_sort():
     _test_common_sort(selection_sort)
