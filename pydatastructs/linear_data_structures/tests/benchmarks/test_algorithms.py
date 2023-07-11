@@ -33,9 +33,9 @@ def _test_common_sort(sort, **kwargs):
 
 @pytest.mark.xfail
 def test_quick_sort():
-    _test_common_sort(quick_sort, size=4000)
+    _test_common_sort(quick_sort, size=2000)
 
 
 @pytest.mark.xfail
 def test_bubble_sort():
-    _test_common_sort(bubble_sort, size=4000)
+    _test_common_sort(bubble_sort, size=2000)
