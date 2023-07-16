@@ -13,7 +13,7 @@ __all__ = ['test']
 
 
 # Root pydatastructs directory
-ROOT_DIR = pathlib.Path(os.path.abspath(__file__)).parents[2]
+ROOT_DIR = pathlib.Path(os.path.abspath(__file__)).parents[1]
 
 
 SKIP_FILES = ['testing_util.py']
