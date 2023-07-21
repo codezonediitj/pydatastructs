@@ -9,6 +9,8 @@ static PyMethodDef algorithms_PyMethodDef[] = {
      METH_VARARGS | METH_KEYWORDS, ""},
     {"selection_sort", (PyCFunction) selection_sort,
      METH_VARARGS | METH_KEYWORDS, ""},
+    {"insertion_sort", (PyCFunction) insertion_sort,
+     METH_VARARGS | METH_KEYWORDS, ""},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

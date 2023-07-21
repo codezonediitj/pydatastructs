@@ -125,6 +125,7 @@ def test_selection_sort():
 
 def test_insertion_sort():
     _test_common_sort(insertion_sort)
+    _test_common_sort(insertion_sort, backend=Backend.CPP)
 
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray
