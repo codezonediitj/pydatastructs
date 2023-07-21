@@ -1,6 +1,6 @@
 #include <Python.h>
 #include "quick_sort.hpp"
-#include "n2_square_sort.hpp"
+#include "quadratic_time_sort.hpp"
 
 static PyMethodDef algorithms_PyMethodDef[] = {
     {"quick_sort", (PyCFunction) quick_sort,
