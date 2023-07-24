@@ -907,8 +907,9 @@ def is_ordered(array, **kwargs):
     >>> is_ordered(arr1, start=0, end=1, comp=lambda u, v: u > v)
     False
     """
-    raise_if_backend_is_not_python(
-        is_ordered, kwargs.get('backend', Backend.PYTHON))
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.is_ordered(array, **kwargs)
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
