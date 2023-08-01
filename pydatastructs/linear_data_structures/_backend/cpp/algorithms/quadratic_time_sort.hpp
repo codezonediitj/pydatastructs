@@ -1,5 +1,5 @@
-#ifndef LINEAR_DATA_STRUCTURES_ALGORITHMS_N2_SQUARE_SORT_HPP
-#define LINEAR_DATA_STRUCTURES_ALGORITHMS_N2_SQUARE_SORT_HPP
+#ifndef LINEAR_DATA_STRUCTURES_ALGORITHMS_QUADRATIC_TIME_SORT_HPP
+#define LINEAR_DATA_STRUCTURES_ALGORITHMS_QUADRATIC_TIME_SORT_HPP
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
@@ -126,5 +126,63 @@ static PyObject* selection_sort(PyObject* self, PyObject* args, PyObject* kwds) 
     Py_INCREF(args0);
     return args0;
 }
+
+
+// Insertion Sort
+static PyObject* insertion_sort_impl(PyObject* array, size_t lower, size_t upper,
+    PyObject* comp) {
+    for (size_t i = lower + 1; i < upper + 1; i++) {
+        PyObject* i_PyObject = PyLong_FromSize_t(i);
+        PyObject* temp = PyObject_GetItem(array, i_PyObject);
+        size_t j = i;
+        while (j > lower && _comp(PyObject_GetItem(array, PyLong_FromSize_t(j-1)),
+                        temp, comp) != 1) {
+            PyObject_SetItem(array, PyLong_FromSize_t(j),
+                        PyObject_GetItem(array, PyLong_FromSize_t(j-1)));
+            j -= 1;
+        }
+        PyObject_SetItem(array, PyLong_FromSize_t(j), temp);
+    }
+    return array;
+}
+
+static PyObject* insertion_sort(PyObject* self, PyObject* args, PyObject* kwds) {
+    PyObject *args0 = NULL, *start = NULL, *end = NULL;
+    PyObject *comp = NULL, *pick_pivot_element = NULL;
+    size_t lower, upper;
+    args0 = PyObject_GetItem(args, PyZero);
+    int is_DynamicOneDimensionalArray = _check_type(args0, &DynamicOneDimensionalArrayType);
+    int is_OneDimensionalArray = _check_type(args0, &OneDimensionalArrayType);
+    if( !is_DynamicOneDimensionalArray && !is_OneDimensionalArray ) {
+        raise_exception_if_not_array(args0);
+        return NULL;
+    }
+    comp = PyObject_GetItem(kwds, PyUnicode_FromString("comp"));
+    if( comp == NULL ) {
+        PyErr_Clear();
+    }
+    start = PyObject_GetItem(kwds, PyUnicode_FromString("start"));
+    if( start == NULL ) {
+        PyErr_Clear();
+        lower = 0;
+    } else {
+        lower = PyLong_AsSize_t(start);
+    }
+    end = PyObject_GetItem(kwds, PyUnicode_FromString("end"));
+    if( end == NULL ) {
+        PyErr_Clear();
+        upper = PyObject_Length(args0) - 1;
+    } else {
+        upper = PyLong_AsSize_t(end);
+    }
+
+    args0 = insertion_sort_impl(args0, lower, upper, comp);
+    if( is_DynamicOneDimensionalArray ) {
+        PyObject_CallMethod(args0, "_modify", "O", Py_True);
+    }
+    Py_INCREF(args0);
+    return args0;
+}
+
 
 #endif

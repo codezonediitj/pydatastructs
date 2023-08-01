@@ -125,6 +125,7 @@ def test_selection_sort():
 
 def test_insertion_sort():
     _test_common_sort(insertion_sort)
+    _test_common_sort(insertion_sort, backend=Backend.CPP)
 
 def test_matrix_multiply_parallel():
     ODA = OneDimensionalArray
@@ -176,34 +177,40 @@ def test_longest_common_sequence():
     assert str(output) == '[]'
 
 def test_is_ordered():
-    ODA = OneDimensionalArray
-    DODA = DynamicOneDimensionalArray
+    def _test_inner_ordered(*args, **kwargs):
+        ODA = OneDimensionalArray
+        DODA = DynamicOneDimensionalArray
 
-    expected_result = True
-    arr = ODA(int, [1, 2, 5, 6])
-    output = is_ordered(arr)
-    assert output == expected_result
+        expected_result = True
+        arr = ODA(int, [1, 2, 5, 6])
+        output = is_ordered(arr, **kwargs)
+        assert output == expected_result
 
-    expected_result = False
-    arr1 = ODA(int, [4, 3, 2, 1])
-    output = is_ordered(arr1)
-    assert output == expected_result
+        expected_result = False
+        arr1 = ODA(int, [4, 3, 2, 1])
+        output = is_ordered(arr1, **kwargs)
+        assert output == expected_result
 
-    expected_result = True
-    arr2 = ODA(int, [6, 1, 2, 3, 4, 5])
-    output = is_ordered(arr2, start=1, end=5)
-    assert output == expected_result
+        expected_result = True
+        arr2 = ODA(int, [6, 1, 2, 3, 4, 5])
+        output = is_ordered(arr2, start=1, end=5, **kwargs)
+        assert output == expected_result
 
-    expected_result = True
-    arr3 = ODA(int, [0, -1, -2, -3, -4, 4])
-    output = is_ordered(arr3, start=1, end=4, comp=lambda u, v: u > v)
-    assert output == expected_result
+        expected_result = True
+        arr3 = ODA(int, [0, -1, -2, -3, -4, 4])
+        output = is_ordered(arr3, start=1, end=4,
+                            comp=lambda u, v: u > v, **kwargs)
+        assert output == expected_result
 
-    expected_result = True
-    arr4 = DODA(int, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-    arr4.delete(0)
-    output = is_ordered(arr4)
-    assert output == expected_result
+        expected_result = True
+        arr4 = DODA(int, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        arr4.delete(0)
+        output = is_ordered(arr4, **kwargs)
+        assert output == expected_result
+
+    _test_inner_ordered()
+    _test_inner_ordered(backend=Backend.CPP)
+
 
 def test_upper_bound():
     ODA = OneDimensionalArray

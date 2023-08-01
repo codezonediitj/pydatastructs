@@ -1,6 +1,7 @@
 #include <Python.h>
 #include "quick_sort.hpp"
-#include "n2_square_sort.hpp"
+#include "quadratic_time_sort.hpp"
+#include "misc_algorithms.hpp"
 
 static PyMethodDef algorithms_PyMethodDef[] = {
     {"quick_sort", (PyCFunction) quick_sort,
@@ -8,6 +9,10 @@ static PyMethodDef algorithms_PyMethodDef[] = {
     {"bubble_sort", (PyCFunction) bubble_sort,
      METH_VARARGS | METH_KEYWORDS, ""},
     {"selection_sort", (PyCFunction) selection_sort,
+     METH_VARARGS | METH_KEYWORDS, ""},
+    {"insertion_sort", (PyCFunction) insertion_sort,
+     METH_VARARGS | METH_KEYWORDS, ""},
+    {"is_ordered", (PyCFunction) is_ordered,
      METH_VARARGS | METH_KEYWORDS, ""},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
