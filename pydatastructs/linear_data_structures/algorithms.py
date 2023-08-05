@@ -1573,7 +1573,7 @@ def linear_search(array, value, **kwargs):
     """
     backend = kwargs.pop("backend", Backend.PYTHON)
     if backend == Backend.CPP:
-        return _algorithms.is_ordered(array, **kwargs)
+        return _algorithms.linear_search(array, value, **kwargs)
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
 
@@ -1643,7 +1643,7 @@ def binary_search(array, value, **kwargs):
     """
     backend = kwargs.pop("backend", Backend.PYTHON)
     if backend == Backend.CPP:
-        return _algorithms.is_ordered(array, **kwargs)
+        return _algorithms.binary_search(array, value, **kwargs)
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
