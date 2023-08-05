@@ -18,6 +18,8 @@ static PyMethodDef algorithms_PyMethodDef[] = {
      METH_VARARGS | METH_KEYWORDS, ""},
     {"binary_search", (PyCFunction) binary_search,
      METH_VARARGS | METH_KEYWORDS, ""},
+    {"jump_search", (PyCFunction) jump_search,
+     METH_VARARGS | METH_KEYWORDS, ""},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

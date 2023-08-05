@@ -1,7 +1,7 @@
 import random, timeit, functools, os, pytest
 from pydatastructs import (OneDimensionalArray, Backend,
     DynamicOneDimensionalArray, quick_sort, bubble_sort, selection_sort,
-    insertion_sort, is_ordered, linear_search, binary_search)
+    insertion_sort, is_ordered, linear_search, binary_search, jump_search)
 
 def _test_common_sort(sort, **kwargs):
     cpp = Backend.CPP
@@ -107,3 +107,4 @@ def test_search():
     data = [random.randint(0, 2 * size) for _ in range(size)]
     _common(linear_search, OneDimensionalArray, int, data, backend=cpp)
     _common(binary_search, OneDimensionalArray, int, data, backend=cpp)
+    _common(jump_search, OneDimensionalArray, int, data, backend=cpp)
