@@ -1571,8 +1571,9 @@ def linear_search(array, value, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Linear_search
     """
-    raise_if_backend_is_not_python(
-            linear_search, kwargs.get('backend', Backend.PYTHON))
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.linear_search(array, value, **kwargs)
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
 
@@ -1640,8 +1641,9 @@ def binary_search(array, value, **kwargs):
     This algorithm assumes that the portion of the array
     to be searched is already sorted.
     """
-    raise_if_backend_is_not_python(
-            binary_search, kwargs.get('backend', Backend.PYTHON))
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.binary_search(array, value, **kwargs)
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
@@ -1717,8 +1719,9 @@ def jump_search(array, value, **kwargs):
     This algorithm assumes that the portion of the array
     to be searched is already sorted.
     """
-    raise_if_backend_is_not_python(
-            jump_search, kwargs.get('backend', Backend.PYTHON))
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.jump_search(array, value, **kwargs)
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u < v)

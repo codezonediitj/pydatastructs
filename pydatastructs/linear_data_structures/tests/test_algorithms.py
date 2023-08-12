@@ -373,16 +373,16 @@ def test_next_prev_permutation():
         _, orig_array = next_permutation(prev_array)
         assert str(orig_array) == str(array)
 
-def _test_common_search(search_func, sort_array=True):
+def _test_common_search(search_func, sort_array=True, **kwargs):
     ODA = OneDimensionalArray
 
     array = ODA(int, [1, 2, 5, 7, 10, 29, 40])
     for i in range(len(array)):
-        assert i == search_func(array, array[i])
+        assert i == search_func(array, array[i], **kwargs)
 
     checker_array = [None, None, 2, 3, 4, 5, None]
     for i in range(len(array)):
-        assert checker_array[i] == search_func(array, array[i], start=2, end=5)
+        assert checker_array[i] == search_func(array, array[i], start=2, end=5, **kwargs)
 
     random.seed(1000)
 
@@ -395,16 +395,19 @@ def _test_common_search(search_func, sort_array=True):
         array = ODA(int, list(data))
 
         for i in range(len(array)):
-            assert search_func(array, array[i]) == i
+            assert search_func(array, array[i], **kwargs) == i
 
         for _ in range(50):
-            assert search_func(array, random.randint(10001, 50000)) is None
+            assert search_func(array, random.randint(10001, 50000), **kwargs) is None
 
 def test_linear_search():
     _test_common_search(linear_search, sort_array=False)
+    _test_common_search(linear_search, sort_array=False, backend=Backend.CPP)
 
 def test_binary_search():
     _test_common_search(binary_search)
+    _test_common_search(binary_search, backend=Backend.CPP)
 
 def test_jump_search():
     _test_common_search(jump_search)
+    _test_common_search(jump_search, backend=Backend.CPP)

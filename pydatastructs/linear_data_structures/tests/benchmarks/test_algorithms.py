@@ -1,7 +1,7 @@
 import random, timeit, functools, os, pytest
 from pydatastructs import (OneDimensionalArray, Backend,
     DynamicOneDimensionalArray, quick_sort, bubble_sort, selection_sort,
-    insertion_sort, is_ordered)
+    insertion_sort, is_ordered, linear_search, binary_search, jump_search)
 
 def _test_common_sort(sort, **kwargs):
     cpp = Backend.CPP
@@ -80,3 +80,31 @@ def test_is_ordered():
     # Case 3: float
     data = [random.random() * 2 * size for _ in range(size)]
     _common(OneDimensionalArray, float, data, backend=cpp)
+
+
+@pytest.mark.xfail
+def test_search():
+    cpp = Backend.CPP
+    repeat = 2
+    number = 2
+
+    size = int(os.environ.get("PYDATASTRUCTS_BENCHMARK_SIZE", "4000"))
+
+    def _common(search_func, array_type, dtype, *args, **kwargs):
+        array = array_type(dtype, *args, **kwargs)
+
+        timer_python = timeit.Timer(functools.partial(search_func, array, array[size-1]))
+        python_backend = min(timer_python.repeat(repeat, number))
+
+        backend_dict = {"backend": cpp}
+        timer_cpp = timeit.Timer(functools.partial(search_func, array, array[size-1],
+                                                   **backend_dict))
+        cpp_backend = min(timer_cpp.repeat(repeat, number))
+
+        assert cpp_backend < python_backend
+
+    # Case 1: int
+    data = [random.randint(0, 2 * size) for _ in range(size)]
+    _common(linear_search, OneDimensionalArray, int, data, backend=cpp)
+    _common(binary_search, OneDimensionalArray, int, data, backend=cpp)
+    _common(jump_search, OneDimensionalArray, int, data, backend=cpp)
