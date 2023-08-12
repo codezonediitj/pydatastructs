@@ -107,6 +107,15 @@ class ArraySegmentTree(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
+    def update_range(self, start, end, value):
+        """
+        Updates [start, end] range according
+        to the function provided while constructing
+        `ArraySegmentTree` object.
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")
+
     def __str__(self):
         recursion_stack = Stack(implementation='linked_list')
         recursion_stack.push(self._root)
@@ -357,8 +366,6 @@ class OneDimensionalArraySegmentTreeLazy(OneDimensionalArraySegmentTree):
         if not self.is_ready:
             raise ValueError("{} tree is not built yet. ".format(self) +
                              "Call .build method to prepare the segment tree.")
-        assert self._root is not None
-        assert self._lazy_node is not None
         self._set_single_element(self._root, self._lazy_node, 0, len(self._array) - 1,
                                  index, value)
 
