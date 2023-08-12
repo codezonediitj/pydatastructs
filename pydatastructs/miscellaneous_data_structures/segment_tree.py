@@ -52,7 +52,7 @@ class ArraySegmentTree(object):
     1
     >>> s_t.query(1, 3)
     2
-    >>> s_t.update(2, -1)
+    >>> s_t[2] = -1
     >>> s_t.query(1, 3)
     -1
     >>> arr = OneDimensionalArray(int, [1, 2])
@@ -66,10 +66,18 @@ class ArraySegmentTree(object):
 
     .. [1] https://cp-algorithms.com/data_structures/segment_tree.html
     """
-    def __new__(cls, array, func, **kwargs):
+    def __new__(cls, array, func, is_lazy=False, **kwargs):
 
         dimensions = kwargs.pop("dimensions", 1)
         if dimensions == 1:
+            if is_lazy:
+                if kwargs.get('neutral_element') is not None:
+                    neutral_element = kwargs.pop('neutral_element')
+                    return OneDimensionalArraySegmentTreeLazy(array, neutral_element,
+                                                              func, **kwargs)
+                else:
+                    raise ValueError("ArraySegmentTree with lazy implementation should have a "
+                                      "neutral_element argument")
             return OneDimensionalArraySegmentTree(array, func, **kwargs)
         else:
             raise NotImplementedError("ArraySegmentTree do not support "
@@ -83,7 +91,7 @@ class ArraySegmentTree(object):
         raise NotImplementedError(
             "This is an abstract method.")
 
-    def update(self, index, value):
+    def __setitem__(self, index, value):
         """
         Updates the value at given index.
         """
@@ -132,7 +140,7 @@ class OneDimensionalArraySegmentTree(ArraySegmentTree):
 
     @classmethod
     def methods(self):
-        return ['__new__', 'build', 'update',
+        return ['__new__', 'build',
                 'query']
 
     @property
@@ -172,7 +180,7 @@ class OneDimensionalArraySegmentTree(ArraySegmentTree):
                     node.right = right_node
                     recursion_stack.push(right_node)
 
-    def update(self, index, value):
+    def __setitem__(self, index, value):
         if not self.is_ready:
             raise ValueError("{} tree is not built yet. ".format(self) +
                              "Call .build method to prepare the segment tree.")
@@ -247,7 +255,7 @@ class OneDimensionalArraySegmentTreeLazy(OneDimensionalArraySegmentTree):
     @classmethod
     def methods(self):
         return ['__new__', 'build', 'update_range',
-                'update', 'query']
+                'query']
 
     @property
     def is_ready(self):
@@ -279,7 +287,7 @@ class OneDimensionalArraySegmentTreeLazy(OneDimensionalArraySegmentTree):
                 node.right is not None):
                 recursion_stack.pop()
                 node.data = self._func((node.left.data, node.right.data))
-                lazy_node.data = self._func((node.left.data, node.right.data))
+                lazy_node.data = self._neutral_element
             else:
                 mid = (start + end) // 2
                 if node.left is None:
@@ -291,7 +299,7 @@ class OneDimensionalArraySegmentTreeLazy(OneDimensionalArraySegmentTree):
                 if node.right is None:
                     right_node = TreeNode((mid + 1, end), None)
                     node.right = right_node
-                    lazy_rig_node = TreeNode((start, mid), None)
+                    lazy_rig_node = TreeNode((mid + 1, end), None)
                     lazy_node.right = lazy_rig_node
                     recursion_stack.push((right_node, lazy_rig_node))
 
@@ -326,12 +334,33 @@ class OneDimensionalArraySegmentTreeLazy(OneDimensionalArraySegmentTree):
         self._update_range(self._root, self._lazy_node, 0, len(self._array) - 1,
                            start, end, value)
 
-    def update(self, index, value):
+
+    def _set_single_element(self, node, lazy_node, start, end, index, value):
+        if lazy_node.data != self._neutral_element:
+            node.data = self._func((node.data, lazy_node.data))
+            if start != end:
+                lazy_node.left.data = self._func((lazy_node.left.data, lazy_node.data))
+                lazy_node.right.data = self._func((lazy_node.right.data, lazy_node.data))
+            lazy_node.data = self._neutral_element
+        if index == start and end == index:
+            node.data = value
+            return
+        mid = (start + end) // 2
+        if start <= index and index <= mid:
+            self._set_single_element(node.left, lazy_node.left, start, mid, index, value)
+        else:
+            self._set_single_element(node.right, lazy_node.right, mid + 1, end, index, value)
+        node.data = self._func((node.left.data, node.right.data))
+
+
+    def __setitem__(self, index, value):
         if not self.is_ready:
             raise ValueError("{} tree is not built yet. ".format(self) +
                              "Call .build method to prepare the segment tree.")
-        self._update_range(self._root, self._lazy_node, 0, len(self._array) - 1,
-                           index, index, value)
+        assert self._root is not None
+        assert self._lazy_node is not None
+        self._set_single_element(self._root, self._lazy_node, 0, len(self._array) - 1,
+                                 index, value)
 
     def _query(self, node, lazy_node, start, end, l, r):
         if r < start or end < l:
@@ -357,5 +386,5 @@ class OneDimensionalArraySegmentTreeLazy(OneDimensionalArraySegmentTree):
             raise ValueError("{} tree is not built yet. ".format(self) +
                              "Call .build method to prepare the segment tree.")
 
-        return self._query(self._root, 0, len(self._array) - 1,
+        return self._query(self._root, self._lazy_node, 0, len(self._array) - 1,
                            start, end)

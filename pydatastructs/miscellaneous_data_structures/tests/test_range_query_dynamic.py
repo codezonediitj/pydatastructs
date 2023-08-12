@@ -25,11 +25,12 @@ def _test_RangeQueryDynamic_common(func, gen_expected):
             for j in range(i + 1, array_size):
                 inputs.append((i, j))
 
-        data_structures = ["array", "segment_tree"]
-        for ds in data_structures:
+        data_structures = {"array":{}, "segment_tree": {},
+                           "segment_tree": {'lazy': True, 'neutral_element': int(1e10)}}
+        for ds, kw in data_structures.items():
             data = random.sample(range(-2*array_size, 2*array_size), array_size)
             array = OneDimensionalArray(int, data)
-            rmq = RangeQueryDynamic(array, func, data_structure=ds)
+            rmq = RangeQueryDynamic(array, func, data_structure=ds, **kw)
             for input in inputs:
                 assert rmq.query(input[0], input[1]) == gen_expected(data, input[0], input[1])
 

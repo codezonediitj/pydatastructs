@@ -318,7 +318,8 @@ class RangeQueryDynamicSegmentTree(RangeQueryDynamic):
         raise_if_backend_is_not_python(
             cls, kwargs.pop('backend', Backend.PYTHON))
         obj = object.__new__(cls)
-        obj.segment_tree = ArraySegmentTree(array, func, dimensions=1)
+        is_lazy = kwargs.pop('lazy', False)
+        obj.segment_tree = ArraySegmentTree(array, func, dimensions=1, is_lazy=is_lazy, **kwargs)
         obj.segment_tree.build()
         obj.bounds = (0, len(array))
         return obj
@@ -332,4 +333,4 @@ class RangeQueryDynamicSegmentTree(RangeQueryDynamic):
         return self.segment_tree.query(start, end)
 
     def update(self, index, value):
-        self.segment_tree.update(index, value)
+        self.segment_tree[index] = value
