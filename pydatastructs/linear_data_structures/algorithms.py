@@ -29,7 +29,8 @@ __all__ = [
     'binary_search',
     'jump_search',
     'selection_sort',
-    'insertion_sort'
+    'insertion_sort',
+    'intro_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1740,3 +1741,108 @@ def jump_search(array, value, **kwargs):
         prev += 1
 
     return None
+
+def intro_sort(array, **kwargs) -> Array:
+    """
+    Performs quick sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    maxdepth: Enables the user to define the maximum
+        recursion depth, takes value 2*log(length(A)) 
+        by default (ref: Wikipedia[1]).
+    ins_threshold: Threshold under which insertion
+        sort has to be performed, default value is 
+        16 (ref: Wikipedia[1]).
+    pick_pivot_element: lambda/function
+        The function implementing the pivot picking
+        logic for quick sort. Should accept, `low`,
+        `high`, and `array` in this order, where `low`
+        represents the left end of the current partition,
+        `high` represents the right end, and `array` is
+        the original input array to `intro_sort` function.
+        Optional, by default, picks the element at `high`
+        index of the current partition as pivot.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+    
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray as ODA, intro_sort
+    >>> arr = ODA(int, [5, 78, 1, 0])
+    >>> out = intro_sort(arr)
+    >>> str(out)
+    '[0, 1, 5, 78]'
+    >>> arr = ODA(int, [21, 37, 5])
+    >>> out = intro_sort(arr)
+    >>> str(out)
+    '[5, 21, 37]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Introsort
+    """
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.intro_sort(array, **kwargs)
+    from pydatastructs import Stack
+    # Always sorts in increasing order
+    comp = lambda u, v: u <= v 
+    lower = kwargs.get('start', 0)
+    upper = kwargs.get('end', len(array) - 1)
+    n = upper - lower + 1
+    maxdepth = kwargs.get("maxdepth", int(2 * (math.log2(n))))
+    ins_threshold = kwargs.get("ins_threshold",16)
+    pick_pivot_element = kwargs.get("pick_pivot_element",
+                                    lambda low, high, array: array[high])
+
+    def partition(low, high, pick_pivot_element):
+        i = (low - 1)
+        x = pick_pivot_element(low, high, array)
+        for j in range(low , high):
+            if _comp(array[j], x, comp) is True:
+                i = i + 1
+                array[i], array[j] = array[j], array[i]
+        array[i + 1], array[high] = array[high], array[i + 1]
+        return (i + 1)
+    
+    from pydatastructs import heapsort, insertion_sort
+    if(n<ins_threshold):
+        return insertion_sort(array, start=upper, end=lower, comp=comp)
+    
+    elif(maxdepth==0):
+        heapsort(array, start=upper, end=lower)
+        return array
+        # Heapsort in the file does not take comp as an argument and is a void function
+    
+    else: 
+        p = partition(lower, upper, pick_pivot_element)
+        intro_sort(array, start=lower, end=p-1, maxdepth=maxdepth-1,ins_threshold=ins_threshold, pick_pivot_element=pick_pivot_element)
+        intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1,ins_threshold=ins_threshold, pick_pivot_element=pick_pivot_element)
+
+        if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+            array._modify(True)
+
+        return array
