@@ -45,6 +45,7 @@ from .algorithms import (
     binary_search,
     jump_search,
     selection_sort,
-    insertion_sort
+    insertion_sort,
+    intro_sort
 )
 __all__.extend(algorithms.__all__)
