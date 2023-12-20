@@ -30,7 +30,7 @@ __all__ = [
     'jump_search',
     'selection_sort',
     'insertion_sort',
-    'intro_sort'
+    # 'intro_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1761,10 +1761,10 @@ def intro_sort(array, **kwargs) -> Array:
         Optional, by default the index
         of the last position filled.
     maxdepth: Enables the user to define the maximum
-        recursion depth, takes value 2*log(length(A)) 
+        recursion depth, takes value 2*log(length(A))
         by default (ref: Wikipedia[1]).
     ins_threshold: Threshold under which insertion
-        sort has to be performed, default value is 
+        sort has to be performed, default value is
         16 (ref: Wikipedia[1]).
     pick_pivot_element: lambda/function
         The function implementing the pivot picking
@@ -1779,7 +1779,7 @@ def intro_sort(array, **kwargs) -> Array:
         The backend to be used.
         Optional, by default, the best available
         backend is used.
-    
+
     Returns
     =======
 
@@ -1807,9 +1807,9 @@ def intro_sort(array, **kwargs) -> Array:
     backend = kwargs.pop("backend", Backend.PYTHON)
     if backend == Backend.CPP:
         return _algorithms.intro_sort(array, **kwargs)
-    from pydatastructs import Stack
+    # from pydatastructs import Stack
     # Always sorts in increasing order
-    comp = lambda u, v: u <= v 
+    comp = lambda u, v: u <= v
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
     n = upper - lower + 1
@@ -1827,17 +1827,17 @@ def intro_sort(array, **kwargs) -> Array:
                 array[i], array[j] = array[j], array[i]
         array[i + 1], array[high] = array[high], array[i + 1]
         return (i + 1)
-    
+
     from pydatastructs import heapsort, insertion_sort
     if(n<ins_threshold):
         return insertion_sort(array, start=upper, end=lower, comp=comp)
-    
+
     elif(maxdepth==0):
         heapsort(array, start=upper, end=lower)
         return array
         # Heapsort in the file does not take comp as an argument and is a void function
-    
-    else: 
+
+    else:
         p = partition(lower, upper, pick_pivot_element)
         intro_sort(array, start=lower, end=p-1, maxdepth=maxdepth-1,ins_threshold=ins_threshold, pick_pivot_element=pick_pivot_element)
         intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1,ins_threshold=ins_threshold, pick_pivot_element=pick_pivot_element)
