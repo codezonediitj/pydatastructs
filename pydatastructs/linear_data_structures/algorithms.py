@@ -1790,6 +1790,12 @@ def intro_sort(array, **kwargs) -> Array:
     >>> str(out)
     '[5, 21, 37]'
 
+    Note
+    ====
+
+    This algorithm does not take comp as an
+    argument unlike many other functions in this file.
+
     References
     ==========
 
