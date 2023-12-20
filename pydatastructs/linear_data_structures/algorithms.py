@@ -29,7 +29,7 @@ __all__ = [
     'binary_search',
     'jump_search',
     'selection_sort',
-    'insertion_sort',
+    'insertion_sort'
     # 'intro_sort'
 ]
 
