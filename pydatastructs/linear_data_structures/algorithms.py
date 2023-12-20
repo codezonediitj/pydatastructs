@@ -1744,7 +1744,7 @@ def jump_search(array, value, **kwargs):
 
 def intro_sort(array, **kwargs) -> Array:
     """
-    Performs quick sort on the given array.
+    Performs intro sort on the given array.
 
     Parameters
     ==========
@@ -1804,6 +1804,7 @@ def intro_sort(array, **kwargs) -> Array:
     backend = kwargs.pop("backend", Backend.PYTHON)
     if backend == Backend.CPP:
         return _algorithms.intro_sort(array, **kwargs)
+
     # from pydatastructs import Stack
     # Always sorts in increasing order
     comp = lambda u, v: u <= v
@@ -1814,7 +1815,8 @@ def intro_sort(array, **kwargs) -> Array:
         maxdepth = 0
     else:
         maxdepth = kwargs.get("maxdepth", int(2 * (log(n)/log(2))))
-    ins_threshold = kwargs.get("ins_threshold",16)
+
+    ins_threshold = kwargs.get("ins_threshold", 16)
 
     def partition(array, lower, upper):
         pivot = array[lower]
@@ -1837,17 +1839,16 @@ def intro_sort(array, **kwargs) -> Array:
         return right
 
     from pydatastructs.trees.heaps import BinaryHeap
-    if(n<ins_threshold):
-        return insertion_sort(array, start=lower,end=upper)
 
-    elif(maxdepth==0):
-        heapsort(array,start=lower,end=upper)
+    if n < ins_threshold:
+        return insertion_sort(array, start=lower, end=upper)
+    elif maxdepth == 0:
+        heapsort(array, start=lower, end=upper)
         return array
-
     else:
-        p = partition(array,lower,upper)
+        p = partition(array, lower, upper)
 
-        intro_sort(array, start=lower, end=p-1, maxdepth=maxdepth-1,ins_threshold=ins_threshold)
-        intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1,ins_threshold=ins_threshold)
+        intro_sort(array, start=lower, end=p-1, maxdepth=maxdepth-1, ins_threshold=ins_threshold)
+        intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1, ins_threshold=ins_threshold)
 
         return array
