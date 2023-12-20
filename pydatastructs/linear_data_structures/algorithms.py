@@ -1766,15 +1766,6 @@ def intro_sort(array, **kwargs) -> Array:
     ins_threshold: Threshold under which insertion
         sort has to be performed, default value is
         16 (ref: Wikipedia[1]).
-    pick_pivot_element: lambda/function
-        The function implementing the pivot picking
-        logic for quick sort. Should accept, `low`,
-        `high`, and `array` in this order, where `low`
-        represents the left end of the current partition,
-        `high` represents the right end, and `array` is
-        the original input array to `intro_sort` function.
-        Optional, by default, picks the element at `high`
-        index of the current partition as pivot.
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -1813,20 +1804,29 @@ def intro_sort(array, **kwargs) -> Array:
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
     n = upper - lower + 1
-    maxdepth = kwargs.get("maxdepth", int(2 * (log(n)/log(2))))
+    if n <= 0:
+        maxdepth = 0
+    else:
+        maxdepth = kwargs.get("maxdepth", int(2 * (log(n)/log(2))))
     ins_threshold = kwargs.get("ins_threshold",16)
-    pick_pivot_element = kwargs.get("pick_pivot_element",
-                                    lambda low, high, array: array[high])
 
-    def partition(low, high, pick_pivot_element):
-        i = (low - 1)
-        x = pick_pivot_element(low, high, array)
-        for j in range(low , high):
-            if _comp(array[j], x, comp) is True:
-                i = i + 1
-                array[i], array[j] = array[j], array[i]
-        array[i + 1], array[high] = array[high], array[i + 1]
-        return (i + 1)
+    def partition(array, lower, upper):
+        pivot = array[lower]
+        left = lower + 1
+        right = upper
+        done = False
+        while not done:
+            while left <= right and _comp(array[left],pivot,comp):
+                left += 1
+            while _comp(pivot,array[right],comp) and right >= left:
+                right -= 1
+            if right < left:
+                done = True
+            else:
+                array[left], array[right] = array[right], array[left]
+
+        array[lower], array[right] = array[right], array[lower]
+        return right
 
     from pydatastructs.trees.heaps import BinaryHeap
     if(n<ins_threshold):
@@ -1856,8 +1856,9 @@ def intro_sort(array, **kwargs) -> Array:
         return array
 
     else:
-        p = partition(lower, upper, pick_pivot_element)
-        arr1 = intro_sort(array, start=lower, end=p-1, maxdepth=maxdepth-1,ins_threshold=ins_threshold, pick_pivot_element=pick_pivot_element)
-        arr2 =intro_sort(arr1, start=p+1, end=upper,  maxdepth=maxdepth-1,ins_threshold=ins_threshold, pick_pivot_element=pick_pivot_element)
+        p = partition(array,lower,upper)
 
-        return arr2
+        intro_sort(array, start=lower, end=p-1, maxdepth=maxdepth-1,ins_threshold=ins_threshold)
+        intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1,ins_threshold=ins_threshold)
+
+        return array
