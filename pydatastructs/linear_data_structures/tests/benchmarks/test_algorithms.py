@@ -41,9 +41,9 @@ def test_quick_sort():
 def test_bubble_sort():
     _test_common_sort(bubble_sort, size=2000)
 
-# @pytest.mark.xfail
-# def test_intro_sort():
-#     _test_common_sort(intro_sort, size=2000)
+@pytest.mark.xfail
+def test_intro_sort():
+     _test_common_sort(intro_sort, size=2000)
 
 @pytest.mark.xfail
 def test_selection_sort():
