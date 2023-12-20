@@ -1793,8 +1793,8 @@ def intro_sort(array, **kwargs) -> Array:
     Note
     ====
 
-    This algorithm does not take comp as an
-    argument unlike many other functions in this file.
+    This function does not support custom comparators as
+    is the case with other sorting functions in this file.
 
     References
     ==========
@@ -1830,35 +1830,18 @@ def intro_sort(array, **kwargs) -> Array:
                 done = True
             else:
                 array[left], array[right] = array[right], array[left]
+                left+=1
+                right-=1
 
         array[lower], array[right] = array[right], array[lower]
         return right
 
     from pydatastructs.trees.heaps import BinaryHeap
     if(n<ins_threshold):
-        # print("here")
-        for i in range(lower + 1, upper + 1):
-            temp = array[i]
-            j = i
-            while j > lower and not _comp(array[j - 1], temp, comp):
-                array[j] = array[j - 1]
-                j -= 1
-            array[j] = temp
-
-        return array
+        return insertion_sort(array, start=lower,end=upper)
 
     elif(maxdepth==0):
-        h = BinaryHeap(heap_property="min")
-        for i in range(lower, upper+1):
-            if array[i] is not None:
-                h.insert(array[i])
-            array[i] = None
-
-        i = lower
-        while not h.is_empty:
-            array[i] = h.extract().key
-            i += 1
-
+        heapsort(array,start=lower,end=upper)
         return array
 
     else:

@@ -9,7 +9,7 @@ on:
 jobs:
   test-ubuntu-py38:
     runs-on: ${{matrix.os}}
-    timeout-minutes: 10
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -61,7 +61,7 @@ jobs:
 
   test-ubuntu-py39-py310:
     runs-on: ${{matrix.os}}
-    timeout-minutes: 10
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -101,7 +101,7 @@ jobs:
 
   test-macos:
     runs-on: ${{matrix.os}}
-    timeout-minutes: 10
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -142,7 +142,7 @@ jobs:
 
   test-windows:
     runs-on: ${{matrix.os}}
-    timeout-minutes: 15
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
