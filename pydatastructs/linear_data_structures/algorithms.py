@@ -1795,6 +1795,7 @@ def intro_sort(array, **kwargs) -> Array:
 
     This function does not support custom comparators as
     is the case with other sorting functions in this file.
+    This is because of heapsort's limitation.
 
     References
     ==========
@@ -1805,8 +1806,8 @@ def intro_sort(array, **kwargs) -> Array:
     if backend == Backend.CPP:
         return _algorithms.intro_sort(array, **kwargs)
 
-    # from pydatastructs import Stack
-    # Always sorts in increasing order
+    # Always sorts in increasing order, this is because of
+    # heapsort's limitation
     comp = lambda u, v: u <= v
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
