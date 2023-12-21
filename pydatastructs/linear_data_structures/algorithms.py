@@ -29,7 +29,8 @@ __all__ = [
     'binary_search',
     'jump_search',
     'selection_sort',
-    'insertion_sort'
+    'insertion_sort',
+    'intro_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1740,3 +1741,112 @@ def jump_search(array, value, **kwargs):
         prev += 1
 
     return None
+
+def intro_sort(array, **kwargs) -> Array:
+    """
+    Performs intro sort on the given array.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    maxdepth: Enables the user to define the maximum
+        recursion depth, takes value 2*log(length(A))
+        by default (ref: Wikipedia[1]).
+    ins_threshold: Threshold under which insertion
+        sort has to be performed, default value is
+        16 (ref: Wikipedia[1]).
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray as ODA, intro_sort
+    >>> arr = ODA(int, [5, 78, 1, 0])
+    >>> out = intro_sort(arr)
+    >>> str(out)
+    '[0, 1, 5, 78]'
+    >>> arr = ODA(int, [21, 37, 5])
+    >>> out = intro_sort(arr)
+    >>> str(out)
+    '[5, 21, 37]'
+
+    Note
+    ====
+
+    This function does not support custom comparators as
+    is the case with other sorting functions in this file.
+    This is because of heapsort's limitation.
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Introsort
+    """
+    raise_if_backend_is_not_python(
+        intro_sort, kwargs.get('backend', Backend.PYTHON))
+
+    # Always sorts in increasing order, this is because of
+    # heapsort's limitation
+    comp = lambda u, v: u <= v
+    lower = kwargs.get('start', 0)
+    upper = kwargs.get('end', len(array) - 1)
+    n = upper - lower + 1
+    if n <= 0:
+        maxdepth = 0
+    else:
+        maxdepth = kwargs.get("maxdepth", int(2 * (log(n)/log(2))))
+
+    ins_threshold = kwargs.get("ins_threshold", 16)
+
+    def partition(array, lower, upper):
+        pivot = array[lower]
+        left = lower + 1
+        right = upper
+        done = False
+        while not done:
+            while left <= right and _comp(array[left], pivot, comp):
+                left += 1
+            while _comp(pivot, array[right], comp) and right >= left:
+                right -= 1
+            if right < left:
+                done = True
+            else:
+                array[left], array[right] = array[right], array[left]
+                left+=1
+                right-=1
+
+        array[lower], array[right] = array[right], array[lower]
+        return right
+
+    if n < ins_threshold:
+        return insertion_sort(array, start=lower, end=upper)
+    elif maxdepth == 0:
+        heapsort(array, start=lower, end=upper)
+        return array
+    else:
+        p = partition(array, lower, upper)
+
+        intro_sort(array, start=lower, end=p-1, maxdepth=maxdepth-1, ins_threshold=ins_threshold)
+        intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1, ins_threshold=ins_threshold)
+
+        return array
