@@ -1803,7 +1803,7 @@ def intro_sort(array, **kwargs) -> Array:
     .. [1] https://en.wikipedia.org/wiki/Introsort
     """
     raise_if_backend_is_not_python(
-        next_permutation, kwargs.get('backend', Backend.PYTHON))
+        intro_sort, kwargs.get('backend', Backend.PYTHON))
 
     # Always sorts in increasing order, this is because of
     # heapsort's limitation
@@ -1837,8 +1837,6 @@ def intro_sort(array, **kwargs) -> Array:
 
         array[lower], array[right] = array[right], array[lower]
         return right
-
-    from pydatastructs.trees.heaps import BinaryHeap
 
     if n < ins_threshold:
         return insertion_sort(array, start=lower, end=upper)
