@@ -1802,9 +1802,8 @@ def intro_sort(array, **kwargs) -> Array:
 
     .. [1] https://en.wikipedia.org/wiki/Introsort
     """
-    backend = kwargs.pop("backend", Backend.PYTHON)
-    if backend == Backend.CPP:
-        return _algorithms.intro_sort(array, **kwargs)
+    raise_if_backend_is_not_python(
+        next_permutation, kwargs.get('backend', Backend.PYTHON))
 
     # Always sorts in increasing order, this is because of
     # heapsort's limitation
@@ -1825,9 +1824,9 @@ def intro_sort(array, **kwargs) -> Array:
         right = upper
         done = False
         while not done:
-            while left <= right and _comp(array[left],pivot,comp):
+            while left <= right and _comp(array[left], pivot, comp):
                 left += 1
-            while _comp(pivot,array[right],comp) and right >= left:
+            while _comp(pivot, array[right], comp) and right >= left:
                 right -= 1
             if right < left:
                 done = True
