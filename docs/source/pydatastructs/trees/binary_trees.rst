@@ -9,6 +9,8 @@ Binary Trees
 
 .. autoclass:: pydatastructs.BinaryIndexedTree
 
+.. autoclass:: pydatastructs.BinaryIndexedTree2D
+
 .. autoclass:: pydatastructs.CartesianTree
 
 .. autoclass:: pydatastructs.Treap
@@ -18,3 +20,4 @@ Binary Trees
 .. autoclass:: pydatastructs.RedBlackTree
 
 .. autoclass:: pydatastructs.BinaryTreeTraversal
+

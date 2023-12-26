@@ -3,6 +3,7 @@ from collections import deque as Queue
 from pydatastructs.utils import TreeNode, CartesianTreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import OneDimensionalArray
+from pydatastructs.linear_data_structures import MultiDimensionalArray
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
@@ -16,7 +17,10 @@ __all__ = [
     'CartesianTree',
     'Treap',
     'SplayTree',
-    'RedBlackTree'
+    'RedBlackTree',
+    'BinaryIndexedTree2D',
+    'BinaryIndexedTreeNd'
+
 ]
 
 class BinaryTree(object):
@@ -1820,3 +1824,293 @@ class BinaryIndexedTree(object):
                    self.get_prefix_sum(left_index - 1)
         else:
             return self.get_prefix_sum(right_index)
+
+class BinaryIndexedTree2D(object):
+    """
+    2D Fenwick tree aka Binary indexed tree(BIT)
+
+    Parameters
+    ========
+
+     array: 2d list/tuple
+        The array whose elements are to be
+        considered for the queries.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+    Examples
+    ========
+
+    >>> from pydatastructs import BinaryIndexedTree2D
+    >>> bit = BinaryIndexedTree([[1, 2, 3] ,\
+                                [2 , 3 ,4 ] ,\
+                                 [8 ,6 ,7 ]])
+    >>> bit.get_area(0, 0 , 1 ,1 )
+    8
+    >>> bit.add(1 ,1 , 3)
+    >>> bit.get_sum(0, 0 , 1 , 1 )
+    11
+
+    """
+    __slots__ = ['tree', 'array' , 'n' ,'m']
+
+    def __new__(cls, array, **kwargs):
+        raise_if_backend_is_not_python(cls, kwargs.get('backend', Backend.PYTHON))
+        obj = object.__new__(cls)
+        obj.n = len(array)
+        obj.m = len(array[0])
+        obj.array = [[0 for i in range(obj.m+1)] for j in range(obj.n+1)]
+        obj.tree = [[0 for i in range(obj.m+1 )] for j in range(obj.n+1 )]
+
+
+        for i in obj.array:
+            for j in i :
+                j = 0
+        for i in obj.tree:
+            for j in i:
+                j = 0
+
+        for i in range(obj.n):
+            for j in range(obj.m):
+                obj.array[i][j] = array[i][j]
+
+        for i in range(obj.n):
+            for j in range(obj.m):
+                obj.add(i ,j , obj.array[i][j])
+        return obj
+
+    @classmethod
+    def methods(cls):
+        return ['add','get_area']
+    def add(self ,x , y , val ):
+        """
+        Add `val` to your value in position [x][y] aka  yorArr[x][y]+=val
+
+        Parameters
+        ========
+
+        x :int
+         x of of point
+        y :int
+         of point
+        val :int
+         value to add
+
+        Returns
+        =========
+
+        None
+
+        """
+        i = x +1
+        while i<= self.n:
+            j = y +1
+            while j<= self.m:
+                self.tree[i-1][j-1] += val
+                j+= j & (-j)
+            i += i &(-i)
+
+    def _get_sum_to_origin(self , x , y ):
+        res =0
+        i = x +1
+        while i >0:
+            j = y +1
+            while j >0 :
+                res += self.tree[i - 1][j - 1]
+                j -= j & (-j)
+            i -= i & (-i)
+        return res
+
+    def get_area(self,  start_x ,start_y ,end_x , end_y ):
+        """
+        Get area of rectangle that has up left corner of point(start_x , start_y ) and down right coener of (end_x , end_y).\n
+        let S = start point and E = end point
+                            Saaaaa\n
+                            aaaaaa\n
+                            aaaaaa\n
+                            aaaaaE\n
+
+        Parameters
+        ==========
+
+        start_x :int
+            x of start point
+        start_y :int
+            y of start point
+        end_x :int
+            x of end point
+        end_y :int
+            y of end point
+
+        Returns
+        ========
+        sum:int
+            sum of elements of rectangle that has up left corner of point(start_x , start_y ) and down right coener of (end_x , end_y)
+
+        """
+        return self._get_sum_to_origin(end_x ,end_y)- self._get_sum_to_origin(end_x , start_y-1 )\
+               -self._get_sum_to_origin(start_x -1 ,end_y) + self._get_sum_to_origin(start_x-1 , start_y-1)
+
+
+class BinaryIndexedTreeNd(object):
+    """
+    ND Fenwick tree aka Binary Indexed Tree (BIT)
+
+    Parameters
+    ============
+    array :list
+        array of any dimintions.
+     backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+    Examples
+    =============
+    >>> from pydatastructs import BinaryIndexedTreeNd
+    >>> bit = BinaryIndexedTree([[1, 2, 3] ,\
+                                [2 , 3 ,4 ] ,\
+                                 [8 ,6 ,7 ]])
+    >>> bit.get_sum((1, 1) , (0 ,0) )
+    8
+    >>> bit.add((1 ,1) , 3)
+    >>> bit.get_sum((1, 1) , (0 , 0) )
+    11
+
+    """
+    __slots__ = ['tree' , 'array' , 'limits' ]
+
+    def __new__(cls, array, **kwargs):
+        raise_if_backend_is_not_python(cls , kwargs.get('backend' , Backend.PYTHON))
+        obj = object.__new__(cls)
+        current_dimension = array
+        obj.limits =[]
+        while type(current_dimension)==list or type(current_dimension)==tuple :
+            obj.limits.append(len(current_dimension))
+            current_dimension = current_dimension[0]
+
+        obj.array =[]
+        obj.array = obj._fillNdArray(0 , 0 , array)
+        obj.tree = obj._fillNdArray(0 , 0, None)
+        obj.init_sum()
+        return obj
+    @classmethod
+    def methods(cls):
+        return ['add','get_sum' ]
+
+
+
+    def init_sum(self ,  ind =0 , curPosition = []):
+        if ind == len(self.limits):
+            self.add(tuple(curPosition) , self._get_element(tuple(curPosition) ,self.array))
+        else :
+            for i in range(self.limits[ind]):
+                self.init_sum(ind+1 , curPosition + [i])
+
+
+
+    def _fillNdArray(self ,ind:int ,number:int  , array:list , curPosition = [] )->list:
+        level = []
+        if ind == len(self.limits):
+            level = number
+            if array != None :
+                level = self._get_element(tuple(curPosition) , array)
+        else :
+            for i in range(self.limits[ind]):
+                level.append(self._fillNdArray(ind+1 , number , array , curPosition +[i]))
+
+        return level
+
+
+
+    def _get_element(self , position:tuple , arr:list) :
+        ind = 0
+        cur = arr
+        while ind < len(self.limits):
+            cur = cur[position[ind]]
+            ind+=1
+        return cur
+
+
+
+    def _add_to_element(self , val:int,position:tuple , arr:list):
+        ind =0
+        cur = self.tree
+        while ind +1< len(self.limits):
+            cur = cur[position[ind]]
+            ind+=1
+        cur[position[ind]] = cur[position[ind]] +val
+
+
+    def add(self , position:tuple , val:int , ind:int =0 , curPosition = []):
+        """
+
+        Parameters
+        ==========
+        position : tuple
+            position of value you want to add to.
+
+        val :int
+            value you want to add.
+
+        Returns
+        ===========
+        None
+
+        """
+        if ind == len(self.limits):
+            newPosition =  [i-1  for i in curPosition]
+            self._add_to_element(val, tuple(newPosition), self.tree)
+            return
+
+        i = position[ind] +1
+        while i <= self.limits[ind] :
+            self.add(position , val , ind+1 , curPosition +[i])
+            i += i &(-i)
+
+    def _get_sum_to_origin(self , position:tuple , ind  =0 , curPosition = []  ):
+        res =0
+        if ind == len(self.limits):
+            newPosition = [(i-1)  for i in curPosition]
+            res = self._get_element(tuple(newPosition) ,self.tree)
+        else :
+            i = position[ind]+1
+            while i>0 :
+                res += self._get_sum_to_origin(position , ind+1 , curPosition+ [i])
+                i-= i& (-i)
+        return res
+
+    def _get_sum(self , start:tuple , end:tuple ,ind:int , numberOfElements:int , resPoint :list , sign:int ):
+        if ind == len(start) :
+            if numberOfElements != 0 :
+                    return 0
+            res = self._get_sum_to_origin(tuple(resPoint))
+            return sign *(res)
+        else :
+            res =0
+            if numberOfElements -1 >=0 :
+                res += self._get_sum(start ,end , ind+1 , numberOfElements -1 , resPoint +[end[ind] -1 ], sign )
+            res += self._get_sum(start ,end , ind+1 , numberOfElements , resPoint+[start[ind] ] ,sign )
+            return  res
+    def get_sum(self , start:tuple , end:tuple ):
+        """
+
+        Parameters
+        ----------
+        start:tuple
+            point near orignal point.
+        end : tuple
+            point far from orignal point.
+        Returns
+        -------
+        sum :int
+            sum of element between two points.
+
+        """
+        res =0
+        for i in range( 1 + len(self.limits)):
+            res += self._get_sum(start , end , 0 , i , [] , (-1)**i )
+        return  res
+
+
+
