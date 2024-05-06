@@ -214,13 +214,13 @@ class BinarySearchTree(BinaryTree):
     def __new__(cls, key=None, root_data=None, comp=None,
                 is_order_statistic=False, **kwargs):
         if kwargs.get('backend') == Backend.CPP:
-            return cls._trees(key, root_data, comp, is_order_statistic, **kwargs)
+            return _trees.BinarySearchTree(key, root_data, comp, is_order_statistic, **kwargs)
         else:
             return super(BinarySearchTree, cls).__new__(cls)    
 
     @classmethod
     def methods(cls):
-        return ['insert', 'search', 'delete', 'select',
+        return ['__new__','insert', 'search', 'delete', 'select',
         'rank', 'lowest_common_ancestor']
 
     left_size = lambda self, node: self.tree[node.left].size \

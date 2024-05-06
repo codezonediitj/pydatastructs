@@ -32,6 +32,10 @@ typedef struct {
     PyObject* lower_bound;
     PyObject* tree;  // Define tree attribute
     PyObject* root_idx; // Define root_idx attribute
+    int size;             // Number of nodes in the tree
+    bool is_order_statistic; // Whether the tree is an order statistic tree
+    // Function pointer for key comparison
+    bool (*comparator)(PyObject* key1, PyObject* key2);
 } BinarySearchTree;
 
 
@@ -76,22 +80,83 @@ static void BinarySearchTree_dealloc(BinarySearchTree* self) {
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
-// Object creation function for BinarySearchTree.
-// Defines a new object creation function for BinarySearchTree.
-static PyObject* BinarySearchTree_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
+// Comparator function for BinarySearchTree
+static int compare_keys(PyObject* key1, PyObject* key2) {
+    return PyObject_RichCompareBool(key1, key2, Py_LT);
+}
+
+static PyObject* BinarySearchTree_new(PyTypeObject* type, PyObject* args, PyObject* kwargs) {
     BinarySearchTree* self;
     self = reinterpret_cast<BinarySearchTree*>(type->tp_alloc(type, 0));
 
     // Initialize tree attribute as an empty list
     if (self != NULL) {
+        self->left_size = Py_None;
+        self->right_size = Py_None;
+        self->_update_size = Py_None;
+        self->insert = Py_None;
+        self->search = Py_None;
+        self->_bound_helper = Py_None;
+        self->lower_bound = Py_None;
         self->tree = PyList_New(0);
-        if (self->tree == NULL) {
+        self->root_idx = Py_None;
+        self->size = 0;
+        self->is_order_statistic = false;
+
+        // Parse other optional arguments
+        PyObject* key = Py_None;
+        PyObject* root_data = Py_None;
+        PyObject* comp = Py_None;
+        int is_order_statistic = 0; // Default value is False
+
+        static const char* keywords[] = {"key", "root_data", "comp", "is_order_statistic", NULL};
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOp", const_cast<char**>(keywords),
+                                          &key, &root_data, &comp, &is_order_statistic)) {
             Py_DECREF(self);
             return NULL;
         }
+
+        // Check if key is None and root_data is not None
+        if (key == Py_None && root_data != Py_None) {
+            PyErr_SetString(PyExc_ValueError, "Key required.");
+            Py_DECREF(self);
+            return NULL;
+        }
+
+        // Create TreeNode for the root
+        TreeNode* root = PyObject_New(TreeNode, &TreeNodeType);
+        if (root == NULL) {
+            Py_DECREF(self);
+            return NULL;
+        }
+        root->key = (key == Py_None) ? NULL : key;
+        root->data = (root_data == Py_None) ? NULL : root_data;
+        root->left = Py_None;
+        root->right = Py_None;
+        root->parent = Py_None;
+        root->size = PyLong_FromLong(1);
+
+        // Initialize BinarySearchTree attributes
+        self->root_idx = PyLong_FromLong(0); // Root index is 0
+        PyList_Append(self->tree, (PyObject*)root); // Append root node to the tree list
+        self->size = 1; // Initial size is 1
+
+        // TO DO: Set comparator function
+        // if (comp == Py_None) {
+        //     self->comparator = compare_keys; // Use the compare_keys function
+        // } else {
+        //     PyErr_SetString(PyExc_ValueError, "Custom comparators not supported in C++ backend.");
+        //     Py_DECREF(self);
+        //     return NULL;
+        // }
+
+        // Set order statistic flag
+        self->is_order_statistic = is_order_statistic;
     }
     return reinterpret_cast<PyObject*>(self);
 }
+
+
 
 // Method to update the size of nodes in the tree.
 static PyObject* BinarySearchTree_update_size(BinarySearchTree* self, PyObject* args) {
