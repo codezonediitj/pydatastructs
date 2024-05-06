@@ -1,3 +1,7 @@
+#ifndef BINARY_SEARCH_TREE_HPP
+#define BINARY_SEARCH_TREE_HPP
+
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
 
@@ -326,3 +330,5 @@ PyMODINIT_FUNC PyInit_binarysearchtree(void) {
 
     return m;
 }
+
+#endif

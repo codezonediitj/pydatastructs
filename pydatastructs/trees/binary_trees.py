@@ -4,7 +4,7 @@ from pydatastructs.utils import TreeNode, CartesianTreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import OneDimensionalArray
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
-# from pydatastructs.trees._backend.cpp import _binary_search_tree
+from pydatastructs.trees._backend.cpp import _trees
 from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
 
@@ -210,6 +210,13 @@ class BinarySearchTree(BinaryTree):
 
     pydatastructs.trees.binary_tree.BinaryTree
     """
+
+    def __new__(cls, key=None, root_data=None, comp=None,
+                is_order_statistic=False, **kwargs):
+        if kwargs.get('backend') == Backend.CPP:
+            return cls._trees(key, root_data, comp, is_order_statistic, **kwargs)
+        else:
+            return super(BinarySearchTree, cls).__new__(cls)    
 
     @classmethod
     def methods(cls):
