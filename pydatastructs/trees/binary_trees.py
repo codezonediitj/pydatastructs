@@ -4,6 +4,7 @@ from pydatastructs.utils import TreeNode, CartesianTreeNode, RedBlackTreeNode
 from pydatastructs.miscellaneous_data_structures import Stack
 from pydatastructs.linear_data_structures import OneDimensionalArray
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
+# from pydatastructs.trees._backend.cpp import _binary_search_tree
 from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
 
