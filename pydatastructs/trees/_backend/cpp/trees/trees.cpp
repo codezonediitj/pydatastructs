@@ -4,7 +4,7 @@
 static struct PyModuleDef trees_struct = {
     PyModuleDef_HEAD_INIT,
     "_trees",
-    NULL,
+    0,
     -1,
     NULL
 };

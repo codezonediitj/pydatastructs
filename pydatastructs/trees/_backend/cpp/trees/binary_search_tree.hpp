@@ -369,7 +369,7 @@ static PyTypeObject BinarySearchTreeType = {
     0,                             /* tp_dictoffset */
     0,                             /* tp_init */
     0,                             /* tp_alloc */
-    BinarySearchTree_new,          /* tp_new */
+    BinarySearchTree___new__,          /* tp_new */
 };
 
 // Module definition for the binarysearchtree module
