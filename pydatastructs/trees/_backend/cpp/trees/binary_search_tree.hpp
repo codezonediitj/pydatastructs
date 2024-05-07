@@ -4,6 +4,8 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
+#include <cstdlib>
+#include "../../../../utils/_backend/cpp/utils.hpp"
 
 // Define TreeNode struct.
 // Defines a C struct TreeNode that represents a node in the binary search tree.
@@ -85,7 +87,7 @@ static int compare_keys(PyObject* key1, PyObject* key2) {
     return PyObject_RichCompareBool(key1, key2, Py_LT);
 }
 
-static PyObject* BinarySearchTree_new(PyTypeObject* type, PyObject* args, PyObject* kwargs) {
+static PyObject* BinarySearchTree___new__(PyTypeObject* type, PyObject* args, PyObject* kwargs) {
     BinarySearchTree* self;
     self = reinterpret_cast<BinarySearchTree*>(type->tp_alloc(type, 0));
 
@@ -107,11 +109,12 @@ static PyObject* BinarySearchTree_new(PyTypeObject* type, PyObject* args, PyObje
         PyObject* key = Py_None;
         PyObject* root_data = Py_None;
         PyObject* comp = Py_None;
+        PyObject* backend = Py_None;
         int is_order_statistic = 0; // Default value is False
 
-        static const char* keywords[] = {"key", "root_data", "comp", "is_order_statistic", NULL};
-        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOp", const_cast<char**>(keywords),
-                                          &key, &root_data, &comp, &is_order_statistic)) {
+        static const char* keywords[] = {"key", "root_data", "comp", "is_order_statistic", "backend", NULL};
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOpi", const_cast<char**>(keywords),
+                                        &key, &root_data, &comp, &is_order_statistic, &backend)) {
             Py_DECREF(self);
             return NULL;
         }
@@ -206,7 +209,7 @@ static PyObject* BinarySearchTree_update_size(BinarySearchTree* self, PyObject* 
 
 // Method to insert a new node into the tree.
 static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args) {
-
+    printf("this\n"); // Print "this"
     // Check if root_idx is None, initialize it if so
     if (self->root_idx == Py_None) {
         self->root_idx = PyLong_FromLong(0); // Or initialize it to the appropriate value

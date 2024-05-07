@@ -213,7 +213,9 @@ class BinarySearchTree(BinaryTree):
 
     def __new__(cls, key=None, root_data=None, comp=None,
                 is_order_statistic=False, **kwargs):
-        if kwargs.get('backend') == Backend.CPP:
+        backend = kwargs.pop("backend", Backend.PYTHON)
+        if backend == Backend.CPP:
+            # print("here")
             return _trees.BinarySearchTree(key, root_data, comp, is_order_statistic, **kwargs)
         else:
             return super(BinarySearchTree, cls).__new__(cls)    
