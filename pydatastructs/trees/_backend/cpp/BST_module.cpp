@@ -4,14 +4,14 @@
  * constructors/destructors
 */
 static void BSTDealloc(BST* self) {
-    if ((PyObject*)self == Py_None) { // base case
+    if (reinterpret_cast<PyObject*>(self) == Py_None) { // base case
         Py_DECREF(Py_None);
         return;
     }
 
     // post-order traversal to dealloc descentents
-    BSTDealloc((BST*)self->left);
-    BSTDealloc((BST*)self->right);
+    BSTDealloc(reinterpret_cast<BST*>(self->left));
+    BSTDealloc(reinterpret_cast<BST*>(self->right));
 
     Py_XDECREF(self->key);
     Py_XDECREF(self->data);
@@ -20,7 +20,7 @@ static void BSTDealloc(BST* self) {
 }
 
 static PyObject* BSTAlloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-    BST * self = (BST*)type->tp_alloc(type, 0);
+    BST * self = reinterpret_cast<BST*>(type->tp_alloc(type, 0));
 
     // set all three as None
     if (self) {
@@ -90,7 +90,7 @@ static int inorder(BST* self, PyObject* list) {
         return 0;
     }
 
-    int sts = inorder((BST*)self->left, list);
+    int sts = inorder(reinterpret_cast<BST*>(self->left), list);
     if (sts < 0) {
         return -1;
     }
@@ -98,7 +98,7 @@ static int inorder(BST* self, PyObject* list) {
     if (sts < 0) {
         return -1;
     }
-    sts = inorder((BST*)self->right, list);
+    sts = inorder(reinterpret_cast<BST*>(self->right), list);
     if (sts < 0) {
         return -1;
     }
@@ -129,12 +129,12 @@ static PyObject* BSTSearch(BST* self, PyObject* args) {
     }
 
     if (self->key > key) { // curr elem is larger; insert left
-        return BSTSearch((BST*)self->left, args);
+        return BSTSearch(reinterpret_cast<BST*>(self->left), args);
     } else if(self->key == key) {
         Py_INCREF(Py_True);
         return Py_True;
     } else {
-        return BSTSearch((BST*)self->right, args);
+        return BSTSearch(reinterpret_cast<BST*>(self->right), args);
     }
     Py_INCREF(self);
     return (PyObject*)self;
@@ -149,7 +149,7 @@ static PyObject* BSTInsert(BST* self, PyObject* args, PyObject* kwargs) {
     }
 
     if ((PyObject*)self == Py_None) {
-        BST * b = (BST*)BSTAlloc(&BSTType, NULL, NULL);
+        BST * b = reinterpret_cast<BST*>(BSTAlloc(&BSTType, NULL, NULL));
         PyObject* argument = Py_BuildValue("(OO)", key, data);
         BSTInit(b, argument, NULL);
         Py_DECREF(argument);
@@ -160,13 +160,13 @@ static PyObject* BSTInsert(BST* self, PyObject* args, PyObject* kwargs) {
         PyObject* tmp;
         if (self->key > key) { // curr key is larger; insert left
             tmp = self->left;
-            self->left = BSTInsert((BST*)self->left, args, kwargs);
+            self->left = BSTInsert(reinterpret_cast<BST*>(self->left), args, kwargs);
             Py_DECREF(tmp);
         } else if(self->key == key) {
             self->data = data;
         } else {
             tmp = self->right;
-            self->right = BSTInsert((BST*)self->right, args, kwargs);
+            self->right = BSTInsert(reinterpret_cast<BST*>(self->right), args, kwargs);
             Py_DECREF(tmp);
         }
 
@@ -194,13 +194,13 @@ static PyObject* BSTInsert(BST* self, PyObject* args, PyObject* kwargs) {
         PyObject* tmp;
         if (comp_result == 1) { // curr key is larger; insert left
             tmp = self->left;
-            self->left = BSTInsert((BST*)self->left, args, kwargs);
+            self->left = BSTInsert(reinterpret_cast<BST*>(self->left), args, kwargs);
             Py_DECREF(tmp);
         } else if(comp_result == 0) {
             self->data = data;
         } else {
             tmp = self->right;
-            self->right = BSTInsert((BST*)self->right, args, kwargs);
+            self->right = BSTInsert(reinterpret_cast<BST*>(self->right), args, kwargs);
             Py_DECREF(tmp);
         }
 
