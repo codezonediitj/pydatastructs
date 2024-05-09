@@ -1,4 +1,4 @@
-from BST import BST
+from pydatastructs.trees._backend.cpp.BST import BST
 
 def int_comp(curr, new):
     if curr > new:
