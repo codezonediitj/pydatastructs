@@ -42,8 +42,19 @@ static int BSTInit(BST* self, PyObject *args, PyObject *kwds) {
     PyObject* key = NULL;
     PyObject* data = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "OO", kwlist, &key, &data)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OO", kwlist, &key, &data)) {
         return -1;
+    }
+
+    if(key==NULL){
+        if(data==NULL){
+            Py_INCREF(Py_None);
+            key=Py_None;
+        }
+        else{
+            PyErr_SetString(PyExc_ValueError, "ValueError: data cannot be Py_None");
+            return NULL;
+        }
     }
 
     if (key) {
