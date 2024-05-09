@@ -15,7 +15,7 @@ static void BSTDealloc(BST* self) {
 
     Py_XDECREF(self->key);
     Py_XDECREF(self->data);
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 
 }
 
@@ -34,7 +34,7 @@ static PyObject* BSTAlloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
         self->right = Py_None;
     }
 
-    return (PyObject*)self;
+    return reinterpret_cast<PyObject*>(self);
 }
 
 static int BSTInit(BST* self, PyObject *args, PyObject *kwds) {
@@ -86,7 +86,7 @@ static PyTypeObject BSTType = {
  * methods
 */
 static int inorder(BST* self, PyObject* list) {
-    if ((PyObject*)self == Py_None) {
+    if (reinterpret_cast<PyObject*>(self) == Py_None) {
         return 0;
     }
 
@@ -123,7 +123,7 @@ static PyObject* BSTSearch(BST* self, PyObject* args) {
     }
 
 
-    if ((PyObject*)self == Py_None) {
+    if (reinterpret_cast<PyObject*>(self) == Py_None) {
         Py_INCREF(Py_False);
         return Py_False;
     }
@@ -137,7 +137,7 @@ static PyObject* BSTSearch(BST* self, PyObject* args) {
         return BSTSearch(reinterpret_cast<BST*>(self->right), args);
     }
     Py_INCREF(self);
-    return (PyObject*)self;
+    return reinterpret_cast<PyObject*>(self);
 }
 
 static PyObject* BSTInsert(BST* self, PyObject* args, PyObject* kwargs) {
@@ -148,12 +148,12 @@ static PyObject* BSTInsert(BST* self, PyObject* args, PyObject* kwargs) {
         return NULL;
     }
 
-    if ((PyObject*)self == Py_None) {
+    if (reinterpret_cast<PyObject*>(self) == Py_None) {
         BST * b = reinterpret_cast<BST*>(BSTAlloc(&BSTType, NULL, NULL));
         PyObject* argument = Py_BuildValue("(OO)", key, data);
         BSTInit(b, argument, NULL);
         Py_DECREF(argument);
-        return (PyObject*)b;
+        return reinterpret_cast<PyObject*>(b);
     }
 
     if (comparator == NULL) {
@@ -171,7 +171,7 @@ static PyObject* BSTInsert(BST* self, PyObject* args, PyObject* kwargs) {
         }
 
         Py_INCREF(self);
-        return (PyObject*)self;
+        return reinterpret_cast<PyObject*>(self);
     } else {
         // Check if the provided comparator is callable
         if (!PyCallable_Check(comparator)) {
@@ -205,7 +205,7 @@ static PyObject* BSTInsert(BST* self, PyObject* args, PyObject* kwargs) {
         }
 
         Py_INCREF(self);
-        return (PyObject*)self;
+        return reinterpret_cast<PyObject*>(self);
     }
 }
 
