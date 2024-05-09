@@ -1,11 +1,3 @@
-//
-//  BST_module.h
-//  BST
-//
-//  Created by dwd on 12/27/17.
-//  Copyright © 2017 holdendou. All rights reserved.
-//
-
 #ifndef BST_module_h
 #define BST_module_h
 
