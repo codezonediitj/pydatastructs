@@ -66,7 +66,7 @@ static int BSTInit(BST* self, PyObject *args, PyObject *kwds) {
 
 static PyTypeObject BSTType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "BST.BST", // name
+    "BST", // name
     sizeof(BST), // size
     0, // itemsize
     (destructor)BSTDealloc,
