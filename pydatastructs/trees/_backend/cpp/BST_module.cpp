@@ -46,13 +46,14 @@ static int BSTInit(BST* self, PyObject *args, PyObject *kwds) {
         return -1;
     }
 
+    // If data is none and key is not none, then give an error.
     if(key==NULL){
         if(data==NULL){
             Py_INCREF(Py_None);
             key=Py_None;
         }
         else{
-            PyErr_SetString(PyExc_ValueError, "ValueError: data cannot be Py_None");
+            PyErr_SetString(PyExc_ValueError, "Key required.");
             return NULL;
         }
     }
