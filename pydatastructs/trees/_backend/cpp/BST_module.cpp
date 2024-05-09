@@ -122,7 +122,6 @@ static PyObject* BSTSearch(BST* self, PyObject* args) {
         return NULL;
     }
 
-
     if (reinterpret_cast<PyObject*>(self) == Py_None) {
         Py_INCREF(Py_False);
         return Py_False;
