@@ -9,6 +9,7 @@
 PyObject *PyZero = PyLong_FromLong(0);
 PyObject *PyOne = PyLong_FromLong(1);
 PyObject *PyTwo = PyLong_FromLong(2);
+PyObject *PyThree = PyLong_FromLong(3);
 const char* _encoding = "utf-8";
 const char* _invalid_char = "<invalid-character>";
 
