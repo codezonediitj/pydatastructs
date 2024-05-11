@@ -24,6 +24,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     BinaryTree *self;
     self = reinterpret_cast<BinaryTree*>(type->tp_alloc(type, 0));
 
+    // Assume that arguments are in the order below. Modify the python code such that this is true
     PyObject *key = PyObject_GetItem(args, PyZero);
     PyObject *root_data = PyObject_GetItem(args, PyOne);
     PyObject *comp = PyObject_GetItem(args, PyTwo);
@@ -33,19 +34,99 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
         return NULL;
     }
 
-    key = root_data == Py_None ? Py_None : key;
-    root = TreeNode(key, root_data)
-    root.is_root = True
-    obj.root_idx = 0
-    obj.tree, obj.size = ArrayForTrees(TreeNode, [root]), 1
-    obj.comparator = lambda key1, key2: key1 < key2 \
-                    if comp is None else comp
-    obj.is_order_statistic = is_order_statistic
-    return obj
+    self->key = root_data == Py_None ? Py_None : key;
+
+    // Create TreeNode class
+    // root = TreeNode(key, root_data)
+    // root.is_root = True
+
+    self->root_idx = 0;
+
+    // Create ArrayForTrees class
+    // obj.tree, obj.size = ArrayForTrees(TreeNode, [root]), 1
+
+    if(comp == Py_None){
+        self->comparator = PyObject_RichCompare(PyObject *key1, PyObject *key2, Py_LT);
+    } 
+    else{
+        self->comparator = comp;
+    }
+    self->is_order_statistic = is_order_statistic;
 
     return reinterpret_cast<PyObject*>(self);
 }
 
+static PyObject* BinaryTree_insert(PyTypeObject* type, PyObject *args, PyObject *kwds) {
+    PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    return NULL;
+}
 
+static PyObject* BinaryTree_delete(PyTypeObject* type, PyObject *args, PyObject *kwds) {
+    PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    return NULL;
+}
+
+static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject *kwds) {
+    PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    return NULL;
+}
+
+static struct PyMethodDef BinaryTree_PyMethodDef[] = {
+    {"insert", (PyCFunction) BinaryTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"delete", (PyCFunction) BinaryTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"search", (PyCFunction) BinaryTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
+    {NULL}
+};
+
+// Check if PyMemberDef is actually needed:
+static PyMemberDef BinaryTree_PyMemberDef[] = {
+    {"root_idx", T_PYSSIZET, offsetof(BinaryTree, root_idx), READONLY, "Index of the root node"},
+    {"comparator", T_OBJECT, offsetof(BinaryTree, comparator), 0, "Comparator function"},
+    {"tree", T_OBJECT, offsetof(BinaryTree, tree), 0, "Tree"},
+    {"size", T_PYSSIZET, offsetof(BinaryTree, size), READONLY, "Size of the tree"},
+    {"is_ordered_stastic", T_BOOL, offsetof(BinaryTree, is_ordered_stastic), 0, "Whether the tree is ordered statically or not"},
+    {NULL}  /* Sentinel */
+};
+
+
+static PyTypeObject BinaryTreeType = {
+    /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "BinaryTree",
+    /* tp_basicsize */ sizeof(BinaryTree),
+    /* tp_itemsize */ 0,
+    /* tp_dealloc */ (destructor) BinaryTree_dealloc,
+    /* tp_print */ 0,
+    /* tp_getattr */ 0,
+    /* tp_setattr */ 0,
+    /* tp_reserved */ 0,
+    /* tp_repr */ 0,
+    /* tp_as_number */ 0,
+    /* tp_as_sequence */ 0,
+    /* tp_as_mapping */ 0,
+    /* tp_hash  */ 0,
+    /* tp_call */ 0,
+    /* tp_str */ (reprfunc) BinaryTree___str__,
+    /* tp_getattro */ 0,
+    /* tp_setattro */ 0,
+    /* tp_as_buffer */ 0,
+    /* tp_flags */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+    /* tp_doc */ 0,
+    /* tp_traverse */ 0,
+    /* tp_clear */ 0,
+    /* tp_richcompare */ 0,
+    /* tp_weaklistoffset */ 0,
+    /* tp_iter */ 0,
+    /* tp_iternext */ 0,
+    /* tp_methods */ BinaryTree_PyMethodDef,
+    /* tp_members */ BinaryTree_PyMemberDef,
+    /* tp_getset */ 0,
+    /* tp_base */ &PyBaseObject_Type,
+    /* tp_dict */ 0,
+    /* tp_descr_get */ 0,
+    /* tp_descr_set */ 0,
+    /* tp_dictoffset */ 0,
+    /* tp_init */ 0,
+    /* tp_alloc */ 0,
+    /* tp_new */ BinaryTree___new__,
+};
 
 #endif
