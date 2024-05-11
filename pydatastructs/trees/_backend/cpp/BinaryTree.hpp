@@ -24,6 +24,9 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     BinaryTree *self;
     self = reinterpret_cast<BinaryTree*>(type->tp_alloc(type, 0));
 
+    // Check what this is: (python code below:)
+    // obj = object.__new__(cls)
+
     // Assume that arguments are in the order below. Modify the python code such that this is true
     PyObject *key = PyObject_GetItem(args, PyZero);
     PyObject *root_data = PyObject_GetItem(args, PyOne);
@@ -34,7 +37,8 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
         return NULL;
     }
 
-    self->key = root_data == Py_None ? Py_None : key;
+    Py_INCREF(Py_None);
+    key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
 
     // Create TreeNode class
     // root = TreeNode(key, root_data)
