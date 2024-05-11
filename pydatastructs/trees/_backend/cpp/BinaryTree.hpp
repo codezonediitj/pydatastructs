@@ -6,6 +6,7 @@
 #include <structmember.h>
 #include <cstdlib>
 #include "../../../utils/_backend/cpp/utils.hpp"
+#include "../../../utils/_backend/cpp/TreeNode.hpp"
 
 typedef struct {
     PyObject_HEAD
@@ -41,8 +42,8 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
 
     // Create TreeNode class
-    // root = TreeNode(key, root_data)
-    // root.is_root = True
+    PyObject* root = TreeNode___new__(key, root_data);
+    root->is_root = true;
 
     self->root_idx = 0;
 

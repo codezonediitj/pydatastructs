@@ -20,9 +20,9 @@ typedef struct {
 
 static void TreeNode_dealloc(TreeNode *self) {
     // Dealloc left and right TreeNodes
-    TreeNode_dealloc(TreeNode->left);
-    TreeNode_dealloc(TreeNode->right);
-    // Check if other deallocs are needed
+    TreeNode_dealloc(reinterpret_cast<TreeNode*>(TreeNode->left));
+    TreeNode_dealloc(reinterpret_cast<TreeNode*>(TreeNode->right));
+    // Check if other deallocs are needed using Py_XDECREF
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -35,7 +35,7 @@ static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *
 
     // Assume that arguments are in the order below. Modify the code such that this is true.
     self->key = PyObject_GetItem(args, PyZero);
-    self->data *root_data = PyObject_GetItem(args, PyOne);
+    self->data = PyObject_GetItem(args, PyOne);
 
     Py_INCREF(Py_None);
     self->left = Py_None;
