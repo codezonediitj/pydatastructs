@@ -8,9 +8,9 @@ backend = '_backend'
 
 cpp = 'cpp'
 
-trees = '.'.join([project, module, backend, cpp, 'BST'])
+trees = '.'.join([project, module, backend, cpp, '_trees'])
 trees_sources = ['/'.join([project, module, backend, cpp,
-                            'BST_module.cpp'])]
+                            'trees.cpp'])]
 
 extensions = [
     Extension(trees, sources=trees_sources)
