@@ -78,6 +78,8 @@ static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject 
     return NULL;
 }
 
+
+
 static struct PyMethodDef BinaryTree_PyMethodDef[] = {
     {"insert", (PyCFunction) BinaryTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     {"delete", (PyCFunction) BinaryTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
