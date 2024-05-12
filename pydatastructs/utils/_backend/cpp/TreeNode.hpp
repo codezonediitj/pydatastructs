@@ -10,8 +10,8 @@ typedef struct {
     PyObject_HEAD
     long key;
     long data;
-    PyObject* left;
-    PyObject* right;
+    PyObject* left; // can store None or a number
+    PyObject* right; // can store None or a number
     bool is_root;
     long height;
     PyObject* parent;
@@ -19,9 +19,9 @@ typedef struct {
 } TreeNode;
 
 static void TreeNode_dealloc(TreeNode *self) {
-    // Dealloc left and right TreeNodes
-    TreeNode_dealloc(reinterpret_cast<TreeNode*>(TreeNode->left));
-    TreeNode_dealloc(reinterpret_cast<TreeNode*>(TreeNode->right));
+    // left and right are long values, no need to dealloc for them
+    // TreeNode_dealloc(reinterpret_cast<TreeNode*>(TreeNode->left));
+    // TreeNode_dealloc(reinterpret_cast<TreeNode*>(TreeNode->right));
     // Check if other deallocs are needed using Py_XDECREF
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
