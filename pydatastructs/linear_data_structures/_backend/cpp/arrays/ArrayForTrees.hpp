@@ -7,6 +7,7 @@
 #include <map>
 #include "DynamicOneDimensionalArray.hpp"
 #include "OneDimensionalArray.hpp"
+using namespace std;
 
 typedef struct {
     PyObject_HEAD
