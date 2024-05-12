@@ -4,6 +4,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
+#include <map>
 #include "DynamicOneDimensionalArray.hpp"
 #include "OneDimensionalArray.hpp"
 
@@ -23,7 +24,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
         // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the exact same line :-
         long new_size = 2 * self->_num + 1;
         PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
-        for( i = 0; i < new_size; i++ ) {
+        for( int i = 0; i < new_size; i++ ) {
             Py_INCREF(Py_None);
             arr_new[i] = Py_None;
         }
