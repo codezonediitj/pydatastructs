@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
+#include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
 
 typedef struct {
     PyObject_HEAD
@@ -41,14 +42,15 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     Py_INCREF(Py_None);
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
 
-    // Create TreeNode class
-    PyObject* root = TreeNode___new__(key, root_data);
+    PyObject* root = TreeNode___new__(key, root_data); // check if this is correct
     root->is_root = true;
 
     self->root_idx = 0;
 
-    // Create ArrayForTrees class
-    // obj.tree, obj.size = ArrayForTrees(TreeNode, [root]), 1
+    // obj.tree= ArrayForTrees(TreeNode, [root])
+    PyObject* listroot = Py_BuildValue("[i]", root);
+    self->tree = ArrayForTrees(&TreeNodeType, listroot); // check if this is correct
+    self->size = 1;
 
     if(comp == Py_None){
         self->comparator = PyObject_RichCompare(PyObject *key1, PyObject *key2, Py_LT);
