@@ -11,6 +11,11 @@ using namespace std;
 
 typedef struct {
     PyObject_HEAD
+    OneDimensionalArray* _one_dimensional_array; // This is currently OneDimensionalArray, change to DynamicOneDimensionalArray if needed
+    double _load_factor;
+    long _num;
+    long _last_pos_filled;
+    long _size;
 } ArrayForTrees;
 
 static void ArrayForTrees_dealloc(ArrayForTrees *self) {
