@@ -7,6 +7,7 @@
 #include <map>
 #include "DynamicOneDimensionalArray.hpp"
 #include "OneDimensionalArray.hpp"
+#include "../../../../utils/_backend/cpp/TreeNode.hpp"
 using namespace std;
 
 typedef struct {
@@ -26,14 +27,15 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
     if(((double)self->_num/(double)self->_size) < self->_load_factor){
         map<long , long> new_indices;
 
-        // PyObject* arr_new = OneDimensionalArray___new__(self->_dtype, 2*self->_num + 1);
-        // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the exact same line :-
-        long new_size = 2 * self->_num + 1;
-        PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
-        for( int i = 0; i < new_size; i++ ) {
-            Py_INCREF(Py_None);
-            arr_new[i] = Py_None;
-        }
+        PyObject* arr_new = OneDimensionalArray___new__(TreeNode, 2*self->_num + 1); // self->_dtype is set to TreeNode for now.
+
+        // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the previous line :-
+        // long new_size = 2 * self->_num + 1;
+        // PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
+        // for( int i = 0; i < new_size; i++ ) {
+        //     Py_INCREF(Py_None);
+        //     arr_new[i] = Py_None;
+        // }
 
         int j=0;
         PyObject** _data = self->_one_dimensional_array->_data;
