@@ -27,7 +27,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
     if(((double)self->_num/(double)self->_size) < self->_load_factor){
         map<long , long> new_indices;
 
-        PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, 2*self->_num + 1); // self->_dtype is set to TreeNode for now.
+        PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, reinterpret_cast<PyObject*>(2*self->_num + 1)); // self->_dtype is set to TreeNode for now.
 
         // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the previous line :-
         // long new_size = 2 * self->_num + 1;
