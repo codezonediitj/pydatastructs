@@ -71,6 +71,20 @@ static struct PyMethodDef ArrayForTrees_PyMethodDef[] = {
     {NULL}
 };
 
+static struct PyMemberDef ArrayForTrees_PyMemberDef[] = {
+    {"size", T_LONG,
+     offsetof(ArrayForTrees, _size),
+     READONLY, NULL},
+    {"_num", T_LONG,
+     offsetof(ArrayForTrees, _num),
+     READONLY, NULL},
+    {"_last_pos_filled", T_LONG,
+     offsetof(ArrayForTrees, _last_pos_filled),
+     READONLY, NULL},
+    {NULL},
+};
+
+
 static PyTypeObject ArrayForTreesType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "ArrayForTrees",
     /* tp_basicsize */ sizeof(ArrayForTrees),
@@ -99,7 +113,7 @@ static PyTypeObject ArrayForTreesType = {
     /* tp_iter */ 0,
     /* tp_iternext */ 0,
     /* tp_methods */ ArrayForTrees_PyMethodDef,
-    /* tp_members */ 0,
+    /* tp_members */ ArrayForTrees_PyMemberDef,
     /* tp_getset */ 0,
     /* tp_base */ &DynamicOneDimensionalArrayType,
     /* tp_dict */ 0,
