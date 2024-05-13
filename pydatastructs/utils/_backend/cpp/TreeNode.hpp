@@ -34,8 +34,8 @@ static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *
     // obj = Node.__new__(cls)
 
     // Assume that arguments are in the order below. Modify the code such that this is true.
-    self->key = PyObject_GetItem(args, PyZero);
-    self->data = PyObject_GetItem(args, PyOne);
+    self->key = reinterpret_cast<long>(PyObject_GetItem(args, PyZero));
+    self->data = reinterpret_cast<long>(PyObject_GetItem(args, PyOne));
 
     Py_INCREF(Py_None);
     self->left = Py_None;
