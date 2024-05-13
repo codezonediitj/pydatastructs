@@ -78,7 +78,23 @@ static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject 
     return NULL;
 }
 
-
+static PyObject* BinaryTree___str__(BinaryTree *self) {
+    long size = self->tree->_last_pos_filled+1;
+    PyObject* list = PyList_New(size);
+    for(int i=0;i<size;i++){
+        PyObject* node = self->tree->_one_dimensional_array->_data[i]; // check this
+        if(node != Py_None){
+            PyObject* out = Py_BuildValue("(OllO)", node->left, node->key, node->data, node->right);
+            Py_INCREF(out);
+            PyList_SET_ITEM(list, i, out);
+        }
+        else{
+            PyObject* empty_string = PyUnicode_FromString("");
+            PyList_SET_ITEM(list, i, empty_string);
+        }
+    }
+    return PyObject_Str(list);
+}
 
 static struct PyMethodDef BinaryTree_PyMethodDef[] = {
     {"insert", (PyCFunction) BinaryTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
