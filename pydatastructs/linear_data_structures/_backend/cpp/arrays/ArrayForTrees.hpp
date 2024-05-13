@@ -13,11 +13,11 @@ typedef struct {
     PyObject_HEAD
 } ArrayForTrees;
 
-static void ArrayForTrees_dealloc(ArrayForTrees *self) {
+static void ArrayForTrees_dealloc(DynamicOneDimensionalArray *self) {
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
-static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
+static PyObject* ArrayForTrees__modify(DynamicOneDimensionalArray *self) {
     if(((double)self->_num/(double)self->_size) < self->_load_factor){
         map<long , long> new_indices;
 
