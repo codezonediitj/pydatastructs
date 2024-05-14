@@ -25,7 +25,7 @@ static void ArrayForTrees_dealloc(ArrayForTrees *self) {
 }
 
 static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
-    if(((double)self->_num/(double)self->_size) < self->_load_factor){
+    // if(((double)self->_num/(double)self->_size) < self->_load_factor){
     //     map<long , long> new_indices;
 
     //     // PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, reinterpret_cast<PyObject*>(2*self->_num + 1));
