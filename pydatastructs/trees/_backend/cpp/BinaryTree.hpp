@@ -15,7 +15,7 @@ typedef struct {
     PyObject* comparator;
     PyObject* tree;
     size_t size;
-    bool is_ordered_stastic;
+    bool is_order_statistic;
 } BinaryTree;
 
 static void BinaryTree_dealloc(BinaryTree *self) {
@@ -33,7 +33,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     PyObject *key = PyObject_GetItem(args, PyZero);
     PyObject *root_data = PyObject_GetItem(args, PyOne);
     PyObject *comp = PyObject_GetItem(args, PyTwo);
-    PyObject *is_ordered_statistic = PyObject_GetItem(args, PyThree);
+    PyObject *is_order_statistic = PyObject_GetItem(args, PyThree);
     if( (key == Py_None) && (root_data != Py_None) ) {
         PyErr_SetString(PyExc_ValueError, "Key required.");
         return NULL;
@@ -58,7 +58,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     else{
         self->comparator = comp;
     }
-    self->is_ordered_statistic = is_ordered_statistic;
+    self->is_order_statistic = is_order_statistic;
 
     return reinterpret_cast<PyObject*>(self);
 }
@@ -109,7 +109,7 @@ static PyMemberDef BinaryTree_PyMemberDef[] = {
     {"comparator", T_OBJECT, offsetof(BinaryTree, comparator), 0, "Comparator function"},
     {"tree", T_OBJECT, offsetof(BinaryTree, tree), 0, "Tree"},
     {"size", T_PYSSIZET, offsetof(BinaryTree, size), READONLY, "Size of the tree"},
-    {"is_ordered_stastic", T_BOOL, offsetof(BinaryTree, is_ordered_stastic), 0, "Whether the tree is ordered statically or not"},
+    {"is_order_statistic", T_BOOL, offsetof(BinaryTree, is_order_statistic), 0, "Whether the tree is ordered statically or not"},
     {NULL}  /* Sentinel */
 };
 
