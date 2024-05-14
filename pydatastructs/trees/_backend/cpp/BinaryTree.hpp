@@ -42,7 +42,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     Py_INCREF(Py_None);
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
 
-    PyObject* root = TreeNode___new__(&TreeNodeType, key, root_data); // check if this is correct
+    TreeNode* root = TreeNode___new__(&TreeNodeType, key, root_data); // check if this is correct
     root->is_root = true;
 
     self->root_idx = 0;
