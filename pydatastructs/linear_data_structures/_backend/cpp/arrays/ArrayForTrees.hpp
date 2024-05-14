@@ -26,44 +26,44 @@ static void ArrayForTrees_dealloc(ArrayForTrees *self) {
 
 static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
     if(((double)self->_num/(double)self->_size) < self->_load_factor){
-        map<long , long> new_indices;
+    //     map<long , long> new_indices;
 
-        // PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, reinterpret_cast<PyObject*>(2*self->_num + 1));
-        // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the previous line :-
-        long new_size = 2 * self->_num + 1;
-        PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
-        for( int i = 0; i < new_size; i++ ) {
-            Py_INCREF(Py_None);
-            arr_new[i] = Py_None;
-        }
+    //     // PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, reinterpret_cast<PyObject*>(2*self->_num + 1));
+    //     // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the previous line :-
+    //     long new_size = 2 * self->_num + 1;
+    //     PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
+    //     for( int i = 0; i < new_size; i++ ) {
+    //         Py_INCREF(Py_None);
+    //         arr_new[i] = Py_None;
+    //     }
 
-        int j=0;
-        PyObject** _data = self->_one_dimensional_array->_data;
-        for(int i=0; i<=self->_last_pos_filled;i++){
-            if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
-                Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
-                arr_new[j] = _data[i];
-                new_indices[_data[i]->key] = j;
-                j += 1;
-            }
-        }
-        for(int i=0;i<j;i++){
-            if(arr_new[i]->left != Py_None){
-                arr_new[i]->left = new_indices[_data[arr_new[i]->left]->key];
-            }
-            if(arr_new[i]->right != Py_None){
-                arr_new[i]->right = new_indices[_data[arr_new[i]->right]->key];
-            }
-            if(arr_new[i]->parent != Py_None){
-                arr_new[i]->parent = new_indices[_data[arr_new[i]->parent]->key];
-            }
-        }
-        self->_last_pos_filled = j - 1;
-        self->_one_dimensional_array->_data = arr_new;
-        self->_one_dimensional_array->_size = new_size;
-        self->_size = new_size;
-        return reinterpret_cast<PyObject*>(new_indices);
-    }
+    //     int j=0;
+    //     PyObject** _data = self->_one_dimensional_array->_data;
+    //     for(int i=0; i<=self->_last_pos_filled;i++){
+    //         if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
+    //             Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
+    //             arr_new[j] = _data[i];
+    //             new_indices[_data[i]->key] = j;
+    //             j += 1;
+    //         }
+    //     }
+    //     for(int i=0;i<j;i++){
+    //         if(arr_new[i]->left != Py_None){
+    //             arr_new[i]->left = new_indices[_data[arr_new[i]->left]->key];
+    //         }
+    //         if(arr_new[i]->right != Py_None){
+    //             arr_new[i]->right = new_indices[_data[arr_new[i]->right]->key];
+    //         }
+    //         if(arr_new[i]->parent != Py_None){
+    //             arr_new[i]->parent = new_indices[_data[arr_new[i]->parent]->key];
+    //         }
+    //     }
+    //     self->_last_pos_filled = j - 1;
+    //     self->_one_dimensional_array->_data = arr_new;
+    //     self->_one_dimensional_array->_size = new_size;
+    //     self->_size = new_size;
+    //     return reinterpret_cast<PyObject*>(new_indices);
+    // }
     Py_INCREF(Py_None);
     return Py_None;
 }
