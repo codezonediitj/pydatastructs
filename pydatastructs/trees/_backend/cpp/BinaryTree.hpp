@@ -93,7 +93,7 @@ static PyObject* BinaryTree___str__(BinaryTree *self) {
             PyList_SET_ITEM(list, i, empty_string);
         }
     }
-    return PyObject_Str(list);
+    return PyObject_Str(list); // use this or __str()__ (that is defined in utils)?
 }
 
 static struct PyMethodDef BinaryTree_PyMethodDef[] = {
