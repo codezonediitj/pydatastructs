@@ -33,7 +33,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     PyObject *key = PyObject_GetItem(args, PyZero);
     PyObject *root_data = PyObject_GetItem(args, PyOne);
     PyObject *comp = PyObject_GetItem(args, PyTwo);
-    PyObject *is_order_statistic = PyObject_GetItem(args, PyThree);
+    PyObject *is_ordered_statistic = PyObject_GetItem(args, PyThree);
     if( (key == Py_None) && (root_data != Py_None) ) {
         PyErr_SetString(PyExc_ValueError, "Key required.");
         return NULL;
@@ -42,7 +42,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     Py_INCREF(Py_None);
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
 
-    PyObject* root = TreeNode___new__(key, root_data); // check if this is correct
+    PyObject* root = TreeNode___new__(&TreeNodeType, key, root_data); // check if this is correct
     root->is_root = true;
 
     self->root_idx = 0;
@@ -53,12 +53,12 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     self->size = 1;
 
     if(comp == Py_None){
-        self->comparator = PyObject_RichCompare(PyObject *key1, PyObject *key2, Py_LT);
+        self->comparator = PyObject_RichCompare(PyObject *key1, PyObject *key2, Py_LT); // lambda functions, check how to do this
     } 
     else{
         self->comparator = comp;
     }
-    self->is_order_statistic = is_order_statistic;
+    self->is_ordered_statistic = is_ordered_statistic;
 
     return reinterpret_cast<PyObject*>(self);
 }
@@ -82,7 +82,7 @@ static PyObject* BinaryTree___str__(BinaryTree *self) {
     long size = self->tree->_last_pos_filled+1;
     PyObject* list = PyList_New(size);
     for(int i=0;i<size;i++){
-        PyObject* node = self->tree->_one_dimensional_array->_data[i]; // check this
+        TreeNode* node = self->tree->_one_dimensional_array->_data[i]; // check this
         if(node != Py_None){
             PyObject* out = Py_BuildValue("(OllO)", node->left, node->key, node->data, node->right);
             Py_INCREF(out);
