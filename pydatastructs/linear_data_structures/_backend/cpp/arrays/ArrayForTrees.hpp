@@ -64,7 +64,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
         self->_dynamic_one_dimensional_array->_one_dimensional_array->_data = arr_new;
         self->_dynamic_one_dimensional_array->_size = new_size;
         self->_size = new_size;
-        // return reinterpret_cast<PyObject*>(new_indices); // Works except for this
+        return reinterpret_cast<PyObject*>(new_indices); // Works except for this
     }
     Py_INCREF(Py_None);
     return Py_None;

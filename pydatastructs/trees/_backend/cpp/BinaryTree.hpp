@@ -49,15 +49,15 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
 
     // obj.tree= ArrayForTrees(TreeNode, [root])
     PyObject* listroot = Py_BuildValue("[i]", root);
-    // self->tree = ArrayForTrees(&TreeNodeType, listroot); // check if this is correct
+    self->tree = ArrayForTrees(&TreeNodeType, listroot); // check if this is correct
     self->size = 1;
 
-    // if(comp == Py_None){
-    //     self->comparator = PyObject_RichCompare(PyObject *key1, PyObject *key2, Py_LT); // lambda functions, check how to do this
-    // } 
-    // else{
-    //     self->comparator = comp;
-    // }
+    if(comp == Py_None){
+        self->comparator = PyObject_RichCompare(PyObject *key1, PyObject *key2, Py_LT); // lambda functions, check how to do this
+    } 
+    else{
+        self->comparator = comp;
+    }
     self->is_order_statistic = is_order_statistic;
 
     return reinterpret_cast<PyObject*>(self);
