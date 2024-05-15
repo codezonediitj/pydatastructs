@@ -79,11 +79,11 @@ static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject 
 }
 
 static PyObject* BinaryTree___str__(BinaryTree *self) {
-    long size = self->tree->_last_pos_filled+1;
+    long size = reinterpret_cast<BinaryTree*>(self->tree)->_last_pos_filled+1;
     PyObject* list = PyList_New(size);
     for(int i=0;i<size;i++){
-        TreeNode* node = self->tree->_one_dimensional_array->_data[i]; // check this
-        if(node != Py_None){
+        TreeNode* node = reinterpret_cast<ArrayForTrees*>(self->tree)->_dynamic_one_dimensional_array->_one_dimensional_array->_data[i]; // check this
+        if(reinterpret_cast<PyObject*>(node) != Py_None){
             PyObject* out = Py_BuildValue("(OllO)", node->left, node->key, node->data, node->right);
             Py_INCREF(out);
             PyList_SET_ITEM(list, i, out);
