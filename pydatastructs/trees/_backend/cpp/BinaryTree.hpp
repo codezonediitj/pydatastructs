@@ -49,7 +49,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
 
     // obj.tree= ArrayForTrees(TreeNode, [root])
     PyObject* listroot = Py_BuildValue("[i]", root);
-    self->tree = ArrayForTrees(&TreeNodeType, listroot); // check if this is correct
+    // self->tree = ArrayForTrees(&TreeNodeType, listroot); // check if this is correct
     self->size = 1;
 
     // if(comp == Py_None){
