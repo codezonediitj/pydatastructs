@@ -12,7 +12,7 @@ using namespace std;
 
 typedef struct {
     PyObject_HEAD
-    OneDimensionalArray* _one_dimensional_array; // This is currently OneDimensionalArray, change to DynamicOneDimensionalArray if needed
+    DynamicOneDimensionalArray* _dynamic_one_dimensional_array; // This is currently OneDimensionalArray, change to DynamicOneDimensionalArray if needed
     double _load_factor;
     long _num;
     long _last_pos_filled;
@@ -21,6 +21,7 @@ typedef struct {
 } ArrayForTrees;
 
 static void ArrayForTrees_dealloc(ArrayForTrees *self) {
+    DynamicOneDimensionalArray_dealloc(self->_dynamic_one_dimensional_array);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -38,7 +39,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
         }
 
         int j=0;
-        PyObject** _data = self->_one_dimensional_array->_data;
+        PyObject** _data = self->_dynamic_one_dimensional_array->_one_dimensional_array->_data;
         for(int i=0; i<=self->_last_pos_filled;i++){
             if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
                 Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
@@ -59,8 +60,8 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
             }
         }
         self->_last_pos_filled = j - 1;
-        self->_one_dimensional_array->_data = arr_new;
-        self->_one_dimensional_array->_size = new_size;
+        self->_dynamic_one_dimensional_array->_one_dimensional_array->_data = arr_new;
+        self->_dynamic_one_dimensional_array->_size = new_size;
         self->_size = new_size;
         return reinterpret_cast<PyObject*>(new_indices);
     }
@@ -69,7 +70,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
 }
 
 static struct PyMethodDef ArrayForTrees_PyMethodDef[] = {
-    {"_modify", (PyCFunction) ArrayForTrees__modify, METH_VARARGS, NULL},
+    {"_modify", (PyCFunction) ArrayForTrees__modify, METH_NOARGS, NULL},
     {NULL}
 };
 

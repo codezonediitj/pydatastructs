@@ -56,6 +56,18 @@ static PyObject* TreeNode___str__(TreeNode *self) {
     return out;
 }
 
+static struct PyMemberDef TreeNode_PyMemberDef[] = {
+    {"key", T_LONG, offsetof(TreeNode, key), 0, "TreeNode key"},
+    {"data", T_LONG, offsetof(TreeNode, data), 0, "TreeNode data"},
+    {"height", T_LONG, offsetof(TreeNode, height), 0, "TreeNode height"},
+    {"size", T_LONG, offsetof(TreeNode, size), 0, "TreeNode size"},
+    {"is_root", T_BOOL, offsetof(TreeNode, is_root), 0, "TreeNode is_root"},
+    {"left", T_OBJECT, offsetof(TreeNode, left), 0, "TreeNode left"},
+    {"right", T_OBJECT, offsetof(TreeNode, right), 0, "TreeNode right"},
+    {"parent", T_OBJECT, offsetof(TreeNode, parent), 0, "TreeNode parent"},
+    {NULL},
+};
+
 static PyTypeObject TreeNodeType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "TreeNode",
     /* tp_basicsize */ sizeof(TreeNode),
@@ -84,7 +96,7 @@ static PyTypeObject TreeNodeType = {
     /* tp_iter */ 0,
     /* tp_iternext */ 0,
     /* tp_methods */ 0,
-    /* tp_members */ 0,
+    /* tp_members */ TreeNode_PyMemberDef,
     /* tp_getset */ 0,
     /* tp_base */ &NodeType, // Class Node is the base class
     /* tp_dict */ 0,

@@ -1,5 +1,5 @@
-#ifndef TREES_BINARY_TREE_HPP
-#define TREES_BINARY_TREE_HPP
+#ifndef TREES_BINARYTREE_HPP
+#define TREES_BINARYTREE_HPP
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
