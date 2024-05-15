@@ -13,7 +13,7 @@ using namespace std;
 
 typedef struct {
     PyObject_HEAD
-    DynamicOneDimensionalArray* _dynamic_one_dimensional_array; // This is currently OneDimensionalArray, change to DynamicOneDimensionalArray if needed
+    DynamicOneDimensionalArray* _dynamic_one_dimensional_array;
     double _load_factor;
     long _num;
     long _last_pos_filled;
@@ -40,7 +40,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
         }
 
         int j=0;
-        PyObject** _data = self->_dynamic_one_dimensional_array->_one_dimensional_array->_data;
+        PyObject** _data = self->_dynamic_one_dimensional_array->_one_dimensional_array->_data; // Check this line
         for(int i=0; i<=self->_last_pos_filled;i++){
             if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
                 Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
@@ -64,7 +64,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
         self->_dynamic_one_dimensional_array->_one_dimensional_array->_data = arr_new;
         self->_dynamic_one_dimensional_array->_size = new_size;
         self->_size = new_size;
-        // return reinterpret_cast<PyObject*>(new_indices);
+        // return reinterpret_cast<PyObject*>(new_indices); // Works except for this
     }
     Py_INCREF(Py_None);
     return Py_None;
