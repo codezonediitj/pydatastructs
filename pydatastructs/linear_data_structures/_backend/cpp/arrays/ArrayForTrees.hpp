@@ -51,13 +51,13 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
         }
         for(int i=0;i<j;i++){
             if(reinterpret_cast<TreeNode*>(arr_new[i])->left != Py_None){
-                reinterpret_cast<TreeNode*>(arr_new[i])->left = new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<TreeNode*>(arr_new[i])->left])->key];
+                reinterpret_cast<TreeNode*>(arr_new[i])->left = new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<long>(reinterpret_cast<TreeNode*>(arr_new[i])->left)])->key];
             }
             if(reinterpret_cast<TreeNode*>(arr_new[i])->right != Py_None){
-                reinterpret_cast<TreeNode*>(arr_new[i])->right = new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<TreeNode*>(arr_new[i])->right])->key];
+                reinterpret_cast<TreeNode*>(arr_new[i])->right = new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<long>(reinterpret_cast<TreeNode*>(arr_new[i])->right)])->key];
             }
             if(reinterpret_cast<TreeNode*>(arr_new[i])->parent != Py_None){
-                reinterpret_cast<TreeNode*>(arr_new[i])->parent = new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<TreeNode*>(arr_new[i])->parent)]->key];
+                reinterpret_cast<TreeNode*>(arr_new[i])->parent = new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<long>(reinterpret_cast<TreeNode*>(arr_new[i])->parent)])->key];
             }
         }
         self->_last_pos_filled = j - 1;
