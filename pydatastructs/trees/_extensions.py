@@ -1,17 +1,17 @@
-# from setuptools import Extension
+from setuptools import Extension
 
-# project = 'pydatastructs'
+project = 'pydatastructs'
 
-# module = 'trees'
+module = 'trees'
 
-# backend = '_backend'
+backend = '_backend'
 
-# cpp = 'cpp'
+cpp = 'cpp'
 
-# trees = '.'.join([project, module, backend, cpp, '_trees'])
-# trees_sources = ['/'.join([project, module, backend, cpp,
-#                             'trees.cpp'])]
+trees = '.'.join([project, module, backend, cpp, '_trees'])
+trees_sources = ['/'.join([project, module, backend, cpp,
+                            'trees.cpp'])]
 
-# extensions = [
-#     Extension(trees, sources=trees_sources)
-# ]
+extensions = [
+    Extension(trees, sources=trees_sources)
+]
