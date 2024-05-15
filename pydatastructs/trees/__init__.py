@@ -4,8 +4,9 @@ from . import (
     binary_trees,
     m_ary_trees,
     space_partitioning_trees,
-    heaps,
-    _extensions
+    heaps
+    # heaps,
+    # _extensions
 )
 
 from .binary_trees import (
