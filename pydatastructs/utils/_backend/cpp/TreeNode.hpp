@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <structmember.h>
 #include "Node.hpp"
+#include "utils.hpp"
 
 typedef struct {
     PyObject_HEAD
