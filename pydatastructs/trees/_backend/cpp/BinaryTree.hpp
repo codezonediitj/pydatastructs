@@ -49,11 +49,12 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
 
     // obj.tree= ArrayForTrees(TreeNode, [root])
     PyObject* listroot = Py_BuildValue("[i]", root);
-    self->tree = ArrayForTrees(&TreeNodeType, listroot); // check if this is correct
+    self->tree = PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "O", listroot);
     self->size = 1;
 
     if(comp == Py_None){
-        self->comparator = PyObject_RichCompare(PyObject *key1, PyObject *key2, Py_LT); // lambda functions, check how to do this
+        Py_INCREF(Py_None);
+        self->comparator = Py_None; // set to none for now.
     } 
     else{
         self->comparator = comp;
@@ -79,7 +80,7 @@ static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject 
 }
 
 static PyObject* BinaryTree___str__(BinaryTree *self) {
-    long size = reinterpret_cast<ArrayForTrees*>(self->tree)->_last_pos_filled+1;
+    long size = reinterpret_cast<ArrayForTrees*>(self->tree)->_dynamic_one_dimensional_array->_last_pos_filled + 1;
     PyObject* list = PyList_New(size);
     for(int i=0;i<size;i++){
         TreeNode* node = reinterpret_cast<TreeNode*>(reinterpret_cast<ArrayForTrees*>(self->tree)->_dynamic_one_dimensional_array->_one_dimensional_array->_data[i]); // check this
