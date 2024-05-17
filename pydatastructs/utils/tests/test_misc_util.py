@@ -4,12 +4,10 @@ from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import Backend
 from pydatastructs.utils._backend.cpp import _nodes
 
-def test_TreeNode():
-    n = _nodes.TreeNode(None,1,100)
+def test_cpp_TreeNode():
+    n = _nodes.TreeNode(1,100)
     print(str(n))
     assert str(n) == "(None, 1, 100, None)"
-
-
 
 def test_AdjacencyListGraphNode():
     g_1 = AdjacencyListGraphNode('g_1', 1)
@@ -59,5 +57,3 @@ def test_RedBlackTreeNode():
 def test_SkipNode():
     c = SkipNode(1)
     assert str(c) == '(1, None)'
-
-test_TreeNode()
