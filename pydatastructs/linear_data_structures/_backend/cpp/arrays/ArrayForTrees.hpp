@@ -4,21 +4,14 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
-#include <map>
 #include "DynamicOneDimensionalArray.hpp"
 #include "OneDimensionalArray.hpp"
 #include "../../../../utils/_backend/cpp/TreeNode.hpp"
 #include "../../../../utils/_backend/cpp/utils.hpp"
-using namespace std;
 
 typedef struct {
     PyObject_HEAD
     DynamicOneDimensionalArray* _dynamic_one_dimensional_array;
-    double _load_factor;
-    long _num;
-    long _last_pos_filled;
-    long _size;
-    PyObject* _dtype;
 } ArrayForTrees;
 
 static void ArrayForTrees_dealloc(ArrayForTrees *self) {
@@ -28,7 +21,7 @@ static void ArrayForTrees_dealloc(ArrayForTrees *self) {
 
 static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
     if(((double)self->_num/(double)self->_size) < self->_load_factor){
-        map<long , long> new_indices;
+        PyObject* new_indices = PyDict_New();
 
         // PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, reinterpret_cast<PyObject*>(2*self->_num + 1));
         // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the previous line :-
@@ -45,26 +38,41 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
             if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
                 Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
                 arr_new[j] = _data[i];
-                new_indices[reinterpret_cast<TreeNode*>(_data[i])->key] = j; // Other nodes are also child classes of TreeNode
+                PyObject_SetItem(new_indices, reinterpret_cast<TreeNode*>(_data[i])->key, j);
                 j += 1;
             }
         }
         for(int i=0;i<j;i++){
             if(reinterpret_cast<TreeNode*>(arr_new[i])->left != Py_None){
-                reinterpret_cast<TreeNode*>(arr_new[i])->left = reinterpret_cast<PyObject*>(new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<long>(reinterpret_cast<TreeNode*>(arr_new[i])->left)])->key]);
+                reinterpret_cast<TreeNode*>(arr_new[i])->left = PyObject_GetItem(
+                    new_indices,
+                    PyLong_FromLong(
+                        reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->left)])->key
+                    )
+                );
             }
             if(reinterpret_cast<TreeNode*>(arr_new[i])->right != Py_None){
-                reinterpret_cast<TreeNode*>(arr_new[i])->right = reinterpret_cast<PyObject*>(new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<long>(reinterpret_cast<TreeNode*>(arr_new[i])->right)])->key]);
+                reinterpret_cast<TreeNode*>(arr_new[i])->right = PyObject_GetItem(
+                    new_indices,
+                    PyLong_FromLong(
+                        reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->right)])->key
+                    )
+                );
             }
             if(reinterpret_cast<TreeNode*>(arr_new[i])->parent != Py_None){
-                reinterpret_cast<TreeNode*>(arr_new[i])->parent = reinterpret_cast<PyObject*>(new_indices[reinterpret_cast<TreeNode*>(_data[reinterpret_cast<long>(reinterpret_cast<TreeNode*>(arr_new[i])->parent)])->key]);
+                reinterpret_cast<TreeNode*>(arr_new[i])->parent = PyObject_GetItem(
+                    new_indices,
+                    PyLong_FromLong(
+                        reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->parent)])->key
+                    )
+                );
             }
         }
         self->_last_pos_filled = j - 1;
         self->_dynamic_one_dimensional_array->_one_dimensional_array->_data = arr_new;
         self->_dynamic_one_dimensional_array->_size = new_size;
         self->_size = new_size;
-        return reinterpret_cast<PyObject*>(new_indices); // Works except for this
+        return new_indices;
     }
     Py_INCREF(Py_None);
     return Py_None;
