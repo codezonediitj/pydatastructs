@@ -5,7 +5,7 @@ from pydatastructs.utils.misc_util import Backend
 from pydatastructs.utils._backend.cpp import _nodes
 
 def test_TreeNode():
-    n = _nodes.TreeNode(1,100)
+    n = _nodes.TreeNode(None,1,100)
     print(str(n))
     assert str(n) == "(None, 1, 100, None)"
 
