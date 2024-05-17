@@ -2,9 +2,10 @@ from pydatastructs.utils import (TreeNode, AdjacencyListGraphNode, AdjacencyMatr
                                 GraphEdge, BinomialTreeNode, MAryTreeNode, CartesianTreeNode, RedBlackTreeNode, SkipNode)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import Backend
+from pydatastructs.utils._backend.cpp import _nodes
 
 def test_TreeNode():
-    n = TreeNode(1,100, backend=Backend.CPP)
+    n = _nodes.TreeNode(1,100)
     print(str(n))
     assert str(n) == "(None, 1, 100, None)"
 
