@@ -55,7 +55,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     if(comp == Py_None){
         Py_INCREF(Py_None);
         self->comparator = Py_None; // set to none for now.
-    } 
+    }
     else{
         self->comparator = comp;
     }
