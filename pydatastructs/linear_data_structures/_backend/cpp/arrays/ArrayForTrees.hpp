@@ -38,7 +38,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
             if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
                 Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
                 arr_new[j] = _data[i];
-                PyObject_SetItem(new_indices, reinterpret_cast<TreeNode*>(_data[i])->key, j);
+                PyObject_SetItem(new_indices, reinterpret_cast<PyObject*>(reinterpret_cast<TreeNode*>(_data[i])->key), reinterpret_cast<PyObject*>(j));
                 j += 1;
             }
         }
@@ -68,10 +68,10 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
                 );
             }
         }
-        self->_last_pos_filled = j - 1;
+        self->_dynamic_one_dimensional_array->_last_pos_filled = j - 1;
         self->_dynamic_one_dimensional_array->_one_dimensional_array->_data = arr_new;
         self->_dynamic_one_dimensional_array->_size = new_size;
-        self->_size = new_size;
+        self->_dynamic_one_dimensional_array->_size = new_size;
         return new_indices;
     }
     Py_INCREF(Py_None);
