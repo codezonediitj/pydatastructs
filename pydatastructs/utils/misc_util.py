@@ -1,6 +1,6 @@
 import math, pydatastructs
 from enum import Enum
-from pydatastructs.utils._backend.cpp import _nodes
+from _backend.cpp import _nodes
 
 __all__ = [
     'TreeNode',
