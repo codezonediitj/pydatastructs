@@ -20,12 +20,12 @@ static void ArrayForTrees_dealloc(ArrayForTrees *self) {
 }
 
 static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
-    if(((double)self->_num/(double)self->_size) < self->_load_factor){
+    if(((double)self->_dynamic_one_dimensional_array->_num/(double)self->_dynamic_one_dimensional_array->_size) < self->_dynamic_one_dimensional_array->_load_factor){
         PyObject* new_indices = PyDict_New();
 
         // PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, reinterpret_cast<PyObject*>(2*self->_num + 1));
         // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the previous line :-
-        long new_size = 2 * self->_num + 1;
+        long new_size = 2 * self->_dynamic_one_dimensional_array->_num + 1;
         PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
         for( int i = 0; i < new_size; i++ ) {
             Py_INCREF(Py_None);
@@ -34,7 +34,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
 
         int j=0;
         PyObject** _data = self->_dynamic_one_dimensional_array->_one_dimensional_array->_data; // Check this line
-        for(int i=0; i<=self->_last_pos_filled;i++){
+        for(int i=0; i<=self->_dynamic_one_dimensional_array->_last_pos_filled;i++){
             if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
                 Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
                 arr_new[j] = _data[i];
