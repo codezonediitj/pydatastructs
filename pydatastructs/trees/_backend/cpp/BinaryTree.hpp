@@ -3,6 +3,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <iostream>
 #include <structmember.h>
 #include <cstdlib>
 #include "../../../utils/_backend/cpp/utils.hpp"
