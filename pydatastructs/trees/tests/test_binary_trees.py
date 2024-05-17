@@ -1,10 +1,18 @@
 from pydatastructs.trees.binary_trees import (
-    BinarySearchTree, BinaryTreeTraversal, AVLTree,
+    BinaryTree, BinarySearchTree, BinaryTreeTraversal, AVLTree,
     ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree, CartesianTree, Treap, RedBlackTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
 import random
+from pydatastructs.trees._backend.cpp import _trees
+
+def test_cpp_BinaryTree():
+    b = _trees.BinaryTree(None,100);
+    # b = BinaryTree(1,1000)
+    # print(str(b))
+
+test_cpp_BinaryTree()
 
 def test_BinarySearchTree():
     BST = BinarySearchTree

@@ -38,11 +38,12 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
         PyErr_SetString(PyExc_ValueError, "Key required.");
         return NULL;
     }
-
     Py_INCREF(Py_None);
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
+    std::cout<<"h1"<<endl;
 
     TreeNode* root = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, key, root_data)); // check if this is correct
+    std::cout<<"h2"<<endl;
     root->is_root = true;
 
     self->root_idx = 0;
