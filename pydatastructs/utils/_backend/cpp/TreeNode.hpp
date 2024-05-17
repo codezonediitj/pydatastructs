@@ -54,7 +54,7 @@ static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *
 static PyObject* TreeNode___str__(TreeNode *self) {
     PyObject* out = Py_BuildValue("(OllO)", self->left, self->key, self->data, self->right);
     Py_INCREF(out);
-    return out;
+    return PyObject_Str(out);
 }
 
 static struct PyMemberDef TreeNode_PyMemberDef[] = {

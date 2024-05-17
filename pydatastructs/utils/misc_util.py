@@ -1,5 +1,6 @@
 import math, pydatastructs
 from enum import Enum
+from pydatastructs.utils._backend.cpp import _nodes
 
 __all__ = [
     'TreeNode',
@@ -72,8 +73,11 @@ class TreeNode(Node):
         return ['__new__', '__str__']
 
     def __new__(cls, key, data=None, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+        backend = kwargs.get('backend', Backend.PYTHON)
+        # print("backend checked")
+        if backend == Backend.CPP:
+            print("Backend switched to C++")
+            return _nodes.TreeNode(key, data, **kwargs)
         obj = Node.__new__(cls)
         obj.data, obj.key = data, key
         obj.left, obj.right, obj.parent, obj.height, obj.size = \
