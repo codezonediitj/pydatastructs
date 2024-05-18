@@ -4,6 +4,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
+#include <iostream>
 #include "Node.hpp"
 #include "utils.hpp"
 
@@ -29,17 +30,23 @@ static void TreeNode_dealloc(TreeNode *self) {
 
 static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *kwds) {
     TreeNode *self;
+    std::cout<<"h3"<<std::endl;
     self = reinterpret_cast<TreeNode*>(type->tp_alloc(type, 0));
+    std::cout<<"h4"<<std::endl;
 
     // Check what this is: (python code below:)
     // obj = Node.__new__(cls)
 
     // Assume that arguments are in the order below. Modify the code such that this is true.
     self->key = PyLong_AsLong(PyObject_GetItem(args, PyZero));
+    std::cout<<"h5"<<std::endl;
     self->data = PyLong_AsLong(PyObject_GetItem(args, PyOne));
+    std::cout<<"h6"<<std::endl;
 
     Py_INCREF(Py_None);
+    std::cout<<"h7"<<std::endl;
     self->left = Py_None;
+    std::cout<<"h8"<<std::endl;
     Py_INCREF(Py_None);
     self->right = Py_None;
     Py_INCREF(Py_None);
