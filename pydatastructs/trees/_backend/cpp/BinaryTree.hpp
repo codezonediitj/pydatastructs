@@ -43,7 +43,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
     std::cout<<"h1"<<std::endl;
 
-    TreeNode* root = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, key, root_data)); // check if this is correct
+    TreeNode* root = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, args, kwds)); // check if this is correct
     std::cout<<"h2"<<std::endl;
     root->is_root = true;
 
