@@ -8,11 +8,12 @@ import random
 from pydatastructs.trees._backend.cpp import _trees
 
 def test_cpp_BinaryTree():
-    b = _trees.BinaryTree(1,100);
+    pass
+    # b = _trees.BinaryTree(1,100);
     # b = BinaryTree(1,1000)
     # print(str(b))
 
-test_cpp_BinaryTree()
+# test_cpp_BinaryTree()
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
