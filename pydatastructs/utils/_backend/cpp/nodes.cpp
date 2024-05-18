@@ -1,6 +1,7 @@
 #include <Python.h>
 #include "Node.hpp"
 #include "TreeNode.hpp"
+#include "TN.hpp"
 
 static struct PyModuleDef nodes_struct = {
     PyModuleDef_HEAD_INIT,
