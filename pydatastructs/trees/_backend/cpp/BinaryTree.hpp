@@ -28,10 +28,10 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     BinaryTree *self;
     self = reinterpret_cast<BinaryTree*>(type->tp_alloc(type, 0));
 
-    // Check what this is: (python code below:)
-    // obj = object.__new__(cls)
+    // // Check what this is: (python code below:)
+    // // obj = object.__new__(cls)
 
-    // Assume that arguments are in the order below. Modify the python code such that this is true
+    // Assume that arguments are in the order below. Modify the python code such that this is true (ie; pass None for other arguments)
     PyObject *key = PyObject_GetItem(args, PyZero);
     PyObject *root_data = PyObject_GetItem(args, PyOne);
     PyObject *comp = PyObject_GetItem(args, PyTwo);
@@ -42,20 +42,21 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     }
     Py_INCREF(Py_None);
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
-    std::cout<<"h1"<<std::endl;
 
-    TN* r = reinterpret_cast<TN*>(TN___new__(&TNType, args, kwds)); // check if this is correct
-    std::cout<<"yay! Error solved! :)"<<std::endl;
-
-    TreeNode* root = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, args, kwds)); // check if this is correct
-    std::cout<<"h2"<<std::endl;
+    if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to 
+        return NULL;
+    }
+    TreeNode* root = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, args, kwds));
     root->is_root = true;
-
     self->root_idx = 0;
 
     // obj.tree= ArrayForTrees(TreeNode, [root])
     PyObject* listroot = Py_BuildValue("[i]", root);
-    self->tree = PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OO", &TreeNodeType, listroot);
+    if (PyType_Ready(&ArrayForTreesType) < 0) { // This has to be present to 
+        return NULL;
+    }
+    // TO DO: Fix the following line!
+    // self->tree = PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OO", &TreeNodeType, listroot);
     self->size = 1;
 
     if(comp == Py_None){

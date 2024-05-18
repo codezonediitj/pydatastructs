@@ -9,11 +9,11 @@ from pydatastructs.trees._backend.cpp import _trees
 
 def test_cpp_BinaryTree():
     pass
-    # b = _trees.BinaryTree(1,100);
+    b = _trees.BinaryTree(1,100,None,None); # Pass None, passing 4 arguments is necessary
     # b = BinaryTree(1,1000)
     # print(str(b))
 
-# test_cpp_BinaryTree()
+test_cpp_BinaryTree()
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
