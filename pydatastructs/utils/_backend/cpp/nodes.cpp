@@ -26,5 +26,11 @@ PyMODINIT_FUNC PyInit__nodes(void) {
     Py_INCREF(&TreeNodeType);
     PyModule_AddObject(nodes, "TreeNode", reinterpret_cast<PyObject*>(&TreeNodeType));
 
+    if (PyType_Ready(&TNType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&TNType);
+    PyModule_AddObject(nodes, "TN", reinterpret_cast<PyObject*>(&TNType));
+
     return nodes;
 }

@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
+#include "../../../utils/_backend/cpp/TN.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
 
 typedef struct {
@@ -42,6 +43,9 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     Py_INCREF(Py_None);
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
     std::cout<<"h1"<<std::endl;
+
+    TN* r = reinterpret_cast<TN*>(TN___new__(&TNType, args, kwds)); // check if this is correct
+    std::cout<<"yay! Error solved! :)"<<std::endl;
 
     TreeNode* root = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, args, kwds)); // check if this is correct
     std::cout<<"h2"<<std::endl;

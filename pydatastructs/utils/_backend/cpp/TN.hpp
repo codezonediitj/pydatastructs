@@ -1,0 +1,119 @@
+#ifndef UTILS_TN_HPP
+#define UTILS_TN_HPP
+
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+#include <structmember.h>
+#include <iostream>
+#include "Node.hpp"
+#include "utils.hpp"
+
+typedef struct {
+    PyObject_HEAD
+    // long key;
+    // long data;
+    // PyObject* left; // can store None or a number
+    // PyObject* right; // can store None or a number
+    // bool is_root;
+    // long height;
+    // PyObject* parent;
+    // long size;
+} TN;
+
+static void TN_dealloc(TN *self) {
+    // left and right are long values, no need to dealloc for them
+    // TN_dealloc(reinterpret_cast<TN*>(TN->left));
+    // TN_dealloc(reinterpret_cast<TN*>(TN->right));
+    // Check if other deallocs are needed using Py_XDECREF
+    Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
+}
+
+static PyObject* TN___new__(PyTypeObject* type, PyObject *args, PyObject *kwds) {
+    TN *self;
+    std::cout<<"h3"<<std::endl;
+    self = reinterpret_cast<TN*>(type->tp_alloc(type, 0));
+    std::cout<<"h4"<<std::endl;
+
+    // // Check what this is: (python code below:)
+    // // obj = Node.__new__(cls)
+
+    // // Assume that arguments are in the order below. Modify the code such that this is true.
+    // self->key = PyLong_AsLong(PyObject_GetItem(args, PyZero));
+    // std::cout<<"h5"<<std::endl;
+    // self->data = PyLong_AsLong(PyObject_GetItem(args, PyOne));
+    // std::cout<<"h6"<<std::endl;
+
+    // Py_INCREF(Py_None);
+    // std::cout<<"h7"<<std::endl;
+    // self->left = Py_None;
+    // std::cout<<"h8"<<std::endl;
+    // Py_INCREF(Py_None);
+    // self->right = Py_None;
+    // Py_INCREF(Py_None);
+    // self->parent = Py_None;
+    // self->height = 0;
+    // self->size = 1;
+    // self->is_root = false;
+
+    return reinterpret_cast<PyObject*>(self);
+}
+
+static PyObject* TN___str__(TN *self) {
+    // PyObject* out = Py_BuildValue("(OllO)", self->left, self->key, self->data, self->right);
+    // Py_INCREF(out);
+    // return PyObject_Str(out);
+}
+
+static struct PyMemberDef TN_PyMemberDef[] = {
+    // {"key", T_LONG, offsetof(TN, key), 0, "TN key"},
+    // {"data", T_LONG, offsetof(TN, data), 0, "TN data"},
+    // {"height", T_LONG, offsetof(TN, height), 0, "TN height"},
+    // {"size", T_LONG, offsetof(TN, size), 0, "TN size"},
+    // {"is_root", T_BOOL, offsetof(TN, is_root), 0, "TN is_root"},
+    // {"left", T_OBJECT, offsetof(TN, left), 0, "TN left"},
+    // {"right", T_OBJECT, offsetof(TN, right), 0, "TN right"},
+    // {"parent", T_OBJECT, offsetof(TN, parent), 0, "TN parent"},
+    {NULL},
+};
+
+static PyTypeObject TNType = {
+    /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "TN",
+    /* tp_basicsize */ sizeof(TN),
+    /* tp_itemsize */ 0,
+    /* tp_dealloc */ (destructor) TN_dealloc,
+    /* tp_print */ 0,
+    /* tp_getattr */ 0,
+    /* tp_setattr */ 0,
+    /* tp_reserved */ 0,
+    /* tp_repr */ 0,
+    /* tp_as_number */ 0,
+    /* tp_as_sequence */ 0,
+    /* tp_as_mapping */ 0,
+    /* tp_hash  */ 0,
+    /* tp_call */ 0,
+    /* tp_str */ (reprfunc) TN___str__,
+    /* tp_getattro */ 0,
+    /* tp_setattro */ 0,
+    /* tp_as_buffer */ 0,
+    /* tp_flags */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+    /* tp_doc */ 0,
+    /* tp_traverse */ 0,
+    /* tp_clear */ 0,
+    /* tp_richcompare */ 0,
+    /* tp_weaklistoffset */ 0,
+    /* tp_iter */ 0,
+    /* tp_iternext */ 0,
+    /* tp_methods */ 0,
+    /* tp_members */ TN_PyMemberDef,
+    /* tp_getset */ 0,
+    /* tp_base */ &NodeType, // Class Node is the base class
+    /* tp_dict */ 0,
+    /* tp_descr_get */ 0,
+    /* tp_descr_set */ 0,
+    /* tp_dictoffset */ 0,
+    /* tp_init */ 0,
+    /* tp_alloc */ 0,
+    /* tp_new */ TN___new__,
+};
+
+#endif
