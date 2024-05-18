@@ -42,7 +42,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     Py_INCREF(Py_None);
     key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
 
-    if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to 
+    if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
     TreeNode* root = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, args, kwds));
@@ -51,7 +51,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
 
     // obj.tree= ArrayForTrees(TreeNode, [root])
     PyObject* listroot = Py_BuildValue("[i]", root);
-    if (PyType_Ready(&ArrayForTreesType) < 0) { // This has to be present to 
+    if (PyType_Ready(&ArrayForTreesType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
     // TO DO: Fix the following line!
