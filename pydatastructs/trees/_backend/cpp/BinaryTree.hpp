@@ -56,7 +56,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     }
     // TO DO: Fix the following line!
     // self->tree = PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OO", &TreeNodeType, listroot);
-    
+
     self->size = 1;
     // Python code is modified to ensure comp is never None
     if (!PyCallable_Check(comp)) {

@@ -26,11 +26,11 @@ static void DynamicOneDimensionalArray_dealloc(DynamicOneDimensionalArray *self)
 
 static PyObject* DynamicOneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                                                     PyObject *kwds) {
-    std::cout<<"h1"<<std::endl;
+    // std::cout<<"h1"<<std::endl;
     DynamicOneDimensionalArray *self;
-    std::cout<<"h2"<<std::endl;
+    // std::cout<<"h2"<<std::endl;
     self = reinterpret_cast<DynamicOneDimensionalArray*>(type->tp_alloc(type, 0));
-    std::cout<<"h3"<<std::endl;
+    // std::cout<<"h3"<<std::endl;
     PyObject* _one_dimensional_array = OneDimensionalArray___new__(&OneDimensionalArrayType, args, kwds);
     if( !_one_dimensional_array ) {
         return NULL;
