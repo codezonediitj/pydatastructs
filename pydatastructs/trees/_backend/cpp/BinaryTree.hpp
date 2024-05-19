@@ -56,32 +56,31 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     }
     // TO DO: Fix the following line!
     // self->tree = PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OO", &TreeNodeType, listroot);
+    
     self->size = 1;
-
-    if(comp == Py_None){
-        Py_INCREF(Py_None);
-        self->comparator = Py_None; // set to none for now.
-    }
-    else{
-        self->comparator = comp;
-    }
+    // Python code is modified to ensure comp is never None
+    if (!PyCallable_Check(comp)) {
+            PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+            return NULL;
+        }
+    self->comparator = comp;
     self->is_order_statistic = is_order_statistic;
 
     return reinterpret_cast<PyObject*>(self);
 }
 
 static PyObject* BinaryTree_insert(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-    PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
     return NULL;
 }
 
 static PyObject* BinaryTree_delete(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-    PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
     return NULL;
 }
 
 static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-    PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
     return NULL;
 }
 
