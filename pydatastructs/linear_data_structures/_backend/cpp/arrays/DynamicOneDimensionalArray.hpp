@@ -9,6 +9,7 @@
 #include "DynamicArray.hpp"
 #include "OneDimensionalArray.hpp"
 #include "../../../../utils/_backend/cpp/utils.hpp"
+#include "../../../../utils/_backend/cpp/TreeNode.hpp"
 
 typedef struct {
     PyObject_HEAD
@@ -26,11 +27,11 @@ static void DynamicOneDimensionalArray_dealloc(DynamicOneDimensionalArray *self)
 
 static PyObject* DynamicOneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                                                     PyObject *kwds) {
-    // std::cout<<"h1"<<std::endl;
     DynamicOneDimensionalArray *self;
-    // std::cout<<"h2"<<std::endl;
     self = reinterpret_cast<DynamicOneDimensionalArray*>(type->tp_alloc(type, 0));
-    // std::cout<<"h3"<<std::endl;
+    if (PyType_Ready(&OneDimensionalArrayType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
+        return NULL;
+    }
     PyObject* _one_dimensional_array = OneDimensionalArray___new__(&OneDimensionalArrayType, args, kwds);
     if( !_one_dimensional_array ) {
         return NULL;

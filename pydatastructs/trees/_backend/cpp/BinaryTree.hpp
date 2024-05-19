@@ -9,6 +9,7 @@
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
+#include "../../../linear_data_structures/_backend/cpp/arrays/DynamicOneDimensionalArray.hpp"
 
 typedef struct {
     PyObject_HEAD
@@ -49,13 +50,17 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     root->is_root = true;
     self->root_idx = 0;
 
-    // obj.tree= ArrayForTrees(TreeNode, [root])
-    PyObject* listroot = Py_BuildValue("[i]", root);
+    PyObject* listroot = Py_BuildValue("[O]", root);
     if (PyType_Ready(&ArrayForTreesType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
-    // TO DO: Fix the following line!
-    // self->tree = PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OO", &TreeNodeType, listroot);
+    if (PyType_Ready(&DynamicOneDimensionalArrayType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
+        return NULL;
+    }
+    if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
+        return NULL;
+    }
+    self->tree = PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OOO", &DynamicOneDimensionalArrayType, &TreeNodeType, listroot);
 
     self->size = 1;
     // Python code is modified to ensure comp is never None

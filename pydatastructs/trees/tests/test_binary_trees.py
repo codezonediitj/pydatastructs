@@ -10,9 +10,9 @@ import random
 def test_cpp_BinaryTree():
     pass
     b = BinaryTree(1,100,backend=Backend.CPP)
-    # b.insert() # Correctly throws NotImplementedError: This is an abstract method
-    # b.delete() # Correctly throws NotImplementedError: This is an abstract method
-    # b.search() # Correctly throws NotImplementedError: This is an abstract method
+    assert raises(NotImplementedError, b.insert) # Correctly throws NotImplementedError: This is an abstract method
+    assert raises(NotImplementedError, b.delete) # Correctly throws NotImplementedError: This is an abstract method
+    assert raises(NotImplementedError, b.search) # Correctly throws NotImplementedError: This is an abstract method
     # print(str(b))
 
 test_cpp_BinaryTree()

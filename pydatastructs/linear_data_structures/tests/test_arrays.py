@@ -3,7 +3,7 @@ from pydatastructs.linear_data_structures import (
     MultiDimensionalArray)
 from pydatastructs.utils.misc_util import Backend
 from pydatastructs.utils.raises_util import raises
-
+from pydatastructs.utils import TreeNode
 
 def test_OneDimensionalArray():
     ODA = OneDimensionalArray
@@ -127,3 +127,11 @@ def test_DynamicOneDimensionalArray():
     b.append(4)
     b.append(5)
     assert [b[i] for i in range(b.size)] == [1, 2, 3, 4, 5, None, None]
+
+def test_DynamicOneDimensionalArray2():
+    DODA = DynamicOneDimensionalArray
+    root = TreeNode(1, 100)
+    A = DODA(TreeNode, [root])
+    print(str(A[0]))
+
+test_DynamicOneDimensionalArray2()

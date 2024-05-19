@@ -63,7 +63,7 @@ class BinaryTree(object):
         if backend == Backend.CPP:
             comp = lambda key1, key2: key1 < key2 \
                         if comp is None else comp
-            return _trees.BinaryTree(key, root_data, comp, is_order_statistic, **kwargs) # If any argument is not given, then it is passed as None
+            return _trees.BinaryTree(key, root_data, comp, is_order_statistic, **kwargs) # If any argument is not given, then it is passed as None, except for comp
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
