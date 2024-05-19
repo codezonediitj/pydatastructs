@@ -133,5 +133,3 @@ def test_DynamicOneDimensionalArray2():
     root = TreeNode(1, 100)
     A = DODA(TreeNode, [root])
     print(str(A[0]))
-
-test_DynamicOneDimensionalArray2()
