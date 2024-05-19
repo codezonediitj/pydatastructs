@@ -4,16 +4,15 @@ from pydatastructs.trees.binary_trees import (
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
+from pydatastructs.utils.misc_util import Backend
 import random
-from pydatastructs.trees._backend.cpp import _trees
 
 def test_cpp_BinaryTree():
     pass
-    b = _trees.BinaryTree(1,100,None,None); # Pass None, passing 4 arguments is necessary
-    # b = BinaryTree(1,1000)
+    b = BinaryTree(1,100,backend=Backend.CPP); # Pass None, passing 4 arguments is necessary
     # print(str(b))
 
-test_cpp_BinaryTree()
+# test_cpp_BinaryTree()
 
 def test_BinarySearchTree():
     BST = BinarySearchTree

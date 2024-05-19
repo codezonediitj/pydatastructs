@@ -6,6 +6,7 @@ from pydatastructs.linear_data_structures import OneDimensionalArray
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
+from pydatastructs.trees._backend.cpp import _trees
 
 __all__ = [
     'AVLTree',
@@ -58,8 +59,9 @@ class BinaryTree(object):
 
     def __new__(cls, key=None, root_data=None, comp=None,
                 is_order_statistic=False, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            return _trees.BinaryTree(key, root_data, comp, is_order_statistic, **kwargs) # If any argument is not given, then it is passed as None
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
