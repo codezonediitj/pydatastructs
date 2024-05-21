@@ -9,12 +9,13 @@
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
+#include "../../../linear_data_structures/_backend/cpp/arrays/DynamicOneDimensionalArray.hpp"
 
 typedef struct {
     PyObject_HEAD
+    ArrayForTrees* tree;
     size_t root_idx;
     PyObject* comparator;
-    PyObject* tree;
     size_t size;
     bool is_order_statistic;
 } BinaryTree;
@@ -59,8 +60,13 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
-    self->tree = PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OOO", &DynamicOneDimensionalArrayType, &TreeNodeType, listroot);
-
+   
+    Py_INCREF(Py_None);
+    ArrayForTrees* p = reinterpret_cast<ArrayForTrees*>(PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OOO", &DynamicOneDimensionalArrayType, &TreeNodeType, listroot));
+    if( !p ) {
+        return NULL;
+    }
+    self->tree = p;
     self->size = 1;
     // Python code is modified to ensure comp is never None
     if (!PyCallable_Check(comp)) {
@@ -89,10 +95,11 @@ static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject 
 }
 
 static PyObject* BinaryTree___str__(BinaryTree *self) {
-    long size = reinterpret_cast<ArrayForTrees*>(self->tree)->_dynamic_one_dimensional_array->_last_pos_filled + 1;
+    long size = reinterpret_cast<DynamicOneDimensionalArray*>(self->tree)->_last_pos_filled + 1;
     PyObject* list = PyList_New(size);
     for(int i=0;i<size;i++){
-        TreeNode* node = reinterpret_cast<TreeNode*>(reinterpret_cast<ArrayForTrees*>(self->tree)->_dynamic_one_dimensional_array->_one_dimensional_array->_data[i]); // check this
+        OneDimensionalArray* oda = reinterpret_cast<DynamicOneDimensionalArray*>(self->tree)->_one_dimensional_array; // check this
+        TreeNode* node = reinterpret_cast<TreeNode*>(oda->_data[i]); // check this
         if(reinterpret_cast<PyObject*>(node) != Py_None){
             PyObject* out = Py_BuildValue("(OllO)", node->left, node->key, node->data, node->right);
             Py_INCREF(out);
@@ -117,7 +124,7 @@ static struct PyMethodDef BinaryTree_PyMethodDef[] = {
 static PyMemberDef BinaryTree_PyMemberDef[] = {
     {"root_idx", T_PYSSIZET, offsetof(BinaryTree, root_idx), READONLY, "Index of the root node"},
     {"comparator", T_OBJECT, offsetof(BinaryTree, comparator), 0, "Comparator function"},
-    {"tree", T_OBJECT, offsetof(BinaryTree, tree), 0, "Tree"},
+    // {"tree", T_OBJECT, offsetof(BinaryTree, tree), 0, "Tree"},
     {"size", T_PYSSIZET, offsetof(BinaryTree, size), READONLY, "Size of the tree"},
     {"is_order_statistic", T_BOOL, offsetof(BinaryTree, is_order_statistic), 0, "Whether the tree is ordered statically or not"},
     {NULL}  /* Sentinel */

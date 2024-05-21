@@ -14,6 +14,7 @@ def test_cpp_BinaryTree():
     assert raises(NotImplementedError, b.delete) # Correctly throws NotImplementedError: This is an abstract method
     assert raises(NotImplementedError, b.search) # Correctly throws NotImplementedError: This is an abstract method
     # print(str(b))
+    assert str(b) == "[(None, 1, 100, None)]"
 
 test_cpp_BinaryTree()
 
