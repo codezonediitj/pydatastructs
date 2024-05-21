@@ -60,7 +60,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
-   
+
     Py_INCREF(Py_None);
     ArrayForTrees* p = reinterpret_cast<ArrayForTrees*>(PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OOO", &DynamicOneDimensionalArrayType, &TreeNodeType, listroot));
     if( !p ) {
