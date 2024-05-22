@@ -4,6 +4,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
+// #include <iostream>
 #include "DynamicOneDimensionalArray.hpp"
 #include "OneDimensionalArray.hpp"
 #include "../../../../utils/_backend/cpp/TreeNode.hpp"
@@ -17,6 +18,19 @@ typedef struct {
 static void ArrayForTrees_dealloc(ArrayForTrees *self) {
     DynamicOneDimensionalArray_dealloc(self->dynamic_one_dimensional_array);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
+}
+
+static PyObject* ArrayForTrees___new__(PyTypeObject* type, PyObject *args, PyObject *kwds) {
+    ArrayForTrees *self;
+    self = reinterpret_cast<ArrayForTrees*>(type->tp_alloc(type, 0));
+
+    if (PyType_Ready(&DynamicOneDimensionalArrayType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
+        return NULL;
+    }
+    PyObject* doda = DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, args, kwds);
+    self->dynamic_one_dimensional_array = reinterpret_cast<DynamicOneDimensionalArray*>(doda);
+
+    return reinterpret_cast<PyObject*>(self);
 }
 
 // static PyObject* ArrayForTrees__modify(ArrayForTrees *self) {
@@ -83,6 +97,7 @@ static struct PyMethodDef ArrayForTrees_PyMethodDef[] = {
     {NULL}
 };
 
+// Check T_OBJECT in the following
 static struct PyMemberDef ArrayForTrees_PyMemberDef[] = {
     {"dynamic_one_dimensional_array", T_OBJECT,
      offsetof(ArrayForTrees, dynamic_one_dimensional_array),
@@ -127,7 +142,7 @@ static PyTypeObject ArrayForTreesType = {
     /* tp_dictoffset */ 0,
     /* tp_init */ 0,
     /* tp_alloc */ 0,
-    /* tp_new */ 0,
+    /* tp_new */ ArrayForTrees___new__,
 };
 
 #endif
