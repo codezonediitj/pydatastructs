@@ -1,6 +1,6 @@
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray,
-    MultiDimensionalArray)
+    MultiDimensionalArray, ArrayForTrees)
 from pydatastructs.utils.misc_util import Backend
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils import TreeNode
@@ -133,3 +133,16 @@ def test_DynamicOneDimensionalArray2():
     root = TreeNode(1, 100)
     A = DODA(TreeNode, [root])
     print(str(A[0]))
+
+def test_ArrayForTrees():
+    AFT = ArrayForTrees
+    root = TreeNode(1, 100)
+    A = AFT(TreeNode, [root])
+    assert str(A[0]) == "(None, 1, 100, None)"
+
+def test_cpp_ArrayForTrees():
+    from pydatastructs.linear_data_structures._backend.cpp import _arrays
+    AFT = _arrays.ArrayForTrees
+    root = TreeNode(1, 100)
+    A = AFT(TreeNode, [root])
+    # ArrayForTrees has no __str__() method
