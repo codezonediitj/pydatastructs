@@ -1,5 +1,6 @@
 #include <Python.h>
 #include "BinaryTree.hpp"
+#include "BinarySearchTree.hpp"
 
 static struct PyModuleDef trees_struct = {
     PyModuleDef_HEAD_INIT,
@@ -18,6 +19,12 @@ PyMODINIT_FUNC PyInit__trees(void) {
     }
     Py_INCREF(&BinaryTreeType);
     PyModule_AddObject(trees, "BinaryTree", reinterpret_cast<PyObject*>(&BinaryTreeType));
+
+    if (PyType_Ready(&BinarySearchTreeType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&BinarySearchTreeType);
+    PyModule_AddObject(trees, "BinarySearchTree", reinterpret_cast<PyObject*>(&BinarySearchTreeType));
 
     return trees;
 }
