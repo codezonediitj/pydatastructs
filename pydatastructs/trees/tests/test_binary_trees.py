@@ -17,6 +17,13 @@ def test_cpp_BinaryTree():
 
 # test_cpp_BinaryTree()
 
+def test_cpp_BinarySearchTree():
+    b = BinarySearchTree(1,100, backend=Backend.CPP)
+    # print(str(b))
+    assert str(b) == "[(None, 1, 100, None)]"
+
+test_cpp_BinarySearchTree()
+
 def test_BinarySearchTree():
     BST = BinarySearchTree
     b = BST(8, 8)
@@ -115,6 +122,8 @@ def test_BinarySearchTree():
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
+
+# test_BinarySearchTree()
 
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree

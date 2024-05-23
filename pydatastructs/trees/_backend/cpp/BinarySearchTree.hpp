@@ -4,6 +4,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
+#include <iostream>
 #include <cstdlib>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
@@ -31,6 +32,10 @@ static PyObject* BinarySearchTree___new__(PyTypeObject* type, PyObject *args, Py
     self->binary_tree = reinterpret_cast<BinaryTree*>(bt);
 
     return reinterpret_cast<PyObject*>(self);
+}
+
+static PyObject* BinarySearchTree___str__(BinarySearchTree *self) {
+    return BinaryTree___str__(self->binary_tree);
 }
 
 static int BinarySearchTree_left_size(BinarySearchTree* self, TreeNode* node) {
@@ -123,7 +128,7 @@ static PyTypeObject BinarySearchTreeType = {
     /* tp_as_mapping */ 0,
     /* tp_hash  */ 0,
     /* tp_call */ 0,
-    /* tp_str */ 0,
+    /* tp_str */ (reprfunc) BinarySearchTree___str__,
     /* tp_getattro */ 0,
     /* tp_setattro */ 0,
     /* tp_as_buffer */ 0,
@@ -145,7 +150,7 @@ static PyTypeObject BinarySearchTreeType = {
     /* tp_dictoffset */ 0,
     /* tp_init */ 0,
     /* tp_alloc */ 0,
-    /* tp_new */ 0,
+    /* tp_new */ BinarySearchTree___new__,
 };
 
 #endif
