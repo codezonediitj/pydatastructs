@@ -139,11 +139,9 @@ def test_ArrayForTrees():
     root = TreeNode(1, 100)
     A = AFT(TreeNode, [root])
     assert str(A) == "['(None, 1, 100, None)']"
-    print(str(A))
     node = TreeNode(2, 200)
     A.append(node)
-    print(str(A))
-    A._modify()
+    assert str(A) == "['(None, 1, 100, None)', '(None, 2, 200, None)']"
 
 def test_cpp_ArrayForTrees():
     from pydatastructs.linear_data_structures._backend.cpp import _arrays
@@ -151,11 +149,10 @@ def test_cpp_ArrayForTrees():
     AFT = _arrays.ArrayForTrees
     root = TreeNode(1, 100, backend=Backend.CPP)
     A = AFT(_nodes.TreeNode, [root])
-    # print(str(A))
     assert str(A) == "['(None, 1, 100, None)']"
-
-    # TO DO: Fix _modify()
-    # print(A._modify())
+    node = TreeNode(2, 200, backend=Backend.CPP)
+    A.append(node)
+    assert str(A) == "['(None, 1, 100, None)', '(None, 2, 200, None)']"
 
 # test_ArrayForTrees()
 # test_cpp_ArrayForTrees()
