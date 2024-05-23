@@ -67,14 +67,15 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
 
     Py_INCREF(Py_None);
     PyObject* args2 = Py_BuildValue("(OO)", &TreeNodeType, listroot);
+    PyObject* kwds2 = Py_BuildValue("()");
     if (PyType_Ready(&DynamicOneDimensionalArrayType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
-    ArrayForTrees* p = reinterpret_cast<ArrayForTrees*>(ArrayForTrees___new__(&ArrayForTreesType, args2, kwds));
-    if( !p ) {
+    ArrayForTrees* arr = reinterpret_cast<ArrayForTrees*>(ArrayForTrees___new__(&ArrayForTreesType, args2, kwds2));
+    if( !arr ) {
         return NULL;
     }
-    self->tree = p;
+    self->tree = arr;
     self->size = 1;
     // Python code is modified to ensure comp is never None
     if (!PyCallable_Check(comp)) {
@@ -103,10 +104,10 @@ static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject 
 }
 
 static PyObject* BinaryTree___str__(BinaryTree *self) {
-    long size = self->tree->dynamic_one_dimensional_array->_last_pos_filled + 1;
+    long size = self->tree->_last_pos_filled + 1;
     PyObject* list = PyList_New(size);
     for(int i=0;i<size;i++){
-        OneDimensionalArray* oda = self->tree->dynamic_one_dimensional_array->_one_dimensional_array;
+        OneDimensionalArray* oda = self->tree->_one_dimensional_array;
         TreeNode* node = reinterpret_cast<TreeNode*>(oda->_data[i]);
         if(reinterpret_cast<PyObject*>(node) != Py_None){
             PyObject* out = Py_BuildValue("(OllO)", node->left, node->key, node->data, node->right);

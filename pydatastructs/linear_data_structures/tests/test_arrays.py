@@ -146,10 +146,11 @@ def test_cpp_ArrayForTrees():
     AFT = _arrays.ArrayForTrees
     root = TreeNode(1, 100)
     A = AFT(TreeNode, [root])
+    # print(str(A))
     assert str(A) == "['(None, 1, 100, None)']"
 
     # TO DO: Fix _modify()
     # print(A._modify())
 
-# test_ArrayForTrees()
-# test_cpp_ArrayForTrees()
+test_ArrayForTrees()
+test_cpp_ArrayForTrees()

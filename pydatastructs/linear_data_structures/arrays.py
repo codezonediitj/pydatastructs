@@ -407,7 +407,7 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self[self._last_pos_filled + 1] = el
         self._last_pos_filled += 1
         self._num += 1
-        self._modify()
+        self._modify() #if self is ArrayForTrees, then that _modify() is called
 
     def delete(self, idx):
         if idx <= self._last_pos_filled and idx >= 0 and \
