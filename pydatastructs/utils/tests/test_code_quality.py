@@ -232,3 +232,6 @@ def test_backend_argument_message():
     for api in apis:
         if api not in backend_implemented:
             call_and_raise(api, 0)
+
+# test_trailing_white_spaces()
+# test_final_new_lines()
