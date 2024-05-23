@@ -152,5 +152,5 @@ def test_cpp_ArrayForTrees():
     # TO DO: Fix _modify()
     # print(A._modify())
 
-test_ArrayForTrees()
-test_cpp_ArrayForTrees()
+# test_ArrayForTrees()
+# test_cpp_ArrayForTrees()

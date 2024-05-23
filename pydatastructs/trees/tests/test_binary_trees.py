@@ -16,7 +16,7 @@ def test_cpp_BinaryTree():
     # print(str(b))
     assert str(b) == "[(None, 1, 100, None)]"
 
-test_cpp_BinaryTree()
+# test_cpp_BinaryTree()
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
