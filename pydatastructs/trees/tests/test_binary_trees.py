@@ -8,7 +8,6 @@ from pydatastructs.utils.misc_util import Backend
 import random
 
 def test_cpp_BinaryTree():
-    pass
     b = BinaryTree(1,100,backend=Backend.CPP)
     assert raises(NotImplementedError, b.insert) # Correctly throws NotImplementedError: This is an abstract method
     assert raises(NotImplementedError, b.delete) # Correctly throws NotImplementedError: This is an abstract method
