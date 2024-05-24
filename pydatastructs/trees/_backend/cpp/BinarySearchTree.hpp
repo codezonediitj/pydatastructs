@@ -72,22 +72,60 @@ static PyObject* BinarySearchTree__update_size(BinarySearchTree* self, PyObject 
     }
 }
 
-static PyObject* BinarySearchTree_search(BinarySearchTree* self, long key, PyObject *kwds) {
-    std::cout<<"search() called"<<std::endl;
-    PyObject* parent = Py_None;
-    static char* keywords[] = {"parent", NULL};
-    if(!PyArg_ParseTupleAndKeywords(Py_BuildValue("()"), kwds, "|O", keywords, &parent)){
+static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args, PyObject *kwds) {
+    PyObject* ret_parent = Py_None;
+    PyObject* key_arg;
+    static char* keywords[] = {"key","parent", NULL};
+    if(!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key_arg, &ret_parent)){
         return NULL;
     }
-    std::cout<<"keywords parsed"<<std::endl;
+    long key = PyLong_AsLong(key_arg);
+    BinaryTree* bt = self->binary_tree;
+    PyObject* parent = Py_None;
+    PyObject* walk = PyLong_FromLong(bt->root_idx); // root_idx is size_t, change it to long if needed
+
+    // TO DO: Currently, key is a long, as it can't be None
+    // if self.tree[walk].key is None:
+    //     return None
+
+    while(walk != Py_None){
+        long curr_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key;
+        // std::cout<<curr_key<<" "<<key<<std::endl;
+
+        // // Testing the comparator
+        // if (!PyCallable_Check(bt->comparator)) {
+        //     PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+        //     return NULL;
+        // }
+        // PyObject* arguments = Py_BuildValue("OO", PyLong_FromLong(100), PyLong_FromLong(10));
+        // bool comp = PyObject_CallObject(bt->comparator, arguments);
+        // Py_DECREF(arguments);
+        // std::cout<<"comp result: "<<comp<<std::endl;
+
+        if(curr_key == key){
+            std::cout<<"loop break now"<<std::endl;
+            break;
+        }
+        parent = walk;
+        // PyObject* arguments = Py_BuildValue("OO", key, curr_key);
+        // bool comp = PyObject_CallObject(bt->comparator, arguments);
+        // Py_DECREF(arguments);
+
+        // if(comp){
+        //     walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
+        // }
+        // else{
+        //     walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right;
+        // }
+    }
 
     Py_INCREF(Py_None);
-    if(parent==Py_None){
-        std::cout<<"No kwds recieved"<<std::endl;
-    }
-    else{
-        std::cout<<"Parent recieved"<<std::endl;
-    }
+    // if(ret_parent==Py_None){
+    //     std::cout<<"No kwds recieved"<<std::endl;
+    // }
+    // else{
+    //     std::cout<<"Parent recieved"<<std::endl;
+    // }
     Py_RETURN_NONE;
 }
 
