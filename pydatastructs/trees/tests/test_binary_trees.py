@@ -11,16 +11,9 @@ def cust_comp(a,b):
     print("custom comparator called")
     return a<b
 
-def int_comp(curr, new):
-    if curr > new:
-        return 1
-    elif curr < new:
-        return -1
-    else:
-        return 0
-
 def test_cpp_BinaryTree():
-    b = BinaryTree(1,100,comp=cust_comp,backend=Backend.CPP)
+    # b = BinaryTree(1,100,comp=cust_comp,backend=Backend.CPP)
+    b = BinaryTree(1,100,backend=Backend.CPP)
     assert raises(NotImplementedError, b.insert) # Correctly throws NotImplementedError: This is an abstract method
     assert raises(NotImplementedError, b.delete) # Correctly throws NotImplementedError: This is an abstract method
     assert raises(NotImplementedError, b.search) # Correctly throws NotImplementedError: This is an abstract method
@@ -30,7 +23,8 @@ def test_cpp_BinaryTree():
 test_cpp_BinaryTree()
 
 def test_cpp_BinarySearchTree():
-    b = BinarySearchTree(1,100, comp=int_comp, backend=Backend.CPP)
+    # b = BinarySearchTree(1,100, comp=cust_comp, backend=Backend.CPP)
+    b = BinarySearchTree(1,100, backend=Backend.CPP)
     # print(str(b))
     assert str(b) == "[(None, 1, 100, None)]"
     b.search(1)

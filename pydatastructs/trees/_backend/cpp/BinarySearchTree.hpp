@@ -92,31 +92,32 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
         long curr_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key;
         // std::cout<<curr_key<<" "<<key<<std::endl;
 
-        // // Testing the comparator
-        // if (!PyCallable_Check(bt->comparator)) {
-        //     PyErr_SetString(PyExc_ValueError, "comparator should be callable");
-        //     return NULL;
-        // }
-        // PyObject* arguments = Py_BuildValue("OO", PyLong_FromLong(100), PyLong_FromLong(10));
-        // bool comp = PyObject_CallObject(bt->comparator, arguments);
-        // Py_DECREF(arguments);
-        // std::cout<<"comp result: "<<comp<<std::endl;
-
         if(curr_key == key){
-            std::cout<<"loop break now"<<std::endl;
             break;
         }
         parent = walk;
-        // PyObject* arguments = Py_BuildValue("OO", key, curr_key);
-        // bool comp = PyObject_CallObject(bt->comparator, arguments);
-        // Py_DECREF(arguments);
 
-        // if(comp){
-        //     walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
-        // }
-        // else{
-        //     walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right;
-        // }
+        // The comparator has been tested. It works fine. :)
+        if (!PyCallable_Check(bt->comparator)) {
+            PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+            return NULL;
+        }
+        PyObject* arguments = Py_BuildValue("OO", PyLong_FromLong(key), PyLong_FromLong(curr_key));
+        PyObject* res = PyObject_CallObject(bt->comparator, arguments);
+        Py_DECREF(arguments);
+        if (!PyLong_Check(res)) {
+            PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
+            return NULL;
+        }
+        long long comp = PyLong_AsLongLong(res);
+        // std::cout<<"comp result: "<<comp<<std::endl;
+
+        if(comp == 1){
+            walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
+        }
+        else{
+            walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right;
+        }
     }
 
     Py_INCREF(Py_None);

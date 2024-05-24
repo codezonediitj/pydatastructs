@@ -78,71 +78,13 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     self->tree = arr;
     self->size = 1;
     // Python code is modified to ensure comp is never None
-    // if (!PyCallable_Check(comp)) {
-    //         PyErr_SetString(PyExc_ValueError, "comparator should be callable");
-    //         return NULL;
-    // }
-    self->comparator = comp;
+    if (!PyCallable_Check(comp)) {
+            PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+            return NULL;
+    }
+    self->comparator = comp; // Comparator has been tested. It works fine!
     self->is_order_statistic = is_order_statistic;
 
-    // Testing comparator
-    // if (!PyCallable_Check(self->comparator)) {
-    //     PyErr_SetString(PyExc_ValueError, "comparator should be callable");
-    //     return NULL;
-    // }
-    // PyObject* arguments = Py_BuildValue("OO", PyLong_FromLong(100), PyLong_FromLong(10));
-    // PyObject* res = PyObject_CallObject(self->comparator, arguments);
-    // Py_DECREF(arguments);
-    // if (!PyLong_Check(res)) {
-    //     PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
-    //     return NULL;
-    // }
-    // long long comp_res = PyLong_AsLongLong(res);
-
-    if (!PyCallable_Check(self->comparator)) {
-        PyErr_SetString(PyExc_ValueError, "comparator should be callable");
-        return NULL;
-    }
-
-    PyObject* arg1 = PyLong_FromLong(100);
-    PyObject* arg2 = PyLong_FromLong(10);
-    if (!arg1 || !arg2) {
-        Py_XDECREF(arg1);
-        Py_XDECREF(arg2);
-        return PyErr_NoMemory();
-    }
-
-    PyObject* arguments = PyTuple_Pack(2, arg1, arg2);
-    Py_DECREF(arg1);
-    Py_DECREF(arg2);
-
-    if (!arguments) {
-        return NULL;
-    }
-
-    PyObject* res = PyObject_CallObject(self->comparator, arguments);
-    Py_DECREF(arguments);
-
-    if (!res) {
-        // If res is NULL, an exception has been raised by the called Python function.
-        return NULL;
-    }
-
-    // if (!PyLong_Check(res)) {
-    //     PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
-    //     Py_DECREF(res);
-    //     return NULL;
-    // }
-
-    long long comp_res = PyLong_AsLongLong(res);
-    Py_DECREF(res);
-
-    // return comp_res;
-
-    // std::cout<<"comp result: "<<comp_res<<std::endl;
-    // if(res == false){
-    //     std::cout<<"yes"<<std::endl;
-    // }
     return reinterpret_cast<PyObject*>(self);
 }
 
