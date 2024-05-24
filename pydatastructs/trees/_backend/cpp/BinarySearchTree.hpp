@@ -67,9 +67,28 @@ static PyObject* BinarySearchTree__update_size(BinarySearchTree* self, PyObject 
         while(walk!=Py_None){
             TreeNode* node = reinterpret_cast<TreeNode*>(self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]);
             node->size = BinarySearchTree_left_size(self, node) + BinarySearchTree_right_size(self, node) + 1;
-            walk = node->parent;
+            walk = node->parent; // Parent is a long or a Py_None, hence, it is a PyObject
         }
     }
+}
+
+static PyObject* BinarySearchTree_search(BinarySearchTree* self, long key, PyObject *kwds) {
+    std::cout<<"search() called"<<std::endl;
+    PyObject* parent = Py_None;
+    static char* keywords[] = {"parent", NULL};
+    if(!PyArg_ParseTupleAndKeywords(Py_BuildValue("()"), kwds, "|O", keywords, &parent)){
+        return NULL;
+    }
+    std::cout<<"keywords parsed"<<std::endl;
+
+    Py_INCREF(Py_None);
+    if(parent==Py_None){
+        std::cout<<"No kwds recieved"<<std::endl;
+    }
+    else{
+        std::cout<<"Parent recieved"<<std::endl;
+    }
+    Py_RETURN_NONE;
 }
 
 // static PyObject* BinarySearchTree_insert(PyTypeObject* type, PyObject *args, PyObject *kwds) {
@@ -108,7 +127,7 @@ static PyObject* BinarySearchTree__update_size(BinarySearchTree* self, PyObject 
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     // {"insert", (PyCFunction) BinaryTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     // {"delete", (PyCFunction) BinaryTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
-    // {"search", (PyCFunction) BinaryTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"search", (PyCFunction) BinarySearchTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
 };
 

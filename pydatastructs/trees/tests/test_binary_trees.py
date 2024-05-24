@@ -21,8 +21,10 @@ def test_cpp_BinarySearchTree():
     b = BinarySearchTree(1,100, backend=Backend.CPP)
     # print(str(b))
     assert str(b) == "[(None, 1, 100, None)]"
+    b.search(1)
+    b.search(1,parent=True)
 
-test_cpp_BinarySearchTree()
+# test_cpp_BinarySearchTree()
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
