@@ -20,7 +20,7 @@ def test_cpp_BinaryTree():
     # print(str(b))
     assert str(b) == "[(None, 1, 100, None)]"
 
-test_cpp_BinaryTree()
+# test_cpp_BinaryTree()
 
 def test_cpp_BinarySearchTree():
     # b = BinarySearchTree(1,100, comp=cust_comp, backend=Backend.CPP)
@@ -63,7 +63,7 @@ def test_cpp_BinarySearchTree():
     b3.insert(0,9)
     # print(str(b3))
 
-test_cpp_BinarySearchTree()
+# test_cpp_BinarySearchTree()
 
 def test_cpp_BST2():
     BST = BinarySearchTree
@@ -84,7 +84,7 @@ def test_cpp_BST2():
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
 
-test_cpp_BST2()
+# test_cpp_BST2()
 
 ################### Actual Tests below ###################
 
