@@ -235,3 +235,4 @@ def test_backend_argument_message():
 
 # test_trailing_white_spaces()
 # test_final_new_lines()
+test_comparison_True_False_None()
