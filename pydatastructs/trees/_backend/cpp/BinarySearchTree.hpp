@@ -90,7 +90,6 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
 
     while(walk != Py_None){
         long curr_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key;
-        // std::cout<<curr_key<<" "<<key<<std::endl;
 
         if(curr_key == key){
             break;
@@ -121,13 +120,13 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
     }
 
     Py_INCREF(Py_None);
-    // if(ret_parent==Py_None){
-    //     std::cout<<"No kwds recieved"<<std::endl;
-    // }
-    // else{
-    //     std::cout<<"Parent recieved"<<std::endl;
-    // }
-    Py_RETURN_NONE;
+    if(ret_parent==Py_None || PyLong_AsLong(ret_parent)==0){
+        return walk;
+    }
+    else{
+        return Py_BuildValue("OO",walk,parent);
+    }
+    Py_RETURN_NONE; // dummy return statement, never executed
 }
 
 // static PyObject* BinarySearchTree_insert(PyTypeObject* type, PyObject *args, PyObject *kwds) {
