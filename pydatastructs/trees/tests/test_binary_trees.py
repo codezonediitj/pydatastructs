@@ -31,6 +31,9 @@ def test_cpp_BinarySearchTree():
     assert b.search(1,parent=False) == 0
     assert b.search(1,parent=True) == (0, None)
     b.insert(1)
+    assert str(b) == "[(None, 1, None, None)]"
+    b.insert(1,200)
+    assert str(b) == "[(None, 1, 200, None)]"
 
 # test_cpp_BinarySearchTree()
 

@@ -76,13 +76,12 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
     // std::cout<<"BST search()"<<std::endl;
     Py_INCREF(Py_None);
     PyObject* ret_parent = Py_None;
-    PyObject* key_arg;
+    PyObject* key;
     static char* keywords[] = {"key","parent", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key_arg, &ret_parent)){ // ret_parent is optional
+    if(!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key, &ret_parent)){ // ret_parent is optional
         return NULL;
     }
     // std::cout<<"BST2"<<std::endl;
-    long key = PyLong_AsLong(key_arg);
     BinaryTree* bt = self->binary_tree;
     PyObject* parent = Py_None;
     PyObject* walk = PyLong_FromLong(bt->root_idx); // root_idx is size_t, change it to long if needed
@@ -92,7 +91,7 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
     //     return None
 
     while(walk != Py_None){
-        long curr_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key;
+        PyObject* curr_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key;
 
         if(curr_key == key){
             break;
@@ -104,7 +103,7 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
             return NULL;
         }
-        PyObject* arguments = Py_BuildValue("OO", PyLong_FromLong(key), PyLong_FromLong(curr_key));
+        PyObject* arguments = Py_BuildValue("OO", key, curr_key);
         PyObject* res = PyObject_CallObject(bt->comparator, arguments);
         Py_DECREF(arguments);
         if (!PyLong_Check(res)) {
@@ -148,12 +147,15 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
     PyObject* res = BinarySearchTree_search(self, Py_BuildValue("(O)",key), PyDict_New()); // keywords should be a dictionary, so empty dictionary here as no keywords
     // std::cout<<PyLong_AsLong(res)<<std::endl;
     if(res != Py_None){
-        // reinterpret_cast<TreeNode*>(self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(res)])->data = data;
-         std::cout<<PyLong_AsLong(res)<<std::endl;
+        reinterpret_cast<TreeNode*>(self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(res)])->data = data;
+        Py_RETURN_NONE;
     }
-    else{
-        std::cout<<"res is None"<<std::endl;
-    }
+
+    long walk = self->binary_tree->root_idx;
+    // if(reinterpret_cast<TreeNode*>(self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(res)])->key == Py_None){
+
+    // }
+
     Py_RETURN_NONE;
 }
 

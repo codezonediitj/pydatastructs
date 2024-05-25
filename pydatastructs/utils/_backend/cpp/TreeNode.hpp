@@ -9,7 +9,7 @@
 
 typedef struct {
     PyObject_HEAD
-    long key;
+    PyObject* key;
     PyObject* data; // can store None or a number
     PyObject* left; // can store None or a number
     PyObject* right; // can store None or a number
@@ -35,7 +35,7 @@ static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *
     // obj = Node.__new__(cls)
 
     // Assume that arguments are in the order below. Modify the code such that this is true.
-    self->key = PyLong_AsLong(PyObject_GetItem(args, PyZero));
+    self->key = PyObject_GetItem(args, PyZero);
     self->data = PyObject_GetItem(args, PyOne);
 
     Py_INCREF(Py_None);
@@ -52,13 +52,13 @@ static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *
 }
 
 static PyObject* TreeNode___str__(TreeNode *self) {
-    PyObject* out = Py_BuildValue("(OlOO)", self->left, self->key, self->data, self->right);
+    PyObject* out = Py_BuildValue("(OOOO)", self->left, self->key, self->data, self->right);
     Py_INCREF(out);
     return PyObject_Str(out);
 }
 
 static struct PyMemberDef TreeNode_PyMemberDef[] = {
-    {"key", T_LONG, offsetof(TreeNode, key), 0, "TreeNode key"},
+    {"key", T_OBJECT, offsetof(TreeNode, key), 0, "TreeNode key"},
     {"data", T_OBJECT, offsetof(TreeNode, data), 0, "TreeNode data"},
     {"height", T_LONG, offsetof(TreeNode, height), 0, "TreeNode height"},
     {"size", T_LONG, offsetof(TreeNode, size), 0, "TreeNode size"},

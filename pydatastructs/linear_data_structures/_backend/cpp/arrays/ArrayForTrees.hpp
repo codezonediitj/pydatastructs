@@ -111,7 +111,7 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self,
             if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
                 Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
                 arr_new[j] = _data[i];
-                PyObject_SetItem(new_indices, PyLong_FromLong(reinterpret_cast<TreeNode*>(_data[i])->key), PyLong_FromLong(j));
+                PyObject_SetItem(new_indices, reinterpret_cast<TreeNode*>(_data[i])->key, PyLong_FromLong(j));
                 j += 1;
             }
         }
@@ -121,26 +121,17 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self,
         for(int i=0;i<j;i++){
             if(reinterpret_cast<TreeNode*>(arr_new[i])->left != Py_None){
                 reinterpret_cast<TreeNode*>(arr_new[i])->left = PyObject_GetItem(
-                    new_indices,
-                    PyLong_FromLong(
-                        reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->left)])->key
-                    )
+                    new_indices, reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->left)])->key
                 );
             }
             if(reinterpret_cast<TreeNode*>(arr_new[i])->right != Py_None){
                 reinterpret_cast<TreeNode*>(arr_new[i])->right = PyObject_GetItem(
-                    new_indices,
-                    PyLong_FromLong(
-                        reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->right)])->key
-                    )
+                    new_indices, reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->right)])->key
                 );
             }
             if(reinterpret_cast<TreeNode*>(arr_new[i])->parent != Py_None){
                 reinterpret_cast<TreeNode*>(arr_new[i])->parent = PyObject_GetItem(
-                    new_indices,
-                    PyLong_FromLong(
-                        reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->parent)])->key
-                    )
+                    new_indices, reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->parent)])->key
                 );
             }
         }
