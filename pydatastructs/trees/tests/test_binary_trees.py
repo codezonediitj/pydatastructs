@@ -20,7 +20,7 @@ def test_cpp_BinaryTree():
     # print(str(b))
     assert str(b) == "[(None, 1, 100, None)]"
 
-# test_cpp_BinaryTree()
+test_cpp_BinaryTree()
 
 def test_cpp_BinarySearchTree():
     # b = BinarySearchTree(1,100, comp=cust_comp, backend=Backend.CPP)
@@ -30,12 +30,63 @@ def test_cpp_BinarySearchTree():
     assert b.search(1) == 0
     assert b.search(1,parent=False) == 0
     assert b.search(1,parent=True) == (0, None)
+    assert b.search(2) == None
     b.insert(1)
     assert str(b) == "[(None, 1, None, None)]"
-    b.insert(1,200)
-    assert str(b) == "[(None, 1, 200, None)]"
+    b.insert(1,100)
+    assert str(b) == "[(None, 1, 100, None)]"
+    b.insert(20,200)
+    b.insert(30,300)
+    b.insert(40,400)
+    assert str(b) == "[(None, 1, 100, 1), (None, 20, 200, 2), (None, 30, 300, 3), (None, 40, 400, None)]"
+    # print(b)
+    b.insert(0,9)
+    # print(b)
+    assert str(b) == "[(4, 1, 100, 1), (None, 20, 200, 2), (None, 30, 300, 3), (None, 40, 400, None), (None, 0, 9, None)]"
 
-# test_cpp_BinarySearchTree()
+    # b2 = BinarySearchTree(backend=Backend.CPP)
+    # assert str(b2) == "[(None, None, None, None)]"
+    # b2.insert(23,34)
+    # assert str(b2) == "[(None, 23, 34, None)]"
+    # b2.insert(56,67)
+
+    # print("Python implemetation for testing")
+    b3 = BinarySearchTree()
+    b3.insert(1,100)
+    assert str(b3) == "[(None, 1, 100, None)]"
+    b3.insert(20,200)
+    # print(str(b3))
+    b3.insert(30,300)
+    # print(str(b3))
+    b3.insert(40,400)
+    # print(str(b3))
+    b3.insert(0,9)
+    # print(str(b3))
+
+test_cpp_BinarySearchTree()
+
+def test_cpp_BST2():
+    BST = BinarySearchTree
+    b = BST(8, 8, backend=Backend.CPP)
+    # b.delete(8)
+    b.insert(8, 8)
+    b.insert(3, 3)
+    b.insert(10, 10)
+    b.insert(1, 1)
+    b.insert(6, 6)
+    b.insert(4, 4)
+    b.insert(7, 7)
+    b.insert(14, 14)
+    b.insert(13, 13)
+    # Explicit check for the __str__ method of Binary Trees Class
+    assert str(b) == \
+    ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
+    "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
+    "(None, 13, 13, None)]")
+
+test_cpp_BST2()
+
+################### Actual Tests below ###################
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
