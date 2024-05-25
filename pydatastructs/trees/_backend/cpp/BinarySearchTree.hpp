@@ -73,12 +73,15 @@ static PyObject* BinarySearchTree__update_size(BinarySearchTree* self, PyObject 
 }
 
 static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args, PyObject *kwds) {
+    // std::cout<<"BST search()"<<std::endl;
+    Py_INCREF(Py_None);
     PyObject* ret_parent = Py_None;
     PyObject* key_arg;
     static char* keywords[] = {"key","parent", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key_arg, &ret_parent)){
+    if(!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key_arg, &ret_parent)){ // ret_parent is optional
         return NULL;
     }
+    // std::cout<<"BST2"<<std::endl;
     long key = PyLong_AsLong(key_arg);
     BinaryTree* bt = self->binary_tree;
     PyObject* parent = Py_None;
@@ -129,10 +132,30 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
     Py_RETURN_NONE; // dummy return statement, never executed
 }
 
-// static PyObject* BinarySearchTree_insert(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-//     PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
-//     return NULL;
-// }
+static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args) {
+    Py_INCREF(Py_None);
+    PyObject* key = Py_None;
+    Py_INCREF(Py_None);
+    PyObject* data = Py_None;
+    if(!PyArg_ParseTuple(args, "O|O", &key, &data)){ // ret_parent is optional
+        return NULL;
+    }
+    // std::cout<<PyLong_AsLong(key)<<std::endl;
+    // if(data!=Py_None) std::cout<<PyLong_AsLong(data)<<std::endl;
+
+    PyObject* parent = PyLong_FromLong(0);
+    
+    PyObject* res = BinarySearchTree_search(self, Py_BuildValue("(O)",key), PyDict_New()); // keywords should be a dictionary, so empty dictionary here as no keywords
+    // std::cout<<PyLong_AsLong(res)<<std::endl;
+    if(res != Py_None){
+        // reinterpret_cast<TreeNode*>(self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(res)])->data = data;
+         std::cout<<PyLong_AsLong(res)<<std::endl;
+    }
+    else{
+        std::cout<<"res is None"<<std::endl;
+    }
+    Py_RETURN_NONE;
+}
 
 // static PyObject* BinaryTree_delete(PyTypeObject* type, PyObject *args, PyObject *kwds) {
 //     PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
@@ -163,8 +186,8 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
 // }
 
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
-    // {"insert", (PyCFunction) BinaryTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
-    // {"delete", (PyCFunction) BinaryTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"insert", (PyCFunction) BinarySearchTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
+    // {"delete", (PyCFunction) BinarySearchTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
     {"search", (PyCFunction) BinarySearchTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
 };
