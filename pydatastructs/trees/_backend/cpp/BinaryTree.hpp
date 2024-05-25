@@ -110,7 +110,7 @@ static PyObject* BinaryTree___str__(BinaryTree *self) {
         OneDimensionalArray* oda = self->tree->_one_dimensional_array;
         TreeNode* node = reinterpret_cast<TreeNode*>(oda->_data[i]);
         if(reinterpret_cast<PyObject*>(node) != Py_None){
-            PyObject* out = Py_BuildValue("(OllO)", node->left, node->key, node->data, node->right);
+            PyObject* out = Py_BuildValue("(OlOO)", node->left, node->key, node->data, node->right);
             Py_INCREF(out);
             PyList_SET_ITEM(list, i, out);
         }

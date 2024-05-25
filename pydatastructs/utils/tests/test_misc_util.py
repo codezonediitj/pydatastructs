@@ -8,6 +8,8 @@ def test_cpp_TreeNode():
     # print(str(n))
     assert str(n) == "(None, 1, 100, None)"
 
+# test_cpp_TreeNode()
+
 def test_AdjacencyListGraphNode():
     g_1 = AdjacencyListGraphNode('g_1', 1)
     g_2 = AdjacencyListGraphNode('g_2', 2)

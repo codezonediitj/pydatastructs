@@ -32,7 +32,7 @@ def test_cpp_BinarySearchTree():
     assert b.search(1,parent=True) == (0, None)
     b.insert(1)
 
-test_cpp_BinarySearchTree()
+# test_cpp_BinarySearchTree()
 
 def test_BinarySearchTree():
     BST = BinarySearchTree
