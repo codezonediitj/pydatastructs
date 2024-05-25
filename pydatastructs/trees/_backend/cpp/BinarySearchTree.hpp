@@ -144,7 +144,7 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
     // if(data!=Py_None) std::cout<<PyLong_AsLong(data)<<std::endl;
 
     PyObject* parent = PyLong_FromLong(0);
-    
+
     PyObject* res = BinarySearchTree_search(self, Py_BuildValue("(O)",key), PyDict_New()); // keywords should be a dictionary, so empty dictionary here as no keywords
     // std::cout<<PyLong_AsLong(res)<<std::endl;
     if(res != Py_None){
