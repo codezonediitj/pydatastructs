@@ -203,19 +203,52 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
     Py_RETURN_NONE;
 }
 
-// static PyObject* BinaryTree_delete(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-//     PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
-//     return NULL;
-// }
-
-// static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-//     PyErr_SetString(PyExc_ValueError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
-//     return NULL;
-// }
+static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args, PyObject *kwds) {
+    Py_INCREF(Py_None);
+    PyObject* key = Py_None;
+    key = PyObject_GetItem(args, PyZero);
+    PyObject* kwd_parent = PyDict_New();
+    PyDict_SetItemString(kwd_parent, "parent", PyLong_FromLong(1));
+    PyObject* tup = BinarySearchTree_search(self, Py_BuildValue("(O)",key), kwd_parent);
+    PyObject* walk = PyTuple_GetItem(tup, 0);
+    PyObject* parent = PyTuple_GetItem(tup, 1);
+    Py_INCREF(Py_None);
+    PyObject* a = Py_None;
+    if(walk == Py_None){
+        Py_RETURN_NONE;
+    }
+    BinaryTree* bt = self->binary_tree;
+    if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left == Py_None && reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right == Py_None){
+        if(parent == Py_None){
+            reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[bt->root_idx])->data = Py_None;
+            reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[bt->root_idx])->key = Py_None;
+        }
+        else{
+            if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->left == walk){
+                Py_INCREF(Py_None);
+                reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->left = Py_None;
+            }
+            else{
+                Py_INCREF(Py_None);
+                reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->right = Py_None;
+            }
+            a = parent;
+            PyObject* par_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->key;
+            PyObject* root_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[bt->root_idx])->key;
+            PyObject* new_indices = ArrayForTrees_delete(bt->tree, Py_BuildValue("(O)",walk));
+            if(new_indices != Py_None){
+                a = PyDict_GetItem(new_indices, par_key);
+                bt->root_idx = PyLong_AsLong(PyDict_GetItem(new_indices, root_key));
+            }
+        }
+        BinarySearchTree__update_size(self, Py_BuildValue("(O)",a));
+    }
+    Py_RETURN_NONE;
+}
 
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"insert", (PyCFunction) BinarySearchTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
-    // {"delete", (PyCFunction) BinarySearchTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"delete", (PyCFunction) BinarySearchTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
     {"search", (PyCFunction) BinarySearchTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
 };
