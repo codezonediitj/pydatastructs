@@ -38,7 +38,7 @@ static PyObject* BinarySearchTree___str__(BinarySearchTree *self) {
     return BinaryTree___str__(self->binary_tree);
 }
 
-static int BinarySearchTree_left_size(BinarySearchTree* self, TreeNode* node) {
+static long BinarySearchTree_left_size(BinarySearchTree* self, TreeNode* node) {
     if (node->left != Py_None) {
         TreeNode* n = reinterpret_cast<TreeNode*>(
             self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(node->left)]
@@ -49,7 +49,7 @@ static int BinarySearchTree_left_size(BinarySearchTree* self, TreeNode* node) {
     }
 }
 
-static int BinarySearchTree_right_size(BinarySearchTree* self, TreeNode* node) {
+static long BinarySearchTree_right_size(BinarySearchTree* self, TreeNode* node) {
     if (node->right != Py_None) {
         TreeNode* n = reinterpret_cast<TreeNode*>(
             self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(node->right)]
@@ -70,10 +70,10 @@ static PyObject* BinarySearchTree__update_size(BinarySearchTree* self, PyObject 
             walk = node->parent; // Parent is a long or a Py_None, hence, it is a PyObject
         }
     }
+    Py_RETURN_NONE;
 }
 
 static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args, PyObject *kwds) {
-    // std::cout<<"BST search()"<<std::endl;
     Py_INCREF(Py_None);
     PyObject* ret_parent = Py_None;
     PyObject* key;
@@ -81,7 +81,6 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
     if(!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key, &ret_parent)){ // ret_parent is optional
         return NULL;
     }
-    // std::cout<<"BST2"<<std::endl;
     BinaryTree* bt = self->binary_tree;
     PyObject* parent = Py_None;
     PyObject* walk = PyLong_FromLong(bt->root_idx); // root_idx is size_t, change it to long if needed
@@ -111,7 +110,6 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
             return NULL;
         }
         long long comp = PyLong_AsLongLong(res);
-        // std::cout<<"comp result: "<<comp<<std::endl;
 
         if(comp == 1){
             walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
@@ -201,7 +199,7 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
             walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
         }
     }
-    // TO DO: self._update_size(walk)
+    BinarySearchTree__update_size(self, Py_BuildValue("(O)",walk));
     Py_RETURN_NONE;
 }
 

@@ -17,7 +17,7 @@ typedef struct {
     long root_idx;
     PyObject* comparator;
     long size;
-    bool is_order_statistic;
+    long is_order_statistic;
 } BinaryTree;
 
 static void BinaryTree_dealloc(BinaryTree *self) {
@@ -83,7 +83,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
             return NULL;
     }
     self->comparator = comp; // Comparator has been tested. It works fine!
-    self->is_order_statistic = is_order_statistic;
+    self->is_order_statistic = PyLong_AsLong(is_order_statistic);
 
     return reinterpret_cast<PyObject*>(self);
 }
@@ -135,7 +135,7 @@ static PyMemberDef BinaryTree_PyMemberDef[] = {
     {"comparator", T_OBJECT, offsetof(BinaryTree, comparator), 0, "Comparator function"},
     // {"tree", T_OBJECT, offsetof(BinaryTree, tree), 0, "Tree"},
     {"size", T_LONG, offsetof(BinaryTree, size), READONLY, "Size of the tree"},
-    {"is_order_statistic", T_BOOL, offsetof(BinaryTree, is_order_statistic), 0, "Whether the tree is ordered statically or not"},
+    {"is_order_statistic", T_LONG, offsetof(BinaryTree, is_order_statistic), 0, "Whether the tree is ordered statically or not"},
     {NULL}  /* Sentinel */
 };
 

@@ -67,9 +67,12 @@ def test_cpp_BinarySearchTree():
 
 def test_cpp_BST2():
     BST = BinarySearchTree
-    b = BST(8, 8, backend=Backend.CPP)
+    b = BST(8, 8,is_order_statistic=True, backend=Backend.CPP)
+    # b = BST(8, 8, is_order_statistic=True)
     # b.delete(8)
+    # print(str(b))
     b.insert(8, 8)
+    # print(str(b))
     b.insert(3, 3)
     b.insert(10, 10)
     b.insert(1, 1)
