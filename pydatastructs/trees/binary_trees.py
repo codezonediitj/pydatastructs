@@ -386,6 +386,7 @@ class BinarySearchTree(BinaryTree):
             return None
         if self.tree[walk].left is None and \
             self.tree[walk].right is None:
+            # print("here 1")
             if parent is None:
                 self.tree[self.root_idx].data = None
                 self.tree[self.root_idx].key = None
@@ -405,7 +406,7 @@ class BinarySearchTree(BinaryTree):
 
         elif self.tree[walk].left is not None and \
             self.tree[walk].right is not None:
-            # print("here")
+            # print("here 2")
             twalk = self.tree[walk].right
             par = walk
             flag = False
@@ -432,6 +433,7 @@ class BinarySearchTree(BinaryTree):
             self._update_size(a)
 
         else:
+            # print("here 3")
             if self.tree[walk].left is not None:
                 child = self.tree[walk].left
             else:

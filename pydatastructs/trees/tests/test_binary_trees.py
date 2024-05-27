@@ -47,6 +47,7 @@ def test_cpp_BST1():
 def test_cpp_BST2():
     BST = BinarySearchTree
     b = BST(8, 8, backend=Backend.CPP)
+    # b = BST(8, 8)
     b.delete(8)
     b.insert(8, 8)
     b.insert(3, 3)
@@ -68,8 +69,48 @@ def test_cpp_BST2():
     assert b.delete(13) is True
     assert b.delete(13) is None
     assert b.search(13) is None
+    assert b.delete(10) is True
+    assert b.search(10) is None
+    assert b.delete(3) is True
+    assert b.search(3) is None
+    assert b.delete(13) is None
+    assert str(b) == "[(1, 8, 8, 7), (3, 4, 4, 4), '', (None, 1, 1, None), (None, 6, 6, 6), '', (None, 7, 7, None), (None, 14, 14, None)]"
 
-test_cpp_BST2()
+    b.delete(7)
+    b.delete(6)
+    assert b.delete(1, balancing_info=True) == 1
+    b.delete(4)
+    assert str(b) ==  "[(None, 8, 8, 2), '', (None, 14, 14, None)]"
+
+    bc = BST(1, 1, backend=Backend.CPP)
+    # bc = BST(1, 1)
+    assert bc.insert(1, 2) is None
+    assert bc.delete(1, balancing_info=True) is None
+
+    b = BST(-8, 8, backend=Backend.CPP)
+    # b = BST(-8, 8)
+    b.insert(-3, 3)
+    b.insert(-10, 10)
+    b.insert(-1, 1)
+    b.insert(-6, 6)
+    b.insert(-4, 4)
+    b.insert(-7, 7)
+    b.insert(-14, 14)
+    b.insert(-13, 13)
+    assert str(b) ==  "[(2, -8, 8, 1), (4, -3, 3, 3), (7, -10, 10, None), (None, -1, 1, None), (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, 8), (None, -13, 13, None)]"
+    assert b.delete(-13) is True
+    assert b.delete(-10) is True
+    assert b.delete(-3) is True
+    assert b.delete(-13) is None
+    assert str(b) ==  "[(7, -8, 8, 1), (4, -1, 1, None), '', '', (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
+
+    bl = BST(backend=Backend.CPP)
+    nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
+    for node in nodes:
+        bl.insert(node, node)
+    assert str(bl) == "[(1, 50, 50, 2), (8, 30, 30, 9), (3, 90, 90, 4), (5, 70, 70, 6), (None, 100, 100, None), (7, 60, 60, None), (None, 80, 80, None), (None, 55, 55, None), (10, 20, 20, None), (None, 40, 40, None), (11, 15, 15, 12), (None, 10, 10, None), (None, 16, 16, 13), (None, 17, 17, 14), (None, 18, 18, None)]"
+
+# test_cpp_BST2()
 
 ################### Actual Tests below ###################
 
