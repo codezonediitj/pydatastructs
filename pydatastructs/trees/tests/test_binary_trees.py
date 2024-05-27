@@ -74,6 +74,9 @@ def test_cpp_BST3():
     assert str(b) == "[(1, 8, 8, 2), (None, 1, 1, None), (None, 12, 12, None)]"
     b.delete(12)
     assert str(b) == "[(1, 8, 8, None), (None, 1, 1, None)]"
+    b.insert(12,12)
+    assert str(b) == "[(1, 8, 8, 2), (None, 1, 1, None), (None, 12, 12, None)]"
+    assert b.search(12) == 2
 
 # test_cpp_BST3()
 
@@ -178,7 +181,7 @@ def test_BinarySearchTree():
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
-# test_BinarySearchTree()
+test_BinarySearchTree()
 
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree
@@ -211,6 +214,8 @@ def test_BinaryTreeTraversal():
     assert raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
     assert raises(TypeError, lambda: BTT(1))
+
+# test_BinaryTreeTraversal()
 
 def test_AVLTree():
     a = AVLTree('M', 'M')

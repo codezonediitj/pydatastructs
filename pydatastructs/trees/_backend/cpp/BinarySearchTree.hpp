@@ -236,6 +236,7 @@ static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args,
             PyObject* par_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->key;
             PyObject* root_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[bt->root_idx])->key;
             PyObject* new_indices = ArrayForTrees_delete(bt->tree, Py_BuildValue("(O)",walk));
+            bt->size = bt->size - 1;
             if(new_indices != Py_None){
                 a = PyDict_GetItem(new_indices, par_key);
                 bt->root_idx = PyLong_AsLong(PyDict_GetItem(new_indices, root_key));
