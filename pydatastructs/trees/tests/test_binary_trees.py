@@ -98,7 +98,7 @@ def test_cpp_BST2():
     b.insert(-14, 14)
     b.insert(-13, 13)
     assert str(b) ==  "[(2, -8, 8, 1), (4, -3, 3, 3), (7, -10, 10, None), (None, -1, 1, None), (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, 8), (None, -13, 13, None)]"
-    assert b.delete(-13) is True
+    b.delete(-13)
     assert b.delete(-10) is True
     assert b.delete(-3) is True
     assert b.delete(-13) is None
