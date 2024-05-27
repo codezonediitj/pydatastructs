@@ -132,7 +132,24 @@ def test_DynamicOneDimensionalArray2():
     DODA = DynamicOneDimensionalArray
     root = TreeNode(1, 100)
     A = DODA(TreeNode, [root])
-    print(str(A[0]))
+    assert str(A[0]) == "(None, 1, 100, None)"
+
+# def test_DynamicOneDimensionalArray3():
+#     DODA = DynamicOneDimensionalArray
+#     A = DODA(int, 1)
+#     A.delete(1)
+#     print(A._size)
+#     print(str(A))
+#     A.append(2)
+#     print(str(A))
+#     print(A.size)
+#     A.append(3)
+#     print(str(A))
+#     print(A.size)
+
+# test_DynamicOneDimensionalArray()
+# test_DynamicOneDimensionalArray2()
+# test_DynamicOneDimensionalArray3()
 
 def test_ArrayForTrees():
     AFT = ArrayForTrees

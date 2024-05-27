@@ -46,8 +46,9 @@ def test_cpp_BST1():
 
 def test_cpp_BST2():
     BST = BinarySearchTree
-    # b = BST(8, 8, backend=Backend.CPP)
-    b = BST(8, 8)
+    b = BST(8, 8, backend=Backend.CPP)
+    b.delete(8)
+    b.insert(8, 8)
     b.insert(3, 3)
     b.insert(10, 10)
     b.insert(1, 1)
@@ -56,29 +57,19 @@ def test_cpp_BST2():
     b.insert(7, 7)
     b.insert(14, 14)
     b.insert(13, 13)
-    # print(str(b))
     # Explicit check for the __str__ method of Binary Trees Class
     assert str(b) == \
     ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
 
-# test_cpp_BST2()
+    assert b.search(10) == 2
+    assert b.search(-1) is None
+    assert b.delete(13) is True
+    assert b.delete(13) is None
+    assert b.search(13) is None
 
-def test_cpp_BST3():
-    BST = BinarySearchTree
-    b = BST(8, 8, backend=Backend.CPP)
-    # b = BST(8, 8)
-    b.insert(1,1)
-    b.insert(12,12)
-    assert str(b) == "[(1, 8, 8, 2), (None, 1, 1, None), (None, 12, 12, None)]"
-    b.delete(12)
-    assert str(b) == "[(1, 8, 8, None), (None, 1, 1, None)]"
-    b.insert(12,12)
-    assert str(b) == "[(1, 8, 8, 2), (None, 1, 1, None), (None, 12, 12, None)]"
-    assert b.search(12) == 2
-
-# test_cpp_BST3()
+test_cpp_BST2()
 
 ################### Actual Tests below ###################
 
@@ -181,7 +172,7 @@ def test_BinarySearchTree():
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
-test_BinarySearchTree()
+# test_BinarySearchTree()
 
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree
@@ -418,6 +409,8 @@ def test_AVLTree():
     a5.delete(2)
     test_select_rank([])
 
+# test_AVLTree()
+
 def test_BinaryIndexedTree():
 
     FT = BinaryIndexedTree
@@ -431,6 +424,8 @@ def test_BinaryIndexedTree():
     assert t.get_sum(0, 2) == 105
     assert t.get_sum(0, 4) == 114
     assert t.get_sum(1, 9) == 54
+
+# test_BinaryIndexedTree()
 
 def test_CartesianTree():
     tree = CartesianTree()

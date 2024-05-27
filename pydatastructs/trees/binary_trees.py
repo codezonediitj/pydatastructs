@@ -398,7 +398,6 @@ class BinarySearchTree(BinaryTree):
                 par_key, root_key = (self.tree[parent].key,
                                      self.tree[self.root_idx].key)
                 new_indices = self.tree.delete(walk)
-                self.size -= 1
                 if new_indices is not None:
                     a = new_indices[par_key]
                     self.root_idx = new_indices[root_key]
@@ -406,6 +405,7 @@ class BinarySearchTree(BinaryTree):
 
         elif self.tree[walk].left is not None and \
             self.tree[walk].right is not None:
+            # print("here")
             twalk = self.tree[walk].right
             par = walk
             flag = False
