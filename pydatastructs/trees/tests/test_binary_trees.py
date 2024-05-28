@@ -112,10 +112,25 @@ def test_cpp_BST2():
     assert str(b2) ==  "[(7, -8, 8, 1), (4, -1, 1, None), '', '', (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
 
     bl = BST(backend=Backend.CPP)
+    # bl = BST()
     nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
     for node in nodes:
         bl.insert(node, node)
     assert str(bl) == "[(1, 50, 50, 2), (8, 30, 30, 9), (3, 90, 90, 4), (5, 70, 70, 6), (None, 100, 100, None), (7, 60, 60, None), (None, 80, 80, None), (None, 55, 55, None), (10, 20, 20, None), (None, 40, 40, None), (11, 15, 15, 12), (None, 10, 10, None), (None, 16, 16, 13), (None, 17, 17, 14), (None, 18, 18, None)]"
+
+    assert bl.lowest_common_ancestor(80, 55, 1) == 70
+    assert bl.lowest_common_ancestor(60, 70, 1) == 70
+    assert bl.lowest_common_ancestor(18, 18, 1) == 18
+    assert bl.lowest_common_ancestor(40, 90, 1) == 50
+
+    assert bl.lowest_common_ancestor(18, 10, 1) == 15
+    assert bl.lowest_common_ancestor(55, 100, 1) == 90
+    assert bl.lowest_common_ancestor(16, 80, 1) == 50
+    assert bl.lowest_common_ancestor(30, 55, 1) == 50
+
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
+    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
     b3 = BST(backend=Backend.CPP)
     # b3 = BST()
@@ -135,7 +150,7 @@ def test_cpp_BST2():
 test_cpp_BST2()
 
 
-################### Actual Tests below ###################
+################### Python Tests below ###################
 
 def test_BinarySearchTree():
     BST = BinarySearchTree

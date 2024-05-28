@@ -428,6 +428,60 @@ static PyObject* BinarySearchTree__simple_path(BinarySearchTree* self, PyObject 
     return path;
 }
 
+static PyObject* BinarySearchTree__lca_1(BinarySearchTree* self, PyObject* args) {
+    long j = PyLong_AsLong(PyObject_GetItem(args, PyZero));
+    long k = PyLong_AsLong(PyObject_GetItem(args, PyOne));
+    BinaryTree* bt = self->binary_tree;
+    PyObject* root = bt->root_idx;
+    PyObject* path1 = BinarySearchTree__simple_path(self, Py_BuildValue("(OO)",PyLong_FromLong(j),root));
+    PyObject* path2 = BinarySearchTree__simple_path(self, Py_BuildValue("(OO)",PyLong_FromLong(k),root));
+    long n = PyLong_AsLong(PyLong_FromSsize_t(PyList_Size(path1)));
+    long m = PyLong_AsLong(PyLong_FromSsize_t(PyList_Size(path2)));
+    if (n==0 || m==0) {
+        PyErr_SetString(PyExc_ValueError, "One of the two paths doesn't exist.");
+        return NULL;
+    }
+    long i = 0;
+    j = 0;
+    while (i<n && j<m) {
+        if (PyList_GetItem(path1, PyLong_AsSsize_t(PyLong_FromLong(i))) != PyList_GetItem(path2, PyLong_AsSsize_t(PyLong_FromLong(j)))) {
+            return reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(PyList_GetItem(path1, PyLong_AsSsize_t(PyLong_FromLong(i-1))))])->key;
+        }
+        i += 1;
+        j += 1;
+    }
+
+    while (i<n && j<m) {
+        if (PyList_GetItem(path1, PyLong_AsSsize_t(PyLong_FromLong(i))) < PyList_GetItem(path2, PyLong_AsSsize_t(PyLong_FromLong(j)))) {
+            return reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(PyList_GetItem(path1, PyLong_AsSsize_t(PyLong_FromLong(n-1))))])->key;
+        }
+        else if (PyList_GetItem(path1, PyLong_AsSsize_t(PyLong_FromLong(i))) > PyList_GetItem(path2, PyLong_AsSsize_t(PyLong_FromLong(j)))) {
+            break;
+        }
+        i += 1;
+        j += 1;
+    }
+    return reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(PyList_GetItem(path2, PyLong_AsSsize_t(PyLong_FromLong(m-1))))])->key;
+}
+
+static PyObject* BinarySearchTree_lowest_common_ancestor(BinarySearchTree* self, PyObject* args) {
+    Py_INCREF(Py_None);
+    PyObject* j = Py_None;
+    Py_INCREF(Py_None);
+    PyObject* k = Py_None;
+    PyObject* algorithm = PyOne;
+    if(!PyArg_ParseTuple(args, "OO|O", &j, &k, &algorithm)){ // ret_parent is optional
+        return NULL;
+    }
+
+    if (algorithm == PyOne) {
+        return BinarySearchTree__lca_1(self, Py_BuildValue("(OO)",j,k));
+    }
+    else {
+        Py_RETURN_NONE;
+    }
+}
+
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"insert", (PyCFunction) BinarySearchTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     {"delete", (PyCFunction) BinarySearchTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
@@ -435,6 +489,8 @@ static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"lower_bound", (PyCFunction) BinarySearchTree_lower_bound, METH_VARARGS | METH_KEYWORDS, NULL},
     {"upper_bound", (PyCFunction) BinarySearchTree_upper_bound, METH_VARARGS | METH_KEYWORDS, NULL},
     {"_simple_path", (PyCFunction) BinarySearchTree__simple_path, METH_VARARGS, NULL},
+    {"_lca_1", (PyCFunction) BinarySearchTree__lca_1, METH_VARARGS, NULL},
+    {"lowest_common_ancestor", (PyCFunction) BinarySearchTree_lowest_common_ancestor, METH_VARARGS, NULL},
     {NULL}
 };
 

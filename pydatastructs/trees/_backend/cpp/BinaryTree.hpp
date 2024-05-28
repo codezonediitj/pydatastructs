@@ -89,17 +89,17 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
 }
 
 static PyObject* BinaryTree_insert(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method.");
     return NULL;
 }
 
 static PyObject* BinaryTree_delete(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method.");
     return NULL;
 }
 
 static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject *kwds) {
-    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method."); // Currently of type ValueError, change type if needed later
+    PyErr_SetString(PyExc_NotImplementedError, "This is an abstract method.");
     return NULL;
 }
 
