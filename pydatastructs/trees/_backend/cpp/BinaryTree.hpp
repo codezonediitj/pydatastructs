@@ -14,7 +14,7 @@
 typedef struct {
     PyObject_HEAD
     ArrayForTrees* tree;
-    long root_idx;
+    PyObject* root_idx;
     PyObject* comparator;
     long size;
     long is_order_statistic;
@@ -48,7 +48,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     }
     TreeNode* root = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, args, kwds));
     root->is_root = true;
-    self->root_idx = 0;
+    self->root_idx = PyLong_FromLong(0);
 
     PyObject* listroot = Py_BuildValue("[O]", root);
     if (PyType_Ready(&ArrayForTreesType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
@@ -131,7 +131,7 @@ static struct PyMethodDef BinaryTree_PyMethodDef[] = {
 
 // Check if PyMemberDef is actually needed:
 static PyMemberDef BinaryTree_PyMemberDef[] = {
-    {"root_idx", T_LONG, offsetof(BinaryTree, root_idx), READONLY, "Index of the root node"},
+    {"root_idx", T_OBJECT, offsetof(BinaryTree, root_idx), READONLY, "Index of the root node"},
     {"comparator", T_OBJECT, offsetof(BinaryTree, comparator), 0, "Comparator function"},
     // {"tree", T_OBJECT, offsetof(BinaryTree, tree), 0, "Tree"},
     {"size", T_LONG, offsetof(BinaryTree, size), READONLY, "Size of the tree"},
