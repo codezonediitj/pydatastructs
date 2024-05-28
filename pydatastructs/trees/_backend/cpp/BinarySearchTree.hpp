@@ -6,6 +6,7 @@
 #include <structmember.h>
 #include <iostream>
 #include <cstdlib>
+#include <stack>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
@@ -392,12 +393,48 @@ static PyObject* BinarySearchTree_upper_bound(BinarySearchTree* self, PyObject *
     return BinarySearchTree__bound_helper(self, Py_BuildValue("(OOO)", self->binary_tree->root_idx, key, Py_True));
 }
 
+static PyObject* BinarySearchTree__simple_path(BinarySearchTree* self, PyObject *args) {
+    PyObject* key = PyObject_GetItem(args, PyZero);
+    PyObject* root = PyObject_GetItem(args, PyOne);
+    std::stack<long> stack;
+    stack.push(PyLong_AsLong(root));
+    PyObject* path = PyList_New(0);
+    long node_idx = -1;
+    BinaryTree* bt = self->binary_tree;
+
+    while (!stack.empty()){
+        long node = stack.top();
+        stack.pop();
+        if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[node])->key == key) {
+            node_idx = node;
+            break;
+        }
+        if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[node])->left != Py_None) {
+            stack.push(PyLong_AsLong(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[node])->left));
+        }
+        if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[node])->right != Py_None) {
+            stack.push(PyLong_AsLong(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[node])->right));
+        }
+    }
+    if (node_idx == -1) {
+        return path;
+    }
+    while (node_idx != 0) {
+        PyList_Append(path, PyLong_FromLong(node_idx));
+        node_idx = PyLong_AsLong(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[node_idx])->parent);
+    }
+    PyList_Append(path, PyLong_FromLong(0));
+    PyList_Reverse(path);
+    return path;
+}
+
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"insert", (PyCFunction) BinarySearchTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     {"delete", (PyCFunction) BinarySearchTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
     {"search", (PyCFunction) BinarySearchTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {"lower_bound", (PyCFunction) BinarySearchTree_lower_bound, METH_VARARGS | METH_KEYWORDS, NULL},
     {"upper_bound", (PyCFunction) BinarySearchTree_upper_bound, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"_simple_path", (PyCFunction) BinarySearchTree__simple_path, METH_VARARGS, NULL},
     {NULL}
 };
 

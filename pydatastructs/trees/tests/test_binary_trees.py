@@ -64,6 +64,11 @@ def test_cpp_BST2():
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
 
+    path = b._simple_path(1,0)
+    assert path[0] == 0
+    assert path[1] == 1
+    assert path[2] == 3
+
     assert b.search(10) == 2
     assert b.search(-1) is None
     assert b.delete(13) is True
