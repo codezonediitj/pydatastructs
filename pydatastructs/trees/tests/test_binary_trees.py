@@ -87,22 +87,22 @@ def test_cpp_BST2():
     assert bc.insert(1, 2) is None
     assert bc.delete(1, balancing_info=True) is None
 
-    b = BST(-8, 8, backend=Backend.CPP)
+    b2 = BST(-8, 8, backend=Backend.CPP)
     # b = BST(-8, 8)
-    b.insert(-3, 3)
-    b.insert(-10, 10)
-    b.insert(-1, 1)
-    b.insert(-6, 6)
-    b.insert(-4, 4)
-    b.insert(-7, 7)
-    b.insert(-14, 14)
-    b.insert(-13, 13)
-    assert str(b) ==  "[(2, -8, 8, 1), (4, -3, 3, 3), (7, -10, 10, None), (None, -1, 1, None), (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, 8), (None, -13, 13, None)]"
-    b.delete(-13)
-    b.delete(-10)
-    b.delete(-3)
-    b.delete(-13)
-    assert str(b) ==  "[(7, -8, 8, 1), (4, -1, 1, None), '', '', (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
+    b2.insert(-3, 3)
+    b2.insert(-10, 10)
+    b2.insert(-1, 1)
+    b2.insert(-6, 6)
+    b2.insert(-4, 4)
+    b2.insert(-7, 7)
+    b2.insert(-14, 14)
+    b2.insert(-13, 13)
+    assert str(b2) ==  "[(2, -8, 8, 1), (4, -3, 3, 3), (7, -10, 10, None), (None, -1, 1, None), (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, 8), (None, -13, 13, None)]"
+    assert b2.delete(-13) is True
+    assert b2.delete(-10) is True
+    assert b2.delete(-3) is True
+    assert b2.delete(-13) is None
+    assert str(b2) ==  "[(7, -8, 8, 1), (4, -1, 1, None), '', '', (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
 
     bl = BST(backend=Backend.CPP)
     nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
