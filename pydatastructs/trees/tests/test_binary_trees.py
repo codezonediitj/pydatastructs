@@ -147,8 +147,25 @@ def test_cpp_BST2():
     assert b3.lower_bound(-1) == 7
     assert b3.lower_bound(20) is None
 
-test_cpp_BST2()
+# test_cpp_BST2()
 
+def test_cpp_BST_speed():
+    BST = BinarySearchTree
+    import time
+    b = BST()
+    t1 = time.time()
+    for node in range(-1000,1000):
+        b.insert(node, node)
+    t2 = time.time()
+    b2 = BST(backend=Backend.CPP)
+    t3 = time.time()
+    for node in range(-1000,1000):
+        b2.insert(node, node)
+    t4 = time.time()
+    print("Time taken by Python backend: ",t2-t1,"s")
+    print("Time taken by C++ backend:    ",t4-t3,"s")
+
+# test_cpp_BST_speed()
 
 ################### Python Tests below ###################
 
