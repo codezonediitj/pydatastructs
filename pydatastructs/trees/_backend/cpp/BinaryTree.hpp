@@ -114,7 +114,7 @@ static PyObject* BinaryTree___str__(BinaryTree *self) {
             Py_INCREF(out);
             PyList_SET_ITEM(list, i, out);
         }
-        else{
+        else {
             PyObject* empty_string = PyUnicode_FromString("");
             PyList_SET_ITEM(list, i, empty_string);
         }
