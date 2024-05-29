@@ -588,6 +588,77 @@ static PyObject* BinarySearchTree_rank(BinarySearchTree* self, PyObject* args) {
     return PyLong_FromLong(r);
 }
 
+static PyObject* BinarySearchTree_select(BinarySearchTree* self, PyObject* args) {
+    long i = PyLong_AsLong(PyObject_GetItem(args, PyZero));
+    i = i - 1;
+    if (i < 0) {
+        PyErr_SetString(PyExc_ValueError, "Expected a positive integer");
+        return NULL;
+    }
+    BinaryTree* bt = self->binary_tree;
+    if (i >= bt->tree->_num) {
+        PyErr_SetString(PyExc_ValueError, "Integer passed to select() is greater than the size of the tree.");
+        return NULL;
+    }
+    PyObject* walk = bt->root_idx;
+    while (walk != Py_None) {
+        long l = BinarySearchTree_left_size(self, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]));
+        if (i == l) {
+            return bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)];
+        }
+        PyObject* left_walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
+        PyObject* right_walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right;
+        if (left_walk == Py_None && right_walk==Py_None) {
+            PyErr_SetString(PyExc_IndexError, "The traversal is terminated due to no child nodes ahead.");
+            return NULL;
+        }
+        if (i < l) {
+            if (!PyCallable_Check(bt->comparator)) {
+                PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+                return NULL;
+            }
+            PyObject* arguments = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(left_walk)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key);
+            PyObject* cres = PyObject_CallObject(bt->comparator, arguments);
+            Py_DECREF(arguments);
+            if (!PyLong_Check(cres)) {
+                PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
+                return NULL;
+            }
+            long long comp = PyLong_AsLongLong(cres);
+
+            if (left_walk != Py_None && comp) {
+                walk = left_walk;
+            }
+            else {
+                walk = right_walk;
+            }
+        }
+        else {
+            if (!PyCallable_Check(bt->comparator)) {
+                PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+                return NULL;
+            }
+            PyObject* arguments = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(right_walk)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key);
+            PyObject* cres = PyObject_CallObject(bt->comparator, arguments);
+            Py_DECREF(arguments);
+            if (!PyLong_Check(cres)) {
+                PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
+                return NULL;
+            }
+            long long comp = PyLong_AsLongLong(cres);
+
+            if (right_walk != Py_None && (!comp)) {
+                walk = right_walk;
+            }
+            else {
+                walk = left_walk;
+            }
+            i = i - (l + 1);
+        }
+    }
+    Py_RETURN_NONE; // This is a dummy return
+}
+
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"insert", (PyCFunction) BinarySearchTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     {"delete", (PyCFunction) BinarySearchTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
@@ -599,6 +670,7 @@ static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"_lca_2", (PyCFunction) BinarySearchTree__lca_2, METH_VARARGS, NULL},
     {"lowest_common_ancestor", (PyCFunction) BinarySearchTree_lowest_common_ancestor, METH_VARARGS, NULL},
     {"rank", (PyCFunction) BinarySearchTree_rank, METH_VARARGS, NULL},
+    {"select", (PyCFunction) BinarySearchTree_select, METH_VARARGS, NULL},
     {NULL}
 };
 

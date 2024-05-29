@@ -156,6 +156,11 @@ def test_cpp_BST2():
     rank_list = [2, 2, 4, 4, 5, 4, 5, 3, 2, 3, 2, 1, 3, 4, 5]
     for i,node in enumerate(nodes):
         assert bl2.rank(node) == rank_list[i]
+    assert bl2.rank(200) is None
+
+    select_list = [10, 50, 55, 90, 100]
+    for i in range(5):
+        assert bl2.select(i+1).key == select_list[i]
 
     b3 = BST(backend=Backend.CPP)
     # b3 = BST()
