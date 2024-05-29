@@ -609,6 +609,7 @@ class BinarySearchTree(BinaryTree):
     def _lca_2(self, j, k):
         curr_root = self.root_idx
         u, v = self.search(j), self.search(k)
+        print(u)
         if (u is None) or (v is None):
             raise ValueError("One of the nodes with key %s "
                              "or %s doesn't exits"%(j, k))
@@ -620,6 +621,7 @@ class BinarySearchTree(BinaryTree):
         while not (u_left ^ v_left):
             if u_left and v_left:
                 curr_root = self.tree[curr_root].left
+                # print("curr_root changed to: ", curr_root)
             else:
                 curr_root = self.tree[curr_root].right
 
@@ -627,11 +629,13 @@ class BinarySearchTree(BinaryTree):
                 if curr_root is None:
                     return None
                 return self.tree[curr_root].key
-
+            # print(curr_root)
+            # print(self.tree[u].key, self.tree[curr_root].key)
             u_left = self.comparator(self.tree[u].key, \
                 self.tree[curr_root].key)
             v_left = self.comparator(self.tree[v].key, \
                 self.tree[curr_root].key)
+            # print(u_left, v_left)
 
         if curr_root is None:
             return curr_root

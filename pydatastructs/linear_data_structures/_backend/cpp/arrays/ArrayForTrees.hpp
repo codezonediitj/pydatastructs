@@ -34,24 +34,24 @@ static PyObject* ArrayForTrees___new__(PyTypeObject* type, PyObject *args,
         return NULL;
     }
     PyObject* _one_dimensional_array = OneDimensionalArray___new__(&OneDimensionalArrayType, args, kwds);
-    if( !_one_dimensional_array ) {
+    if ( !_one_dimensional_array ) {
         return NULL;
     }
     self->_one_dimensional_array = reinterpret_cast<OneDimensionalArray*>(_one_dimensional_array);
     self->_size = (long) self->_one_dimensional_array->_size;
 
     PyObject* _load_factor = PyObject_GetItem(kwds, PyUnicode_FromString("load_factor"));
-    if( _load_factor == nullptr ) {
+    if ( _load_factor == nullptr ) {
         PyErr_Clear();
         self->_load_factor = 0.25;
     } else {
         _load_factor = PyFloat_FromString(PyObject_Str(_load_factor));
-        if( !_load_factor ) {
+        if ( !_load_factor ) {
             return NULL;
         }
         self->_load_factor = PyFloat_AS_DOUBLE(_load_factor);
     }
-    if( self->_one_dimensional_array->_size == 0 ||
+    if ( self->_one_dimensional_array->_size == 0 ||
         self->_one_dimensional_array->_data[0] == Py_None ) {
         self->_num = 0;
     } else {
@@ -87,10 +87,10 @@ static PyObject* ArrayForTrees___str__(ArrayForTrees *self) {
 
 static PyObject* ArrayForTrees__modify(ArrayForTrees *self,
                                                     PyObject* args) {
-    // This has been tested completely except for the if() statements in the loop mentioned below.
+    // This has been tested completely except for the if () statements in the loop mentioned below.
     // Returning of the dictionary is also tested and it works fine
 
-    if(((double)self->_num/(double)self->_size) < self->_load_factor){
+    if (((double)self->_num/(double)self->_size) < self->_load_factor) {
         PyObject* new_indices = PyDict_New();
 
         // PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, reinterpret_cast<PyObject*>(2*self->_num + 1));
@@ -107,8 +107,8 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self,
 
         int j=0;
         PyObject** _data = self->_one_dimensional_array->_data; // Check this line
-        for(int i=0; i<=self->_last_pos_filled;i++){
-            if(_data[i] != Py_None){ // Check this line. Python code: if self[i] is not None:
+        for(int i=0; i<=self->_last_pos_filled;i++) {
+            if (_data[i] != Py_None) { // Check this line. Python code: if self[i] is not None:
                 Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
                 arr_new[j] = _data[i];
                 PyObject_SetItem(new_indices, reinterpret_cast<TreeNode*>(_data[i])->key, PyLong_FromLong(j));
@@ -116,20 +116,20 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self,
             }
         }
 
-        // The following loop has if() statements which need to be tested
+        // The following loop has if () statements which need to be tested
 
-        for(int i=0;i<j;i++){
-            if(reinterpret_cast<TreeNode*>(arr_new[i])->left != Py_None){
+        for(int i=0;i<j;i++) {
+            if (reinterpret_cast<TreeNode*>(arr_new[i])->left != Py_None) {
                 reinterpret_cast<TreeNode*>(arr_new[i])->left = PyObject_GetItem(
                     new_indices, reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->left)])->key
                 );
             }
-            if(reinterpret_cast<TreeNode*>(arr_new[i])->right != Py_None){
+            if (reinterpret_cast<TreeNode*>(arr_new[i])->right != Py_None) {
                 reinterpret_cast<TreeNode*>(arr_new[i])->right = PyObject_GetItem(
                     new_indices, reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->right)])->key
                 );
             }
-            if(reinterpret_cast<TreeNode*>(arr_new[i])->parent != Py_None){
+            if (reinterpret_cast<TreeNode*>(arr_new[i])->parent != Py_None) {
                 reinterpret_cast<TreeNode*>(arr_new[i])->parent = PyObject_GetItem(
                     new_indices, reinterpret_cast<TreeNode*>(_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(arr_new[i])->parent)])->key
                 );
@@ -148,13 +148,13 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self,
 static PyObject* ArrayForTrees_append(ArrayForTrees *self,
                                                     PyObject* args) {
     PyObject* el = PyObject_GetItem(args, PyZero);
-    if( !el ) {
+    if ( !el ) {
         return NULL;
     }
 
     long _size = (long) self->_one_dimensional_array->_size;
     PyObject** _data = self->_one_dimensional_array->_data;
-    if( self->_last_pos_filled + 1 == _size ) {
+    if ( self->_last_pos_filled + 1 == _size ) {
         long new_size = 2 * _size + 1;
         PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
         long i;
@@ -179,20 +179,20 @@ static PyObject* ArrayForTrees_append(ArrayForTrees *self,
 static PyObject* ArrayForTrees_delete(ArrayForTrees *self,
                                                    PyObject* args) {
     PyObject* idx_pyobject = PyObject_GetItem(args, PyZero);
-    if( !idx_pyobject ) {
+    if ( !idx_pyobject ) {
         return NULL;
     }
     long idx = PyLong_AsLong(idx_pyobject);
-    if( idx == -1 && PyErr_Occurred() ) {
+    if ( idx == -1 && PyErr_Occurred() ) {
         return NULL;
     }
 
     PyObject** _data = self->_one_dimensional_array->_data;
-    if( idx <= self->_last_pos_filled && idx >= 0 &&
+    if ( idx <= self->_last_pos_filled && idx >= 0 &&
         _data[idx] != Py_None ) {
         _data[idx] = Py_None;
         self->_num -= 1;
-        if( self->_last_pos_filled == idx ) {
+        if ( self->_last_pos_filled == idx ) {
             self->_last_pos_filled -= 1;
         }
         return ArrayForTrees__modify(self, NULL);

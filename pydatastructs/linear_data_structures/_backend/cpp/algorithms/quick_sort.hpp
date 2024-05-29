@@ -11,7 +11,7 @@
 static PyObject* call_pick_pivot_element(PyObject* pick_pivot_element,
     size_t low, size_t high, PyObject* array) {
     PyObject* high_PyObject = PyLong_FromSize_t(high);
-    if( pick_pivot_element ) {
+    if ( pick_pivot_element ) {
         return PyObject_CallFunctionObjArgs(pick_pivot_element,
                                             PyLong_FromSize_t(low),
                                             high_PyObject,
@@ -27,7 +27,7 @@ static size_t quick_sort_partition(size_t low, size_t high,
     PyObject* x = call_pick_pivot_element(pick_pivot_element, low, high, array);
     for( size_t j = low; j < high; j++ ) {
         PyObject* j_PyObject = PyLong_FromSize_t(j);
-        if( _comp(PyObject_GetItem(array, j_PyObject), x, comp) == 1 ) {
+        if ( _comp(PyObject_GetItem(array, j_PyObject), x, comp) == 1 ) {
             i = i + 1;
             PyObject* i_PyObject = PyLong_FromLongLong(i);
             PyObject* tmp = PyObject_GetItem(array, i_PyObject);
@@ -54,18 +54,18 @@ static PyObject* quick_sort_impl(PyObject* array, size_t lower, size_t upper,
     rstack.push(lower);
     rstack.push(upper);
 
-    while( !rstack.empty() ) {
+    while ( !rstack.empty() ) {
         high = rstack.top();
         rstack.pop();
         low = rstack.top();
         rstack.pop();
         p = quick_sort_partition(low, high, pick_pivot_element,
                                  comp, array);
-        if( p - 1 > low ) {
+        if ( p - 1 > low ) {
             rstack.push(low);
             rstack.push(p - 1);
         }
-        if( p + 1 < high ) {
+        if ( p + 1 < high ) {
             rstack.push(p + 1);
             rstack.push(high);
         }
@@ -81,27 +81,27 @@ static PyObject* quick_sort(PyObject* self, PyObject* args, PyObject* kwds) {
     args0 = PyObject_GetItem(args, PyZero);
     int is_DynamicOneDimensionalArray = _check_type(args0, &DynamicOneDimensionalArrayType);
     int is_OneDimensionalArray = _check_type(args0, &OneDimensionalArrayType);
-    if( !is_DynamicOneDimensionalArray && !is_OneDimensionalArray ) {
+    if ( !is_DynamicOneDimensionalArray && !is_OneDimensionalArray ) {
         raise_exception_if_not_array(args0);
         return NULL;
     }
     comp = PyObject_GetItem(kwds, PyUnicode_FromString("comp"));
-    if( comp == NULL ) {
+    if ( comp == NULL ) {
         PyErr_Clear();
     }
     pick_pivot_element = PyObject_GetItem(kwds, PyUnicode_FromString("pick_pivot_element"));
-    if( pick_pivot_element == NULL ) {
+    if ( pick_pivot_element == NULL ) {
         PyErr_Clear();
     }
     start = PyObject_GetItem(kwds, PyUnicode_FromString("start"));
-    if( start == NULL ) {
+    if ( start == NULL ) {
         PyErr_Clear();
         lower = 0;
     } else {
         lower = PyLong_AsSize_t(start);
     }
     end = PyObject_GetItem(kwds, PyUnicode_FromString("end"));
-    if( end == NULL ) {
+    if ( end == NULL ) {
         PyErr_Clear();
         upper = PyObject_Length(args0) - 1;
     } else {
@@ -109,7 +109,7 @@ static PyObject* quick_sort(PyObject* self, PyObject* args, PyObject* kwds) {
     }
 
     args0 = quick_sort_impl(args0, lower, upper, comp, pick_pivot_element);
-    if( is_DynamicOneDimensionalArray ) {
+    if ( is_DynamicOneDimensionalArray ) {
         PyObject_CallMethod(args0, "_modify", "O", Py_True);
     }
     Py_INCREF(args0);

@@ -63,9 +63,9 @@ static long BinarySearchTree_right_size(BinarySearchTree* self, TreeNode* node) 
 
 static PyObject* BinarySearchTree__update_size(BinarySearchTree* self, PyObject *args) {
     PyObject *start_idx = PyObject_GetItem(args, PyZero);
-    if(self->binary_tree->is_order_statistic){
+    if (self->binary_tree->is_order_statistic) {
         PyObject* walk = start_idx;
-        while(walk!=Py_None){
+        while (walk!=Py_None) {
             TreeNode* node = reinterpret_cast<TreeNode*>(self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]);
             node->size = BinarySearchTree_left_size(self, node) + BinarySearchTree_right_size(self, node) + 1;
             walk = node->parent; // Parent is a long or a Py_None, hence, it is a PyObject
@@ -79,21 +79,21 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
     PyObject* ret_parent = Py_None;
     PyObject* key;
     static char* keywords[] = {"key","parent", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key, &ret_parent)){ // ret_parent is optional
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key, &ret_parent)) { // ret_parent is optional
         return NULL;
     }
     BinaryTree* bt = self->binary_tree;
     PyObject* parent = Py_None;
     PyObject* walk = PyLong_FromLong(PyLong_AsLong(bt->root_idx)); // root_idx is size_t, change it to long if needed
 
-    if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key == Py_None){
+    if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key == Py_None) {
         Py_RETURN_NONE;
     }
 
-    while(walk != Py_None){
+    while (walk != Py_None) {
         PyObject* curr_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key;
 
-        if(curr_key == key){
+        if (curr_key == key) {
             break;
         }
         parent = walk;
@@ -112,7 +112,7 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
         }
         long long comp = PyLong_AsLongLong(res);
 
-        if(comp == 1){
+        if (comp == 1) {
             walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
         }
         else{
@@ -121,7 +121,7 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
     }
 
     Py_INCREF(Py_None);
-    if(ret_parent==Py_None || PyLong_AsLong(ret_parent)==0){
+    if (ret_parent==Py_None || PyLong_AsLong(ret_parent)==0) {
         return walk;
     }
     else{
@@ -135,7 +135,7 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
     PyObject* key = Py_None;
     Py_INCREF(Py_None);
     PyObject* data = Py_None;
-    if(!PyArg_ParseTuple(args, "O|O", &key, &data)){ // ret_parent is optional
+    if (!PyArg_ParseTuple(args, "O|O", &key, &data)) { // ret_parent is optional
         return NULL;
     }
 
@@ -143,13 +143,13 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
 
     PyObject* res = BinarySearchTree_search(self, Py_BuildValue("(O)",key), PyDict_New()); // keywords should be a dictionary, so empty dictionary here as no keywords
     BinaryTree* bt = self->binary_tree;
-    if(res != Py_None){
+    if (res != Py_None) {
         reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(res)])->data = data;
         Py_RETURN_NONE;
     }
 
     PyObject* walk = PyLong_FromLong(PyLong_AsLong(bt->root_idx));
-    if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key == Py_None){
+    if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key == Py_None) {
         reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key = key;
         reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->data = data;
         Py_RETURN_NONE;
@@ -162,7 +162,7 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
     PyObject* prev_node = PyLong_FromLong(PyLong_AsLong(bt->root_idx));
     bool flag = true;
 
-    while(flag){
+    while (flag) {
         PyObject* curr_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key;
         if (!PyCallable_Check(bt->comparator)) {
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
@@ -177,8 +177,8 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
         }
         long long comp = PyLong_AsLongLong(cres);
 
-        if(comp==0){
-            if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right == Py_None) {
+        if (comp==0) {
+            if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right == Py_None) {
                 new_node->parent = prev_node;
                 ArrayForTrees_append(bt->tree, Py_BuildValue( "[O]", reinterpret_cast<PyObject*>(new_node)) );
                 reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right = PyLong_FromLong(bt->size);
@@ -189,7 +189,7 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
             walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right;
         }
         else{
-            if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left == Py_None) {
+            if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left == Py_None) {
                 new_node->parent = prev_node;
                 ArrayForTrees_append(bt->tree, Py_BuildValue( "[O]", reinterpret_cast<PyObject*>(new_node)) );
                 reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left = PyLong_FromLong(bt->size);
@@ -210,7 +210,7 @@ static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args,
     Py_INCREF(Py_None);
     PyObject* balancing_info = Py_None;
     static char* keywords[] = {"key","balancing_info", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key, &balancing_info)){
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key, &balancing_info)) {
         return NULL;
     }
     PyObject* kwd_parent = PyDict_New();
@@ -220,17 +220,17 @@ static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args,
     PyObject* parent = PyTuple_GetItem(tup, 1);
     Py_INCREF(Py_None);
     PyObject* a = Py_None;
-    if(walk == Py_None){
+    if (walk == Py_None) {
         Py_RETURN_NONE;
     }
     BinaryTree* bt = self->binary_tree;
-    if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left == Py_None && reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right == Py_None) {
-        if(parent == Py_None){
+    if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left == Py_None && reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right == Py_None) {
+        if (parent == Py_None) {
             reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->data = Py_None;
             reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->key = Py_None;
         }
         else{
-            if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->left == walk){
+            if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->left == walk) {
                 Py_INCREF(Py_None);
                 reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->left = Py_None;
             }
@@ -243,18 +243,18 @@ static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args,
             PyObject* root_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->key;
             PyObject* new_indices = ArrayForTrees_delete(bt->tree, Py_BuildValue("(O)",walk));
             // bt->size = bt->size - 1; // TO DO: Fix b.insert(12,12), b.delete(12), b.insert(12)
-            if(new_indices != Py_None){
+            if (new_indices != Py_None) {
                 a = PyDict_GetItem(new_indices, par_key);
                 bt->root_idx = PyDict_GetItem(new_indices, root_key);
             }
         }
         BinarySearchTree__update_size(self, Py_BuildValue("(O)",a));
     }
-    else if(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left != Py_None && reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right != Py_None) {
+    else if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left != Py_None && reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right != Py_None) {
         PyObject* twalk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right;
         PyObject* par = walk;
         bool flag = false;
-        while(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(twalk)])->left != Py_None) {
+        while (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(twalk)])->left != Py_None) {
             flag = true;
             par = twalk;
             twalk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(twalk)])->left;
@@ -272,12 +272,12 @@ static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args,
             reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(twalk)])->right)])->parent = par;
         }
 
-        if(twalk != Py_None){
+        if (twalk != Py_None) {
             a = par;
             PyObject* par_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(par)])->key;
             PyObject* root_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->key;
             PyObject* new_indices = ArrayForTrees_delete(bt->tree, Py_BuildValue("(O)",twalk));
-            if(new_indices != Py_None){
+            if (new_indices != Py_None) {
                 a = PyDict_GetItem(new_indices, par_key);
                 bt->root_idx = PyDict_GetItem(new_indices, root_key);
             }
@@ -402,7 +402,7 @@ static PyObject* BinarySearchTree__simple_path(BinarySearchTree* self, PyObject 
     long node_idx = -1;
     BinaryTree* bt = self->binary_tree;
 
-    while (!stack.empty()){
+    while (!stack.empty()) {
         long node = stack.top();
         stack.pop();
         if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[node])->key == key) {
@@ -464,13 +464,113 @@ static PyObject* BinarySearchTree__lca_1(BinarySearchTree* self, PyObject* args)
     return reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(PyList_GetItem(path2, PyLong_AsSsize_t(PyLong_FromLong(m-1))))])->key;
 }
 
+static PyObject* BinarySearchTree__lca_2(BinarySearchTree* self, PyObject* args) {
+    PyObject* j = PyObject_GetItem(args, PyZero);
+    PyObject* k = PyObject_GetItem(args, PyOne);
+    BinaryTree* bt = self->binary_tree;
+
+    PyObject* curr_root = bt->root_idx;
+    PyObject* u = BinarySearchTree_search(self, Py_BuildValue("(O)",j), PyDict_New());
+    PyObject* v = BinarySearchTree_search(self, Py_BuildValue("(O)",k), PyDict_New());
+    // std::cout<<PyLong_AsLong(u)<<" "<<PyLong_AsLong(v)<<std::endl;
+    if (u==Py_None || v==Py_None) {
+        PyErr_SetString(PyExc_ValueError, "One of the nodes doesn't exist.");
+        return NULL;
+    }
+
+    if (!PyCallable_Check(bt->comparator)) {
+        PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+        return NULL;
+    }
+    PyObject* arguments1 = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(u)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
+    PyObject* cres1 = PyObject_CallObject(bt->comparator, arguments1);
+    Py_DECREF(arguments1);
+    if (!PyLong_Check(cres1)) {
+        PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
+        return NULL;
+    }
+    long long u_left = PyLong_AsLongLong(cres1);
+
+    if (!PyCallable_Check(bt->comparator)) {
+        PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+        return NULL;
+    }
+    PyObject* arguments2 = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(v)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
+    PyObject* cres2 = PyObject_CallObject(bt->comparator, arguments2);
+    Py_DECREF(arguments2);
+    if (!PyLong_Check(cres2)) {
+        PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
+        return NULL;
+    }
+    long long v_left = PyLong_AsLongLong(cres2);
+    // std::cout<<"h1"<<std::endl;
+
+    while (!(u_left ^ v_left)) {
+        if (u_left && v_left) {
+            curr_root = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->left;
+            // std::cout<<"curr_root chagned to: "<<PyLong_AsLong(curr_root)<<std::endl;
+        }
+        else {
+            curr_root = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->right;
+        }
+        // std::cout<<"h2"<<std::endl;
+
+        if (curr_root == u || curr_root == v) {
+            if (curr_root == Py_None) {
+                Py_RETURN_NONE;
+            }
+            return reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key;
+        }
+        // std::cout<<"curr_root "<<PyLong_AsLong(curr_root)<<std::endl;
+
+        if (curr_root == Py_None || u == Py_None) {
+            // std::cout<<"here"<<std::endl;
+        }
+
+        if (!PyCallable_Check(bt->comparator)) {
+            PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+            return NULL;
+        }
+        // std::cout<<"comp: "<<PyLong_AsLong(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(u)])->key)<<" "<<PyLong_AsLong(reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key)<<std::endl;
+        PyObject* arguments1 = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(u)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
+        PyObject* cres1 = PyObject_CallObject(bt->comparator, arguments1);
+        Py_DECREF(arguments1);
+        if (!PyLong_Check(cres1)) {
+            PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
+            return NULL;
+        }
+        u_left = PyLong_AsLongLong(cres1);
+        // std::cout<<u_left<<std::endl;
+
+        if (!PyCallable_Check(bt->comparator)) {
+            PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+            return NULL;
+        }
+        PyObject* arguments2 = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(v)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
+        PyObject* cres2 = PyObject_CallObject(bt->comparator, arguments2);
+        Py_DECREF(arguments2);
+        if (!PyLong_Check(cres2)) {
+            PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
+            return NULL;
+        }
+        v_left = PyLong_AsLongLong(cres2);
+        // std::cout<<u_left<<" "<<v_left<<std::endl;
+    }
+    // std::cout<<"h4"<<std::endl;
+
+    if (curr_root == Py_None) {
+        Py_RETURN_NONE;
+    }
+    return reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key;
+}
+
 static PyObject* BinarySearchTree_lowest_common_ancestor(BinarySearchTree* self, PyObject* args) {
     Py_INCREF(Py_None);
     PyObject* j = Py_None;
     Py_INCREF(Py_None);
     PyObject* k = Py_None;
     PyObject* algorithm = PyOne;
-    if(!PyArg_ParseTuple(args, "OO|O", &j, &k, &algorithm)){ // ret_parent is optional
+    if (!PyArg_ParseTuple(args, "OO|O", &j, &k, &algorithm)) { // ret_parent is optional
         return NULL;
     }
 
@@ -478,7 +578,7 @@ static PyObject* BinarySearchTree_lowest_common_ancestor(BinarySearchTree* self,
         return BinarySearchTree__lca_1(self, Py_BuildValue("(OO)",j,k));
     }
     else {
-        Py_RETURN_NONE;
+        return BinarySearchTree__lca_2(self, Py_BuildValue("(OO)",j,k));
     }
 }
 
@@ -490,6 +590,7 @@ static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"upper_bound", (PyCFunction) BinarySearchTree_upper_bound, METH_VARARGS | METH_KEYWORDS, NULL},
     {"_simple_path", (PyCFunction) BinarySearchTree__simple_path, METH_VARARGS, NULL},
     {"_lca_1", (PyCFunction) BinarySearchTree__lca_1, METH_VARARGS, NULL},
+    {"_lca_2", (PyCFunction) BinarySearchTree__lca_2, METH_VARARGS, NULL},
     {"lowest_common_ancestor", (PyCFunction) BinarySearchTree_lowest_common_ancestor, METH_VARARGS, NULL},
     {NULL}
 };

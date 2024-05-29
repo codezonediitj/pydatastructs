@@ -22,7 +22,7 @@ static PyObject* Array___new__(PyTypeObject* type, PyObject *args,
 
 static PyObject* Array___str__(Array *self) {
     PyObject* self__data = PyObject_GetAttrString(reinterpret_cast<PyObject*>(self), "_data");
-    if( !self__data ) {
+    if ( !self__data ) {
         return NULL;
     }
     return PyObject_Str(self__data);

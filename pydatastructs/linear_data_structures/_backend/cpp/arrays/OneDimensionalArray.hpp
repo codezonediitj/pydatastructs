@@ -28,14 +28,14 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
     size_t len_args = PyObject_Length(args);
 
     PyObject *dtype = PyObject_GetItem(args, PyZero);
-    if( dtype == Py_None ) {
+    if ( dtype == Py_None ) {
         PyErr_SetString(PyExc_ValueError,
                         "Data type is not defined.");
         return NULL;
     }
     self->_dtype = dtype;
 
-    if( len_args != 2 && len_args != 3 ) {
+    if ( len_args != 2 && len_args != 3 ) {
         PyErr_SetString(PyExc_ValueError,
                         "Too few arguments to create a 1D array,"
                         " pass either size of the array"
@@ -43,16 +43,16 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         return NULL;
     }
 
-    if( len_args == 3 ) {
+    if ( len_args == 3 ) {
         PyObject *args0 = PyObject_GetItem(args, PyOne);
         PyObject *args1 = PyObject_GetItem(args, PyTwo);
         size_t size;
         PyObject *data = NULL;
-        if( (PyList_Check(args0) || PyTuple_Check(args0)) &&
+        if ( (PyList_Check(args0) || PyTuple_Check(args0)) &&
              PyLong_Check(args1) ) {
             size = PyLong_AsUnsignedLong(args1);
             data = args0;
-        } else if( (PyList_Check(args1) || PyTuple_Check(args1)) &&
+        } else if ( (PyList_Check(args1) || PyTuple_Check(args1)) &&
                     PyLong_Check(args0) ) {
             size = PyLong_AsUnsignedLong(args0);
             data = args1;
@@ -63,7 +63,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
             return NULL;
         }
         size_t len_data = PyObject_Length(data);
-        if( size != len_data ) {
+        if ( size != len_data ) {
             PyErr_Format(PyExc_ValueError,
                          "Conflict in the size, %d and length of data, %d",
                          size, len_data);
@@ -73,32 +73,32 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         self->_data = reinterpret_cast<PyObject**>(std::malloc(size * sizeof(PyObject*)));
         for( size_t i = 0; i < size; i++ ) {
             PyObject* value = PyObject_GetItem(data, PyLong_FromSize_t(i));
-            if( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
+            if ( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
                 return NULL;
             }
             self->_data[i] = value;
         }
-    } else if( len_args == 2 ) {
+    } else if ( len_args == 2 ) {
         PyObject *args0 = PyObject_GetItem(args, PyOne);
-        if( PyLong_Check(args0) ) {
+        if ( PyLong_Check(args0) ) {
             self->_size = PyLong_AsSize_t(args0);
             PyObject* init = PyObject_GetItem(kwds, PyUnicode_FromString("init"));
-            if( init == nullptr ) {
+            if ( init == nullptr ) {
                 PyErr_Clear();
                 init = Py_None;
-            } else if( raise_exception_if_dtype_mismatch(init, self->_dtype) ) {
+            } else if ( raise_exception_if_dtype_mismatch(init, self->_dtype) ) {
                 return NULL;
             }
             self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));
             for( size_t i = 0; i < self->_size; i++ ) {
                 self->_data[i] = init;
             }
-        } else if( (PyList_Check(args0) || PyTuple_Check(args0)) ) {
+        } else if ( (PyList_Check(args0) || PyTuple_Check(args0)) ) {
             self->_size = PyObject_Length(args0);
             self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));
             for( size_t i = 0; i < self->_size; i++ ) {
                 PyObject* value = PyObject_GetItem(args0, PyLong_FromSize_t(i));
-                if( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
+                if ( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
                     return NULL;
                 }
                 self->_data[i] = value;
@@ -116,7 +116,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
 static PyObject* OneDimensionalArray___getitem__(OneDimensionalArray *self,
                                                  PyObject* arg) {
     size_t idx = PyLong_AsUnsignedLong(arg);
-    if( idx >= self->_size ) {
+    if ( idx >= self->_size ) {
         PyErr_Format(PyExc_IndexError,
                      "Index, %d, out of range, [%d, %d)",
                      idx, 0, self->_size);
@@ -129,9 +129,9 @@ static PyObject* OneDimensionalArray___getitem__(OneDimensionalArray *self,
 static int OneDimensionalArray___setitem__(OneDimensionalArray *self,
                                                  PyObject* arg, PyObject* value) {
     size_t idx = PyLong_AsUnsignedLong(arg);
-    if( value == Py_None ) {
+    if ( value == Py_None ) {
         self->_data[idx] = value;
-    } else if( !set_exception_if_dtype_mismatch(value, self->_dtype) ) {
+    } else if ( !set_exception_if_dtype_mismatch(value, self->_dtype) ) {
         self->_data[idx] = value;
     }
     return 0;
@@ -139,7 +139,7 @@ static int OneDimensionalArray___setitem__(OneDimensionalArray *self,
 
 static PyObject* OneDimensionalArray_fill(OneDimensionalArray *self, PyObject *args) {
     PyObject* value = PyObject_GetItem(args, PyZero);
-    if( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
+    if ( raise_exception_if_dtype_mismatch(value, self->_dtype) ) {
         return NULL;
     }
 

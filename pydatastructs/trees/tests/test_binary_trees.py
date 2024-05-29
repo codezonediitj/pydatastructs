@@ -37,9 +37,7 @@ def test_cpp_BST1():
     b.insert(30,300)
     b.insert(40,400)
     assert str(b) == "[(None, 1, 100, 1), (None, 20, 200, 2), (None, 30, 300, 3), (None, 40, 400, None)]"
-    # print(b)
     b.insert(0,9)
-    # print(b)
     assert str(b) == "[(4, 1, 100, 1), (None, 20, 200, 2), (None, 30, 300, 3), (None, 40, 400, None), (None, 0, 9, None)]"
 
 # test_cpp_BST1()
@@ -111,26 +109,47 @@ def test_cpp_BST2():
     b2.delete(-13)
     assert str(b2) ==  "[(7, -8, 8, 1), (4, -1, 1, None), '', '', (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
 
-    bl = BST(backend=Backend.CPP)
-    # bl = BST()
+    bl1 = BST(backend=Backend.CPP)
+    # bl1 = BST()
     nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
     for node in nodes:
-        bl.insert(node, node)
-    assert str(bl) == "[(1, 50, 50, 2), (8, 30, 30, 9), (3, 90, 90, 4), (5, 70, 70, 6), (None, 100, 100, None), (7, 60, 60, None), (None, 80, 80, None), (None, 55, 55, None), (10, 20, 20, None), (None, 40, 40, None), (11, 15, 15, 12), (None, 10, 10, None), (None, 16, 16, 13), (None, 17, 17, 14), (None, 18, 18, None)]"
+        bl1.insert(node, node)
+    assert str(bl1) == "[(1, 50, 50, 2), (8, 30, 30, 9), (3, 90, 90, 4), (5, 70, 70, 6), (None, 100, 100, None), (7, 60, 60, None), (None, 80, 80, None), (None, 55, 55, None), (10, 20, 20, None), (None, 40, 40, None), (11, 15, 15, 12), (None, 10, 10, None), (None, 16, 16, 13), (None, 17, 17, 14), (None, 18, 18, None)]"
 
-    assert bl.lowest_common_ancestor(80, 55, 1) == 70
-    assert bl.lowest_common_ancestor(60, 70, 1) == 70
-    assert bl.lowest_common_ancestor(18, 18, 1) == 18
-    assert bl.lowest_common_ancestor(40, 90, 1) == 50
+    assert bl1.lowest_common_ancestor(80, 55, 2) == 70
+    assert bl1.lowest_common_ancestor(60, 70, 2) == 70
+    assert bl1.lowest_common_ancestor(18, 18, 2) == 18
+    assert bl1.lowest_common_ancestor(40, 90, 2) == 50
 
-    assert bl.lowest_common_ancestor(18, 10, 1) == 15
-    assert bl.lowest_common_ancestor(55, 100, 1) == 90
-    assert bl.lowest_common_ancestor(16, 80, 1) == 50
-    assert bl.lowest_common_ancestor(30, 55, 1) == 50
+    assert bl1.lowest_common_ancestor(18, 10, 2) == 15
+    assert bl1.lowest_common_ancestor(55, 100, 2) == 90
+    assert bl1.lowest_common_ancestor(16, 80, 2) == 50
+    assert bl1.lowest_common_ancestor(30, 55, 2) == 50
 
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
+    assert raises(ValueError, lambda: bl1.lowest_common_ancestor(60, 200, 2))
+    assert raises(ValueError, lambda: bl1.lowest_common_ancestor(200, 60, 2))
+    assert raises(ValueError, lambda: bl1.lowest_common_ancestor(-3, 4, 2))
+
+    bl2 = BST(backend=Backend.CPP)
+    # bl2 = BST()
+    nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
+    for node in nodes:
+        bl2.insert(node, node)
+    assert str(bl2) == "[(1, 50, 50, 2), (8, 30, 30, 9), (3, 90, 90, 4), (5, 70, 70, 6), (None, 100, 100, None), (7, 60, 60, None), (None, 80, 80, None), (None, 55, 55, None), (10, 20, 20, None), (None, 40, 40, None), (11, 15, 15, 12), (None, 10, 10, None), (None, 16, 16, 13), (None, 17, 17, 14), (None, 18, 18, None)]"
+
+    assert bl2.lowest_common_ancestor(80, 55, 1) == 70
+    assert bl2.lowest_common_ancestor(60, 70, 1) == 70
+    assert bl2.lowest_common_ancestor(18, 18, 1) == 18
+    assert bl2.lowest_common_ancestor(40, 90, 1) == 50
+
+    assert bl2.lowest_common_ancestor(18, 10, 1) == 15
+    assert bl2.lowest_common_ancestor(55, 100, 1) == 90
+    assert bl2.lowest_common_ancestor(16, 80, 1) == 50
+    assert bl2.lowest_common_ancestor(30, 55, 1) == 50
+
+    assert raises(ValueError, lambda: bl2.lowest_common_ancestor(60, 200, 1))
+    assert raises(ValueError, lambda: bl2.lowest_common_ancestor(200, 60, 1))
+    assert raises(ValueError, lambda: bl2.lowest_common_ancestor(-3, 4, 1))
 
     b3 = BST(backend=Backend.CPP)
     # b3 = BST()

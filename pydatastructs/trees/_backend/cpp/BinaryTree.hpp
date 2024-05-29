@@ -36,7 +36,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     PyObject *root_data = PyObject_GetItem(args, PyOne);
     PyObject *comp = PyObject_GetItem(args, PyTwo);
     PyObject *is_order_statistic = PyObject_GetItem(args, PyThree);
-    if( (key == Py_None) && (root_data != Py_None) ) {
+    if ( (key == Py_None) && (root_data != Py_None) ) {
         PyErr_SetString(PyExc_ValueError, "Key required.");
         return NULL;
     }
@@ -72,7 +72,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
         return NULL;
     }
     ArrayForTrees* arr = reinterpret_cast<ArrayForTrees*>(ArrayForTrees___new__(&ArrayForTreesType, args2, kwds2));
-    if( !arr ) {
+    if ( !arr ) {
         return NULL;
     }
     self->tree = arr;
@@ -106,10 +106,10 @@ static PyObject* BinaryTree_search(PyTypeObject* type, PyObject *args, PyObject 
 static PyObject* BinaryTree___str__(BinaryTree *self) {
     long size = self->tree->_last_pos_filled + 1;
     PyObject* list = PyList_New(size);
-    for(int i=0;i<size;i++){
+    for(int i=0;i<size;i++) {
         OneDimensionalArray* oda = self->tree->_one_dimensional_array;
         TreeNode* node = reinterpret_cast<TreeNode*>(oda->_data[i]);
-        if(reinterpret_cast<PyObject*>(node) != Py_None){
+        if (reinterpret_cast<PyObject*>(node) != Py_None) {
             PyObject* out = Py_BuildValue("(OOOO)", node->left, node->key, node->data, node->right);
             Py_INCREF(out);
             PyList_SET_ITEM(list, i, out);

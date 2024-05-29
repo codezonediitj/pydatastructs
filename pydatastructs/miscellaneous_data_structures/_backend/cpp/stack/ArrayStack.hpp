@@ -113,7 +113,7 @@ static Py_ssize_t ArrayStack__len__(ArrayStack *self) {
     return self->_items->_num;
 }
 
-static PyObject* ArrayStack__str__(ArrayStack* self){
+static PyObject* ArrayStack__str__(ArrayStack* self) {
     return DynamicOneDimensionalArray___str__(self->_items);
 }
 
