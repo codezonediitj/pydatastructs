@@ -151,6 +151,12 @@ def test_cpp_BST2():
     assert raises(ValueError, lambda: bl2.lowest_common_ancestor(200, 60, 1))
     assert raises(ValueError, lambda: bl2.lowest_common_ancestor(-3, 4, 1))
 
+    assert bl2.rank(18) == 5
+    assert bl2.rank(10) == 1
+    rank_list = [2, 2, 4, 4, 5, 4, 5, 3, 2, 3, 2, 1, 3, 4, 5]
+    for i,node in enumerate(nodes):
+        assert bl2.rank(node) == rank_list[i]
+
     b3 = BST(backend=Backend.CPP)
     # b3 = BST()
     b3.insert(10, 10)
@@ -166,7 +172,7 @@ def test_cpp_BST2():
     assert b3.lower_bound(-1) == 7
     assert b3.lower_bound(20) is None
 
-# test_cpp_BST2()
+test_cpp_BST2()
 
 def test_cpp_BST_speed():
     BST = BinarySearchTree

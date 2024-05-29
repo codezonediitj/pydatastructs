@@ -570,6 +570,24 @@ static PyObject* BinarySearchTree_lowest_common_ancestor(BinarySearchTree* self,
     }
 }
 
+static PyObject* BinarySearchTree_rank(BinarySearchTree* self, PyObject* args) {
+    PyObject* x = PyObject_GetItem(args, PyZero);
+    PyObject* walk = BinarySearchTree_search(self, Py_BuildValue("(O)",x), PyDict_New());
+    if (walk == Py_None) {
+        Py_RETURN_NONE;
+    }
+    BinaryTree* bt = self->binary_tree;
+    long r = BinarySearchTree_left_size(self, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])) + 1;
+    while (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key != reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->key) {
+        PyObject* p = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->parent;
+        if (walk == reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(p)])->right) {
+            r = r + BinarySearchTree_left_size(self, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(p)])) + 1;
+        }
+        walk = p;
+    }
+    return PyLong_FromLong(r);
+}
+
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"insert", (PyCFunction) BinarySearchTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     {"delete", (PyCFunction) BinarySearchTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
@@ -580,6 +598,7 @@ static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"_lca_1", (PyCFunction) BinarySearchTree__lca_1, METH_VARARGS, NULL},
     {"_lca_2", (PyCFunction) BinarySearchTree__lca_2, METH_VARARGS, NULL},
     {"lowest_common_ancestor", (PyCFunction) BinarySearchTree_lowest_common_ancestor, METH_VARARGS, NULL},
+    {"rank", (PyCFunction) BinarySearchTree_rank, METH_VARARGS, NULL},
     {NULL}
 };
 
