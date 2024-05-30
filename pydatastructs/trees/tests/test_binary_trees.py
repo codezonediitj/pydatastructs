@@ -60,6 +60,13 @@ def test_cpp_BST2():
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
 
+    from pydatastructs.trees._backend.cpp import _trees
+    t = _trees.BinaryTreeTraversal(b)
+    p = t._pre_order(0)
+    assert [node.key for node in p] == [8, 3, 1, 6, 4, 7, 10, 14, 13]
+    # key_arr = [node.key for node in p]
+    # print(key_arr)
+
     ##### _simple_path() test #####
     path = b._simple_path(1,0)
     assert path[0] == 0
@@ -178,6 +185,7 @@ def test_cpp_BST2():
     assert b3.lower_bound(-1) == 7
     assert b3.lower_bound(20) is None
 
+test_cpp_BST2()
 
 def test_cpp_BST_speed():
     BST = BinarySearchTree
@@ -195,6 +203,18 @@ def test_cpp_BST_speed():
     print("Time taken by Python backend: ",t2-t1,"s")
     print("Time taken by C++ backend:    ",t4-t3,"s")
 
+# def test_cpp_BinaryTreeTraversal():
+#     BST = BinarySearchTree
+#     from pydatastructs.trees._backend.cpp import _trees
+#     b = BST(backend=Backend.CPP)
+#     for i in range(10,-1,-1):
+#         b.insert(i,i)
+#     t = _trees.BinaryTreeTraversal(b)
+#     p = t._pre_order(0)
+#     key_arr = [node.key for node in p]
+#     print(key_arr)
+
+# test_cpp_BinaryTreeTraversal()
 
 ################### Python Tests below ###################
 

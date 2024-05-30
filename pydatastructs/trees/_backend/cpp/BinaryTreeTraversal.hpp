@@ -6,6 +6,7 @@
 #include <structmember.h>
 #include <cstdlib>
 #include <iostream>
+#include <stack>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
@@ -24,13 +25,14 @@ static void BinaryTreeTraversal_dealloc(BinaryTreeTraversal *self) {
 
 static PyObject* BinaryTreeTraversal___new__(PyTypeObject* type, PyObject *args, PyObject *kwds) {
     BinaryTreeTraversal *self;
+    self = reinterpret_cast<BinaryTreeTraversal*>(type->tp_alloc(type, 0));
+
     PyObject* tree = PyObject_GetItem(args, PyZero);
     if (PyType_Ready(&BinarySearchTreeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
     if (PyObject_IsInstance(tree, (PyObject *)&BinarySearchTreeType)) {
         self->tree = reinterpret_cast<BinarySearchTree*>(tree)->binary_tree;
-        std::cout<<"here"<<std::endl;
     }
     else {
         PyErr_SetString(PyExc_ValueError, "Not a supported type for BinaryTreeTraversal.");
@@ -39,7 +41,31 @@ static PyObject* BinaryTreeTraversal___new__(PyTypeObject* type, PyObject *args,
     return reinterpret_cast<PyObject*>(self);
 }
 
+static PyObject* BinaryTreeTraversal__pre_order(BinaryTreeTraversal* self, PyObject *args){
+    PyObject* visit = PyList_New(0);
+    ArrayForTrees* tree = self->tree->tree;
+    long size = self->tree->size;
+    long node = PyLong_AsLong(PyObject_GetItem(args, PyZero));
+    std::stack<long> s;
+    s.push(node);
+
+    while (!s.empty()) {
+        node = s.top();
+        s.pop();
+        TreeNode* curr_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[node]);
+        PyList_Append(visit, reinterpret_cast<PyObject*>(curr_node));
+        if (curr_node->right != Py_None) {
+            s.push(PyLong_AsLong(curr_node->right));
+        }
+        if (curr_node->left != Py_None) {
+            s.push(PyLong_AsLong(curr_node->left));
+        }
+    }
+    return visit;
+}
+
 static struct PyMethodDef BinaryTreeTraversal_PyMethodDef[] = {
+    {"_pre_order", (PyCFunction) BinaryTreeTraversal__pre_order, METH_VARARGS, NULL},
     {NULL}
 };
 
