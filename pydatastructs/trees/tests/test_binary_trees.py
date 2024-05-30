@@ -21,8 +21,6 @@ def test_cpp_BinaryTree():
     assert raises(NotImplementedError, b.search) # Correctly throws NotImplementedError: This is an abstract method
     assert str(b) == "[(None, 1, 100, None)]"
 
-# test_cpp_BinaryTree()
-
 def test_cpp_BST1():
     b = BinarySearchTree(1,100, backend=Backend.CPP)
     assert str(b) == "[(None, 1, 100, None)]"
@@ -40,8 +38,6 @@ def test_cpp_BST1():
     assert str(b) == "[(None, 1, 100, 1), (None, 20, 200, 2), (None, 30, 300, 3), (None, 40, 400, None)]"
     b.insert(0,9)
     assert str(b) == "[(4, 1, 100, 1), (None, 20, 200, 2), (None, 30, 300, 3), (None, 40, 400, None), (None, 0, 9, None)]"
-
-# test_cpp_BST1()
 
 def test_cpp_BST2():
     BST = BinarySearchTree
