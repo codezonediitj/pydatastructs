@@ -183,7 +183,6 @@ def test_cpp_BST2():
     assert b3.lower_bound(-1) == 7
     assert b3.lower_bound(20) is None
 
-# test_cpp_BST2()
 
 def test_cpp_BST_speed():
     BST = BinarySearchTree

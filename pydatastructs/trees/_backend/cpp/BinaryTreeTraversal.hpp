@@ -5,7 +5,6 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
-#include <iostream>
 #include <stack>
 #include <string>
 #include "../../../utils/_backend/cpp/utils.hpp"
