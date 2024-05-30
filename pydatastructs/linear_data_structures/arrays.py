@@ -416,7 +416,6 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
             self._num -= 1
             if self._last_pos_filled == idx:
                 self._last_pos_filled -= 1
-                # self._size -= 1 # Check if size of array should be changed
             return self._modify()
 
     @property
