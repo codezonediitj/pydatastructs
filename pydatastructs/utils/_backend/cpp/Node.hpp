@@ -15,7 +15,6 @@ static void Node_dealloc(Node *self) {
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
-// Class Node has no functions, not even a __new()__ function
 
 static PyTypeObject NodeType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "Node",

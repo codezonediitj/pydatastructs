@@ -11,13 +11,14 @@ def cust_comp(a,b):
     print("custom comparator called")
     return a<b
 
+################### C++ Backend Tests below ###################
+
 def test_cpp_BinaryTree():
-    # b = BinaryTree(1,100,comp=cust_comp,backend=Backend.CPP)
+    # b = BinaryTree(1,100,comp=cust_comp,backend=Backend.CPP) # This is how a custom comparator can be passed
     b = BinaryTree(1,100,backend=Backend.CPP)
     assert raises(NotImplementedError, b.insert) # Correctly throws NotImplementedError: This is an abstract method
     assert raises(NotImplementedError, b.delete) # Correctly throws NotImplementedError: This is an abstract method
     assert raises(NotImplementedError, b.search) # Correctly throws NotImplementedError: This is an abstract method
-    # print(str(b))
     assert str(b) == "[(None, 1, 100, None)]"
 
 # test_cpp_BinaryTree()
@@ -45,7 +46,6 @@ def test_cpp_BST1():
 def test_cpp_BST2():
     BST = BinarySearchTree
     b = BST(8, 8, backend=Backend.CPP)
-    # b = BST(8, 8)
 
     ##### insert() and delete() tests #####
     b.delete(8)
@@ -90,12 +90,10 @@ def test_cpp_BST2():
     assert str(b) ==  "[(None, 8, 8, 2), '', (None, 14, 14, None)]"
 
     bc = BST(1, 1, backend=Backend.CPP)
-    # bc = BST(1, 1)
     assert bc.insert(1, 2) is None
     assert bc.delete(1, balancing_info=True) is None
 
     b2 = BST(-8, 8, backend=Backend.CPP)
-    # b2 = BST(-8, 8)
     b2.insert(-3, 3)
     b2.insert(-10, 10)
     b2.insert(-1, 1)
@@ -105,7 +103,6 @@ def test_cpp_BST2():
     b2.insert(-14, 14)
     b2.insert(-13, 13)
     assert str(b2) ==  "[(2, -8, 8, 1), (4, -3, 3, 3), (7, -10, 10, None), (None, -1, 1, None), (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, 8), (None, -13, 13, None)]"
-    # To Do: Fix CI error in next 5 lines, if we use: assert b2.delete(-13) is True
     b2.delete(-13)
     assert str(b2) == "[(2, -8, 8, 1), (4, -3, 3, 3), (7, -10, 10, None), (None, -1, 1, None), (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
     b2.delete(-10)
@@ -114,7 +111,6 @@ def test_cpp_BST2():
     assert str(b2) ==  "[(7, -8, 8, 1), (4, -1, 1, None), '', '', (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
 
     bl1 = BST(backend=Backend.CPP)
-    # bl1 = BST()
     nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
     for node in nodes:
         bl1.insert(node, node)
@@ -136,7 +132,6 @@ def test_cpp_BST2():
     assert raises(ValueError, lambda: bl1.lowest_common_ancestor(-3, 4, 2))
 
     bl2 = BST(backend=Backend.CPP)
-    # bl2 = BST()
     nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
     for node in nodes:
         bl2.insert(node, node)
@@ -171,7 +166,6 @@ def test_cpp_BST2():
         assert bl2.select(i+1).key == select_list[i]
 
     b3 = BST(backend=Backend.CPP)
-    # b3 = BST()
     b3.insert(10, 10)
     b3.insert(18, 18)
     b3.insert(7, 7)
@@ -188,7 +182,6 @@ def test_cpp_BST2():
     assert b3.lower_bound(-1) == 7
     assert b3.lower_bound(20) is None
 
-# test_cpp_BST2()
 
 def test_cpp_BST_speed():
     BST = BinarySearchTree
@@ -206,7 +199,6 @@ def test_cpp_BST_speed():
     print("Time taken by Python backend: ",t2-t1,"s")
     print("Time taken by C++ backend:    ",t4-t3,"s")
 
-# test_cpp_BST_speed()
 
 ################### Python Tests below ###################
 
@@ -309,7 +301,6 @@ def test_BinarySearchTree():
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
-# test_BinarySearchTree()
 
 def test_BinaryTreeTraversal():
     BST = BinarySearchTree
@@ -546,7 +537,6 @@ def test_AVLTree():
     a5.delete(2)
     test_select_rank([])
 
-# test_AVLTree()
 
 def test_BinaryIndexedTree():
 
@@ -562,7 +552,6 @@ def test_BinaryIndexedTree():
     assert t.get_sum(0, 4) == 114
     assert t.get_sum(1, 9) == 54
 
-# test_BinaryIndexedTree()
 
 def test_CartesianTree():
     tree = CartesianTree()

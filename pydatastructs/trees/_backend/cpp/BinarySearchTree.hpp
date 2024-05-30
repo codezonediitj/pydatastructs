@@ -4,7 +4,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
-#include <iostream>
 #include <cstdlib>
 #include <stack>
 #include "../../../utils/_backend/cpp/utils.hpp"
@@ -68,7 +67,7 @@ static PyObject* BinarySearchTree__update_size(BinarySearchTree* self, PyObject 
         while (walk!=Py_None) {
             TreeNode* node = reinterpret_cast<TreeNode*>(self->binary_tree->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]);
             node->size = BinarySearchTree_left_size(self, node) + BinarySearchTree_right_size(self, node) + 1;
-            walk = node->parent; // Parent is a long or a Py_None, hence, it is a PyObject
+            walk = node->parent;
         }
     }
     Py_RETURN_NONE;
@@ -84,7 +83,7 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
     }
     BinaryTree* bt = self->binary_tree;
     PyObject* parent = Py_None;
-    PyObject* walk = PyLong_FromLong(PyLong_AsLong(bt->root_idx)); // root_idx is size_t, change it to long if needed
+    PyObject* walk = PyLong_FromLong(PyLong_AsLong(bt->root_idx));
 
     if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key == Py_None) {
         Py_RETURN_NONE;
@@ -98,7 +97,6 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
         }
         parent = walk;
 
-        // The comparator has been tested. It works fine. :)
         if (!PyCallable_Check(bt->comparator)) {
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
             return NULL;
@@ -242,7 +240,6 @@ static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args,
             PyObject* par_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent)])->key;
             PyObject* root_key = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->key;
             PyObject* new_indices = ArrayForTrees_delete(bt->tree, Py_BuildValue("(O)",walk));
-            // bt->size = bt->size - 1; // TO DO: Fix b.insert(12,12), b.delete(12), b.insert(12)
             if (new_indices != Py_None) {
                 a = PyDict_GetItem(new_indices, par_key);
                 bt->root_idx = PyDict_GetItem(new_indices, root_key);
@@ -656,7 +653,7 @@ static PyObject* BinarySearchTree_select(BinarySearchTree* self, PyObject* args)
             i = i - (l + 1);
         }
     }
-    Py_RETURN_NONE; // This is a dummy return
+    Py_RETURN_NONE; // dummy return statement, never executed
 }
 
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {

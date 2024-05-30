@@ -3,7 +3,6 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-// #include <iostream>
 #include <structmember.h>
 #include <cstdlib>
 #include "../../../utils/_backend/cpp/utils.hpp"
@@ -28,9 +27,6 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
     BinaryTree *self;
     self = reinterpret_cast<BinaryTree*>(type->tp_alloc(type, 0));
 
-    // // Check what this is: (python code below:)
-    // // obj = object.__new__(cls)
-
     // Assume that arguments are in the order below. Modify the python code such that this is true (ie; pass None for other arguments)
     PyObject *key = PyObject_GetItem(args, PyZero);
     PyObject *root_data = PyObject_GetItem(args, PyOne);
@@ -41,7 +37,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
         return NULL;
     }
     Py_INCREF(Py_None);
-    key = root_data == Py_None ? Py_None : key; // This key is the argument, not self->key
+    key = root_data == Py_None ? Py_None : key;
 
     if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
@@ -61,10 +57,6 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
         return NULL;
     }
 
-    // Don't delete these 2 lines, keep these for reference:
-    // ArrayForTrees* p = reinterpret_cast<ArrayForTrees*>(PyObject_CallMethod(reinterpret_cast<PyObject*>(&ArrayForTreesType),"__new__", "OOO", &DynamicOneDimensionalArrayType, &TreeNodeType, listroot));
-    // DynamicOneDimensionalArray* p = reinterpret_cast<DynamicOneDimensionalArray*>(DynamicOneDimensionalArray___new__(&DynamicOneDimensionalArrayType, args2, kwds));
-
     Py_INCREF(Py_None);
     PyObject* args2 = Py_BuildValue("(OO)", &TreeNodeType, listroot);
     PyObject* kwds2 = Py_BuildValue("()");
@@ -82,7 +74,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
             return NULL;
     }
-    self->comparator = comp; // Comparator has been tested. It works fine!
+    self->comparator = comp;
     self->is_order_statistic = PyLong_AsLong(is_order_statistic);
 
     return reinterpret_cast<PyObject*>(self);
@@ -119,7 +111,7 @@ static PyObject* BinaryTree___str__(BinaryTree *self) {
             PyList_SET_ITEM(list, i, empty_string);
         }
     }
-    return PyObject_Str(list); // use this or __str()__ (that is defined in utils)?
+    return PyObject_Str(list);
 }
 
 static struct PyMethodDef BinaryTree_PyMethodDef[] = {
@@ -129,7 +121,6 @@ static struct PyMethodDef BinaryTree_PyMethodDef[] = {
     {NULL}
 };
 
-// Check if PyMemberDef is actually needed:
 static PyMemberDef BinaryTree_PyMemberDef[] = {
     {"root_idx", T_OBJECT, offsetof(BinaryTree, root_idx), READONLY, "Index of the root node"},
     {"comparator", T_OBJECT, offsetof(BinaryTree, comparator), 0, "Comparator function"},

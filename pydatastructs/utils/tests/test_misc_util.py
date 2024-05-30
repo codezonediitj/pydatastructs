@@ -5,10 +5,7 @@ from pydatastructs.utils.misc_util import Backend
 
 def test_cpp_TreeNode():
     n = TreeNode(1,100,backend=Backend.CPP)
-    # print(str(n))
     assert str(n) == "(None, 1, 100, None)"
-
-# test_cpp_TreeNode()
 
 def test_AdjacencyListGraphNode():
     g_1 = AdjacencyListGraphNode('g_1', 1)

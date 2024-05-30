@@ -134,6 +134,8 @@ def test_DynamicOneDimensionalArray2():
     A = DODA(TreeNode, [root])
     assert str(A[0]) == "(None, 1, 100, None)"
 
+# To Do: Fix this size issue:
+
 # def test_DynamicOneDimensionalArray3():
 #     DODA = DynamicOneDimensionalArray
 #     A = DODA(int, 1)
@@ -146,10 +148,6 @@ def test_DynamicOneDimensionalArray2():
 #     A.append(3)
 #     print(str(A))
 #     print(A.size)
-
-# test_DynamicOneDimensionalArray()
-# test_DynamicOneDimensionalArray2()
-# test_DynamicOneDimensionalArray3()
 
 def test_ArrayForTrees():
     AFT = ArrayForTrees
@@ -170,6 +168,3 @@ def test_cpp_ArrayForTrees():
     node = TreeNode(2, 200, backend=Backend.CPP)
     A.append(node)
     assert str(A) == "['(None, 1, 100, None)', '(None, 2, 200, None)']"
-
-# test_ArrayForTrees()
-# test_cpp_ArrayForTrees()

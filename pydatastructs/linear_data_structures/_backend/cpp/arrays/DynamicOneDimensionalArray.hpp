@@ -5,7 +5,6 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
-// #include <iostream>
 #include "DynamicArray.hpp"
 #include "OneDimensionalArray.hpp"
 #include "../../../../utils/_backend/cpp/utils.hpp"

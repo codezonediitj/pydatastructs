@@ -20,10 +20,6 @@ typedef struct {
 } TreeNode;
 
 static void TreeNode_dealloc(TreeNode *self) {
-    // left and right are long values, no need to dealloc for them
-    // TreeNode_dealloc(reinterpret_cast<TreeNode*>(TreeNode->left));
-    // TreeNode_dealloc(reinterpret_cast<TreeNode*>(TreeNode->right));
-    // Check if other deallocs are needed using Py_XDECREF
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -31,10 +27,7 @@ static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *
     TreeNode *self;
     self = reinterpret_cast<TreeNode*>(type->tp_alloc(type, 0));
 
-    // Check what this is: (python code below:)
-    // obj = Node.__new__(cls)
-
-    // Assume that arguments are in the order below. Modify the code such that this is true.
+    // Assume that arguments are in the order below. Python code is such that this is true.
     self->key = PyObject_GetItem(args, PyZero);
     self->data = PyObject_GetItem(args, PyOne);
 
@@ -68,6 +61,7 @@ static struct PyMemberDef TreeNode_PyMemberDef[] = {
     {"parent", T_OBJECT, offsetof(TreeNode, parent), 0, "TreeNode parent"},
     {NULL},
 };
+
 
 static PyTypeObject TreeNodeType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "TreeNode",

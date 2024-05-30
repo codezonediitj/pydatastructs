@@ -5,8 +5,6 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
-#include <iostream>
-#include "DynamicOneDimensionalArray.hpp" // See if this is needed
 #include "OneDimensionalArray.hpp"
 #include "DynamicArray.hpp"
 #include "../../../../utils/_backend/cpp/TreeNode.hpp"
@@ -87,14 +85,10 @@ static PyObject* ArrayForTrees___str__(ArrayForTrees *self) {
 
 static PyObject* ArrayForTrees__modify(ArrayForTrees *self,
                                                     PyObject* args) {
-    // This has been tested completely except for the if () statements in the loop mentioned below.
-    // Returning of the dictionary is also tested and it works fine
 
     if (((double)self->_num/(double)self->_size) < self->_load_factor) {
         PyObject* new_indices = PyDict_New();
 
-        // PyObject* arr_new = OneDimensionalArray___new__(&TreeNodeType, reinterpret_cast<PyObject*>(2*self->_num + 1));
-        // This is how arr_new was made in DynamicOneDimensionalArray__modify() for the previous line :-
         long new_size = 2 * self->_num + 1;
         PyObject** arr_new = reinterpret_cast<PyObject**>(std::malloc(new_size * sizeof(PyObject*)));
         for( int i = 0; i < new_size; i++ ) {
@@ -102,21 +96,16 @@ static PyObject* ArrayForTrees__modify(ArrayForTrees *self,
             arr_new[i] = Py_None;
         }
 
-        // For some debugging:
-        // return __str__(arr_new, new_size); // Prints: ['', '', '']
-
         int j=0;
-        PyObject** _data = self->_one_dimensional_array->_data; // Check this line
+        PyObject** _data = self->_one_dimensional_array->_data;
         for(int i=0; i<=self->_last_pos_filled;i++) {
-            if (_data[i] != Py_None) { // Check this line. Python code: if self[i] is not None:
-                Py_INCREF(Py_None); // This was put in DynamicOneDimensionalArray line 116
+            if (_data[i] != Py_None) {
+                Py_INCREF(Py_None);
                 arr_new[j] = _data[i];
                 PyObject_SetItem(new_indices, reinterpret_cast<TreeNode*>(_data[i])->key, PyLong_FromLong(j));
                 j += 1;
             }
         }
-
-        // The following loop has if () statements which need to be tested
 
         for(int i=0;i<j;i++) {
             if (reinterpret_cast<TreeNode*>(arr_new[i])->left != Py_None) {
