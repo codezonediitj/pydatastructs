@@ -27,9 +27,9 @@ def _test_BinarySearchTree(backend):
     "(None, 13, 13, None)]")
 
     trav = BinaryTreeTraversal(b, backend=backend)
-    # in_order = trav.depth_first_search(order='in_order')
+    in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [1, 3, 4, 6, 7, 8, 10, 13, 14]
+    assert [node.key for node in in_order] == [1, 3, 4, 6, 7, 8, 10, 13, 14]
     assert [node.key for node in pre_order] == [8, 3, 1, 6, 4, 7, 10, 14, 13]
 
     assert b.search(10) == 2
@@ -42,9 +42,9 @@ def _test_BinarySearchTree(backend):
     assert b.search(3) is None
     assert b.delete(13) is None
 
-    # in_order = trav.depth_first_search(order='in_order')
+    in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [1, 4, 6, 7, 8, 14]
+    assert [node.key for node in in_order] == [1, 4, 6, 7, 8, 14]
     assert [node.key for node in pre_order] == [8, 4, 1, 6, 7, 14]
 
     b.delete(7)
@@ -52,9 +52,9 @@ def _test_BinarySearchTree(backend):
     b.delete(1)
     b.delete(4)
 
-    # in_order = trav.depth_first_search(order='in_order')
+    in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [8, 14]
+    assert [node.key for node in in_order] == [8, 14]
     assert [node.key for node in pre_order] == [8, 14]
 
     bc = BST(1, 1, backend=backend)
