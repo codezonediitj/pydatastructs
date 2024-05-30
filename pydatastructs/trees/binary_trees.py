@@ -1558,8 +1558,9 @@ class BinaryTreeTraversal(object):
     __slots__ = ['tree']
 
     def __new__(cls, tree, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            return _trees.BinaryTreeTraversal(tree, **kwargs)
         if not isinstance(tree, BinaryTree):
             raise TypeError("%s is not a binary tree"%(tree))
         obj = object.__new__(cls)

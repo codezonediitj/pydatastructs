@@ -60,10 +60,9 @@ def test_cpp_BST2():
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
 
-    ##### BinaryTreeTraversal _pre_order test #####
-    from pydatastructs.trees._backend.cpp import _trees
-    t = _trees.BinaryTreeTraversal(b)
-    p = t.depth_first_search(order="pre_order")
+    ##### BinaryTreeTraversal pre_order test #####
+    trav = BinaryTreeTraversal(b, backend=Backend.CPP)
+    p = trav.depth_first_search(order="pre_order")
     assert [node.key for node in p] == [8, 3, 1, 6, 4, 7, 10, 14, 13]
 
     ##### _simple_path() test #####
