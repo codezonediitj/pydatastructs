@@ -276,8 +276,8 @@ def _test_BinarySearchTree(backend):
 
     assert bl.lowest_common_ancestor(18, 10, 2) == 15
     assert bl.lowest_common_ancestor(55, 100, 2) == 90
-    # assert bl.lowest_common_ancestor(16, 80, 2) == 50
-    # assert bl.lowest_common_ancestor(30, 55, 2) == 50
+    assert bl.lowest_common_ancestor(16, 80, 2) == 50
+    assert bl.lowest_common_ancestor(30, 55, 2) == 50
 
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 2))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 2))
@@ -286,12 +286,12 @@ def _test_BinarySearchTree(backend):
     assert bl.lowest_common_ancestor(80, 55, 1) == 70
     assert bl.lowest_common_ancestor(60, 70, 1) == 70
     assert bl.lowest_common_ancestor(18, 18, 1) == 18
-    # assert bl.lowest_common_ancestor(40, 90, 1) == 50
+    assert bl.lowest_common_ancestor(40, 90, 1) == 50
 
     assert bl.lowest_common_ancestor(18, 10, 1) == 15
     assert bl.lowest_common_ancestor(55, 100, 1) == 90
-    # assert bl.lowest_common_ancestor(16, 80, 1) == 50
-    # assert bl.lowest_common_ancestor(30, 55, 1) == 50
+    assert bl.lowest_common_ancestor(16, 80, 1) == 50
+    assert bl.lowest_common_ancestor(30, 55, 1) == 50
 
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
