@@ -330,8 +330,6 @@ def test_BinaryTreeTraversal():
     assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
     assert raises(TypeError, lambda: BTT(1))
 
-# test_BinaryTreeTraversal()
-
 def test_AVLTree():
     a = AVLTree('M', 'M')
     a.insert('N', 'N')
