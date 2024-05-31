@@ -42,7 +42,7 @@ static PyObject* BinaryTreeTraversal___new__(PyTypeObject* type, PyObject *args,
     return reinterpret_cast<PyObject*>(self);
 }
 
-static PyObject* BinaryTreeTraversal__pre_order(BinaryTreeTraversal* self, PyObject *args){
+static PyObject* BinaryTreeTraversal__pre_order(BinaryTreeTraversal* self, PyObject *args) {
     long node = PyLong_AsLong(PyObject_GetItem(args, PyZero));
     PyObject* visit = PyList_New(0);
     ArrayForTrees* tree = self->tree->tree;
@@ -65,7 +65,7 @@ static PyObject* BinaryTreeTraversal__pre_order(BinaryTreeTraversal* self, PyObj
     return visit;
 }
 
-static PyObject* BinaryTreeTraversal__in_order(BinaryTreeTraversal* self, PyObject *args){
+static PyObject* BinaryTreeTraversal__in_order(BinaryTreeTraversal* self, PyObject *args) {
     PyObject* node = PyObject_GetItem(args, PyZero);
     PyObject* visit = PyList_New(0);
     ArrayForTrees* tree = self->tree->tree;
@@ -88,7 +88,7 @@ static PyObject* BinaryTreeTraversal__in_order(BinaryTreeTraversal* self, PyObje
     return visit;
 }
 
-static PyObject* BinaryTreeTraversal__post_order(BinaryTreeTraversal* self, PyObject *args){
+static PyObject* BinaryTreeTraversal__post_order(BinaryTreeTraversal* self, PyObject *args) {
     PyObject* node = PyObject_GetItem(args, PyZero);
     PyObject* visit = PyList_New(0);
     ArrayForTrees* tree = self->tree->tree;
@@ -128,7 +128,7 @@ static PyObject* BinaryTreeTraversal__post_order(BinaryTreeTraversal* self, PyOb
     return visit;
 }
 
-static PyObject* BinaryTreeTraversal__out_order(BinaryTreeTraversal* self, PyObject *args){
+static PyObject* BinaryTreeTraversal__out_order(BinaryTreeTraversal* self, PyObject *args) {
     PyObject* node = PyObject_GetItem(args, PyZero);
     PyObject* visit = BinaryTreeTraversal__in_order(self, Py_BuildValue("(O)", node));
     PyList_Reverse(visit);
