@@ -6,6 +6,7 @@
 #include <structmember.h>
 #include <cstdlib>
 #include <stack>
+#include <queue>
 #include <string>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
@@ -158,7 +159,44 @@ static PyObject* BinaryTreeTraversal_depth_first_search(BinaryTreeTraversal* sel
         return BinaryTreeTraversal__post_order(self, Py_BuildValue("(O)", node));
     }
     else {
-        PyErr_SetString(PyExc_NotImplementedError, "This traversal is not implemented yet or does not exist. Supported traversals: \"pre_order\", \"in_order\", \"out_order\"");
+        PyErr_SetString(PyExc_NotImplementedError, "This traversal is not implemented yet or does not exist. Supported traversals: \"pre_order\", \"in_order\", \"out_order\", , \"post_order\"");
+        return NULL;
+    }
+}
+
+static PyObject* BinaryTreeTraversal_breadth_first_search(BinaryTreeTraversal* self, PyObject *args, PyObject *kwds) {
+    Py_INCREF(Py_None);
+    PyObject* node = Py_None;
+    PyObject* strategy = PyUnicode_FromString("queue");
+    static char* keywords[] = {"node","strategy", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OO", keywords, &node, &strategy)) {
+        return NULL;
+    }
+    if (PyUnicode_Compare(strategy, PyUnicode_FromString("queue")) == 0) {
+        if (node == Py_None) {
+            node = self->tree->root_idx;
+        }
+        std::queue<PyObject*> q;
+        PyObject* visit = PyList_New(0);
+        ArrayForTrees* tree = self->tree->tree;
+        q.push(node);
+        while (q.size() > 0) {
+            node = q.front();
+            q.pop();
+            TreeNode* curr_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[PyLong_AsLong(node)]);
+            PyList_Append(visit, reinterpret_cast<PyObject*>(curr_node));
+            if (curr_node->left != Py_None) {
+                q.push(curr_node->left);
+            }
+            if (curr_node->right != Py_None) {
+                q.push(curr_node->right);
+            }
+        }
+
+        return visit;
+    }
+    else {
+        PyErr_SetString(PyExc_NotImplementedError, "This strategy has not been implemented yet.");
         return NULL;
     }
 }
@@ -169,6 +207,7 @@ static struct PyMethodDef BinaryTreeTraversal_PyMethodDef[] = {
     {"_out_order", (PyCFunction) BinaryTreeTraversal__out_order, METH_VARARGS, NULL},
     {"_post_order", (PyCFunction) BinaryTreeTraversal__post_order, METH_VARARGS, NULL},
     {"depth_first_search", (PyCFunction) BinaryTreeTraversal_depth_first_search, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"breadth_first_search", (PyCFunction) BinaryTreeTraversal_breadth_first_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
 };
 
