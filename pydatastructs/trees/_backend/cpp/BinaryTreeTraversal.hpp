@@ -87,6 +87,46 @@ static PyObject* BinaryTreeTraversal__in_order(BinaryTreeTraversal* self, PyObje
     return visit;
 }
 
+static PyObject* BinaryTreeTraversal__post_order(BinaryTreeTraversal* self, PyObject *args){
+    PyObject* node = PyObject_GetItem(args, PyZero);
+    PyObject* visit = PyList_New(0);
+    ArrayForTrees* tree = self->tree->tree;
+    long size = self->tree->size;
+    std::stack<PyObject*> s;
+    s.push(node);
+    PyObject* last = PyList_New(size);
+    for (int i=0;i<size;i++) {
+        PyList_SetItem(last, i, PyZero);
+    }
+
+    while (!s.empty()) {
+        PyObject* node = s.top();
+        PyObject* l = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[PyLong_AsLong(node)])->left;
+        PyObject* r = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[PyLong_AsLong(node)])->right;
+        bool cl = false, cr = false;
+        if (l == Py_None || PyList_GetItem(last, PyLong_AsLong(l)) == PyOne) {
+            cl = true;
+        }
+        if (r == Py_None || PyList_GetItem(last, PyLong_AsLong(r)) == PyOne) {
+            cr = true;
+        }
+        if (cl && cr) {
+            s.pop();
+            TreeNode* curr_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[PyLong_AsLong(node)]);
+            PyList_Append(visit, reinterpret_cast<PyObject*>(curr_node));
+            PyList_SetItem(last, PyLong_AsLong(node), PyOne);
+            continue;
+        }
+        if (!cr) {
+            s.push(r);
+        }
+        if (!cl) {
+            s.push(l);
+        }
+    }
+    return visit;
+}
+
 static PyObject* BinaryTreeTraversal__out_order(BinaryTreeTraversal* self, PyObject *args){
     PyObject* node = PyObject_GetItem(args, PyZero);
     PyObject* visit = BinaryTreeTraversal__in_order(self, Py_BuildValue("(O)", node));
@@ -114,6 +154,9 @@ static PyObject* BinaryTreeTraversal_depth_first_search(BinaryTreeTraversal* sel
     else if (PyUnicode_Compare(order, PyUnicode_FromString("out_order")) == 0) {
         return BinaryTreeTraversal__out_order(self, Py_BuildValue("(O)", node));
     }
+    else if (PyUnicode_Compare(order, PyUnicode_FromString("post_order")) == 0) {
+        return BinaryTreeTraversal__post_order(self, Py_BuildValue("(O)", node));
+    }
     else {
         PyErr_SetString(PyExc_NotImplementedError, "This traversal is not implemented yet or does not exist. Supported traversals: \"pre_order\", \"in_order\", \"out_order\"");
         return NULL;
@@ -124,6 +167,7 @@ static struct PyMethodDef BinaryTreeTraversal_PyMethodDef[] = {
     {"_pre_order", (PyCFunction) BinaryTreeTraversal__pre_order, METH_VARARGS, NULL},
     {"_in_order", (PyCFunction) BinaryTreeTraversal__in_order, METH_VARARGS, NULL},
     {"_out_order", (PyCFunction) BinaryTreeTraversal__out_order, METH_VARARGS, NULL},
+    {"_post_order", (PyCFunction) BinaryTreeTraversal__post_order, METH_VARARGS, NULL},
     {"depth_first_search", (PyCFunction) BinaryTreeTraversal_depth_first_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
 };

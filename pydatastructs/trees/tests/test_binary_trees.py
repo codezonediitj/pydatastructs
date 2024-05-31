@@ -137,10 +137,10 @@ def _test_BinaryTreeTraversal(backend):
     out = trav.depth_first_search(order='out_order')
     assert [node.key for node in out] == ['I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
 
-    if(backend==Backend.PYTHON): # These are yet to be implemented in the C++ backend
-        post = trav.depth_first_search(order='post_order')
-        assert [node.key for node in post] == ['A', 'C', 'E', 'D', 'B', 'H', 'I', 'G', 'F']
+    post = trav.depth_first_search(order='post_order')
+    assert [node.key for node in post] == ['A', 'C', 'E', 'D', 'B', 'H', 'I', 'G', 'F']
 
+    if(backend==Backend.PYTHON): # These are yet to be implemented in the C++ backend
         bfs = trav.breadth_first_search()
         assert [node.key for node in bfs] == ['F', 'B', 'G', 'A', 'D', 'I', 'C', 'E', 'H']
 
