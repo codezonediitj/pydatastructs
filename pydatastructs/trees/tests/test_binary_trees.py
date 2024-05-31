@@ -114,10 +114,10 @@ def test_BinarySearchTree():
 def test_cpp_BinarySearchTree():
     _test_BinarySearchTree(Backend.CPP)
 
-def test_BinaryTreeTraversal():
+def _test_BinaryTreeTraversal(backend):
     BST = BinarySearchTree
     BTT = BinaryTreeTraversal
-    b = BST('F', 'F')
+    b = BST('F', 'F', backend=backend)
     b.insert('B', 'B')
     b.insert('A', 'A')
     b.insert('G', 'G')
@@ -126,7 +126,8 @@ def test_BinaryTreeTraversal():
     b.insert('E', 'E')
     b.insert('I', 'I')
     b.insert('H', 'H')
-    trav = BTT(b)
+
+    trav = BTT(b, backend=backend)
     pre = trav.depth_first_search(order='pre_order')
     assert [node.key for node in pre] == ['F', 'B', 'A', 'D', 'C', 'E', 'G', 'I', 'H']
 
@@ -136,15 +137,22 @@ def test_BinaryTreeTraversal():
     out = trav.depth_first_search(order='out_order')
     assert [node.key for node in out] == ['I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
 
-    post = trav.depth_first_search(order='post_order')
-    assert [node.key for node in post] == ['A', 'C', 'E', 'D', 'B', 'H', 'I', 'G', 'F']
+    if(backend==Backend.PYTHON): # These are yet to be implemented in the C++ backend
+        post = trav.depth_first_search(order='post_order')
+        assert [node.key for node in post] == ['A', 'C', 'E', 'D', 'B', 'H', 'I', 'G', 'F']
 
-    bfs = trav.breadth_first_search()
-    assert [node.key for node in bfs] == ['F', 'B', 'G', 'A', 'D', 'I', 'C', 'E', 'H']
+        bfs = trav.breadth_first_search()
+        assert [node.key for node in bfs] == ['F', 'B', 'G', 'A', 'D', 'I', 'C', 'E', 'H']
 
-    assert raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
-    assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
-    assert raises(TypeError, lambda: BTT(1))
+        assert raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
+        assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
+        assert raises(TypeError, lambda: BTT(1))
+
+def test_BinaryTreeTraversal():
+    _test_BinaryTreeTraversal(Backend.PYTHON)
+
+def test_cpp_BinaryTreeTraversal():
+    _test_BinaryTreeTraversal(Backend.CPP)
 
 def test_AVLTree():
     a = AVLTree('M', 'M')

@@ -87,6 +87,13 @@ static PyObject* BinaryTreeTraversal__in_order(BinaryTreeTraversal* self, PyObje
     return visit;
 }
 
+static PyObject* BinaryTreeTraversal__out_order(BinaryTreeTraversal* self, PyObject *args){
+    PyObject* node = PyObject_GetItem(args, PyZero);
+    PyObject* visit = BinaryTreeTraversal__in_order(self, Py_BuildValue("(O)", node));
+    PyList_Reverse(visit);
+    return visit;
+}
+
 static PyObject* BinaryTreeTraversal_depth_first_search(BinaryTreeTraversal* self, PyObject *args, PyObject *kwds) {
     Py_INCREF(Py_None);
     PyObject* node = Py_None;
@@ -104,15 +111,19 @@ static PyObject* BinaryTreeTraversal_depth_first_search(BinaryTreeTraversal* sel
     else if (PyUnicode_Compare(order, PyUnicode_FromString("in_order")) == 0) {
         return BinaryTreeTraversal__in_order(self, Py_BuildValue("(O)", node));
     }
+    else if (PyUnicode_Compare(order, PyUnicode_FromString("out_order")) == 0) {
+        return BinaryTreeTraversal__out_order(self, Py_BuildValue("(O)", node));
+    }
     else {
-        PyErr_SetString(PyExc_NotImplementedError, "This traversal is not implemented yet or does not exist. Supported traversals: \"pre_order\"");
+        PyErr_SetString(PyExc_NotImplementedError, "This traversal is not implemented yet or does not exist. Supported traversals: \"pre_order\", \"in_order\", \"out_order\"");
         return NULL;
     }
 }
 
 static struct PyMethodDef BinaryTreeTraversal_PyMethodDef[] = {
     {"_pre_order", (PyCFunction) BinaryTreeTraversal__pre_order, METH_VARARGS, NULL},
-    {"_in_order", (PyCFunction) BinaryTreeTraversal__pre_order, METH_VARARGS, NULL},
+    {"_in_order", (PyCFunction) BinaryTreeTraversal__in_order, METH_VARARGS, NULL},
+    {"_out_order", (PyCFunction) BinaryTreeTraversal__out_order, METH_VARARGS, NULL},
     {"depth_first_search", (PyCFunction) BinaryTreeTraversal_depth_first_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
 };
