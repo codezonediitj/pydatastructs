@@ -29,6 +29,4 @@ def test_BST_insert(**kwargs):
     backend_dict = {"backend": Backend.CPP}
     timer_cpp = timeit.Timer(functools.partial(f, **backend_dict))
     cpp_backend = min(timer_cpp.repeat(repeat, number))
-    print("Python time: ", python_backend)
-    print("C++ time: ", cpp_backend)
     assert cpp_backend < python_backend
