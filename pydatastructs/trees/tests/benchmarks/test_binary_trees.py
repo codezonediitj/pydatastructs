@@ -17,6 +17,10 @@ def test_BST_insert(**kwargs):
         b = BST(backend=backend)
         for node in range(-1000,1000):
             b.insert(node, node)
+        for node in range(-1000, 1000):
+            b.search(node)
+        for node in range(2000):
+            b.delete(node)
 
     backend_dict = {"backend": Backend.PYTHON}
     timer_python = timeit.Timer(functools.partial(f, **backend_dict))
@@ -25,5 +29,6 @@ def test_BST_insert(**kwargs):
     backend_dict = {"backend": Backend.CPP}
     timer_cpp = timeit.Timer(functools.partial(f, **backend_dict))
     cpp_backend = min(timer_cpp.repeat(repeat, number))
-
+    print("Python time: ", python_backend)
+    print("C++ time: ", cpp_backend)
     assert cpp_backend < python_backend
