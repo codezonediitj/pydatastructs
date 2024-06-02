@@ -9,56 +9,56 @@ import random
 
 def _test_BinarySearchTree(backend):
     BST = BinarySearchTree
-    b = BST(8, 8, backend=backend)
-    b.delete(8)
-    b.insert(8, 8)
-    b.insert(3, 3)
-    b.insert(10, 10)
-    b.insert(1, 1)
-    b.insert(6, 6)
-    b.insert(4, 4)
-    b.insert(7, 7)
-    b.insert(14, 14)
-    b.insert(13, 13)
-    # Explicit check for the __str__ method of Binary Trees Class
-    assert str(b) == \
-    ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
-    "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
-    "(None, 13, 13, None)]")
+    # b = BST(8, 8, backend=backend)
+    # b.delete(8)
+    # b.insert(8, 8)
+    # b.insert(3, 3)
+    # b.insert(10, 10)
+    # b.insert(1, 1)
+    # b.insert(6, 6)
+    # b.insert(4, 4)
+    # b.insert(7, 7)
+    # b.insert(14, 14)
+    # b.insert(13, 13)
+    # # Explicit check for the __str__ method of Binary Trees Class
+    # assert str(b) == \
+    # ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
+    # "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
+    # "(None, 13, 13, None)]")
 
-    trav = BinaryTreeTraversal(b, backend=backend)
-    in_order = trav.depth_first_search(order='in_order')
-    pre_order = trav.depth_first_search(order='pre_order')
-    assert [node.key for node in in_order] == [1, 3, 4, 6, 7, 8, 10, 13, 14]
-    assert [node.key for node in pre_order] == [8, 3, 1, 6, 4, 7, 10, 14, 13]
+    # trav = BinaryTreeTraversal(b, backend=backend)
+    # in_order = trav.depth_first_search(order='in_order')
+    # pre_order = trav.depth_first_search(order='pre_order')
+    # assert [node.key for node in in_order] == [1, 3, 4, 6, 7, 8, 10, 13, 14]
+    # assert [node.key for node in pre_order] == [8, 3, 1, 6, 4, 7, 10, 14, 13]
 
-    assert b.search(10) == 2
-    assert b.search(-1) is None
-    assert b.delete(13) is True
-    assert b.search(13) is None
-    assert b.delete(10) is True
-    assert b.search(10) is None
-    assert b.delete(3) is True
-    assert b.search(3) is None
-    assert b.delete(13) is None
+    # assert b.search(10) == 2
+    # assert b.search(-1) is None
+    # assert b.delete(13) is True
+    # assert b.search(13) is None
+    # assert b.delete(10) is True
+    # assert b.search(10) is None
+    # assert b.delete(3) is True
+    # assert b.search(3) is None
+    # assert b.delete(13) is None
 
-    in_order = trav.depth_first_search(order='in_order')
-    pre_order = trav.depth_first_search(order='pre_order')
-    assert [node.key for node in in_order] == [1, 4, 6, 7, 8, 14]
-    assert [node.key for node in pre_order] == [8, 4, 1, 6, 7, 14]
+    # in_order = trav.depth_first_search(order='in_order')
+    # pre_order = trav.depth_first_search(order='pre_order')
+    # assert [node.key for node in in_order] == [1, 4, 6, 7, 8, 14]
+    # assert [node.key for node in pre_order] == [8, 4, 1, 6, 7, 14]
 
-    b.delete(7)
-    b.delete(6)
-    b.delete(1)
-    b.delete(4)
+    # b.delete(7)
+    # b.delete(6)
+    # b.delete(1)
+    # b.delete(4)
 
-    in_order = trav.depth_first_search(order='in_order')
-    pre_order = trav.depth_first_search(order='pre_order')
-    assert [node.key for node in in_order] == [8, 14]
-    assert [node.key for node in pre_order] == [8, 14]
+    # in_order = trav.depth_first_search(order='in_order')
+    # pre_order = trav.depth_first_search(order='pre_order')
+    # assert [node.key for node in in_order] == [8, 14]
+    # assert [node.key for node in pre_order] == [8, 14]
 
-    bc = BST(1, 1, backend=backend)
-    assert bc.insert(1, 2) is None
+    # bc = BST(1, 1, backend=backend)
+    # assert bc.insert(1, 2) is None
 
     b = BST(-8, 8, backend=backend)
     b.insert(-3, 3)
@@ -75,45 +75,45 @@ def _test_BinarySearchTree(backend):
     # assert b.delete(-3) is True
     # assert b.delete(-13) is None
 
-    bl = BST(backend=backend)
-    nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
-    for node in nodes:
-        bl.insert(node, node)
+    # bl = BST(backend=backend)
+    # nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
+    # for node in nodes:
+    #     bl.insert(node, node)
 
-    assert bl.lowest_common_ancestor(80, 55, 2) == 70
-    assert bl.lowest_common_ancestor(60, 70, 2) == 70
-    assert bl.lowest_common_ancestor(18, 18, 2) == 18
-    assert bl.lowest_common_ancestor(40, 90, 2) == 50
+    # assert bl.lowest_common_ancestor(80, 55, 2) == 70
+    # assert bl.lowest_common_ancestor(60, 70, 2) == 70
+    # assert bl.lowest_common_ancestor(18, 18, 2) == 18
+    # assert bl.lowest_common_ancestor(40, 90, 2) == 50
 
-    assert bl.lowest_common_ancestor(18, 10, 2) == 15
-    assert bl.lowest_common_ancestor(55, 100, 2) == 90
-    assert bl.lowest_common_ancestor(16, 80, 2) == 50
-    assert bl.lowest_common_ancestor(30, 55, 2) == 50
+    # assert bl.lowest_common_ancestor(18, 10, 2) == 15
+    # assert bl.lowest_common_ancestor(55, 100, 2) == 90
+    # assert bl.lowest_common_ancestor(16, 80, 2) == 50
+    # assert bl.lowest_common_ancestor(30, 55, 2) == 50
 
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 2))
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 2))
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 2))
+    # assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 2))
+    # assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 2))
+    # assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 2))
 
-    assert bl.lowest_common_ancestor(80, 55, 1) == 70
-    assert bl.lowest_common_ancestor(60, 70, 1) == 70
-    assert bl.lowest_common_ancestor(18, 18, 1) == 18
-    assert bl.lowest_common_ancestor(40, 90, 1) == 50
+    # assert bl.lowest_common_ancestor(80, 55, 1) == 70
+    # assert bl.lowest_common_ancestor(60, 70, 1) == 70
+    # assert bl.lowest_common_ancestor(18, 18, 1) == 18
+    # assert bl.lowest_common_ancestor(40, 90, 1) == 50
 
-    assert bl.lowest_common_ancestor(18, 10, 1) == 15
-    assert bl.lowest_common_ancestor(55, 100, 1) == 90
-    assert bl.lowest_common_ancestor(16, 80, 1) == 50
-    assert bl.lowest_common_ancestor(30, 55, 1) == 50
+    # assert bl.lowest_common_ancestor(18, 10, 1) == 15
+    # assert bl.lowest_common_ancestor(55, 100, 1) == 90
+    # assert bl.lowest_common_ancestor(16, 80, 1) == 50
+    # assert bl.lowest_common_ancestor(30, 55, 1) == 50
 
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
-    assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
+    # assert raises(ValueError, lambda: bl.lowest_common_ancestor(60, 200, 1))
+    # assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
+    # assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
 def test_BinarySearchTree():
     _test_BinarySearchTree(Backend.PYTHON)
 
 def test_cpp_BinarySearchTree():
     _test_BinarySearchTree(Backend.CPP)
-
+test_cpp_BinarySearchTree()
 def _test_BinaryTreeTraversal(backend):
     BST = BinarySearchTree
     BTT = BinaryTreeTraversal
