@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
+#include <iostream>
 #include <stack>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
@@ -219,6 +220,7 @@ static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args,
     Py_INCREF(Py_None);
     PyObject* a = Py_None;
     if (walk == Py_None) {
+        std::cout<<"CI returns this"<<std::endl;
         Py_RETURN_NONE;
     }
     BinaryTree* bt = self->binary_tree;
