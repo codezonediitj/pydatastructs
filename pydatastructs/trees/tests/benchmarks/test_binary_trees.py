@@ -1,32 +1,52 @@
-import random, timeit, functools, os, pytest
+import timeit, functools, os, pytest
 from pydatastructs.trees.binary_trees import (BinarySearchTree)
 from pydatastructs.utils.misc_util import Backend
-import random
 
 @pytest.mark.xfail
-def test_BST_insert(**kwargs):
+def test_BinarySearchTree(**kwargs):
     cpp = Backend.CPP
-    repeat = 2
-    number = 2
+    repeat = 1
+    number = 1
 
     size = int(os.environ.get("PYDATASTRUCTS_BENCHMARK_SIZE", "1000"))
     size = kwargs.get("size", size)
 
-    def f(backend):
-        BST = BinarySearchTree
-        b = BST(backend=backend)
+    BST = BinarySearchTree
+    b1 = BST(backend=Backend.PYTHON)
+    b2 = BST(backend=Backend.CPP)
+
+    def f(backend, tree):
         for node in range(-1000,1000):
-            b.insert(node, node)
+            tree.insert(node, node)
+    def g(backend, tree):
         for node in range(-1000, 1000):
-            b.search(node)
+            tree.search(node)
+    def h(backend, tree):
         for node in range(2000):
-            b.delete(node)
+            tree.delete(node)
 
-    backend_dict = {"backend": Backend.PYTHON}
-    timer_python = timeit.Timer(functools.partial(f, **backend_dict))
-    python_backend = min(timer_python.repeat(repeat, number))
+    kwds_dict_PY = {"backend": Backend.PYTHON, "tree":b1}
+    kwds_dict_CPP = {"backend": Backend.CPP, "tree":b2}
 
-    backend_dict = {"backend": Backend.CPP}
-    timer_cpp = timeit.Timer(functools.partial(f, **backend_dict))
-    cpp_backend = min(timer_cpp.repeat(repeat, number))
-    assert cpp_backend < python_backend
+    timer_python = timeit.Timer(functools.partial(f, **kwds_dict_PY))
+    python_insert = min(timer_python.repeat(repeat, number))
+
+    timer_cpp = timeit.Timer(functools.partial(f, **kwds_dict_CPP))
+    cpp_insert = min(timer_cpp.repeat(repeat, number))
+    assert cpp_insert < python_insert
+
+    timer_python = timeit.Timer(functools.partial(g, **kwds_dict_PY))
+    python_search = min(timer_python.repeat(repeat, number))
+
+    timer_cpp = timeit.Timer(functools.partial(g, **kwds_dict_CPP))
+    cpp_search = min(timer_cpp.repeat(repeat, number))
+    assert cpp_search < python_search
+
+    timer_python = timeit.Timer(functools.partial(h, **kwds_dict_PY))
+    python_delete = min(timer_python.repeat(repeat, number))
+
+    timer_cpp = timeit.Timer(functools.partial(h, **kwds_dict_CPP))
+    cpp_delete = min(timer_cpp.repeat(repeat, number))
+    assert cpp_delete < python_delete
+
+test_BinarySearchTree()
