@@ -329,7 +329,8 @@ static PyObject* BinarySearchTree_delete(BinarySearchTree* self, PyObject *args,
             return a;
         }
     }
-    Py_RETURN_TRUE;
+    Py_INCREF(Py_True);
+    return Py_True;
 }
 
 static PyObject* BinarySearchTree__bound_helper(BinarySearchTree* self, PyObject *args) {
