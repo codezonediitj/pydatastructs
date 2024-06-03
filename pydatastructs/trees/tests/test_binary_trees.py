@@ -26,6 +26,11 @@ def _test_BinarySearchTree(backend):
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
 
+    assert b.tree[0].left == 1
+    assert b.tree[0].key == 8
+    assert b.tree[0].data == 8
+    assert b.tree[0].right == 2
+
     trav = BinaryTreeTraversal(b, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')

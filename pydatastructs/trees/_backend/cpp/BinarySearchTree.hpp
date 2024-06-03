@@ -14,6 +14,7 @@
 typedef struct {
     PyObject_HEAD
     BinaryTree* binary_tree;
+    ArrayForTrees* tree;
 } BinarySearchTree;
 
 static void BinarySearchTree_dealloc(BinarySearchTree *self) {
@@ -30,6 +31,7 @@ static PyObject* BinarySearchTree___new__(PyTypeObject* type, PyObject *args, Py
     }
     PyObject* bt = BinaryTree___new__(&BinaryTreeType, args, kwds);
     self->binary_tree = reinterpret_cast<BinaryTree*>(bt);
+    self->tree = reinterpret_cast<BinaryTree*>(bt)->tree;
 
     return reinterpret_cast<PyObject*>(self);
 }
@@ -671,6 +673,11 @@ static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {NULL}
 };
 
+static PyMemberDef BinarySearchTree_PyMemberDef[] = {
+    {"tree", T_OBJECT_EX, offsetof(BinarySearchTree, tree), 0, "tree"},
+    {NULL}  /* Sentinel */
+};
+
 
 static PyTypeObject BinarySearchTreeType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "BinarySearchTree",
@@ -700,7 +707,7 @@ static PyTypeObject BinarySearchTreeType = {
     /* tp_iter */ 0,
     /* tp_iternext */ 0,
     /* tp_methods */ BinarySearchTree_PyMethodDef,
-    /* tp_members */ 0,
+    /* tp_members */ BinarySearchTree_PyMemberDef,
     /* tp_getset */ 0,
     /* tp_base */ &BinaryTreeType,
     /* tp_dict */ 0,

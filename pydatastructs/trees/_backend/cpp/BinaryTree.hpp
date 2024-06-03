@@ -124,7 +124,7 @@ static struct PyMethodDef BinaryTree_PyMethodDef[] = {
 static PyMemberDef BinaryTree_PyMemberDef[] = {
     {"root_idx", T_OBJECT, offsetof(BinaryTree, root_idx), READONLY, "Index of the root node"},
     {"comparator", T_OBJECT, offsetof(BinaryTree, comparator), 0, "Comparator function"},
-    // {"tree", T_OBJECT, offsetof(BinaryTree, tree), 0, "Tree"},
+    {"tree", T_OBJECT_EX, offsetof(BinaryTree, tree), 0, "Tree"},
     {"size", T_LONG, offsetof(BinaryTree, size), READONLY, "Size of the tree"},
     {"is_order_statistic", T_LONG, offsetof(BinaryTree, is_order_statistic), 0, "Whether the tree is ordered statically or not"},
     {NULL}  /* Sentinel */
