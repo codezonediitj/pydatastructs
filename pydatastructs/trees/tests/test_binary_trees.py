@@ -74,6 +74,7 @@ def _test_BinarySearchTree(backend):
     b.delete(-10)
     b.delete(-3)
     b.delete(-13)
+    assert str(b) == "[(7, -8, 8, 1), (4, -1, 1, None), '', '', (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
 
     bl = BST(backend=backend)
     nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
