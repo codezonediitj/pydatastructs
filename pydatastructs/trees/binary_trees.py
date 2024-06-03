@@ -6,6 +6,7 @@ from pydatastructs.linear_data_structures import OneDimensionalArray
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
+from pydatastructs.trees._backend.cpp import _trees
 
 __all__ = [
     'AVLTree',
@@ -58,8 +59,11 @@ class BinaryTree(object):
 
     def __new__(cls, key=None, root_data=None, comp=None,
                 is_order_statistic=False, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            if comp is None:
+                comp = lambda key1, key2: key1 < key2
+            return _trees.BinaryTree(key, root_data, comp, is_order_statistic, **kwargs) # If any argument is not given, then it is passed as None, except for comp
         obj = object.__new__(cls)
         if key is None and root_data is not None:
             raise ValueError('Key required.')
@@ -219,6 +223,14 @@ class BinarySearchTree(BinaryTree):
                                         if node.left is not None else 0
     right_size = lambda self, node: self.tree[node.right].size \
                                         if node.right is not None else 0
+    def __new__(cls, key=None, root_data=None, comp=None,
+                is_order_statistic=False, **kwargs):
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            if comp is None:
+                comp = lambda key1, key2: key1 < key2
+            return _trees.BinarySearchTree(key, root_data, comp, is_order_statistic, **kwargs) # If any argument is not given, then it is passed as None, except for comp
+        return super().__new__(cls, key, root_data, comp, is_order_statistic, **kwargs)
 
     def _update_size(self, start_idx):
         if self.is_order_statistic:
@@ -612,7 +624,6 @@ class BinarySearchTree(BinaryTree):
                 if curr_root is None:
                     return None
                 return self.tree[curr_root].key
-
             u_left = self.comparator(self.tree[u].key, \
                 self.tree[curr_root].key)
             v_left = self.comparator(self.tree[v].key, \
@@ -1547,8 +1558,9 @@ class BinaryTreeTraversal(object):
     __slots__ = ['tree']
 
     def __new__(cls, tree, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            return _trees.BinaryTreeTraversal(tree, **kwargs)
         if not isinstance(tree, BinaryTree):
             raise TypeError("%s is not a binary tree"%(tree))
         obj = object.__new__(cls)

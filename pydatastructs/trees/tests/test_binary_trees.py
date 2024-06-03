@@ -1,14 +1,15 @@
 from pydatastructs.trees.binary_trees import (
-    BinarySearchTree, BinaryTreeTraversal, AVLTree,
+    BinaryTree, BinarySearchTree, BinaryTreeTraversal, AVLTree,
     ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree, CartesianTree, Treap, RedBlackTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
+from pydatastructs.utils.misc_util import Backend
 import random
 
-def test_BinarySearchTree():
+def _test_BinarySearchTree(backend):
     BST = BinarySearchTree
-    b = BST(8, 8)
+    b = BST(8, 8, backend=backend)
     b.delete(8)
     b.insert(8, 8)
     b.insert(3, 3)
@@ -25,7 +26,12 @@ def test_BinarySearchTree():
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
 
-    trav = BinaryTreeTraversal(b)
+    assert b.tree[0].left == 1
+    assert b.tree[0].key == 8
+    assert b.tree[0].data == 8
+    assert b.tree[0].right == 2
+
+    trav = BinaryTreeTraversal(b, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == [1, 3, 4, 6, 7, 8, 10, 13, 14]
@@ -56,10 +62,10 @@ def test_BinarySearchTree():
     assert [node.key for node in in_order] == [8, 14]
     assert [node.key for node in pre_order] == [8, 14]
 
-    bc = BST(1, 1)
+    bc = BST(1, 1, backend=backend)
     assert bc.insert(1, 2) is None
 
-    b = BST(-8, 8)
+    b = BST(-8, 8, backend=backend)
     b.insert(-3, 3)
     b.insert(-10, 10)
     b.insert(-1, 1)
@@ -68,11 +74,14 @@ def test_BinarySearchTree():
     b.insert(-7, 7)
     b.insert(-14, 14)
     b.insert(-13, 13)
-    assert b.delete(-13) is True
-    assert b.delete(-10) is True
-    assert b.delete(-3) is True
-    assert b.delete(-13) is None
-    bl = BST()
+
+    b.delete(-13)
+    b.delete(-10)
+    b.delete(-3)
+    b.delete(-13)
+    assert str(b) == "[(7, -8, 8, 1), (4, -1, 1, None), '', '', (6, -6, 6, 5), (None, -4, 4, None), (None, -7, 7, None), (None, -14, 14, None)]"
+
+    bl = BST(backend=backend)
     nodes = [50, 30, 90, 70, 100, 60, 80, 55, 20, 40, 15, 10, 16, 17, 18]
     for node in nodes:
         bl.insert(node, node)
@@ -105,10 +114,16 @@ def test_BinarySearchTree():
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(200, 60, 1))
     assert raises(ValueError, lambda: bl.lowest_common_ancestor(-3, 4, 1))
 
-def test_BinaryTreeTraversal():
+def test_BinarySearchTree():
+    _test_BinarySearchTree(Backend.PYTHON)
+
+def test_cpp_BinarySearchTree():
+    _test_BinarySearchTree(Backend.CPP)
+
+def _test_BinaryTreeTraversal(backend):
     BST = BinarySearchTree
     BTT = BinaryTreeTraversal
-    b = BST('F', 'F')
+    b = BST('F', 'F', backend=backend)
     b.insert('B', 'B')
     b.insert('A', 'A')
     b.insert('G', 'G')
@@ -117,7 +132,8 @@ def test_BinaryTreeTraversal():
     b.insert('E', 'E')
     b.insert('I', 'I')
     b.insert('H', 'H')
-    trav = BTT(b)
+
+    trav = BTT(b, backend=backend)
     pre = trav.depth_first_search(order='pre_order')
     assert [node.key for node in pre] == ['F', 'B', 'A', 'D', 'C', 'E', 'G', 'I', 'H']
 
@@ -136,6 +152,12 @@ def test_BinaryTreeTraversal():
     assert raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
     assert raises(TypeError, lambda: BTT(1))
+
+def test_BinaryTreeTraversal():
+    _test_BinaryTreeTraversal(Backend.PYTHON)
+
+def test_cpp_BinaryTreeTraversal():
+    _test_BinaryTreeTraversal(Backend.CPP)
 
 def test_AVLTree():
     a = AVLTree('M', 'M')
@@ -338,6 +360,7 @@ def test_AVLTree():
     a5.delete(2)
     test_select_rank([])
 
+
 def test_BinaryIndexedTree():
 
     FT = BinaryIndexedTree
@@ -351,6 +374,7 @@ def test_BinaryIndexedTree():
     assert t.get_sum(0, 2) == 105
     assert t.get_sum(0, 4) == 114
     assert t.get_sum(1, 9) == 54
+
 
 def test_CartesianTree():
     tree = CartesianTree()

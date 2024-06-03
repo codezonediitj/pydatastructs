@@ -1,38 +1,26 @@
-#ifndef LINEAR_DATA_STRUCTURES_ARRAY_HPP
-#define LINEAR_DATA_STRUCTURES_ARRAY_HPP
+#ifndef UTILS_NODE_HPP
+#define UTILS_NODE_HPP
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
+#include "utils.hpp"
 
 typedef struct {
     PyObject_HEAD
-} Array;
+} Node;
+// Node is an abstract class representing a Node
 
-static void Array_dealloc(Array *self) {
+static void Node_dealloc(Node *self) {
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
-static PyObject* Array___new__(PyTypeObject* type, PyObject *args,
-                            PyObject *kwds) {
-    Array *self;
-    self = reinterpret_cast<Array*>(type->tp_alloc(type, 0));
-    return reinterpret_cast<PyObject*>(self);
-}
 
-static PyObject* Array___str__(Array *self) {
-    PyObject* self__data = PyObject_GetAttrString(reinterpret_cast<PyObject*>(self), "_data");
-    if ( !self__data ) {
-        return NULL;
-    }
-    return PyObject_Str(self__data);
-}
-
-static PyTypeObject ArrayType = {
-    /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "Array",
-    /* tp_basicsize */ sizeof(Array),
+static PyTypeObject NodeType = {
+    /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "Node",
+    /* tp_basicsize */ sizeof(Node),
     /* tp_itemsize */ 0,
-    /* tp_dealloc */ (destructor) Array_dealloc,
+    /* tp_dealloc */ (destructor) Node_dealloc,
     /* tp_print */ 0,
     /* tp_getattr */ 0,
     /* tp_setattr */ 0,
@@ -43,7 +31,7 @@ static PyTypeObject ArrayType = {
     /* tp_as_mapping */ 0,
     /* tp_hash  */ 0,
     /* tp_call */ 0,
-    /* tp_str */ (reprfunc) Array___str__,
+    /* tp_str */ 0,
     /* tp_getattro */ 0,
     /* tp_setattro */ 0,
     /* tp_as_buffer */ 0,
@@ -65,7 +53,7 @@ static PyTypeObject ArrayType = {
     /* tp_dictoffset */ 0,
     /* tp_init */ 0,
     /* tp_alloc */ 0,
-    /* tp_new */ Array___new__,
+    /* tp_new */ 0,
 };
 
 #endif

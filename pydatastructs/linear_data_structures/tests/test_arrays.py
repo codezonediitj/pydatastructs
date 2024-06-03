@@ -1,9 +1,9 @@
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray,
-    MultiDimensionalArray)
+    MultiDimensionalArray, ArrayForTrees)
 from pydatastructs.utils.misc_util import Backend
 from pydatastructs.utils.raises_util import raises
-
+from pydatastructs.utils import TreeNode
 
 def test_OneDimensionalArray():
     ODA = OneDimensionalArray
@@ -127,3 +127,24 @@ def test_DynamicOneDimensionalArray():
     b.append(4)
     b.append(5)
     assert [b[i] for i in range(b.size)] == [1, 2, 3, 4, 5, None, None]
+
+def test_DynamicOneDimensionalArray2():
+    DODA = DynamicOneDimensionalArray
+    root = TreeNode(1, 100)
+    A = DODA(TreeNode, [root])
+    assert str(A[0]) == "(None, 1, 100, None)"
+
+def _test_ArrayForTrees(backend):
+     AFT = ArrayForTrees
+     root = TreeNode(1, 100)
+     A = AFT(TreeNode, [root], backend=backend)
+     assert str(A) == "['(None, 1, 100, None)']"
+     node = TreeNode(2, 200, backend=backend)
+     A.append(node)
+     assert str(A) == "['(None, 1, 100, None)', '(None, 2, 200, None)']"
+
+def test_ArrayForTrees():
+    _test_ArrayForTrees(Backend.PYTHON)
+
+def test_cpp_ArrayForTrees():
+    _test_ArrayForTrees(Backend.CPP)
