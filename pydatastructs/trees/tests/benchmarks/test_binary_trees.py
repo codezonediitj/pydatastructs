@@ -48,5 +48,3 @@ def test_BinarySearchTree(**kwargs):
     timer_cpp = timeit.Timer(functools.partial(h, **kwds_dict_CPP))
     cpp_delete = min(timer_cpp.repeat(repeat, number))
     assert cpp_delete < python_delete
-
-test_BinarySearchTree()
