@@ -14,6 +14,7 @@
 typedef struct {
     PyObject_HEAD
     BinarySearchTree* bst;
+    ArrayForTrees* tree;
 } SelfBalancingBinaryTree;
 
 static void SelfBalancingBinaryTree_dealloc(SelfBalancingBinaryTree *self) {
@@ -29,6 +30,7 @@ static PyObject* SelfBalancingBinaryTree___new__(PyTypeObject* type, PyObject *a
     }
     PyObject* p = BinarySearchTree___new__(&BinarySearchTreeType, args, kwds);
     self->bst = reinterpret_cast<BinarySearchTree*>(p);
+    self->tree = reinterpret_cast<BinarySearchTree*>(p)->binary_tree->tree;
 
     return reinterpret_cast<PyObject*>(self);
 }

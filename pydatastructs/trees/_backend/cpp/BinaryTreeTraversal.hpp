@@ -36,11 +36,11 @@ static PyObject* BinaryTreeTraversal___new__(PyTypeObject* type, PyObject *args,
     if (PyType_Ready(&SelfBalancingBinaryTreeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
-    else if (PyObject_IsInstance(tree, (PyObject *)&SelfBalancingBinaryTreeType)) {
-        self->tree = reinterpret_cast<SelfBalancingBinaryTree*>(tree)->bst->binary_tree;
-    }
     if (PyObject_IsInstance(tree, (PyObject *)&BinarySearchTreeType)) {
         self->tree = reinterpret_cast<BinarySearchTree*>(tree)->binary_tree;
+    }
+    else if (PyObject_IsInstance(tree, (PyObject *)&SelfBalancingBinaryTreeType)) {
+        self->tree = reinterpret_cast<SelfBalancingBinaryTree*>(tree)->bst->binary_tree;
     }
     else {
         PyErr_SetString(PyExc_ValueError, "Not a supported type for BinaryTreeTraversal.");
