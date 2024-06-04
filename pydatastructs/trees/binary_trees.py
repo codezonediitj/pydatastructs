@@ -692,7 +692,7 @@ class SelfBalancingBinaryTree(BinarySearchTree):
                 comp = lambda key1, key2: key1 < key2
             return _trees.SelfBalancingBinaryTree(key, root_data, comp, is_order_statistic, **kwargs) # If any argument is not given, then it is passed as None, except for comp
         return super().__new__(cls, key, root_data, comp, is_order_statistic, **kwargs)
-    
+
     def _right_rotate(self, j, k):
         y = self.tree[k].right
         if y is not None:
