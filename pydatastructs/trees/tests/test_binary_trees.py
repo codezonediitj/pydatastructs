@@ -469,7 +469,7 @@ def test_SelfBalancingBinaryTree():
     # tree.insert(4.56, 4.56)
     # tree._left_rotate(5, 8)
     # assert tree.tree[tree.tree[8].parent].left == 8
-test_SelfBalancingBinaryTree()
+# test_SelfBalancingBinaryTree()
 def test_SplayTree():
     t = SplayTree(100, 100)
     t.insert(50, 50)
