@@ -4,7 +4,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <cstdlib>
-#include <iostream>
 #include <structmember.h>
 #include "../../../../linear_data_structures/_backend/cpp/arrays/DynamicOneDimensionalArray.hpp"
 

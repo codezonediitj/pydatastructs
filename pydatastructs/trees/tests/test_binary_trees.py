@@ -456,13 +456,13 @@ def test_SelfBalancingBinaryTree():
     assert tree.tree[2].right != 3
     assert tree.tree[tree.tree[5].parent].right == 5
 
-    # trav = BinaryTreeTraversal(tree, backend=Backend.CPP)
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [4.4, 4.5, 4.55, 4.6, 4.65, 5, 5.5]
-    # assert [node.key for node in pre_order] == [5, 4.5, 4.4, 4.55, 4.6, 4.65, 5.5]
+    trav = BinaryTreeTraversal(tree, backend=Backend.CPP)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [4.4, 4.5, 4.55, 4.6, 4.65, 5, 5.5]
+    assert [node.key for node in pre_order] == [5, 4.5, 4.4, 4.55, 4.6, 4.65, 5.5]
 
-    # assert tree.tree[tree.tree[3].parent].right == 3
+    assert tree.tree[tree.tree[3].parent].right == 3
     # tree._left_rotate(5, 3)
     # assert str(tree) == original_tree
     # tree.insert(4.54, 4.54)
