@@ -127,6 +127,7 @@ static struct PyMethodDef SelfBalancingBinaryTree_PyMethodDef[] = {
 };
 
 static PyMemberDef SelfBalancingBinaryTree_PyMemberDef[] = {
+    {"tree", T_OBJECT_EX, offsetof(SelfBalancingBinaryTree, tree), 0, "tree"},
     {NULL}  /* Sentinel */
 };
 
