@@ -436,11 +436,11 @@ def test_Treap():
     assert tree.search(2) == 1
     assert tree.delete(1) is None
 
-def test_issue_234():
+def _test_SelfBalancingBinaryTree(backend):
     """
     https://github.com/codezonediitj/pydatastructs/issues/234
     """
-    tree = SelfBalancingBinaryTree()
+    tree = SelfBalancingBinaryTree(backend=backend)
     tree.insert(5, 5)
     tree.insert(5.5, 5.5)
     tree.insert(4.5, 4.5)
@@ -450,11 +450,13 @@ def test_issue_234():
     tree.insert(4.65, 4.65)
     original_tree = str(tree)
     tree._right_rotate(3, 5)
+
+    assert str(tree) == "[(2, 5, 5, 1), (None, 5.5, 5.5, None), (4, 4.5, 4.5, 5), (None, 4.6, 4.6, 6), (None, 4.4, 4.4, None), (None, 4.55, 4.55, 3), (None, 4.65, 4.65, None)]"
     assert tree.tree[3].parent == 5
     assert tree.tree[2].right != 3
     assert tree.tree[tree.tree[5].parent].right == 5
 
-    trav = BinaryTreeTraversal(tree)
+    trav = BinaryTreeTraversal(tree, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == [4.4, 4.5, 4.55, 4.6, 4.65, 5, 5.5]
@@ -467,6 +469,18 @@ def test_issue_234():
     tree.insert(4.56, 4.56)
     tree._left_rotate(5, 8)
     assert tree.tree[tree.tree[8].parent].left == 8
+    assert str(tree) == "[(2, 5, 5, 1), (None, 5.5, 5.5, None), (4, 4.5, 4.5, 3), (8, 4.6, 4.6, 6), (None, 4.4, 4.4, None), (7, 4.55, 4.55, None), (None, 4.65, 4.65, None), (None, 4.54, 4.54, None), (5, 4.56, 4.56, None)]"
+
+    tree._left_right_rotate(0, 2)
+    assert str(tree) == "[(6, 5, 5, 1), (None, 5.5, 5.5, None), (4, 4.5, 4.5, 8), (2, 4.6, 4.6, 0), (None, 4.4, 4.4, None), (7, 4.55, 4.55, None), (None, 4.65, 4.65, None), (None, 4.54, 4.54, None), (5, 4.56, 4.56, None)]"
+
+    tree._right_left_rotate(0, 2)
+    assert str(tree) == "[(6, 5, 5, None), (None, 5.5, 5.5, None), (None, 4.5, 4.5, 8), (2, 4.6, 4.6, 4), (0, 4.4, 4.4, 2), (7, 4.55, 4.55, None), (None, 4.65, 4.65, None), (None, 4.54, 4.54, None), (5, 4.56, 4.56, None)]"
+
+def test_SelfBalancingBinaryTree():
+    _test_SelfBalancingBinaryTree(Backend.PYTHON)
+def test_cpp_SelfBalancingBinaryTree():
+    _test_SelfBalancingBinaryTree(Backend.CPP)
 
 def test_SplayTree():
     t = SplayTree(100, 100)
