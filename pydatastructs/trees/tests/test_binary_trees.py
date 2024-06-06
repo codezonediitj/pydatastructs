@@ -469,10 +469,13 @@ def _test_SelfBalancingBinaryTree(backend):
     tree.insert(4.56, 4.56)
     tree._left_rotate(5, 8)
     assert tree.tree[tree.tree[8].parent].left == 8
+    assert str(tree) == "[(2, 5, 5, 1), (None, 5.5, 5.5, None), (4, 4.5, 4.5, 3), (8, 4.6, 4.6, 6), (None, 4.4, 4.4, None), (7, 4.55, 4.55, None), (None, 4.65, 4.65, None), (None, 4.54, 4.54, None), (5, 4.56, 4.56, None)]"
+
+    tree._left_right_rotate(0, 2)
+    assert str(tree) == "[(6, 5, 5, 1), (None, 5.5, 5.5, None), (4, 4.5, 4.5, 8), (2, 4.6, 4.6, 0), (None, 4.4, 4.4, None), (7, 4.55, 4.55, None), (None, 4.65, 4.65, None), (None, 4.54, 4.54, None), (5, 4.56, 4.56, None)]"
 
 def test_SelfBalancingBinaryTree():
     _test_SelfBalancingBinaryTree(Backend.PYTHON)
-
 def test_cpp_SelfBalancingBinaryTree():
     _test_SelfBalancingBinaryTree(Backend.CPP)
 
