@@ -178,6 +178,47 @@ static PyObject* SelfBalancingBinaryTree__left_right_rotate(SelfBalancingBinaryT
     Py_RETURN_NONE;
 }
 
+static PyObject* SelfBalancingBinaryTree__right_left_rotate(SelfBalancingBinaryTree* self, PyObject *args) {
+    PyObject* j = PyObject_GetItem(args, PyZero);
+    PyObject* k = PyObject_GetItem(args, PyOne);
+    BinaryTree* bt = self->bst->binary_tree;
+
+    PyObject* i = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(k)])->left;
+    PyObject* v = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(i)])->left;
+    PyObject* w = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(i)])->right;
+
+    reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(k)])->left = w;
+    reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(j)])->right = v;
+
+    if (v != Py_None) {
+        reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(v)])->parent = j;
+    }
+    if (w != Py_None) {
+        reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(w)])->parent = k;
+    }
+
+    reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(i)])->right = k;
+    reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(i)])->left = j;
+    reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(i)])->parent = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(j)])->parent;
+
+    reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(k)])->parent = i;
+    reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(j)])->parent = i;
+
+    PyObject* ip = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(i)])->parent;
+    if (ip != Py_None) {
+        if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(ip)])->left == j) {
+            reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(ip)])->left = i;
+        }
+        else {
+            reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(ip)])->right = i;
+        }
+    }
+    else {
+        bt->root_idx = i;
+    }
+    Py_RETURN_NONE;
+}
+
 static struct PyMethodDef SelfBalancingBinaryTree_PyMethodDef[] = {
     {"insert", (PyCFunction) SelfBalancingBinaryTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     {"delete", (PyCFunction) SelfBalancingBinaryTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
@@ -193,6 +234,7 @@ static struct PyMethodDef SelfBalancingBinaryTree_PyMethodDef[] = {
     {"_right_rotate", (PyCFunction) SelfBalancingBinaryTree__right_rotate, METH_VARARGS, NULL},
     {"_left_rotate", (PyCFunction) SelfBalancingBinaryTree__left_rotate, METH_VARARGS, NULL},
     {"_left_right_rotate", (PyCFunction) SelfBalancingBinaryTree__left_right_rotate, METH_VARARGS, NULL},
+    {"_right_left_rotate", (PyCFunction) SelfBalancingBinaryTree__right_left_rotate, METH_VARARGS, NULL},
     {NULL}
 };
 
