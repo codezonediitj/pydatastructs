@@ -3,6 +3,7 @@
 #include "BinarySearchTree.hpp"
 #include "BinaryTreeTraversal.hpp"
 #include "SelfBalancingBinaryTree.hpp"
+#include "RedBlackTree.hpp"
 
 static struct PyModuleDef trees_struct = {
     PyModuleDef_HEAD_INIT,
@@ -39,6 +40,12 @@ PyMODINIT_FUNC PyInit__trees(void) {
     }
     Py_INCREF(&SelfBalancingBinaryTreeType);
     PyModule_AddObject(trees, "SelfBalancingBinaryTree", reinterpret_cast<PyObject*>(&SelfBalancingBinaryTreeType));
+
+    if (PyType_Ready(&RedBlackTreeType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&RedBlackTreeType);
+    PyModule_AddObject(trees, "RedBlackTree", reinterpret_cast<PyObject*>(&RedBlackTreeType));
 
     return trees;
 }
