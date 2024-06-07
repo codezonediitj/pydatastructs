@@ -559,11 +559,11 @@ def test_RedBlackTree():
     tree.insert(6, 6)
     assert str(tree) == "[(11, 10, 10, 3), (10, 18, 18, None), (None, 7, 7, None), (None, 15, 15, None), (0, 16, 16, 6), (None, 30, 30, None), (1, 25, 25, 7), (5, 40, 40, 8), (None, 60, 60, None), (None, 2, 2, None), (None, 17, 17, None), (9, 6, 6, 2)]"
 
-    # trav = BinaryTreeTraversal(tree)
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [2, 6, 7, 10, 15, 16, 17, 18, 25, 30, 40, 60]
-    # assert [node.key for node in pre_order] == [16, 10, 6, 2, 7, 15, 25, 18, 17, 40, 30, 60]
+    trav = BinaryTreeTraversal(tree, backend=Backend.CPP)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [2, 6, 7, 10, 15, 16, 17, 18, 25, 30, 40, 60]
+    assert [node.key for node in pre_order] == [16, 10, 6, 2, 7, 15, 25, 18, 17, 40, 30, 60]
 
     # assert tree.lower_bound(0) == 2
     # assert tree.lower_bound(2) == 2
