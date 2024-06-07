@@ -200,6 +200,10 @@ static struct PyMethodDef RedBlackTree_PyMethodDef[] = {
     {"insert", (PyCFunction) RedBlackTree_insert, METH_VARARGS, NULL},
     {"lower_bound", (PyCFunction) RedBlackTree_lower_bound, METH_VARARGS | METH_KEYWORDS, NULL},
     {"upper_bound", (PyCFunction) RedBlackTree_upper_bound, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"_get_parent", (PyCFunction) RedBlackTree__get_parent, METH_VARARGS, NULL},
+    {"_get_grand_parent", (PyCFunction) RedBlackTree__get_grand_parent, METH_VARARGS, NULL},
+    {"_get_sibling", (PyCFunction) RedBlackTree__get_sibling, METH_VARARGS, NULL},
+    {"_get_uncle", (PyCFunction) RedBlackTree__get_uncle, METH_VARARGS, NULL},
     {NULL}
 };
 

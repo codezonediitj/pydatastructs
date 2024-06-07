@@ -544,7 +544,6 @@ def test_SplayTree():
 
 def test_RedBlackTree():
     tree = RedBlackTree(backend=Backend.CPP)
-    # tree = RedBlackTree()
     tree.insert(10, 10)
     tree.insert(18, 18)
     tree.insert(7, 7)
@@ -585,39 +584,40 @@ def test_RedBlackTree():
     assert tree.upper_bound(60) is None
     assert tree.upper_bound(61) is None
 
-    # tree = RedBlackTree()
+    tree = RedBlackTree(backend=Backend.CPP)
 
-    # assert tree.lower_bound(1) is None
-    # assert tree.upper_bound(0) is None
+    assert tree.lower_bound(1) is None
+    assert tree.upper_bound(0) is None
 
-    # tree.insert(10)
-    # tree.insert(20)
-    # tree.insert(30)
-    # tree.insert(40)
-    # tree.insert(50)
-    # tree.insert(60)
-    # tree.insert(70)
-    # tree.insert(80)
-    # tree.insert(90)
-    # tree.insert(100)
-    # tree.insert(110)
-    # tree.insert(120)
-    # tree.insert(130)
-    # tree.insert(140)
-    # tree.insert(150)
-    # tree.insert(160)
-    # tree.insert(170)
-    # tree.insert(180)
+    tree.insert(10)
+    tree.insert(20)
+    tree.insert(30)
+    tree.insert(40)
+    tree.insert(50)
+    tree.insert(60)
+    tree.insert(70)
+    tree.insert(80)
+    tree.insert(90)
+    tree.insert(100)
+    tree.insert(110)
+    tree.insert(120)
+    tree.insert(130)
+    tree.insert(140)
+    tree.insert(150)
+    tree.insert(160)
+    tree.insert(170)
+    tree.insert(180)
+    assert str(tree) == "[(None, 10, None, None), (0, 20, None, 2), (None, 30, None, None), (1, 40, None, 5), (None, 50, None, None), (4, 60, None, 6), (None, 70, None, None), (3, 80, None, 11), (None, 90, None, None), (8, 100, None, 10), (None, 110, None, None), (9, 120, None, 13), (None, 130, None, None), (12, 140, None, 15), (None, 150, None, None), (14, 160, None, 16), (None, 170, None, 17), (None, 180, None, None)]"
 
-    # assert tree._get_sibling(7) is None
+    assert tree._get_sibling(7) is None
 
-    # trav = BinaryTreeTraversal(tree)
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [10, 20, 30, 40, 50, 60, 70, 80, 90,
-    #                                            100, 110, 120, 130, 140, 150, 160, 170, 180]
-    # assert [node.key for node in pre_order] == [80, 40, 20, 10, 30, 60, 50, 70, 120, 100,
-    #                                             90, 110, 140, 130, 160, 150, 170, 180]
+    trav = BinaryTreeTraversal(tree, backend=Backend.CPP)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [10, 20, 30, 40, 50, 60, 70, 80, 90,
+                                               100, 110, 120, 130, 140, 150, 160, 170, 180]
+    assert [node.key for node in pre_order] == [80, 40, 20, 10, 30, 60, 50, 70, 120, 100,
+                                                90, 110, 140, 130, 160, 150, 170, 180]
 
     # tree.delete(180)
     # tree.delete(130)
