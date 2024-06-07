@@ -17,6 +17,7 @@ typedef struct {
     long height;
     PyObject* parent;
     long size;
+    long color;
 } TreeNode;
 
 static void TreeNode_dealloc(TreeNode *self) {
@@ -40,6 +41,7 @@ static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *
     self->height = 0;
     self->size = 1;
     self->is_root = false;
+    self->color = 1;
 
     return reinterpret_cast<PyObject*>(self);
 }
@@ -59,6 +61,7 @@ static struct PyMemberDef TreeNode_PyMemberDef[] = {
     {"left", T_OBJECT, offsetof(TreeNode, left), 0, "TreeNode left"},
     {"right", T_OBJECT, offsetof(TreeNode, right), 0, "TreeNode right"},
     {"parent", T_OBJECT, offsetof(TreeNode, parent), 0, "TreeNode parent"},
+    {"color", T_LONG, offsetof(TreeNode, size), 0, "RedBlackTreeNode color"},
     {NULL},
 };
 

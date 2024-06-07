@@ -135,7 +135,7 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
     PyObject* key = Py_None;
     Py_INCREF(Py_None);
     PyObject* data = Py_None;
-    if (!PyArg_ParseTuple(args, "O|O", &key, &data)) { // ret_parent is optional
+    if (!PyArg_ParseTuple(args, "O|O", &key, &data)) { // data is optional
         return NULL;
     }
 
