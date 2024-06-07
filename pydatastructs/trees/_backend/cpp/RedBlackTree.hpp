@@ -188,8 +188,18 @@ static PyObject* RedBlackTree_insert(RedBlackTree *self, PyObject* args) {
     Py_RETURN_NONE;
 }
 
+static PyObject* RedBlackTree_lower_bound(RedBlackTree* self, PyObject *args, PyObject *kwds) {
+    return BinarySearchTree_lower_bound(self->sbbt->bst, args, kwds);
+}
+
+static PyObject* RedBlackTree_upper_bound(RedBlackTree* self, PyObject *args, PyObject *kwds) {
+    return BinarySearchTree_upper_bound(self->sbbt->bst, args, kwds);
+}
+
 static struct PyMethodDef RedBlackTree_PyMethodDef[] = {
     {"insert", (PyCFunction) RedBlackTree_insert, METH_VARARGS, NULL},
+    {"lower_bound", (PyCFunction) RedBlackTree_lower_bound, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"upper_bound", (PyCFunction) RedBlackTree_upper_bound, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
 };
 
