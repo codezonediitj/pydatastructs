@@ -574,10 +574,15 @@ static PyObject* RedBlackTree_delete(RedBlackTree* self, PyObject *args, PyObjec
     Py_RETURN_NONE;
 }
 
+static PyObject* RedBlackTree_search(RedBlackTree* self, PyObject *args, PyObject *kwds) {
+    return BinarySearchTree_search(self->sbbt->bst, args, kwds);
+}
+
 
 static struct PyMethodDef RedBlackTree_PyMethodDef[] = {
     {"insert", (PyCFunction) RedBlackTree_insert, METH_VARARGS, NULL},
     {"delete", (PyCFunction) RedBlackTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"search", (PyCFunction) RedBlackTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {"lower_bound", (PyCFunction) RedBlackTree_lower_bound, METH_VARARGS | METH_KEYWORDS, NULL},
     {"upper_bound", (PyCFunction) RedBlackTree_upper_bound, METH_VARARGS | METH_KEYWORDS, NULL},
     {"_get_parent", (PyCFunction) RedBlackTree__get_parent, METH_VARARGS, NULL},

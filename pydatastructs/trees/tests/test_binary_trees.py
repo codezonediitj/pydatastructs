@@ -700,9 +700,15 @@ def _test_RedBlackTree(backend):
     assert [node.key for node in in_order] == [5, 10, 20, 30, 40, 50]
     assert [node.key for node in pre_order] == [40, 20, 10, 5, 30, 50]
 
+    assert tree.search(50) == 0
+    assert tree.search(20) == 3
+    assert tree.search(30) == 2
     tree.delete(50)
     tree.delete(20)
     tree.delete(30)
+    assert tree.search(50) is None
+    assert tree.search(20) is None
+    assert tree.search(30) is None
 
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
