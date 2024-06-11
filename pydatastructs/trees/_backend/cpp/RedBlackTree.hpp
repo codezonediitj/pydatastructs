@@ -459,7 +459,7 @@ static PyObject* RedBlackTree__delete_root(RedBlackTree* self, PyObject *args) {
     if (RedBlackTree__is_leaf(self, Py_BuildValue("(O)", node_idx)) == Py_True) {
         reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->data = Py_None;
         reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->key = Py_None;
-    }    
+    }
     else if (RedBlackTree__has_one_child(self, Py_BuildValue("(O)", node_idx)) == Py_True) {
         PyObject* root_key = RedBlackTree__transplant_values(self, Py_BuildValue("(OO)", node_idx, node_idx1));
         PyObject* new_indices = ArrayForTrees_delete(bt->tree, Py_BuildValue("(O)", node_idx1));
