@@ -4,6 +4,8 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <cstring>
+#include <iostream>
+#include <sstream>
 #include <string>
 
 PyObject *PyZero = PyLong_FromLong(0);
@@ -106,5 +108,129 @@ static int _comp(PyObject* u, PyObject* v, PyObject* tcomp) {
     }
     return result;
 }
+
+template <class K, class V>
+class LinearProbingMap {
+private:
+    size_t n;
+    size_t capacity;
+    K** key_list;
+    V** value_list;
+    float load_factor;
+    std::hash<K> hasher;
+
+    size_t hash(K key) {
+        return hasher(key) % capacity;
+    }
+
+    void write(K* key, V* value, K** key_list_, V** value_list_, bool rehashed) {
+        size_t key_hash = hash(*key);
+        size_t pos = key_hash;
+
+        while (key_list_[pos] != nullptr && *(key_list_[pos]) != *key) {
+            pos = (pos + 1) % capacity;
+        }
+
+        if (!rehashed && key_list_[pos] == nullptr)
+            n++;
+
+        key_list_[pos] = key;
+        value_list_[pos] = value;
+    }
+
+    void rehash() {
+        if ((capacity > 0) && ((float) (n + 1)/capacity < load_factor)){
+            return;
+        }
+
+        size_t old_capacity = capacity;
+        capacity = 2*capacity + 1;
+        K** new_key_list = new K*[capacity]();
+        V** new_value_list = new V*[capacity]();
+        for (size_t i = 0; i < old_capacity; i++) {
+            K* key = key_list[i];
+            V* value = value_list[i];
+
+            if (key != nullptr)
+                write(key, value, new_key_list, new_value_list, true);
+        }
+
+        delete[] key_list;
+        delete[] value_list;
+
+        key_list = new_key_list;
+        value_list = new_value_list;
+    }
+
+public:
+    LinearProbingMap() {
+        n = 0;
+        capacity = 0;
+        key_list = nullptr;
+        value_list = nullptr;
+        load_factor = 0.6;
+    }
+
+    void add(K key, V value) {
+        rehash();
+
+        K* key_ptr = new K(key);
+        V* value_ptr = new V(value);
+        write(key_ptr, value_ptr, key_list, value_list, false);
+    }
+
+    V get(K key) {
+        size_t key_hash = hash(key);
+        size_t pos = key_hash;
+
+        size_t counter = 0; // avoid infinite loop
+        while (true) {
+            if (counter++ > capacity)
+                throw std::invalid_argument("Invalid key");
+
+            if (key_list[pos] != nullptr && *(key_list[pos]) == key){
+                return *value_list[pos];
+            }
+
+            pos = (pos + 1) % capacity;
+        }
+    }
+
+    std::string get_to_string() {
+        std::stringstream out;
+        out << "{";
+        size_t not_null = 0;
+
+        for (size_t i = 0; i < capacity; i++) {
+            K* key = key_list[i];
+            V* value = value_list[i];
+
+            if (key != nullptr) {
+                out << *key;
+                out << ": ";
+                out << *value;
+
+                not_null++;
+
+                if (not_null != n)
+                    out << ", ";
+            }
+        }
+
+        out << "}";
+
+        return out.str();
+    }
+
+    ~LinearProbingMap() {
+        for (size_t i = 0; i < capacity; i++) {
+            delete key_list[i];
+            delete value_list[i];
+        }
+
+        delete[] key_list;
+        delete[] value_list;
+    }
+};
 
 #endif
