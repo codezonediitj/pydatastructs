@@ -1,5 +1,5 @@
-#ifndef TREES_SELFBALANCINGSelfBalancingBinaryTree_HPP
-#define TREES_SELFBALANCINGSelfBalancingBinaryTree_HPP
+#ifndef TREES_SELFBALANCINGBINARYTREE_HPP
+#define TREES_SELFBALANCINGBINARYTREE_HPP
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
