@@ -44,7 +44,7 @@ static PyObject* BinaryIndexedTree___new__(PyTypeObject* type, PyObject *args, P
     }
     self->flag = PyList_New(self->array->_size);
     for(int i=0;i<self->array->_size;i++){
-        PyList_SetItem(self->tree, i, PyZero);
+        PyList_SetItem(self->flag, i, PyZero);
     }
 
     return reinterpret_cast<PyObject*>(self);
