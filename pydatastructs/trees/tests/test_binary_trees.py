@@ -361,11 +361,11 @@ def test_AVLTree():
     test_select_rank([])
 
 
-def test_BinaryIndexedTree():
+def _test_BinaryIndexedTree(backend):
 
     FT = BinaryIndexedTree
 
-    t = FT([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    t = FT([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], backend=backend)
 
     assert t.get_sum(0, 2) == 6
     assert t.get_sum(0, 4) == 15
@@ -375,6 +375,11 @@ def test_BinaryIndexedTree():
     assert t.get_sum(0, 4) == 114
     assert t.get_sum(1, 9) == 54
 
+def test_BinaryIndexedTree():
+    _test_BinaryIndexedTree(Backend.PYTHON)
+
+def test_cpp_BinaryIndexedTree():
+    _test_BinaryIndexedTree(Backend.CPP)
 
 def test_CartesianTree():
     tree = CartesianTree()

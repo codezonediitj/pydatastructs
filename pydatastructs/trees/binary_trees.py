@@ -1760,8 +1760,9 @@ class BinaryIndexedTree(object):
     __slots__ = ['tree', 'array', 'flag']
 
     def __new__(cls, array, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            return _trees.BinaryIndexedTree(type(array[0]), array, **kwargs)
         obj = object.__new__(cls)
         obj.array = OneDimensionalArray(type(array[0]), array)
         obj.tree = [0] * (obj.array._size + 2)
