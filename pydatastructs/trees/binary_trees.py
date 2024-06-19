@@ -1055,7 +1055,7 @@ class SplayTree(SelfBalancingBinaryTree):
 
     @classmethod
     def methods(cls):
-        return ['__new__','insert', 'delete', 'join', 'split']
+        return ['__new__', 'insert', 'delete', 'join', 'split']
 
     def _zig(self, x, p):
         if self.tree[p].left == x:
