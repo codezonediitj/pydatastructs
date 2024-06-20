@@ -148,18 +148,79 @@ static PyObject* SplayTree_delete(SplayTree *self, PyObject* args) {
     PyObject* tup = SelfBalancingBinaryTree_search(self->sbbt, Py_BuildValue("(O)", x), kwd_parent);
     PyObject* e = PyTuple_GetItem(tup, 0);
     PyObject* p = PyTuple_GetItem(tup, 1);
-    if (e == Py_None){
+    if (e == Py_None) {
         Py_RETURN_NONE;
     }
     SplayTree_splay(self, Py_BuildValue("(OO)", e, p));
     PyObject* status = SelfBalancingBinaryTree_delete(self->sbbt, Py_BuildValue("(O)", x), PyDict_New());
+
     return status;
+}
+
+static PyObject* SplayTree_join(SplayTree *self, PyObject* args) {
+    SplayTree* other = reinterpret_cast<SplayTree*>(PyObject_GetItem(args, PyZero));
+    BinaryTree* bt = self->sbbt->bst->binary_tree;
+    BinaryTree* obt = other->sbbt->bst->binary_tree;
+
+    PyObject* maxm = bt->root_idx;
+    while (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(maxm)])->right != Py_None) {
+        maxm = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(maxm)])->right;
+    }
+    PyObject* minm = obt->root_idx;
+    while (reinterpret_cast<TreeNode*>(obt->tree->_one_dimensional_array->_data[PyLong_AsLong(minm)])->left != Py_None) {
+        minm = reinterpret_cast<TreeNode*>(obt->tree->_one_dimensional_array->_data[PyLong_AsLong(minm)])->left;
+    }
+
+    if (!PyCallable_Check(bt->comparator)) {
+        PyErr_SetString(PyExc_ValueError, "comparator should be callable");
+        return NULL;
+    }
+    PyObject* arguments = Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(maxm)])->key, reinterpret_cast<TreeNode*>(obt->tree->_one_dimensional_array->_data[PyLong_AsLong(minm)])->key);
+    PyObject* cres = PyObject_CallObject(bt->comparator, arguments);
+    Py_DECREF(arguments);
+    if (!PyLong_Check(cres)) {
+        PyErr_SetString(PyExc_TypeError, "bad return type from comparator");
+        return NULL;
+    }
+    long long comp = PyLong_AsLongLong(cres);
+    if (comp == 0) {
+        PyErr_SetString(PyExc_ValueError, "Elements of existing Splay Tree aren't less than that of the new Splay tree.");
+        return NULL;
+    }
+
+    SplayTree_splay(self, Py_BuildValue("(OO)", maxm, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(maxm)])->parent));
+    long idx_update = self->tree->_size;
+    long n = obt->tree->_one_dimensional_array->_size;
+    for (int i=0; i<n; i++) {
+        PyObject* node = obt->tree->_one_dimensional_array->_data[i];
+        if (node != Py_None) {
+            TreeNode* treenode = reinterpret_cast<TreeNode*>(node);
+            if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
+                return NULL;
+            }
+            TreeNode* node_copy = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, Py_BuildValue("(OO)", treenode->key, treenode->data), PyDict_New()));
+            if (treenode->left != Py_None) {
+                node_copy->left = PyLong_FromLong(PyLong_AsLong(treenode->left) + idx_update);
+            }
+            if (treenode->right != Py_None) {
+                node_copy->right = PyLong_FromLong(PyLong_AsLong(treenode->right) + idx_update);
+            }
+            ArrayForTrees_append(bt->tree, Py_BuildValue("(O)", node_copy));
+        }
+        else {
+            ArrayForTrees_append(bt->tree, Py_BuildValue("(O)", node));
+        }
+    }
+    reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right = PyLong_FromLong(PyLong_AsLong(obt->root_idx) + idx_update);
+
+    Py_RETURN_NONE;
 }
 
 
 static struct PyMethodDef SplayTree_PyMethodDef[] = {
     {"insert", (PyCFunction) SplayTree_insert, METH_VARARGS, NULL},
     {"delete", (PyCFunction) SplayTree_delete, METH_VARARGS, NULL},
+    {"join", (PyCFunction) SplayTree_join, METH_VARARGS, NULL},
     {NULL}
 };
 
