@@ -529,7 +529,6 @@ def _test_SplayTree(backend):
     t.join(t1)
     assert str(t) == "[(None, 100, 100, None), '', (6, 200, 200, 8), (4, 50, 50, None), (5, 30, 30, None), (None, 20, 20, None), (3, 55, 55, 0), (None, 1000, 1000, None), (7, 2000, 2000, None), '']"
 
-    # Create a new traversal object with a different name to avoid segfaults
     trav3 = BinaryTreeTraversal(t, backend=backend)
     in_order = trav3.depth_first_search(order='in_order')
     pre_order = trav3.depth_first_search(order='pre_order')
