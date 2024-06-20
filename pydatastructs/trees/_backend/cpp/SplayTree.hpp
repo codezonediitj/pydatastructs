@@ -189,7 +189,7 @@ static PyObject* SplayTree_join(SplayTree *self, PyObject* args) {
     }
 
     SplayTree_splay(self, Py_BuildValue("(OO)", maxm, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(maxm)])->parent));
-    long idx_update = self->tree->_size;
+    long idx_update = bt->tree->_one_dimensional_array->_size;
     long n = obt->tree->_one_dimensional_array->_size;
     for (int i=0; i<n; i++) {
         PyObject* node = obt->tree->_one_dimensional_array->_data[i];

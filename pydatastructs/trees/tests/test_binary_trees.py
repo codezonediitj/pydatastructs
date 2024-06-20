@@ -554,7 +554,7 @@ def test_SplayTree():
 
 def test_cpp_SplayTree():
     _test_SplayTree(Backend.CPP)
-test_cpp_SplayTree()
+
 def _test_RedBlackTree(backend):
     tree = RedBlackTree(backend=backend)
     tree.insert(10, 10)
