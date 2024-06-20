@@ -139,9 +139,27 @@ static PyObject* SplayTree_insert(SplayTree *self, PyObject* args) {
     Py_RETURN_NONE;
 }
 
+static PyObject* SplayTree_delete(SplayTree *self, PyObject* args) {
+    PyObject* x = PyObject_GetItem(args, PyZero);
+    BinaryTree* bt = self->sbbt->bst->binary_tree;
+
+    PyObject* kwd_parent = PyDict_New();
+    PyDict_SetItemString(kwd_parent, "parent", PyLong_FromLong(1));
+    PyObject* tup = SelfBalancingBinaryTree_search(self->sbbt, Py_BuildValue("(O)", x), kwd_parent);
+    PyObject* e = PyTuple_GetItem(tup, 0);
+    PyObject* p = PyTuple_GetItem(tup, 1);
+    if (e == Py_None){
+        Py_RETURN_NONE;
+    }
+    SplayTree_splay(self, Py_BuildValue("(OO)", e, p));
+    PyObject* status = SelfBalancingBinaryTree_delete(self->sbbt, Py_BuildValue("(O)", x), PyDict_New());
+    return status;
+}
+
 
 static struct PyMethodDef SplayTree_PyMethodDef[] = {
     {"insert", (PyCFunction) SplayTree_insert, METH_VARARGS, NULL},
+    {"delete", (PyCFunction) SplayTree_delete, METH_VARARGS, NULL},
     {NULL}
 };
 

@@ -503,28 +503,28 @@ def test_SplayTree():
     assert [node.key for node in in_order] == [20, 30, 40, 50, 55, 100, 200]
     assert [node.key for node in pre_order] == [55, 30, 20, 40, 50, 200, 100]
 
-    # t.delete(40)
+    t.delete(40)
 
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200]
-    # assert [node.key for node in pre_order] == [50, 30, 20, 55, 200, 100]
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200]
+    assert [node.key for node in pre_order] == [50, 30, 20, 55, 200, 100]
 
-    # t.delete(150)
+    t.delete(150)
 
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200]
-    # assert [node.key for node in pre_order] == [50, 30, 20, 55, 200, 100]
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200]
+    assert [node.key for node in pre_order] == [50, 30, 20, 55, 200, 100]
 
-    # t1 = SplayTree(1000, 1000)
-    # t1.insert(2000, 2000)
+    t1 = SplayTree(1000, 1000)
+    t1.insert(2000, 2000)
 
-    # trav = BinaryTreeTraversal(t1)
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [1000, 2000]
-    # assert [node.key for node in pre_order] == [2000, 1000]
+    trav = BinaryTreeTraversal(t1)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1000, 2000]
+    assert [node.key for node in pre_order] == [2000, 1000]
 
     # t.join(t1)
 
