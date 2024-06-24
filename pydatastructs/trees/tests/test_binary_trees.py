@@ -535,7 +535,7 @@ def _test_SplayTree(backend):
     # assert [node.key for node in in_order] == [20, 30, 50, 55, 100, 200, 1000, 2000]
     # assert [node.key for node in pre_order] == [200, 55, 50, 30, 20, 100, 2000, 1000]
 
-    s = t.split(200, SplayTree(backend=backend))
+    s = t.split(200)
     assert str(s) == "[(1, 2000, 2000, None), (None, 1000, 1000, None)]"
 
     trav4 = BinaryTreeTraversal(s, backend=backend)
@@ -555,7 +555,7 @@ def test_SplayTree():
 
 def test_cpp_SplayTree():
     _test_SplayTree(Backend.CPP)
-
+test_cpp_SplayTree()
 def _test_RedBlackTree(backend):
     tree = RedBlackTree(backend=backend)
     tree.insert(10, 10)

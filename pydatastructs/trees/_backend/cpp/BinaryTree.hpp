@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
+#include <iostream>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
@@ -74,6 +75,7 @@ static PyObject* BinaryTree___new__(PyTypeObject* type, PyObject *args, PyObject
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
             return NULL;
     }
+    std::cout<<"All Good"<<std::endl;
     self->comparator = comp;
     self->is_order_statistic = PyLong_AsLong(is_order_statistic);
 
