@@ -9,6 +9,7 @@
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/DynamicOneDimensionalArray.hpp"
+#include "BinaryTreeTraversal.hpp"
 #include "BinarySearchTree.hpp"
 #include "SelfBalancingBinaryTree.hpp"
 
@@ -216,13 +217,81 @@ static PyObject* SplayTree_join(SplayTree *self, PyObject* args) {
     Py_RETURN_NONE;
 }
 
+static PyObject* SplayTree__pre_order(SplayTree* self, PyObject *args) {
+    long node = PyLong_AsLong(PyObject_GetItem(args, PyZero));
+    PyObject* visit = PyList_New(0);
+    ArrayForTrees* tree = self->sbbt->bst->binary_tree->tree;
+    long size = self->sbbt->bst->binary_tree->size;
+    std::stack<long> s;
+    s.push(node);
+
+    while (!s.empty()) {
+        node = s.top();
+        s.pop();
+        TreeNode* curr_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[node]);
+        PyList_Append(visit, reinterpret_cast<PyObject*>(curr_node));
+        if (curr_node->right != Py_None) {
+            s.push(PyLong_AsLong(curr_node->right));
+        }
+        if (curr_node->left != Py_None) {
+            s.push(PyLong_AsLong(curr_node->left));
+        }
+    }
+    return visit;
+}
+
+static PyObject* SplayTree_split(SplayTree *self, PyObject* args) {
+    PyObject* x = PyObject_GetItem(args, PyZero);
+    BinaryTree* bt = self->sbbt->bst->binary_tree;
+
+    PyObject* kwd_parent = PyDict_New();
+    PyDict_SetItemString(kwd_parent, "parent", PyLong_FromLong(1));
+    PyObject* tup = SelfBalancingBinaryTree_search(self->sbbt, Py_BuildValue("(O)", x), kwd_parent);
+    PyObject* e = PyTuple_GetItem(tup, 0);
+    PyObject* p = PyTuple_GetItem(tup, 1);
+    if (e == Py_None) {
+        Py_RETURN_NONE;
+    }
+    SplayTree_splay(self, Py_BuildValue("(OO)", e, p));
+
+    Py_INCREF(Py_None);
+    Py_INCREF(Py_None);
+    // SplayTree* other = reinterpret_cast<SplayTree*>(SplayTree___new__(self->type, Py_BuildValue("(OO)", Py_None, Py_None), PyDict_New()));
+    SplayTree* other = reinterpret_cast<SplayTree*>(PyObject_GetItem(args, PyOne));
+
+    if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right != Py_None) {
+        // if (PyType_Ready(&BinaryTreeTraversalType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
+        //     return NULL;
+        // }
+        // BinaryTreeTraversal* traverse = reinterpret_cast<BinaryTreeTraversal*>(BinaryTreeTraversal___new__(&BinaryTreeTraversalType, Py_BuildValue("(O)", self), PyDict_New()));
+        // PyObject* kwd_dict = PyDict_New();
+        // PyDict_SetItemString(kwd_dict, "node", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right);
+        // PyDict_SetItemString(kwd_dict, "order", PyUnicode_FromString("pre_order"));
+        // PyObject* elements = BinaryTreeTraversal_depth_first_search(traverse, Py_BuildValue("()"), kwd_dict);
+        PyObject* elements = SplayTree__pre_order(self, Py_BuildValue("(O)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right));
+        for (int i=0; i<PyList_Size(elements); i++) {
+            SelfBalancingBinaryTree_insert(other->sbbt, Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>( PyList_GetItem(elements, i))->key, reinterpret_cast<TreeNode*>( PyList_GetItem(elements, i))->data));
+        }
+        for (int j=PyList_Size(elements)-1; j>-1; j--) {
+            tup = SelfBalancingBinaryTree_search(self->sbbt, Py_BuildValue("(O)", reinterpret_cast<TreeNode*>( PyList_GetItem(elements, j))->key), kwd_parent);
+            e = PyTuple_GetItem(tup, 0);
+            p = PyTuple_GetItem(tup, 1);
+            bt->tree->_one_dimensional_array->_data[PyLong_AsLong(e)] = Py_None;
+        }
+        reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right = Py_None;
+    }
+
+    return reinterpret_cast<PyObject*>(other);
+}
 
 static struct PyMethodDef SplayTree_PyMethodDef[] = {
     {"insert", (PyCFunction) SplayTree_insert, METH_VARARGS, NULL},
     {"delete", (PyCFunction) SplayTree_delete, METH_VARARGS, NULL},
     {"join", (PyCFunction) SplayTree_join, METH_VARARGS, NULL},
+    {"split", (PyCFunction) SplayTree_split, METH_VARARGS, NULL},
     {NULL}
 };
+
 
 static PyMemberDef SplayTree_PyMemberDef[] = {
     {"tree", T_OBJECT_EX, offsetof(SplayTree, tree), 0, "tree"},
@@ -269,5 +338,7 @@ static PyTypeObject SplayTreeType = {
     /* tp_alloc */ 0,
     /* tp_new */ SplayTree___new__,
 };
+
+
 
 #endif

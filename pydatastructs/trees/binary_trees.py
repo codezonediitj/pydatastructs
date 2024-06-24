@@ -1145,7 +1145,7 @@ class SplayTree(SelfBalancingBinaryTree):
         self.tree[self.root_idx].right = \
             other.root_idx + idx_update
 
-    def split(self, x):
+    def split(self, x, unused):
         """
         Splits current splay tree into two trees such that one tree contains nodes
         with key less than or equal to x and the other tree containing
