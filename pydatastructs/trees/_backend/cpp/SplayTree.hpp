@@ -5,7 +5,6 @@
 #include <Python.h>
 #include <structmember.h>
 #include <cstdlib>
-#include <iostream>
 #include "../../../utils/_backend/cpp/utils.hpp"
 #include "../../../utils/_backend/cpp/TreeNode.hpp"
 #include "../../../linear_data_structures/_backend/cpp/arrays/ArrayForTrees.hpp"
@@ -33,7 +32,6 @@ static PyObject* SplayTree___new__(PyTypeObject* type, PyObject *args, PyObject 
         return NULL;
     }
     PyObject* p = SelfBalancingBinaryTree___new__(&SelfBalancingBinaryTreeType, args, kwds);
-    std::cout<<"This"<<std::endl;
     self->sbbt = reinterpret_cast<SelfBalancingBinaryTree*>(p);
     self->tree = reinterpret_cast<SelfBalancingBinaryTree*>(p)->bst->binary_tree->tree;
     self->type = type;
@@ -260,7 +258,7 @@ static PyObject* SplayTree_split(SplayTree *self, PyObject* args) {
     if (PyType_Ready(self->type) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
-    std::cout<<"Here"<<std::endl;
+
     Py_INCREF(Py_None);
     Py_INCREF(Py_None);
     if (!PyCallable_Check(bt->comparator)) {
@@ -268,7 +266,7 @@ static PyObject* SplayTree_split(SplayTree *self, PyObject* args) {
             return NULL;
     }
     SplayTree* other = reinterpret_cast<SplayTree*>(SplayTree___new__(self->type, Py_BuildValue("(OOOO)", Py_None, Py_None, bt->comparator, PyZero), PyDict_New()));
-    std::cout<<"Here2"<<std::endl;
+
     // SplayTree* other = reinterpret_cast<SplayTree*>(PyObject_GetItem(args, PyOne));
     if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right != Py_None) {
         // if (PyType_Ready(&BinaryTreeTraversalType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
