@@ -103,7 +103,7 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
             return NULL;
         }
-        PyObject* arguments = Py_BuildValue("OO", key, curr_key);
+        PyObject* arguments = Py_BuildValue("(OO)", key, curr_key);
         PyObject* res = PyObject_CallObject(bt->comparator, arguments);
         Py_DECREF(arguments);
         if (!PyLong_Check(res)) {
@@ -125,7 +125,7 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
         return walk;
     }
     else {
-        return Py_BuildValue("OO",walk,parent);
+        return Py_BuildValue("(OO)",walk,parent);
     }
     Py_RETURN_NONE; // dummy return statement, never executed
 }
@@ -168,7 +168,7 @@ static PyObject* BinarySearchTree_insert(BinarySearchTree* self, PyObject* args)
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
             return NULL;
         }
-        PyObject* arguments = Py_BuildValue("OO", key, curr_key);
+        PyObject* arguments = Py_BuildValue("(OO)", key, curr_key);
         PyObject* cres = PyObject_CallObject(bt->comparator, arguments);
         Py_DECREF(arguments);
         if (!PyLong_Check(cres)) {
@@ -359,7 +359,7 @@ static PyObject* BinarySearchTree__bound_helper(BinarySearchTree* self, PyObject
         PyErr_SetString(PyExc_ValueError, "comparator should be callable");
         return NULL;
     }
-    PyObject* arguments = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->key, bound_key);
+    PyObject* arguments = Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->key, bound_key);
     PyObject* cres = PyObject_CallObject(bt->comparator, arguments);
     Py_DECREF(arguments);
     if (!PyLong_Check(cres)) {
@@ -481,7 +481,7 @@ static PyObject* BinarySearchTree__lca_2(BinarySearchTree* self, PyObject* args)
         PyErr_SetString(PyExc_ValueError, "comparator should be callable");
         return NULL;
     }
-    PyObject* arguments1 = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(u)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
+    PyObject* arguments1 = Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(u)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
     PyObject* cres1 = PyObject_CallObject(bt->comparator, arguments1);
     Py_DECREF(arguments1);
     if (!PyLong_Check(cres1)) {
@@ -494,7 +494,7 @@ static PyObject* BinarySearchTree__lca_2(BinarySearchTree* self, PyObject* args)
         PyErr_SetString(PyExc_ValueError, "comparator should be callable");
         return NULL;
     }
-    PyObject* arguments2 = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(v)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
+    PyObject* arguments2 = Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(v)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
     PyObject* cres2 = PyObject_CallObject(bt->comparator, arguments2);
     Py_DECREF(arguments2);
     if (!PyLong_Check(cres2)) {
@@ -522,7 +522,7 @@ static PyObject* BinarySearchTree__lca_2(BinarySearchTree* self, PyObject* args)
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
             return NULL;
         }
-        PyObject* arguments1 = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(u)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
+        PyObject* arguments1 = Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(u)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
         PyObject* cres1 = PyObject_CallObject(bt->comparator, arguments1);
         Py_DECREF(arguments1);
         if (!PyLong_Check(cres1)) {
@@ -535,7 +535,7 @@ static PyObject* BinarySearchTree__lca_2(BinarySearchTree* self, PyObject* args)
             PyErr_SetString(PyExc_ValueError, "comparator should be callable");
             return NULL;
         }
-        PyObject* arguments2 = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(v)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
+        PyObject* arguments2 = Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(v)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(curr_root)])->key);
         PyObject* cres2 = PyObject_CallObject(bt->comparator, arguments2);
         Py_DECREF(arguments2);
         if (!PyLong_Check(cres2)) {
@@ -616,7 +616,7 @@ static PyObject* BinarySearchTree_select(BinarySearchTree* self, PyObject* args)
                 PyErr_SetString(PyExc_ValueError, "comparator should be callable");
                 return NULL;
             }
-            PyObject* arguments = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(left_walk)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key);
+            PyObject* arguments = Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(left_walk)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key);
             PyObject* cres = PyObject_CallObject(bt->comparator, arguments);
             Py_DECREF(arguments);
             if (!PyLong_Check(cres)) {
@@ -637,7 +637,7 @@ static PyObject* BinarySearchTree_select(BinarySearchTree* self, PyObject* args)
                 PyErr_SetString(PyExc_ValueError, "comparator should be callable");
                 return NULL;
             }
-            PyObject* arguments = Py_BuildValue("OO", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(right_walk)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key);
+            PyObject* arguments = Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(right_walk)])->key, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key);
             PyObject* cres = PyObject_CallObject(bt->comparator, arguments);
             Py_DECREF(arguments);
             if (!PyLong_Check(cres)) {
