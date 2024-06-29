@@ -229,7 +229,8 @@ static PyObject* AVLTree_insert(AVLTree* self, PyObject *args) {
         return NULL;
     }
     SelfBalancingBinaryTree_insert(self->sbbt, Py_BuildValue("(OO)", key, data));
-    long s = self->sbbt->bst->binary_tree->size - 1;
+    BinaryTree* bt = self->sbbt->bst->binary_tree;
+    long s = bt->size - 1;
     AVLTree__balance_insertion(self, Py_BuildValue("(OO)", PyLong_FromLong(s), reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[s])->parent));
 
     Py_RETURN_NONE;
@@ -237,6 +238,11 @@ static PyObject* AVLTree_insert(AVLTree* self, PyObject *args) {
 
 static struct PyMethodDef AVLTree_PyMethodDef[] = {
     {"search", (PyCFunction) AVLTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"insert", (PyCFunction) AVLTree_insert, METH_VARARGS, NULL},
+    {"_left_right_rotate", (PyCFunction) AVLTree__left_right_rotate, METH_VARARGS, NULL},
+    {"_right_left_rotate", (PyCFunction) AVLTree__right_left_rotate, METH_VARARGS, NULL},
+    {"_left_rotate", (PyCFunction) AVLTree__left_rotate, METH_VARARGS, NULL},
+    {"_right_rotate", (PyCFunction) AVLTree__right_rotate, METH_VARARGS, NULL},
     {NULL}
 };
 
