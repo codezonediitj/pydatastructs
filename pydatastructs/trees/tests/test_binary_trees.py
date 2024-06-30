@@ -6,6 +6,7 @@ from pydatastructs.utils.misc_util import TreeNode
 from copy import deepcopy
 from pydatastructs.utils.misc_util import Backend
 import random
+from pydatastructs.utils._backend.cpp import _nodes
 
 def _test_BinarySearchTree(backend):
     BST = BinarySearchTree
@@ -159,8 +160,8 @@ def test_BinaryTreeTraversal():
 def test_cpp_BinaryTreeTraversal():
     _test_BinaryTreeTraversal(Backend.CPP)
 
-def test_AVLTree():
-    a = AVLTree('M', 'M', backend=Backend.CPP)
+def _test_AVLTree(backend):
+    a = AVLTree('M', 'M', backend=backend)
     a.insert('N', 'N')
     a.insert('O', 'O')
     a.insert('L', 'L')
@@ -171,148 +172,162 @@ def test_AVLTree():
     a.insert('I', 'I')
     a.insert('A', 'A')
 
-    trav = BinaryTreeTraversal(a, backend=Backend.CPP)
+    trav = BinaryTreeTraversal(a, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == ['A', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q']
     assert [node.key for node in pre_order] == ['N', 'I', 'H', 'A', 'L', 'K', 'M', 'P', 'O', 'Q']
 
-    # assert [a.balance_factor(n) for n in a.tree if n is not None] == \
-    #     [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
-    a1 = AVLTree(1, 1, backend=Backend.CPP)
+    assert [a.balance_factor(a.tree[i]) for i in range(a.tree.size) if a.tree[i] is not None] == \
+        [0, -1, 0, 0, 0, 0, 0, -1, 0, 0]
+    a1 = AVLTree(1, 1, backend=backend)
     a1.insert(2, 2)
     a1.insert(3, 3)
     a1.insert(4, 4)
     a1.insert(5, 5)
 
-    trav = BinaryTreeTraversal(a1, backend=Backend.CPP)
+    trav = BinaryTreeTraversal(a1, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == [1, 2, 3, 4, 5]
     assert [node.key for node in pre_order] == [2, 1, 4, 3, 5]
 
-    a3 = AVLTree(-1, 1, backend=Backend.CPP)
+    a3 = AVLTree(-1, 1, backend=backend)
     a3.insert(-2, 2)
     a3.insert(-3, 3)
     a3.insert(-4, 4)
     a3.insert(-5, 5)
 
-    trav = BinaryTreeTraversal(a3, backend=Backend.CPP)
+    trav = BinaryTreeTraversal(a3, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == [-5, -4, -3, -2, -1]
     assert [node.key for node in pre_order] == [-2, -4, -5, -3, -1]
 
-    a2 = AVLTree(backend=Backend.CPP)
+    a2 = AVLTree(backend=backend)
     a2.insert(1, 1)
     a2.insert(1, 1)
 
-    trav = BinaryTreeTraversal(a2, backend=Backend.CPP)
+    trav = BinaryTreeTraversal(a2, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
     assert [node.key for node in in_order] == [1]
     assert [node.key for node in pre_order] == [1]
 
-    a3 = AVLTree(backend=Backend.CPP)
-    a3.tree = ArrayForTrees(TreeNode, 0)
-    for i in range(7):
-        a3.tree.append(TreeNode(i, i))
+    a3 = AVLTree(0,0,backend=backend)
+    for i in range(1,7):
+        a3.tree.append(TreeNode(i, i, backend=backend))
     a3.tree[0].left = 1
-    # print(str(a3))
     a3.tree[0].right = 6
     a3.tree[1].left = 5
     a3.tree[1].right = 2
     a3.tree[2].left = 3
     a3.tree[2].right = 4
-    # print(str(a3))
-    # a3._left_right_rotate(0, 1)
+    a3._left_right_rotate(0, 1)
 
-    # trav = BinaryTreeTraversal(a3)
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [5, 1, 3, 2, 4, 0, 6]
-    # assert [node.key for node in pre_order] == [2, 1, 5, 3, 0, 4, 6]
+    trav = BinaryTreeTraversal(a3, backend=backend)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [5, 1, 3, 2, 4, 0, 6]
+    assert [node.key for node in pre_order] == [2, 1, 5, 3, 0, 4, 6]
 
-    # a4 = AVLTree()
-    # a4.tree = ArrayForTrees(TreeNode, 0)
-    # for i in range(7):
-    #     a4.tree.append(TreeNode(i, i))
-    # a4.tree[0].left = 1
-    # a4.tree[0].right = 2
-    # a4.tree[2].left = 3
-    # a4.tree[2].right = 4
-    # a4.tree[3].left = 5
-    # a4.tree[3].right = 6
-    # a4._right_left_rotate(0, 2)
+    a4 = AVLTree(0,0,backend=backend)
+    for i in range(1,7):
+        a4.tree.append(TreeNode(i, i,backend=backend))
+    a4.tree[0].left = 1
+    a4.tree[0].right = 2
+    a4.tree[2].left = 3
+    a4.tree[2].right = 4
+    a4.tree[3].left = 5
+    a4.tree[3].right = 6
+    a4._right_left_rotate(0, 2)
 
-    # trav = BinaryTreeTraversal(a4)
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [1, 0, 5, 3, 6, 2, 4]
-    # assert [node.key for node in pre_order] == [3,0,1,5,2,6,4]
+    trav = BinaryTreeTraversal(a4, backend=backend)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [1, 0, 5, 3, 6, 2, 4]
+    assert [node.key for node in pre_order] == [3,0,1,5,2,6,4]
 
-    # a5 = AVLTree(is_order_statistic=True)
-    # a5.tree = ArrayForTrees(TreeNode, [
-    #     TreeNode(10, 10),
-    #     TreeNode(5, 5),
-    #     TreeNode(17, 17),
-    #     TreeNode(2, 2),
-    #     TreeNode(9, 9),
-    #     TreeNode(12, 12),
-    #     TreeNode(20, 20),
-    #     TreeNode(3, 3),
-    #     TreeNode(11, 11),
-    #     TreeNode(15, 15),
-    #     TreeNode(18, 18),
-    #     TreeNode(30, 30),
-    #     TreeNode(13, 13),
-    #     TreeNode(33, 33)
-    # ])
+    a5 = AVLTree(is_order_statistic=True,backend=backend)
+    if backend==Backend.PYTHON:
+        a5.tree = ArrayForTrees(TreeNode, [
+        TreeNode(10, 10),
+        TreeNode(5, 5),
+        TreeNode(17, 17),
+        TreeNode(2, 2),
+        TreeNode(9, 9),
+        TreeNode(12, 12),
+        TreeNode(20, 20),
+        TreeNode(3, 3),
+        TreeNode(11, 11),
+        TreeNode(15, 15),
+        TreeNode(18, 18),
+        TreeNode(30, 30),
+        TreeNode(13, 13),
+        TreeNode(33, 33)
+    ])
+    else:
+        a5.tree = ArrayForTrees(_nodes.TreeNode, [
+            TreeNode(10, 10,backend=backend),
+            TreeNode(5, 5,backend=backend),
+            TreeNode(17, 17,backend=backend),
+            TreeNode(2, 2,backend=backend),
+            TreeNode(9, 9,backend=backend),
+            TreeNode(12, 12,backend=backend),
+            TreeNode(20, 20,backend=backend),
+            TreeNode(3, 3,backend=backend),
+            TreeNode(11, 11,backend=backend),
+            TreeNode(15, 15,backend=backend),
+            TreeNode(18, 18,backend=backend),
+            TreeNode(30, 30,backend=backend),
+            TreeNode(13, 13,backend=backend),
+            TreeNode(33, 33,backend=backend)
+        ],backend=backend)
 
-    # a5.tree[0].left, a5.tree[0].right, a5.tree[0].parent, a5.tree[0].height = \
-    #     1, 2, None, 4
-    # a5.tree[1].left, a5.tree[1].right, a5.tree[1].parent, a5.tree[1].height = \
-    #     3, 4, 0, 2
-    # a5.tree[2].left, a5.tree[2].right, a5.tree[2].parent, a5.tree[2].height = \
-    #     5, 6, 0, 3
-    # a5.tree[3].left, a5.tree[3].right, a5.tree[3].parent, a5.tree[3].height = \
-    #     None, 7, 1, 1
-    # a5.tree[4].left, a5.tree[4].right, a5.tree[4].parent, a5.tree[4].height = \
-    #     None, None, 1, 0
-    # a5.tree[5].left, a5.tree[5].right, a5.tree[5].parent, a5.tree[5].height = \
-    #     8, 9, 2, 2
-    # a5.tree[6].left, a5.tree[6].right, a5.tree[6].parent, a5.tree[6].height = \
-    #     10, 11, 2, 2
-    # a5.tree[7].left, a5.tree[7].right, a5.tree[7].parent, a5.tree[7].height = \
-    #     None, None, 3, 0
-    # a5.tree[8].left, a5.tree[8].right, a5.tree[8].parent, a5.tree[8].height = \
-    #     None, None, 5, 0
-    # a5.tree[9].left, a5.tree[9].right, a5.tree[9].parent, a5.tree[9].height = \
-    #     12, None, 5, 1
-    # a5.tree[10].left, a5.tree[10].right, a5.tree[10].parent, a5.tree[10].height = \
-    #     None, None, 6, 0
-    # a5.tree[11].left, a5.tree[11].right, a5.tree[11].parent, a5.tree[11].height = \
-    #     None, 13, 6, 1
-    # a5.tree[12].left, a5.tree[12].right, a5.tree[12].parent, a5.tree[12].height = \
-    #     None, None, 9, 0
-    # a5.tree[13].left, a5.tree[13].right, a5.tree[13].parent, a5.tree[13].height = \
-    #     None, None, 11, 0
+    a5.tree[0].left, a5.tree[0].right, a5.tree[0].parent, a5.tree[0].height = \
+        1, 2, None, 4
+    a5.tree[1].left, a5.tree[1].right, a5.tree[1].parent, a5.tree[1].height = \
+        3, 4, 0, 2
+    a5.tree[2].left, a5.tree[2].right, a5.tree[2].parent, a5.tree[2].height = \
+        5, 6, 0, 3
+    a5.tree[3].left, a5.tree[3].right, a5.tree[3].parent, a5.tree[3].height = \
+        None, 7, 1, 1
+    a5.tree[4].left, a5.tree[4].right, a5.tree[4].parent, a5.tree[4].height = \
+        None, None, 1, 0
+    a5.tree[5].left, a5.tree[5].right, a5.tree[5].parent, a5.tree[5].height = \
+        8, 9, 2, 2
+    a5.tree[6].left, a5.tree[6].right, a5.tree[6].parent, a5.tree[6].height = \
+        10, 11, 2, 2
+    a5.tree[7].left, a5.tree[7].right, a5.tree[7].parent, a5.tree[7].height = \
+        None, None, 3, 0
+    a5.tree[8].left, a5.tree[8].right, a5.tree[8].parent, a5.tree[8].height = \
+        None, None, 5, 0
+    a5.tree[9].left, a5.tree[9].right, a5.tree[9].parent, a5.tree[9].height = \
+        12, None, 5, 1
+    a5.tree[10].left, a5.tree[10].right, a5.tree[10].parent, a5.tree[10].height = \
+        None, None, 6, 0
+    a5.tree[11].left, a5.tree[11].right, a5.tree[11].parent, a5.tree[11].height = \
+        None, 13, 6, 1
+    a5.tree[12].left, a5.tree[12].right, a5.tree[12].parent, a5.tree[12].height = \
+        None, None, 9, 0
+    a5.tree[13].left, a5.tree[13].right, a5.tree[13].parent, a5.tree[13].height = \
+        None, None, 11, 0
 
     # # testing order statistics
-    # a5.tree[0].size = 14
-    # a5.tree[1].size = 4
-    # a5.tree[2].size = 9
-    # a5.tree[3].size = 2
-    # a5.tree[4].size = 1
-    # a5.tree[5].size = 4
-    # a5.tree[6].size = 4
-    # a5.tree[7].size = 1
-    # a5.tree[8].size = 1
-    # a5.tree[9].size = 2
-    # a5.tree[10].size = 1
-    # a5.tree[11].size = 2
-    # a5.tree[12].size = 1
-    # a5.tree[13].size = 1
+    a5.tree[0].size = 14
+    a5.tree[1].size = 4
+    a5.tree[2].size = 9
+    a5.tree[3].size = 2
+    a5.tree[4].size = 1
+    a5.tree[5].size = 4
+    a5.tree[6].size = 4
+    a5.tree[7].size = 1
+    a5.tree[8].size = 1
+    a5.tree[9].size = 2
+    a5.tree[10].size = 1
+    a5.tree[11].size = 2
+    a5.tree[12].size = 1
+    a5.tree[13].size = 1
 
     # assert raises(ValueError, lambda: a5.select(0))
     # assert raises(ValueError, lambda: a5.select(15))
@@ -361,7 +376,15 @@ def test_AVLTree():
     # test_select_rank([2])
     # a5.delete(2)
     # test_select_rank([])
+
+def test_AVLTree():
+    _test_AVLTree(backend=Backend.PYTHON)
+
+def test_cpp_AVLTree():
+    _test_AVLTree(backend=Backend.CPP)
+
 test_AVLTree()
+test_cpp_AVLTree()
 
 def _test_BinaryIndexedTree(backend):
 

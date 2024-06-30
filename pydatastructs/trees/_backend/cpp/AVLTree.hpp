@@ -31,7 +31,7 @@ static PyObject* AVLTree___new__(PyTypeObject* type, PyObject *args, PyObject *k
     }
     PyObject* p = SelfBalancingBinaryTree___new__(&SelfBalancingBinaryTreeType, args, kwds);
     self->sbbt = reinterpret_cast<SelfBalancingBinaryTree*>(p);
-    self->tree = reinterpret_cast<SelfBalancingBinaryTree*>(p)->bst->binary_tree->tree;
+    self->tree = self->sbbt->bst->binary_tree->tree;
 
     return reinterpret_cast<PyObject*>(self);
 }
@@ -66,9 +66,9 @@ static long AVLTree_right_height(AVLTree* self, PyObject *args) {
     }
 }
 
-static long AVLTree_balance_factor(AVLTree* self, PyObject *args) {
+static PyObject* AVLTree_balance_factor(AVLTree* self, PyObject *args) {
     TreeNode* node = reinterpret_cast<TreeNode*>(PyObject_GetItem(args, PyZero));
-    return AVLTree_left_height(self, Py_BuildValue("(O)", node)) - AVLTree_right_height(self, Py_BuildValue("(O)", node));
+    return PyLong_FromLong(AVLTree_right_height(self, Py_BuildValue("(O)", node)) - AVLTree_left_height(self, Py_BuildValue("(O)", node)));
 }
 
 static PyObject* AVLTree__right_rotate(AVLTree* self, PyObject *args) {
@@ -192,7 +192,7 @@ static PyObject* AVLTree__balance_insertion(AVLTree* self, PyObject *args) {
         path.pop();
         PyObject*  last2last = path.front();
         path.pop();
-        long bf = AVLTree_balance_factor(self, Py_BuildValue("(O)", bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]));
+        long bf = PyLong_AsLong(AVLTree_balance_factor(self, Py_BuildValue("(O)", bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])));
         if (bf != 1 && bf != 0 && bf != -1) {
             PyObject* l = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
             if (l != Py_None && l == last && reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(l)])->left == last2last) {
@@ -239,6 +239,7 @@ static PyObject* AVLTree_insert(AVLTree* self, PyObject *args) {
 static struct PyMethodDef AVLTree_PyMethodDef[] = {
     {"search", (PyCFunction) AVLTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {"insert", (PyCFunction) AVLTree_insert, METH_VARARGS, NULL},
+    {"balance_factor", (PyCFunction) AVLTree_balance_factor, METH_VARARGS, NULL},
     {"_left_right_rotate", (PyCFunction) AVLTree__left_right_rotate, METH_VARARGS, NULL},
     {"_right_left_rotate", (PyCFunction) AVLTree__right_left_rotate, METH_VARARGS, NULL},
     {"_left_rotate", (PyCFunction) AVLTree__left_rotate, METH_VARARGS, NULL},
