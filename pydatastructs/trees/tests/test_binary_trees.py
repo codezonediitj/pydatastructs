@@ -313,7 +313,7 @@ def _test_AVLTree(backend):
     a5.tree[13].left, a5.tree[13].right, a5.tree[13].parent, a5.tree[13].height = \
         None, None, 11, 0
 
-    # # testing order statistics
+    # testing order statistics
     a5.tree[0].size = 14
     a5.tree[1].size = 4
     a5.tree[2].size = 9
