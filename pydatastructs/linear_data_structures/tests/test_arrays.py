@@ -140,10 +140,10 @@ def _test_ArrayForTrees(backend):
     root = TreeNode(1, 100,backend=backend)
     if backend==Backend.PYTHON:
         A = AFT(TreeNode, [root], backend=backend)
-        B = AFT(TreeNode, 0)
+        B = AFT(TreeNode, 0, backend=backend)
     else:
         A = AFT(_nodes.TreeNode, [root], backend=backend)
-        B = AFT(_nodes.TreeNode, 0)
+        B = AFT(_nodes.TreeNode, 0, backend=backend)
     assert str(A) == "['(None, 1, 100, None)']"
     node = TreeNode(2, 200, backend=backend)
     A.append(node)
