@@ -4,6 +4,7 @@ from pydatastructs.linear_data_structures import (
 from pydatastructs.utils.misc_util import Backend
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils import TreeNode
+from pydatastructs.utils._backend.cpp import _nodes
 
 def test_OneDimensionalArray():
     ODA = OneDimensionalArray
@@ -135,13 +136,19 @@ def test_DynamicOneDimensionalArray2():
     assert str(A[0]) == "(None, 1, 100, None)"
 
 def _test_ArrayForTrees(backend):
-     AFT = ArrayForTrees
-     root = TreeNode(1, 100)
-     A = AFT(TreeNode, [root], backend=backend)
-     assert str(A) == "['(None, 1, 100, None)']"
-     node = TreeNode(2, 200, backend=backend)
-     A.append(node)
-     assert str(A) == "['(None, 1, 100, None)', '(None, 2, 200, None)']"
+    AFT = ArrayForTrees
+    root = TreeNode(1, 100,backend=backend)
+    if backend==Backend.PYTHON:
+        A = AFT(TreeNode, [root], backend=backend)
+        B = AFT(TreeNode, 0)
+    else:
+        A = AFT(_nodes.TreeNode, [root], backend=backend)
+        B = AFT(_nodes.TreeNode, 0)
+    assert str(A) == "['(None, 1, 100, None)']"
+    node = TreeNode(2, 200, backend=backend)
+    A.append(node)
+    assert str(A) == "['(None, 1, 100, None)', '(None, 2, 200, None)']"
+    assert str(B) == "[]"
 
 def test_ArrayForTrees():
     _test_ArrayForTrees(Backend.PYTHON)
