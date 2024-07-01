@@ -214,7 +214,7 @@ def _test_AVLTree(backend):
     assert [node.key for node in in_order] == [1]
     assert [node.key for node in pre_order] == [1]
 
-    a3 = AVLTree()
+    a3 = AVLTree(backend=backend)
     a3.set_tree( ArrayForTrees(TreeNode, 0, backend=backend) )
     for i in range(0,7):
         a3.tree.append(TreeNode(i, i, backend=backend))
@@ -233,7 +233,7 @@ def _test_AVLTree(backend):
     assert [node.key for node in in_order] == [5, 1, 3, 2, 4, 0, 6]
     assert [node.key for node in pre_order] == [2, 1, 5, 3, 0, 4, 6]
 
-    a4 = AVLTree()
+    a4 = AVLTree(backend=backend)
     a4.set_tree( ArrayForTrees(TreeNode, 0, backend=backend) )
     for i in range(0,7):
         a4.tree.append(TreeNode(i, i,backend=backend))
@@ -354,7 +354,7 @@ def _test_AVLTree(backend):
     # a5.delete(13)
     # a5.delete(20)
 
-    trav = BinaryTreeTraversal(a5)
+    trav = BinaryTreeTraversal(a5, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
     pre_order = trav.depth_first_search(order='pre_order')
     # assert [node.key for node in in_order] == [2, 3, 5, 10, 11, 12, 15, 17, 18, 30, 33]
@@ -388,7 +388,7 @@ def test_AVLTree():
 def test_cpp_AVLTree():
     _test_AVLTree(backend=Backend.CPP)
 
-test_AVLTree()
+# test_AVLTree()
 # test_cpp_AVLTree()
 
 def _test_BinaryIndexedTree(backend):
