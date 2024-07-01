@@ -335,7 +335,7 @@ def _test_AVLTree(backend):
 
     assert raises(ValueError, lambda: a5.select(0))
     assert raises(ValueError, lambda: a5.select(15))
-    
+
     assert a5.rank(-1) is None
     def test_select_rank(expected_output):
         output = []
