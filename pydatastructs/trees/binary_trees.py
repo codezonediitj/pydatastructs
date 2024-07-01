@@ -932,7 +932,7 @@ class AVLTree(SelfBalancingBinaryTree):
 
     @classmethod
     def methods(cls):
-        return ['__new__', 'insert', 'delete']
+        return ['__new__', 'set_tree', 'insert', 'delete']
 
     left_height = lambda self, node: self.tree[node.left].height \
                                         if node.left is not None else -1
@@ -940,6 +940,9 @@ class AVLTree(SelfBalancingBinaryTree):
                                         if node.right is not None else -1
     balance_factor = lambda self, node: self.right_height(node) - \
                                         self.left_height(node)
+
+    def set_tree(self, arr):
+        self.tree = arr
 
     def _right_rotate(self, j, k):
         super(AVLTree, self)._right_rotate(j, k)

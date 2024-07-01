@@ -40,6 +40,13 @@ static PyObject* AVLTree___str__(AVLTree *self) {
     return BinarySearchTree___str__(self->sbbt->bst);
 }
 
+static PyObject* AVLTree_set_tree(AVLTree* self, PyObject *args) {
+    ArrayForTrees* arr = reinterpret_cast<ArrayForTrees*>(PyObject_GetItem(args, PyZero));
+    self->sbbt->bst->binary_tree->tree = arr;
+    self->tree = self->sbbt->bst->binary_tree->tree;
+    Py_RETURN_NONE;
+}
+
 static PyObject* AVLTree_search(AVLTree* self, PyObject *args, PyObject *kwds) {
     return BinarySearchTree_search(self->sbbt->bst, args, kwds);
 }
@@ -236,10 +243,21 @@ static PyObject* AVLTree_insert(AVLTree* self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
+static PyObject* AVLTree_rank(AVLTree* self, PyObject *args) {
+    return BinarySearchTree_rank(self->sbbt->bst, args);
+}
+
+static PyObject* AVLTree_select(AVLTree* self, PyObject *args) {
+    return BinarySearchTree_select(self->sbbt->bst, args);
+}
+
 static struct PyMethodDef AVLTree_PyMethodDef[] = {
     {"search", (PyCFunction) AVLTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {"insert", (PyCFunction) AVLTree_insert, METH_VARARGS, NULL},
+    {"set_tree", (PyCFunction) AVLTree_set_tree, METH_VARARGS, NULL},
     {"balance_factor", (PyCFunction) AVLTree_balance_factor, METH_VARARGS, NULL},
+    {"rank", (PyCFunction) AVLTree_rank, METH_VARARGS, NULL},
+    {"select", (PyCFunction) AVLTree_select, METH_VARARGS, NULL},
     {"_left_right_rotate", (PyCFunction) AVLTree__left_right_rotate, METH_VARARGS, NULL},
     {"_right_left_rotate", (PyCFunction) AVLTree__right_left_rotate, METH_VARARGS, NULL},
     {"_left_rotate", (PyCFunction) AVLTree__left_rotate, METH_VARARGS, NULL},

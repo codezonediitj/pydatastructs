@@ -84,8 +84,9 @@ static PyObject* BinarySearchTree_search(BinarySearchTree* self, PyObject* args,
         return NULL;
     }
     BinaryTree* bt = self->binary_tree;
+    Py_INCREF(Py_None);
     PyObject* parent = Py_None;
-    PyObject* walk = PyLong_FromLong(PyLong_AsLong(bt->root_idx));
+    PyObject* walk = bt->root_idx;
 
     if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->key == Py_None) {
         Py_RETURN_NONE;
