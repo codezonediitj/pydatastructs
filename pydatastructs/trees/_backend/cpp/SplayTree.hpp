@@ -267,16 +267,7 @@ static PyObject* SplayTree_split(SplayTree *self, PyObject* args) {
     }
     SplayTree* other = reinterpret_cast<SplayTree*>(SplayTree___new__(self->type, Py_BuildValue("(OOOO)", Py_None, Py_None, bt->comparator, PyZero), PyDict_New()));
 
-    // SplayTree* other = reinterpret_cast<SplayTree*>(PyObject_GetItem(args, PyOne));
     if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right != Py_None) {
-        // if (PyType_Ready(&BinaryTreeTraversalType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
-        //     return NULL;
-        // }
-        // BinaryTreeTraversal* traverse = reinterpret_cast<BinaryTreeTraversal*>(BinaryTreeTraversal___new__(&BinaryTreeTraversalType, Py_BuildValue("(O)", self), PyDict_New()));
-        // PyObject* kwd_dict = PyDict_New();
-        // PyDict_SetItemString(kwd_dict, "node", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right);
-        // PyDict_SetItemString(kwd_dict, "order", PyUnicode_FromString("pre_order"));
-        // PyObject* elements = BinaryTreeTraversal_depth_first_search(traverse, Py_BuildValue("()"), kwd_dict);
         PyObject* elements = SplayTree__pre_order(self, Py_BuildValue("(O)", reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(bt->root_idx)])->right));
         for (int i=0; i<PyList_Size(elements); i++) {
             SelfBalancingBinaryTree_insert(other->sbbt, Py_BuildValue("(OO)", reinterpret_cast<TreeNode*>( PyList_GetItem(elements, i))->key, reinterpret_cast<TreeNode*>( PyList_GetItem(elements, i))->data));

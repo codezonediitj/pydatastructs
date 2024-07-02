@@ -6,6 +6,7 @@
 #include "RedBlackTree.hpp"
 #include "BinaryIndexedTree.hpp"
 #include "SplayTree.hpp"
+#include "AVLTree.hpp"
 
 static struct PyModuleDef trees_struct = {
     PyModuleDef_HEAD_INIT,
@@ -60,6 +61,12 @@ PyMODINIT_FUNC PyInit__trees(void) {
     }
     Py_INCREF(&SplayTreeType);
     PyModule_AddObject(trees, "SplayTree", reinterpret_cast<PyObject*>(&SplayTreeType));
+
+    if (PyType_Ready(&AVLTreeType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&AVLTreeType);
+    PyModule_AddObject(trees, "AVLTree", reinterpret_cast<PyObject*>(&AVLTreeType));
 
     return trees;
 }
