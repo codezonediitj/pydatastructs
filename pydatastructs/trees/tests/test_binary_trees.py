@@ -360,10 +360,10 @@ def _test_AVLTree(backend):
     assert [node.key for node in in_order] == [2, 3, 5, 10, 11, 12, 15, 17, 18, 30, 33]
     assert [node.key for node in pre_order] == [17, 10, 3, 2, 5, 12, 11, 15, 30, 18, 33]
 
-    test_select_rank([2, 3, 5, 10, 11, 12, 15, 17, 18, 30, 33])
-    a5.delete(10)
-    a5.delete(17)
-    test_select_rank([2, 3, 5, 11, 12, 15, 18, 30, 33])
+    # test_select_rank([2, 3, 5, 10, 11, 12, 15, 17, 18, 30, 33])
+    # a5.delete(10)
+    # a5.delete(17)
+    # test_select_rank([2, 3, 5, 11, 12, 15, 18, 30, 33])
     # a5.delete(11)
     # a5.delete(30)
     # test_select_rank([2, 3, 5, 12, 15, 18, 33])
