@@ -339,14 +339,14 @@ def _test_AVLTree(backend):
     assert a5.rank(-1) is None
     def test_select_rank(expected_output):
         for i in range(len(expected_output)):
-            print(a5.select(i + 1).key)
+            # print(a5.select(i + 1).key)
             assert a5.select(i + 1).key == expected_output[i]
 
-        # output = []
-        # expected_ranks = [i + 1 for i in range(len(expected_output))]
-        # for i in range(len(expected_output)):
-        #     output.append(a5.rank(expected_output[i]))
-        # assert output == expected_ranks
+        output = []
+        expected_ranks = [i + 1 for i in range(len(expected_output))]
+        for i in range(len(expected_output)):
+            output.append(a5.rank(expected_output[i]))
+        assert output == expected_ranks
 
     test_select_rank([2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 18, 20, 30, 33])
     a5.delete(9)
@@ -386,7 +386,7 @@ def test_AVLTree():
 
 def test_cpp_AVLTree():
     _test_AVLTree(backend=Backend.CPP)
-
+test_cpp_AVLTree()
 def _test_BinaryIndexedTree(backend):
 
     FT = BinaryIndexedTree
