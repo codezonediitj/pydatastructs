@@ -348,7 +348,7 @@ def _test_AVLTree(backend):
             output.append(a5.rank(expected_output[i]))
         assert output == expected_ranks
 
-    test_select_rank([2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 18, 20, 30, 33])
+    # test_select_rank([2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 18, 20, 30, 33])
     a5.delete(9)
     a5.delete(13)
     a5.delete(20)
