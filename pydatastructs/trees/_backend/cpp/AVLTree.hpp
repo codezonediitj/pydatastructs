@@ -251,9 +251,65 @@ static PyObject* AVLTree_select(AVLTree* self, PyObject *args) {
     return BinarySearchTree_select(self->sbbt->bst, args);
 }
 
+static PyObject* AVLTree__balance_delete(AVLTree* self, PyObject *args) {
+    PyObject* start_idx = PyObject_GetItem(args, PyZero);
+    PyObject* key = PyObject_GetItem(args, PyOne);
+    BinaryTree* bt = self->sbbt->bst->binary_tree;
+
+    PyObject* walk = start_idx;
+    while (walk != Py_None) {
+        long lh = AVLTree_left_height(self, Py_BuildValue("(O)", bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]));
+        long rh = AVLTree_right_height(self, Py_BuildValue("(O)", bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]));
+        reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->height = std::max(lh, rh) + 1;
+
+        if (bt->is_order_statistic == true) {
+            long ls = BinarySearchTree_left_size(self->sbbt->bst, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]));
+            long rs = BinarySearchTree_right_size(self->sbbt->bst, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)]));
+            reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->size = ls + rs + 1;
+        }
+
+        long bf = PyLong_AsLong(AVLTree_balance_factor(self, Py_BuildValue("(O)", bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])));
+        if (bf != 1 && bf != 0 && bf != -1) {
+            if (bf < 0) {
+                PyObject* b = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->left;
+                if (PyLong_AsLong(AVLTree_balance_factor(self, Py_BuildValue("(O)", bt->tree->_one_dimensional_array->_data[PyLong_AsLong(b)]))) <= 0) {
+                    AVLTree__right_rotate(self, Py_BuildValue("(OO)", walk, b));
+                }
+                else {
+                    AVLTree__left_right_rotate(self, Py_BuildValue("(OO)", walk, b));
+                }
+            }
+            else {
+                PyObject* b = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->right;
+                if (PyLong_AsLong(AVLTree_balance_factor(self, Py_BuildValue("(O)", bt->tree->_one_dimensional_array->_data[PyLong_AsLong(b)]))) >= 0) {
+                    AVLTree__left_rotate(self, Py_BuildValue("(OO)", walk, b));
+                }
+                else {
+                    AVLTree__right_left_rotate(self, Py_BuildValue("(OO)", walk, b));
+                }
+            }
+        }
+        walk = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(walk)])->parent;
+    }
+
+    Py_RETURN_NONE;
+}
+
+static PyObject* AVLTree_delete(AVLTree* self, PyObject *args, PyObject *kwds) {
+    PyObject* key = PyObject_GetItem(args, PyZero);
+
+    PyObject* kwd_bal = PyDict_New();
+    PyDict_SetItemString(kwd_bal, "balancing_info", PyLong_FromLong(1));
+    PyObject* a = SelfBalancingBinaryTree_delete(self->sbbt, Py_BuildValue("(O)", key), kwd_bal);
+    AVLTree__balance_delete(self, Py_BuildValue("(OO)", a, key));
+
+    Py_RETURN_TRUE;
+}
+
 static struct PyMethodDef AVLTree_PyMethodDef[] = {
     {"search", (PyCFunction) AVLTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {"insert", (PyCFunction) AVLTree_insert, METH_VARARGS, NULL},
+    {"delete", (PyCFunction) AVLTree_delete, METH_VARARGS, NULL},
     {"set_tree", (PyCFunction) AVLTree_set_tree, METH_VARARGS, NULL},
     {"balance_factor", (PyCFunction) AVLTree_balance_factor, METH_VARARGS, NULL},
     {"rank", (PyCFunction) AVLTree_rank, METH_VARARGS, NULL},
