@@ -93,7 +93,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test(include_benchmarks=True)"
+          python -c "import pydatastructs; pydatastructs.test(only_benchmarks=True)"
 
       - name: Build Documentation
         run: |
