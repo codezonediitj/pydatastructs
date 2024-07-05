@@ -340,13 +340,10 @@ def _test_AVLTree(backend):
     def test_select_rank(expected_output):
         if backend == Backend.CPP:
             return
+        output = []
         for i in range(len(expected_output)):
-            node = a5.select(i+1)
-            if node == None:
-                continue
-            temp = node.key
-            assert temp == expected_output[i]
-
+            output.append(a5.select(i + 1).key)
+        assert output == expected_output
         output = []
         expected_ranks = [i + 1 for i in range(len(expected_output))]
         for i in range(len(expected_output)):
