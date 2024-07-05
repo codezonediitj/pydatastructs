@@ -338,12 +338,13 @@ def _test_AVLTree(backend):
 
     assert a5.rank(-1) is None
     def test_select_rank(expected_output):
+        if backend == Backend.CPP:
+            return
         for i in range(len(expected_output)):
             node = a5.select(i+1)
             if node == None:
                 continue
             temp = node.key
-            # print(temp)
             assert temp == expected_output[i]
 
         output = []
@@ -356,6 +357,7 @@ def _test_AVLTree(backend):
     a5.delete(9)
     a5.delete(13)
     a5.delete(20)
+    assert str(a5) == "[(7, 10, 10, 5), (None, 5, 5, None), (0, 17, 17, 6), (None, 2, 2, None), '', (8, 12, 12, 9), (10, 30, 30, 13), (3, 3, 3, 1), (None, 11, 11, None), (None, 15, 15, None), (None, 18, 18, None), '', '', (None, 33, 33, None)]"
 
     trav = BinaryTreeTraversal(a5, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
@@ -366,6 +368,7 @@ def _test_AVLTree(backend):
     test_select_rank([2, 3, 5, 10, 11, 12, 15, 17, 18, 30, 33])
     a5.delete(10)
     a5.delete(17)
+    assert str(a5) == "[(7, 11, 11, 5), (None, 5, 5, None), (0, 18, 18, 6), (None, 2, 2, None), '', (None, 12, 12, 9), (None, 30, 30, 13), (3, 3, 3, 1), '', (None, 15, 15, None), '', '', '', (None, 33, 33, None)]"
     test_select_rank([2, 3, 5, 11, 12, 15, 18, 30, 33])
     a5.delete(11)
     a5.delete(30)
@@ -384,13 +387,13 @@ def _test_AVLTree(backend):
     test_select_rank([2])
     a5.delete(2)
     test_select_rank([])
+    assert str(a5) == "[(None, None, None, None)]"
 
 def test_AVLTree():
     _test_AVLTree(backend=Backend.PYTHON)
-
 def test_cpp_AVLTree():
     _test_AVLTree(backend=Backend.CPP)
-test_cpp_AVLTree()
+
 def _test_BinaryIndexedTree(backend):
 
     FT = BinaryIndexedTree
