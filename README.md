@@ -60,6 +60,14 @@ You can use the examples given in the following book as tests for your code:
 
 - [https://opendatastructures.org/ods-python.pdf](https://opendatastructures.org/ods-python.pdf)
 
+### Light weighted testing (without benchmarks)
+
+Make sure you have activated the conda environment: `pyds-env` and your working directory is `../pydatastructs`.
+
+In the terminal, run: `python -c "from pydatastructs.utils.testing_util import test; test()"`.
+
+This will run all the test files, except benchmark tests. This should be used if benchmark tests are computationally too heavy to be run on your local machine.
+
 Why do we use Python?
 ------------------
 
