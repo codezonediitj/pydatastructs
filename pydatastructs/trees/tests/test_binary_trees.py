@@ -338,15 +338,15 @@ def _test_AVLTree(backend):
 
     assert a5.rank(-1) is None
     def test_select_rank(expected_output):
-        # output = []
-        # for i in range(len(expected_output)):
-        #     output.append(a5.select(i + 1).key)
-        # assert output == expected_output
         output = []
-        expected_ranks = [i + 1 for i in range(len(expected_output))]
         for i in range(len(expected_output)):
-            output.append(a5.rank(expected_output[i]))
-        assert output == expected_ranks
+            output.append(a5.select(i + 1).key)
+        assert output == expected_output
+        # output = []
+        # expected_ranks = [i + 1 for i in range(len(expected_output))]
+        # for i in range(len(expected_output)):
+        #     output.append(a5.rank(expected_output[i]))
+        # assert output == expected_ranks
 
     test_select_rank([2, 3, 5, 9, 10, 11, 12, 13, 15, 17, 18, 20, 30, 33])
     a5.delete(9)
