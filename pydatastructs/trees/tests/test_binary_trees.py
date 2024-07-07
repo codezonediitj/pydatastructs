@@ -343,7 +343,7 @@ def _test_AVLTree(backend):
             for i in range(len(expected_output)):
                 output.append(a5.select(i + 1).key)
             assert output == expected_output
-            output = []
+        output = []
         expected_ranks = [i + 1 for i in range(len(expected_output))]
         for i in range(len(expected_output)):
             output.append(a5.rank(expected_output[i]))
