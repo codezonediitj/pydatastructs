@@ -7,6 +7,7 @@
 #include "BinaryIndexedTree.hpp"
 #include "SplayTree.hpp"
 #include "AVLTree.hpp"
+#include "CartesianTree.hpp"
 
 static struct PyModuleDef trees_struct = {
     PyModuleDef_HEAD_INIT,
@@ -67,6 +68,12 @@ PyMODINIT_FUNC PyInit__trees(void) {
     }
     Py_INCREF(&AVLTreeType);
     PyModule_AddObject(trees, "AVLTree", reinterpret_cast<PyObject*>(&AVLTreeType));
+
+    if (PyType_Ready(&CartesianTreeType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&CartesianTreeType);
+    PyModule_AddObject(trees, "CartesianTree", reinterpret_cast<PyObject*>(&CartesianTreeType));
 
     return trees;
 }

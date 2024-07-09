@@ -805,8 +805,17 @@ class CartesianTree(SelfBalancingBinaryTree):
     pydatastructs.trees.binary_trees.SelfBalancingBinaryTree
     """
     @classmethod
+    def __new__(cls, key=None, root_data=None, comp=None,
+            is_order_statistic=False, **kwargs):
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            if comp is None:
+                comp = lambda key1, key2: key1 < key2
+            return _trees.CartesianTree(key, root_data, comp, is_order_statistic, **kwargs) # If any argument is not given, then it is passed as None, except for comp
+        return super().__new__(cls, key, root_data, comp, is_order_statistic, **kwargs)
+
     def methods(cls):
-        return ['__str__', 'insert', 'delete']
+        return ['__new__', '__str__', 'insert', 'delete']
 
     def _bubble_up(self, node_idx):
         node = self.tree[node_idx]
