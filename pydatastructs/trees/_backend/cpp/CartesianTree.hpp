@@ -44,6 +44,54 @@ static PyObject* CartesianTree_search(CartesianTree* self, PyObject *args, PyObj
     return BinarySearchTree_search(self->sbbt->bst, args, kwds);
 }
 
+static PyObject* Cartesian_Tree__bubble_up(CartesianTree* self, PyObject *args) {
+    PyObject* node_idx = PyObject_GetItem(args, PyZero);
+    BinaryTree* bt = self->sbbt->bst->binary_tree;
+    TreeNode* node = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)]);
+    PyObject* parent_idx = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->parent;
+    TreeNode* parent = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent_idx)]);
+
+    while ((node->parent != Py_None) && (parent->priority > node->priority)) {
+        if (parent->right == node_idx) {
+            SelfBalancingBinaryTree__left_rotate(self->sbbt, Py_BuildValue("OO", parent_idx, node_idx));
+        }
+        else {
+            SelfBalancingBinaryTree__right_rotate(self->sbbt, Py_BuildValue("OO", parent_idx, node_idx));
+        }
+        node = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)]);
+        parent_idx = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->parent;
+        if (parent_idx != Py_None) {
+            parent = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(parent_idx)]);
+        }
+    }
+    if (node->parent == Py_None) {
+        reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->is_root = true;
+    }
+    Py_RETURN_NONE;
+}
+
+static PyObject* Cartesian_Tree__trickle_down(CartesianTree* self, PyObject *args) {
+    PyObject* node_idx = PyObject_GetItem(args, PyZero);
+    BinaryTree* bt = self->sbbt->bst->binary_tree;
+    TreeNode* node = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)]);
+    while (node->left != Py_None || node->right != Py_None) {
+        if (node->left == Py_None) {
+            SelfBalancingBinaryTree__left_rotate(self->sbbt, Py_BuildValue("OO", node_idx, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->right));
+        }
+        else if (node->right == Py_None) {
+            SelfBalancingBinaryTree__right_rotate(self->sbbt, Py_BuildValue("OO", node_idx, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->left));
+        }
+        else if (reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node->left)])->priority < reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node->right)])->priority) {
+            SelfBalancingBinaryTree__right_rotate(self->sbbt, Py_BuildValue("OO", node_idx, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->left));
+        }
+        else {
+            SelfBalancingBinaryTree__left_rotate(self->sbbt, Py_BuildValue("OO", node_idx, reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->right));
+        }
+        node = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)]);
+    }
+    Py_RETURN_NONE;
+}
+
 
 static struct PyMethodDef CartesianTree_PyMethodDef[] = {
     // {"insert", (PyCFunction) CartesianTree_insert, METH_VARARGS, NULL},
