@@ -104,7 +104,7 @@ static PyObject* BinaryTree___str__(BinaryTree *self) {
         if (reinterpret_cast<PyObject*>(node) != Py_None) {
             PyObject* out;
             if (node->isCartesianTreeNode == true) {
-                out = Py_BuildValue("(OOOOO)", node->left, node->key, node->priority, node->data, node->right);
+                out = Py_BuildValue("(OOOOO)", node->left, node->key, PyLong_FromLong(node->priority), node->data, node->right);
             }
             else {
                 out = Py_BuildValue("(OOOO)", node->left, node->key, node->data, node->right);

@@ -92,9 +92,42 @@ static PyObject* Cartesian_Tree__trickle_down(CartesianTree* self, PyObject *arg
     Py_RETURN_NONE;
 }
 
+static PyObject* CartesianTree_insert(CartesianTree *self, PyObject* args) {
+    Py_INCREF(Py_None);
+    PyObject* key = Py_None;
+    Py_INCREF(Py_None);
+    PyObject* priority = Py_None;
+    Py_INCREF(Py_None);
+    PyObject* data = Py_None;
+    if (!PyArg_ParseTuple(args, "OO|O", &key, &priority, &data)) { // data is optional
+        return NULL;
+    }
+    BinaryTree* bt = self->sbbt->bst->binary_tree;
+
+    SelfBalancingBinaryTree_insert(self->sbbt, Py_BuildValue("(OO)", key, data));
+    PyObject* node_idx = SelfBalancingBinaryTree_search(self->sbbt, Py_BuildValue("(O)", key), PyDict_New());
+    TreeNode* node = reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)]);
+    if (PyType_Ready(&TreeNodeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
+        return NULL;
+    }
+    TreeNode* new_node = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, Py_BuildValue("(OO)", key, data), PyDict_New()));
+    new_node->isCartesianTreeNode = true;
+    new_node->priority = PyLong_AsLong(priority);
+    new_node->parent = node->parent;
+    new_node->left = node->left;
+    new_node->right = node->right;
+    bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)] = reinterpret_cast<PyObject*>(new_node);
+    if (node->is_root) {
+        reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node_idx)])->is_root = true;
+    }
+    else {
+        Cartesian_Tree__bubble_up(self, Py_BuildValue("(O)", node_idx));
+    }
+    Py_RETURN_NONE;
+}
 
 static struct PyMethodDef CartesianTree_PyMethodDef[] = {
-    // {"insert", (PyCFunction) CartesianTree_insert, METH_VARARGS, NULL},
+    {"insert", (PyCFunction) CartesianTree_insert, METH_VARARGS, NULL},
     // {"delete", (PyCFunction) CartesianTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
     {"search", (PyCFunction) CartesianTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
