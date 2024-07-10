@@ -17,6 +17,7 @@
 #include "RedBlackTree.hpp"
 #include "SplayTree.hpp"
 #include "AVLTree.hpp"
+#include "CartesianTree.hpp"
 
 typedef struct {
     PyObject_HEAD
@@ -48,12 +49,18 @@ static PyObject* BinaryTreeTraversal___new__(PyTypeObject* type, PyObject *args,
     if (PyType_Ready(&AVLTreeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
         return NULL;
     }
+    if (PyType_Ready(&CartesianTreeType) < 0) { // This has to be present to finalize a type object. This should be called on all type objects to finish their initialization.
+        return NULL;
+    }
 
     if (PyObject_IsInstance(tree, (PyObject *)&SplayTreeType)) {
         self->tree = reinterpret_cast<SplayTree*>(tree)->sbbt->bst->binary_tree;
     }
     else if (PyObject_IsInstance(tree, (PyObject *)&AVLTreeType)) {
         self->tree = reinterpret_cast<AVLTree*>(tree)->sbbt->bst->binary_tree;
+    }
+    else if (PyObject_IsInstance(tree, (PyObject *)&CartesianTreeType)) {
+        self->tree = reinterpret_cast<CartesianTree*>(tree)->sbbt->bst->binary_tree;
     }
     else if (PyObject_IsInstance(tree, (PyObject *)&RedBlackTreeType)) {
         self->tree = reinterpret_cast<RedBlackTree*>(tree)->sbbt->bst->binary_tree;

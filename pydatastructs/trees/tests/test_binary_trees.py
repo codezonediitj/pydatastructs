@@ -430,21 +430,21 @@ def _test_CartesianTree(backend):
             "(7, 7, 22, 7, 8), (None, 6, 42, 6, None), "
             "(None, 8, 49, 8, None), (None, 2, 99, 2, None)]")
 
-    # trav = BinaryTreeTraversal(tree)
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    # assert [node.key for node in pre_order] == [3, 1, 0, 2, 5, 4, 9, 7, 6, 8]
+    trav = BinaryTreeTraversal(tree, backend=backend)
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert [node.key for node in pre_order] == [3, 1, 0, 2, 5, 4, 9, 7, 6, 8]
 
-    # tree.insert(1.5, 4, 1.5)
+    tree.insert(1.5, 4, 1.5)
 
-    # in_order = trav.depth_first_search(order='in_order')
-    # pre_order = trav.depth_first_search(order='pre_order')
-    # assert [node.key for node in in_order] == [0, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9]
-    # assert [node.key for node in pre_order] == [3, 1.5, 1, 0, 2, 5, 4, 9, 7, 6, 8]
+    in_order = trav.depth_first_search(order='in_order')
+    pre_order = trav.depth_first_search(order='pre_order')
+    assert [node.key for node in in_order] == [0, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert [node.key for node in pre_order] == [3, 1.5, 1, 0, 2, 5, 4, 9, 7, 6, 8]
 
-    # k = tree.search(1.5)
-    # assert tree.tree[tree.tree[k].parent].key == 3
+    k = tree.search(1.5)
+    assert tree.tree[tree.tree[k].parent].key == 3
     # tree.delete(1.5)
     # tree.tree[tree.tree[tree.root_idx].left].key == 1
     # tree.delete(8)
