@@ -460,7 +460,7 @@ def test_CartesianTree():
 
 def test_cpp_CartesianTree():
     _test_CartesianTree(backend=Backend.CPP)
-test_cpp_CartesianTree()
+
 def test_Treap():
 
     random.seed(0)
