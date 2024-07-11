@@ -445,15 +445,16 @@ def _test_CartesianTree(backend):
 
     k = tree.search(1.5)
     assert tree.tree[tree.tree[k].parent].key == 3
-    # tree.delete(1.5)
-    # tree.tree[tree.tree[tree.root_idx].left].key == 1
-    # tree.delete(8)
-    # assert tree.search(8) is None
-    # tree.delete(7)
-    # assert tree.search(7) is None
-    # tree.delete(3)
-    # assert tree.search(3) is None
-    # assert tree.delete(18) is None
+    tree.delete(1.5)
+    assert tree.root_idx == 0
+    tree.tree[tree.tree[tree.root_idx].left].key == 1
+    tree.delete(8)
+    assert tree.search(8) is None
+    tree.delete(7)
+    assert tree.search(7) is None
+    tree.delete(3)
+    assert tree.search(3) is None
+    assert tree.delete(18) is None
 
 def test_CartesianTree():
     _test_CartesianTree(backend=Backend.PYTHON)

@@ -16,6 +16,7 @@ typedef struct {
     PyObject_HEAD
     SelfBalancingBinaryTree* sbbt;
     ArrayForTrees* tree;
+    PyObject* root_idx;
 } CartesianTree;
 
 static void CartesianTree_dealloc(CartesianTree *self) {
@@ -126,11 +127,39 @@ static PyObject* CartesianTree_insert(CartesianTree *self, PyObject* args) {
     Py_RETURN_NONE;
 }
 
+static PyObject* CartesianTree_delete(CartesianTree* self, PyObject *args, PyObject *kwds) {
+    Py_INCREF(Py_None);
+    PyObject* key = Py_None;
+    PyObject* balancing_info = PyZero;
+    static char* keywords[] = {"key","balancing_info", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", keywords, &key, &balancing_info)) {
+        return NULL;
+    }
+    PyObject* node_idx = SelfBalancingBinaryTree_search(self->sbbt, Py_BuildValue("(O)", key), PyDict_New());
+    if (node_idx != Py_None) {
+        Cartesian_Tree__trickle_down(self, Py_BuildValue("(O)", node_idx));
+        PyObject* kwd_bal = PyDict_New();
+        PyDict_SetItemString(kwd_bal, "balancing_info", balancing_info);
+        return SelfBalancingBinaryTree_delete(self->sbbt, Py_BuildValue("(O)", key), kwd_bal);
+    }
+    Py_RETURN_NONE;
+}
+
+static PyObject* CartesianTree_root_idx(CartesianTree *self, void *closure) {
+    return self->sbbt->bst->binary_tree->root_idx;
+}
+
+
 static struct PyMethodDef CartesianTree_PyMethodDef[] = {
     {"insert", (PyCFunction) CartesianTree_insert, METH_VARARGS, NULL},
-    // {"delete", (PyCFunction) CartesianTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
+    {"delete", (PyCFunction) CartesianTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
     {"search", (PyCFunction) CartesianTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
-    {NULL}
+    {NULL} /* Sentinel */
+};
+
+static PyGetSetDef CartesianTree_GetterSetters[] = {
+    {"root_idx", (getter) CartesianTree_root_idx, NULL, "returns the index of the tree's root", NULL},
+    {NULL}  /* Sentinel */
 };
 
 static PyMemberDef CartesianTree_PyMemberDef[] = {
@@ -168,7 +197,7 @@ static PyTypeObject CartesianTreeType = {
     /* tp_iternext */ 0,
     /* tp_methods */ CartesianTree_PyMethodDef,
     /* tp_members */ CartesianTree_PyMemberDef,
-    /* tp_getset */ 0,
+    /* tp_getset */ CartesianTree_GetterSetters,
     /* tp_base */ &SelfBalancingBinaryTreeType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,
