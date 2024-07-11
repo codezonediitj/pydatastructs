@@ -16,7 +16,6 @@ typedef struct {
     PyObject_HEAD
     SelfBalancingBinaryTree* sbbt;
     ArrayForTrees* tree;
-    PyObject* root_idx;
 } CartesianTree;
 
 static void CartesianTree_dealloc(CartesianTree *self) {
