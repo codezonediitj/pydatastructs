@@ -18,6 +18,8 @@ typedef struct {
     PyObject* parent;
     long size;
     long color;
+    bool isCartesianTreeNode;
+    long priority;
 } TreeNode;
 
 static void TreeNode_dealloc(TreeNode *self) {
@@ -42,6 +44,7 @@ static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *
     self->size = 1;
     self->is_root = false;
     self->color = 1;
+    self->isCartesianTreeNode = false;
 
     return reinterpret_cast<PyObject*>(self);
 }
