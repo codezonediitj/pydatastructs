@@ -19,7 +19,7 @@ typedef struct {
     long size;
     long color;
     bool isCartesianTreeNode;
-    long priority;
+    double priority;
 } TreeNode;
 
 static void TreeNode_dealloc(TreeNode *self) {

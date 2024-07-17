@@ -462,20 +462,27 @@ def test_CartesianTree():
 def test_cpp_CartesianTree():
     _test_CartesianTree(backend=Backend.CPP)
 
-def test_Treap():
+def _test_Treap(backend):
 
     random.seed(0)
-    tree = Treap()
+    tree = Treap(backend=backend)
     tree.insert(7, 7)
     tree.insert(2, 2)
     tree.insert(3, 3)
     tree.insert(4, 4)
     tree.insert(5, 5)
+    print(str(tree))
     assert isinstance(tree.tree[0].priority, float)
     tree.delete(1)
     assert tree.search(1) is None
     assert tree.search(2) == 1
     assert tree.delete(1) is None
+
+def test_Treap():
+    _test_Treap(Backend.PYTHON)
+
+def test_cpp_Treap():
+    _test_Treap(Backend.CPP)
 
 def _test_SelfBalancingBinaryTree(backend):
     """

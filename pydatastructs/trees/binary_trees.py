@@ -905,9 +905,18 @@ class Treap(CartesianTree):
     .. [1] https://en.wikipedia.org/wiki/Treap
 
     """
+    def __new__(cls, key=None, root_data=None, comp=None,
+            is_order_statistic=False, **kwargs):
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            if comp is None:
+                comp = lambda key1, key2: key1 < key2
+            return _trees.Treap(key, root_data, comp, is_order_statistic, **kwargs) # If any argument is not given, then it is passed as None, except for comp
+        return super().__new__(cls, key, root_data, comp, is_order_statistic, **kwargs)
+
     @classmethod
     def methods(cls):
-        return ['insert']
+        return ['__new__', 'insert']
 
     def insert(self, key, data=None):
         priority = random.random()

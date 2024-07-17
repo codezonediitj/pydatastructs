@@ -112,7 +112,7 @@ static PyObject* CartesianTree_insert(CartesianTree *self, PyObject* args) {
     }
     TreeNode* new_node = reinterpret_cast<TreeNode*>(TreeNode___new__(&TreeNodeType, Py_BuildValue("(OO)", key, data), PyDict_New()));
     new_node->isCartesianTreeNode = true;
-    new_node->priority = PyLong_AsLong(priority);
+    new_node->priority = PyFloat_AsDouble(priority);
     new_node->parent = node->parent;
     new_node->left = node->left;
     new_node->right = node->right;
