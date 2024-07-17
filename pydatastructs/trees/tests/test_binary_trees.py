@@ -389,7 +389,7 @@ def test_AVLTree():
     _test_AVLTree(backend=Backend.PYTHON)
 def test_cpp_AVLTree():
     _test_AVLTree(backend=Backend.CPP)
-test_cpp_AVLTree()
+
 def _test_BinaryIndexedTree(backend):
 
     FT = BinaryIndexedTree
