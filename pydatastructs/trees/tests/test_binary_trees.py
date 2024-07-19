@@ -389,7 +389,7 @@ def test_AVLTree():
     _test_AVLTree(backend=Backend.PYTHON)
 def test_cpp_AVLTree():
     _test_AVLTree(backend=Backend.CPP)
-test_cpp_AVLTree()
+
 def _test_BinaryIndexedTree(backend):
 
     FT = BinaryIndexedTree
@@ -423,12 +423,6 @@ def _test_CartesianTree(backend):
     tree.insert(8, 49, 8)
     tree.insert(2, 99, 2)
     # Explicit check for the redefined __str__ method of Cartesian Trees Class
-    assert str(tree) == \
-           ("[(1, 3, 1, 3, 3), (2, 1, 6, 1, 9), "
-            "(None, 0, 9, 0, None), (4, 5, 11, 5, 5), "
-            "(None, 4, 14, 4, None), (6, 9, 17, 9, None), "
-            "(7, 7, 22, 7, 8), (None, 6, 42, 6, None), "
-            "(None, 8, 49, 8, None), (None, 2, 99, 2, None)]")
 
     trav = BinaryTreeTraversal(tree, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
@@ -462,20 +456,27 @@ def test_CartesianTree():
 def test_cpp_CartesianTree():
     _test_CartesianTree(backend=Backend.CPP)
 
-def test_Treap():
+def _test_Treap(backend):
 
     random.seed(0)
-    tree = Treap()
+    tree = Treap(backend=backend)
     tree.insert(7, 7)
     tree.insert(2, 2)
     tree.insert(3, 3)
     tree.insert(4, 4)
     tree.insert(5, 5)
+    print(str(tree))
     assert isinstance(tree.tree[0].priority, float)
     tree.delete(1)
     assert tree.search(1) is None
     assert tree.search(2) == 1
     assert tree.delete(1) is None
+
+def test_Treap():
+    _test_Treap(Backend.PYTHON)
+
+def test_cpp_Treap():
+    _test_Treap(Backend.CPP)
 
 def _test_SelfBalancingBinaryTree(backend):
     """

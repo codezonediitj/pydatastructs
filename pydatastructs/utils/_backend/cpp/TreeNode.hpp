@@ -19,7 +19,7 @@ typedef struct {
     long size;
     long color;
     bool isCartesianTreeNode;
-    long priority;
+    double priority;
 } TreeNode;
 
 static void TreeNode_dealloc(TreeNode *self) {
@@ -65,6 +65,7 @@ static struct PyMemberDef TreeNode_PyMemberDef[] = {
     {"right", T_OBJECT, offsetof(TreeNode, right), 0, "TreeNode right"},
     {"parent", T_OBJECT, offsetof(TreeNode, parent), 0, "TreeNode parent"},
     {"color", T_LONG, offsetof(TreeNode, size), 0, "RedBlackTreeNode color"},
+    {"priority", T_DOUBLE, offsetof(TreeNode, priority), 0, "CartesianTreeNode's priority"},
     {NULL},
 };
 

@@ -8,6 +8,7 @@
 #include "SplayTree.hpp"
 #include "AVLTree.hpp"
 #include "CartesianTree.hpp"
+#include "Treap.hpp"
 
 static struct PyModuleDef trees_struct = {
     PyModuleDef_HEAD_INIT,
@@ -74,6 +75,12 @@ PyMODINIT_FUNC PyInit__trees(void) {
     }
     Py_INCREF(&CartesianTreeType);
     PyModule_AddObject(trees, "CartesianTree", reinterpret_cast<PyObject*>(&CartesianTreeType));
+
+    if (PyType_Ready(&TreapType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&TreapType);
+    PyModule_AddObject(trees, "Treap", reinterpret_cast<PyObject*>(&TreapType));
 
     return trees;
 }
