@@ -26,6 +26,7 @@ def _test_BinarySearchTree(backend):
     ("[(1, 8, 8, 2), (3, 3, 3, 4), (None, 10, 10, 7), (None, 1, 1, None), "
     "(5, 6, 6, 6), (None, 4, 4, None), (None, 7, 7, None), (8, 14, 14, None), "
     "(None, 13, 13, None)]")
+    assert b.root_idx == 0
 
     assert b.tree[0].left == 1
     assert b.tree[0].key == 8
@@ -171,6 +172,7 @@ def _test_AVLTree(backend):
     a.insert('H', 'H')
     a.insert('I', 'I')
     a.insert('A', 'A')
+    assert a.root_idx == 1
 
     trav = BinaryTreeTraversal(a, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
@@ -465,7 +467,7 @@ def _test_Treap(backend):
     tree.insert(3, 3)
     tree.insert(4, 4)
     tree.insert(5, 5)
-    print(str(tree))
+
     assert isinstance(tree.tree[0].priority, float)
     tree.delete(1)
     assert tree.search(1) is None
@@ -497,6 +499,7 @@ def _test_SelfBalancingBinaryTree(backend):
     assert tree.tree[3].parent == 5
     assert tree.tree[2].right != 3
     assert tree.tree[tree.tree[5].parent].right == 5
+    assert tree.root_idx == 0
 
     trav = BinaryTreeTraversal(tree, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
@@ -533,6 +536,7 @@ def _test_SplayTree(backend):
     t.insert(20, 20)
     t.insert(55, 55)
     assert str(t) == "[(None, 100, 100, None), (None, 50, 50, None), (0, 200, 200, None), (None, 40, 40, 1), (5, 30, 30, 3), (None, 20, 20, None), (4, 55, 55, 2)]"
+    assert t.root_idx == 6
 
     trav = BinaryTreeTraversal(t, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
@@ -610,6 +614,7 @@ def _test_RedBlackTree(backend):
     tree.insert(17, 17)
     tree.insert(6, 6)
     assert str(tree) == "[(11, 10, 10, 3), (10, 18, 18, None), (None, 7, 7, None), (None, 15, 15, None), (0, 16, 16, 6), (None, 30, 30, None), (1, 25, 25, 7), (5, 40, 40, 8), (None, 60, 60, None), (None, 2, 2, None), (None, 17, 17, None), (9, 6, 6, 2)]"
+    assert tree.root_idx == 4
 
     trav = BinaryTreeTraversal(tree, backend=backend)
     in_order = trav.depth_first_search(order='in_order')
