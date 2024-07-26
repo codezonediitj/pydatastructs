@@ -284,6 +284,11 @@ static PyObject* SplayTree_split(SplayTree *self, PyObject* args) {
     return reinterpret_cast<PyObject*>(other);
 }
 
+static PyObject* SplayTree_root_idx(SplayTree *self, void *closure) {
+    return self->sbbt->bst->binary_tree->root_idx;
+}
+
+
 static struct PyMethodDef SplayTree_PyMethodDef[] = {
     {"insert", (PyCFunction) SplayTree_insert, METH_VARARGS, NULL},
     {"delete", (PyCFunction) SplayTree_delete, METH_VARARGS, NULL},
@@ -292,6 +297,10 @@ static struct PyMethodDef SplayTree_PyMethodDef[] = {
     {NULL}
 };
 
+static PyGetSetDef SplayTree_GetterSetters[] = {
+    {"root_idx", (getter) SplayTree_root_idx, NULL, "returns the index of the tree's root", NULL},
+    {NULL}  /* Sentinel */
+};
 
 static PyMemberDef SplayTree_PyMemberDef[] = {
     {"tree", T_OBJECT_EX, offsetof(SplayTree, tree), 0, "tree"},
@@ -328,7 +337,7 @@ static PyTypeObject SplayTreeType = {
     /* tp_iternext */ 0,
     /* tp_methods */ SplayTree_PyMethodDef,
     /* tp_members */ SplayTree_PyMemberDef,
-    /* tp_getset */ 0,
+    /* tp_getset */ SplayTree_GetterSetters,
     /* tp_base */ &SelfBalancingBinaryTreeType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,

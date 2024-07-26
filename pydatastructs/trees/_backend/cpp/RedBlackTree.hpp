@@ -578,6 +578,10 @@ static PyObject* RedBlackTree_search(RedBlackTree* self, PyObject *args, PyObjec
     return BinarySearchTree_search(self->sbbt->bst, args, kwds);
 }
 
+static PyObject* RedBlackTree_root_idx(RedBlackTree *self, void *closure) {
+    return self->sbbt->bst->binary_tree->root_idx;
+}
+
 
 static struct PyMethodDef RedBlackTree_PyMethodDef[] = {
     {"insert", (PyCFunction) RedBlackTree_insert, METH_VARARGS, NULL},
@@ -590,6 +594,11 @@ static struct PyMethodDef RedBlackTree_PyMethodDef[] = {
     {"_get_sibling", (PyCFunction) RedBlackTree__get_sibling, METH_VARARGS, NULL},
     {"_get_uncle", (PyCFunction) RedBlackTree__get_uncle, METH_VARARGS, NULL},
     {NULL}
+};
+
+static PyGetSetDef RedBlackTree_GetterSetters[] = {
+    {"root_idx", (getter) RedBlackTree_root_idx, NULL, "returns the index of the tree's root", NULL},
+    {NULL}  /* Sentinel */
 };
 
 static PyMemberDef RedBlackTree_PyMemberDef[] = {
@@ -627,7 +636,7 @@ static PyTypeObject RedBlackTreeType = {
     /* tp_iternext */ 0,
     /* tp_methods */ RedBlackTree_PyMethodDef,
     /* tp_members */ RedBlackTree_PyMemberDef,
-    /* tp_getset */ 0,
+    /* tp_getset */ RedBlackTree_GetterSetters,
     /* tp_base */ &SelfBalancingBinaryTreeType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,

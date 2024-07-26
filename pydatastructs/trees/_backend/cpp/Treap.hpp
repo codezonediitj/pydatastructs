@@ -62,12 +62,21 @@ static PyObject* Treap_insert(Treap *self, PyObject* args) {
     return CartesianTree_insert(self->ct, Py_BuildValue("(OOO)", key, priority, data));
 }
 
+static PyObject* Treap_root_idx(Treap *self, void *closure) {
+    return self->ct->sbbt->bst->binary_tree->root_idx;
+}
+
 
 static struct PyMethodDef Treap_PyMethodDef[] = {
     {"insert", (PyCFunction) Treap_insert, METH_VARARGS, NULL},
     {"delete", (PyCFunction) Treap_delete, METH_VARARGS | METH_KEYWORDS, NULL},
     {"search", (PyCFunction) Treap_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL} /* Sentinel */
+};
+
+static PyGetSetDef Treap_GetterSetters[] = {
+    {"root_idx", (getter) Treap_root_idx, NULL, "returns the index of the tree's root", NULL},
+    {NULL}  /* Sentinel */
 };
 
 static PyMemberDef Treap_PyMemberDef[] = {
@@ -105,7 +114,7 @@ static PyTypeObject TreapType = {
     /* tp_iternext */ 0,
     /* tp_methods */ Treap_PyMethodDef,
     /* tp_members */ Treap_PyMemberDef,
-    /* tp_getset */ 0,
+    /* tp_getset */ Treap_GetterSetters,
     /* tp_base */ &CartesianTreeType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,

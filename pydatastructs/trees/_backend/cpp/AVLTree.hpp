@@ -57,7 +57,7 @@ static long AVLTree_left_height(AVLTree* self, PyObject *args) {
         BinaryTree* bt = self->sbbt->bst->binary_tree;
         return reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node->left)])->height;
     }
-    else{
+    else {
         return (-1);
     }
 }
@@ -68,7 +68,7 @@ static long AVLTree_right_height(AVLTree* self, PyObject *args) {
         BinaryTree* bt = self->sbbt->bst->binary_tree;
         return reinterpret_cast<TreeNode*>(bt->tree->_one_dimensional_array->_data[PyLong_AsLong(node->right)])->height;
     }
-    else{
+    else {
         return -1;
     }
 }
@@ -306,6 +306,11 @@ static PyObject* AVLTree_delete(AVLTree* self, PyObject *args, PyObject *kwds) {
     Py_RETURN_TRUE;
 }
 
+static PyObject* AVLTree_root_idx(AVLTree *self, void *closure) {
+    return self->sbbt->bst->binary_tree->root_idx;
+}
+
+
 static struct PyMethodDef AVLTree_PyMethodDef[] = {
     {"search", (PyCFunction) AVLTree_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {"insert", (PyCFunction) AVLTree_insert, METH_VARARGS, NULL},
@@ -319,6 +324,11 @@ static struct PyMethodDef AVLTree_PyMethodDef[] = {
     {"_left_rotate", (PyCFunction) AVLTree__left_rotate, METH_VARARGS, NULL},
     {"_right_rotate", (PyCFunction) AVLTree__right_rotate, METH_VARARGS, NULL},
     {NULL}
+};
+
+static PyGetSetDef AVLTree_GetterSetters[] = {
+    {"root_idx", (getter) AVLTree_root_idx, NULL, "returns the index of the tree's root", NULL},
+    {NULL}  /* Sentinel */
 };
 
 static PyMemberDef AVLTree_PyMemberDef[] = {
@@ -356,7 +366,7 @@ static PyTypeObject AVLTreeType = {
     /* tp_iternext */ 0,
     /* tp_methods */ AVLTree_PyMethodDef,
     /* tp_members */ AVLTree_PyMemberDef,
-    /* tp_getset */ 0,
+    /* tp_getset */ AVLTree_GetterSetters,
     /* tp_base */ &SelfBalancingBinaryTreeType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,

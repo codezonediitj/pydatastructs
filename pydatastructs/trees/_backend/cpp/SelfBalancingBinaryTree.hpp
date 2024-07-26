@@ -219,6 +219,11 @@ static PyObject* SelfBalancingBinaryTree__right_left_rotate(SelfBalancingBinaryT
     Py_RETURN_NONE;
 }
 
+static PyObject* SelfBalancingBinaryTree_root_idx(SelfBalancingBinaryTree *self, void *closure) {
+    return self->bst->binary_tree->root_idx;
+}
+
+
 static struct PyMethodDef SelfBalancingBinaryTree_PyMethodDef[] = {
     {"insert", (PyCFunction) SelfBalancingBinaryTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     {"delete", (PyCFunction) SelfBalancingBinaryTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
@@ -236,6 +241,11 @@ static struct PyMethodDef SelfBalancingBinaryTree_PyMethodDef[] = {
     {"_left_right_rotate", (PyCFunction) SelfBalancingBinaryTree__left_right_rotate, METH_VARARGS, NULL},
     {"_right_left_rotate", (PyCFunction) SelfBalancingBinaryTree__right_left_rotate, METH_VARARGS, NULL},
     {NULL}
+};
+
+static PyGetSetDef SelfBalancingBinaryTree_GetterSetters[] = {
+    {"root_idx", (getter) SelfBalancingBinaryTree_root_idx, NULL, "returns the index of the tree's root", NULL},
+    {NULL}  /* Sentinel */
 };
 
 static PyMemberDef SelfBalancingBinaryTree_PyMemberDef[] = {
@@ -273,7 +283,7 @@ static PyTypeObject SelfBalancingBinaryTreeType = {
     /* tp_iternext */ 0,
     /* tp_methods */ SelfBalancingBinaryTree_PyMethodDef,
     /* tp_members */ SelfBalancingBinaryTree_PyMemberDef,
-    /* tp_getset */ 0,
+    /* tp_getset */ SelfBalancingBinaryTree_GetterSetters,
     /* tp_base */ &BinarySearchTreeType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,

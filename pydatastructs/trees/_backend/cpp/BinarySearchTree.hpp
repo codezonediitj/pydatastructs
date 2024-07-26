@@ -659,6 +659,11 @@ static PyObject* BinarySearchTree_select(BinarySearchTree* self, PyObject* args)
     Py_RETURN_NONE; // dummy return statement, never executed
 }
 
+static PyObject* BinarySearchTree_root_idx(BinarySearchTree *self, void *closure) {
+    return self->binary_tree->root_idx;
+}
+
+
 static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"insert", (PyCFunction) BinarySearchTree_insert, METH_VARARGS | METH_KEYWORDS, NULL},
     {"delete", (PyCFunction) BinarySearchTree_delete, METH_VARARGS | METH_KEYWORDS, NULL},
@@ -672,6 +677,11 @@ static struct PyMethodDef BinarySearchTree_PyMethodDef[] = {
     {"rank", (PyCFunction) BinarySearchTree_rank, METH_VARARGS, NULL},
     {"select", (PyCFunction) BinarySearchTree_select, METH_VARARGS, NULL},
     {NULL}
+};
+
+static PyGetSetDef BinarySearchTree_GetterSetters[] = {
+    {"root_idx", (getter) BinarySearchTree_root_idx, NULL, "returns the index of the tree's root", NULL},
+    {NULL}  /* Sentinel */
 };
 
 static PyMemberDef BinarySearchTree_PyMemberDef[] = {
@@ -709,7 +719,7 @@ static PyTypeObject BinarySearchTreeType = {
     /* tp_iternext */ 0,
     /* tp_methods */ BinarySearchTree_PyMethodDef,
     /* tp_members */ BinarySearchTree_PyMemberDef,
-    /* tp_getset */ 0,
+    /* tp_getset */ BinarySearchTree_GetterSetters,
     /* tp_base */ &BinaryTreeType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,
