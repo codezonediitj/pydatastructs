@@ -441,9 +441,8 @@ class ArrayForTrees(DynamicOneDimensionalArray):
     ==========
 
     backend: pydatastructs.Backend
-        The backend to be used.
-        Optional, by default, the best available
-        backend is used.
+        The backend to be used. Available backends: Python and C++
+        Optional, by default, the Python backend is used. For faster execution, use the C++ backend.
 
     See Also
     ========

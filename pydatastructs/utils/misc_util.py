@@ -60,9 +60,8 @@ class TreeNode(Node):
     right: int
         Optional, index of the right child node.
     backend: pydatastructs.Backend
-        The backend to be used.
-        Optional, by default, the best available
-        backend is used.
+        The backend to be used. Available backends: Python and C++
+        Optional, by default, the Python backend is used. For faster execution, use the C++ backend.
     """
 
     __slots__ = ['key', 'data', 'left', 'right', 'is_root',

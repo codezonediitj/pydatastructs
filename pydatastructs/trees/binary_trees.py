@@ -44,9 +44,8 @@ class BinaryTree(object):
         Set it to True, if you want to use the
         order statistic features of the tree.
     backend: pydatastructs.Backend
-        The backend to be used.
-        Optional, by default, the best available
-        backend is used.
+        The backend to be used. Available backends: Python and C++
+        Optional, by default, the Python backend is used. For faster execution, use the C++ backend.
 
     References
     ==========
@@ -1573,9 +1572,8 @@ class BinaryTreeTraversal(object):
         The binary tree for whose traversal
         is to be done.
     backend: pydatastructs.Backend
-        The backend to be used.
-        Optional, by default, the best available
-        backend is used.
+        The backend to be used. Available backends: Python and C++
+        Optional, by default, the Python backend is used. For faster execution, use the C++ backend.
 
     Traversals
     ==========
@@ -1775,9 +1773,8 @@ class BinaryIndexedTree(object):
         The array whose elements are to be
         considered for the queries.
     backend: pydatastructs.Backend
-        The backend to be used.
-        Optional, by default, the best available
-        backend is used.
+        The backend to be used. Available backends: Python and C++
+        Optional, by default, the Python backend is used. For faster execution, use the C++ backend.
 
     Examples
     ========
