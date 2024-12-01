@@ -40,7 +40,7 @@ jobs:
       
       - name: Build C++ Code with Coverage
         run: |
-          mkdir build
+          mkdir -p build
           cd build
           cmake -DCMAKE_CXX_FLAGS="--coverage" ..
           make
