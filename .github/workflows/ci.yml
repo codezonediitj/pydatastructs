@@ -36,15 +36,8 @@ jobs:
 
       - name: Build package
         run: |
-          python scripts/build/install.py
-      
-      - name: Build C++ Code with Coverage
-        run: |
-          mkdir -p build
-          cd build
-          cmake -DCMAKE_CXX_FLAGS="--coverage" ..
-          make
-  
+          CXXFLAGS=--coverage CFLAGS=--coverage python scripts/build/install.py
+
       - name: Run C++ Tests
         run: |
           cd build
