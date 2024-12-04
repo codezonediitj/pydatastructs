@@ -37,12 +37,11 @@ jobs:
       - name: Build package
         run: |
           CXXFLAGS=--coverage CFLAGS=--coverage python scripts/build/install.py
-
-      - name: Run C++ Tests
+# coverage tests     
+      - name: Run tests
         run: |
-          cd build
-          ./test_binary  
-        # Capture and Generating Coverage Report with lcov
+          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+
       - name: Capture Coverage Data with lcov
         run: |
           cd build
@@ -52,10 +51,6 @@ jobs:
         run: |
           cd build
           genhtml coverage.info --output-directory coverage_report
-  
-      - name: Run tests
-        run: |
-          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v3
