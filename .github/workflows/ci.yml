@@ -52,7 +52,7 @@ jobs:
           cd build
           sudo apt-get update
           sudo apt-get install -y lcov
-          lcov --capture --directory . --output-file coverage.info
+          lcov --capture --directory . --output-file coverage.info --no-external
   
       - name: Generate HTML Coverage Report with genhtml
         run: |
