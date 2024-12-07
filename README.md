@@ -68,6 +68,14 @@ In the terminal, run: `python -c "from pydatastructs.utils.testing_util import t
 
 This will run all the test files, except benchmark tests. This should be used if benchmark tests are computationally too heavy to be run on your local machine.
 
+### testing specific module
+
+If you want to run tests for a specific module or file, you can use the following command:
+
+```python
+pytest <path_to_test_file>
+```
+
 Why do we use Python?
 ------------------
 
