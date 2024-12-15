@@ -33,14 +33,27 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
+      
+      - name: Install lcov
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov
 
       - name: Build package
         run: |
-          python scripts/build/install.py
-
+          CXXFLAGS=--coverage CFLAGS=--coverage python scripts/build/install.py
+# coverage tests     
       - name: Run tests
         run: |
           python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+
+      - name: Capture Coverage Data with lcov
+        run: |
+          lcov --capture --directory . --output-file coverage.info --no-external
+  
+      - name: Generate HTML Coverage Report with genhtml
+        run: |
+          genhtml coverage.info --output-directory coverage_report
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v3
