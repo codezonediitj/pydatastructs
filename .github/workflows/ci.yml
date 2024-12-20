@@ -200,3 +200,64 @@ jobs:
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
+
+test-python-c++-unified-report:
+  runs-on: ubuntu-latest
+  timeout-minutes: 20
+  steps:
+    # Step 1: Checkout Repository
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+        
+    # Step 2: Set up Python
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+        
+    # Step 3: Install Python Dependencies
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest pytest-cov cobertura-merge
+        
+    # Step 4: Run Python Tests and Generate Coverage
+    - name: Run Python Tests
+      run: |
+       pytest tests/ --cov=src --cov-report xml:coverage-python.xml --cov-report html:coverage-html
+        
+    # Step 5: Install C++ Dependencies
+    - name: Install C++ Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++ gcov lcov
+        
+    # Step 6: Compile and Run C++ Tests
+    - name: Compile and Run C++ Tests
+      run: |
+        g++ -o tests/test_cpp tests/test.cpp
+        ./tests/test_cpp
+        lcov --capture --directory . --output-file coverage-cpp.info
+        
+    # Step 7: Convert C++ Coverage to XML (Using `gcovr`)
+    - name: Convert C++ Coverage to XML
+      run: |
+        python -m pip install gcovr
+        gcovr -r . --xml-pretty --output coverage-cpp.xml
+        
+    # Step 8: Combine Coverage Reports
+    - name: Combine Coverage Reports
+      run: |
+        python -m cobertura_merge coverage-python.xml coverage-cpp.xml -o unified-reports/combined-coverage.xml
+        
+    # Step 9: Generate HTML Report from Combined Coverage
+    - name: Generate HTML Report
+      run: |
+        python -m pip install coverage html-report
+        coverage html -i --data unified-reports/combined-coverage.xml --directory unified-reports/html
+        
+    # Step 10: Upload Combined Coverage to Codecov
+    - name: Upload Combined Coverage to Codecov
+      run: bash <(curl -s https://codecov.io/bash) -f unified-reports/combined-coverage.xml
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
