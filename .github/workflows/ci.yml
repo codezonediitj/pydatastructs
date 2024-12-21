@@ -207,26 +207,26 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-        
+
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov cobertura-merge
-        
+          python -m pip install pytest pytest-cov coverage
+
       - name: Run Python Tests
         run: |
           pytest tests/ --cov=src --cov-report xml:coverage-python.xml --cov-report html:coverage-html
-        
+
       - name: Install C++ Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y g++ gcov lcov
-        
+
       - name: Compile and Run C++ Tests
         run: |
           g++ -o tests/test_cpp tests/test.cpp
@@ -237,16 +237,15 @@ jobs:
         run: |
           python -m pip install gcovr
           gcovr -r . --xml-pretty --output coverage-cpp.xml
-        
+
       - name: Combine Coverage Reports
         run: |
-          python -m cobertura_merge coverage-python.xml coverage-cpp.xml -o unified-reports/combined-coverage.xml
-        
+          coverage combine coverage-python.xml coverage-cpp.xml -o unified-reports/combined-coverage.xml
+
       - name: Generate HTML Report
         run: |
-          python -m pip install coverage html-report
           coverage html -i --data unified-reports/combined-coverage.xml --directory unified-reports/html
-        
+
       - name: Upload Combined Coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash) -f unified-reports/combined-coverage.xml
         env:
