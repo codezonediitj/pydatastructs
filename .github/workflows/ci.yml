@@ -220,7 +220,7 @@ jobs:
 
       - name: Run Python Tests
         run: |
-          pytest tests/ --cov=src --cov-report xml:coverage-python.xml --cov-report html:coverage-html
+          pytest pydatastructs/utils/tests/ --cov=src --cov-report xml:coverage-python.xml --cov-report html:coverage-html
 
       - name: Install C++ Dependencies
         run: |
