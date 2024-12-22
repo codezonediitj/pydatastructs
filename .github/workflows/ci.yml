@@ -43,18 +43,16 @@ jobs:
         run: |
           CXXFLAGS=--coverage CFLAGS=--coverage python scripts/build/install.py
 # coverage tests     
-      - name: Run tests
+      - name: Run python tests
         run: |
-          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+          python -m pytest --doctest-modules --cov=./ --cov-report=xml:coverage-python.xml -s
 
-      - name: Capture Coverage Data with lcov
+      - name: Capture C++ Coverage Data
         run: |
-          lcov --capture --directory . --output-file coverage.info --no-external
-  
-      - name: Generate HTML Coverage Report with genhtml
-        run: |
-          genhtml coverage.info --output-directory coverage_report
-
+          lcov --capture --directory . --output-file coverage-cpp.info --no-external
+          python -m pip install gcovr
+          gcovr -r . --xml-pretty --output coverage-cpp.xml
+      
       - name: Upload Coverage
         uses: codecov/codecov-action@v3
         with:
@@ -62,7 +60,7 @@ jobs:
           directory: ./coverage/reports/
           env_vars: OS,PYTHON
           fail_ci_if_error: false
-          files: ./coverage.xml
+          files: ./coverage-python.xml,./coverage-cpp.xml
           flags: unittests
           name: codecov-umbrella
           path_to_write_report: ./coverage/codecov_report.txt
