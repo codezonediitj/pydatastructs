@@ -43,18 +43,21 @@ jobs:
         run: |
           CXXFLAGS=--coverage CFLAGS=--coverage python scripts/build/install.py
 # coverage tests     
-      - name: Run tests
+      - name: Run python tests
         run: |
-          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+          python -m pytest --doctest-modules --cov=./ --cov-report=xml:coverage-python.xml -s
 
-      - name: Capture Coverage Data with lcov
+      - name: Capture C++ Coverage Data
         run: |
-          lcov --capture --directory . --output-file coverage.info --no-external
-  
-      - name: Generate HTML Coverage Report with genhtml
+          lcov --capture --directory . --output-file coverage-cpp.info --no-external
+          python -m pip install gcovr
+          gcovr -r . --xml-pretty --output coverage-cpp.xml
+      
+      - name: Merge Coverage Reports
         run: |
-          genhtml coverage.info --output-directory coverage_report
-
+          python -m pip install coverage-merge
+          coverage-merge -o merged-coverage.xml coverage-python.xml coverage-cpp.xml
+      
       - name: Upload Coverage
         uses: codecov/codecov-action@v3
         with:
@@ -62,7 +65,7 @@ jobs:
           directory: ./coverage/reports/
           env_vars: OS,PYTHON
           fail_ci_if_error: false
-          files: ./coverage.xml
+          files: ./merged-coverage.xml
           flags: unittests
           name: codecov-umbrella
           path_to_write_report: ./coverage/codecov_report.txt
@@ -200,53 +203,3 @@ jobs:
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
-  
-  test-python-cpp-unified-report:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Python Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov coverage
-
-      - name: Run Python Tests
-        run: |
-          pytest pydatastructs/utils/tests/ --cov=src --cov-report xml:coverage-python.xml --cov-report html:coverage-html
-
-      - name: Install C++ Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y g++ gcov lcov
-
-      - name: Compile and Run C++ Tests
-        run: |
-          g++ -o tests/test_cpp tests/test.cpp
-          ./tests/test_cpp
-          lcov --capture --directory . --output-file coverage-cpp.info
-
-      - name: Convert C++ Coverage to XML
-        run: |
-          python -m pip install gcovr
-          gcovr -r . --xml-pretty --output coverage-cpp.xml
-
-      - name: Combine Coverage Reports
-        run: |
-          coverage combine coverage-python.xml coverage-cpp.xml -o unified-reports/combined-coverage.xml
-
-      - name: Generate HTML Report
-        run: |
-          coverage html -i --data unified-reports/combined-coverage.xml --directory unified-reports/html
-
-      - name: Upload Combined Coverage to Codecov
-        run: bash <(curl -s https://codecov.io/bash) -f unified-reports/combined-coverage.xml
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
