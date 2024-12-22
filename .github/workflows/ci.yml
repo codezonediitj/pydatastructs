@@ -55,8 +55,9 @@ jobs:
       
       - name: Merge Coverage Reports
         run: |
-          python -m pip install coverage-merge
-          coverage-merge -o merged-coverage.xml coverage-python.xml coverage-cpp.xml
+          python -m pip install coverage
+          coverage combine coverage-python.xml coverage-cpp.xml
+          coverage xml -o merged-coverage.xml
       
       - name: Upload Coverage
         uses: codecov/codecov-action@v3
