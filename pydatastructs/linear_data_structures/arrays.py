@@ -421,6 +421,9 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
     @property
     def size(self):
         return self._size
+    
+    def __len__(self):
+        return self._num
 
     def __str__(self):
         to_be_printed = ['' for _ in range(self._last_pos_filled + 1)]
