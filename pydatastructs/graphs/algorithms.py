@@ -24,6 +24,7 @@ __all__ = [
     'topological_sort',
     'topological_sort_parallel',
     'max_flow'
+    'a_star_with_manhattan'
 ]
 
 Stack = Queue = deque
@@ -700,6 +701,7 @@ def shortest_paths(graph: Graph, algorithm: str,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
 
         'dijkstra' -> Dijkstra algorithm as given in [2].
+        'a_star_with_manhattan' -> A* algorithm with Manhattan distance
     source: str
         The name of the source the node.
     target: str
@@ -736,16 +738,27 @@ def shortest_paths(graph: Graph, algorithm: str,
     ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
     >>> shortest_paths(G, 'dijkstra', 'V1')
     ({'V2': 11, 'V3': 21, 'V1': 0}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+    >>> grid_graph = Graph(AdjacencyListGraphNode("0,0"), AdjacencyListGraphNode("1,1"))
+    >>> grid_graph.add_edge('0,0', '1,1', 2)
+    >>> shortest_paths(grid_graph, 'a_star_with_manhattan', '0,0', '1,1')
+    (2, {'1,1': '0,0'})
 
     References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
     .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    .. [3] https://en.wikipedia.org/wiki/A*_search_algorithm
     """
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
+    if algorithm == 'a_star_with_manhattan':
+        if not target:
+            raise ValueError("Target must be specified for A* algorithm")
+        
+        func = "_a_star_with_manhattan_adjacency_list"
+        return getattr(algorithms, func)(graph, source, target)
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
         raise NotImplementedError(
@@ -811,6 +824,51 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
 
 _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
 
+def _a_star_with_manhattan_adjacency_list(graph: Graph, start: str, target: str, **kwargs):
+    """
+    A* algorithm with Manhattan distance as the heuristic function for grid-based graphs.
+    """
+    def manhattan_distance(node1: str, node2: str) -> float:
+        try:
+            x1, y1 = map(int, node1.split(","))
+            x2, y2 = map(int, node2.split(","))
+            return abs(x1 - x2) + abs(y1 - y2)
+        except (ValueError, TypeError):
+            raise ValueError(f"Invalid node format. Expected 'x,y', got {node1} or {node2}")
+    if start == target:
+        return 0, {start: None}
+    if start not in graph.vertices or target not in graph.vertices:
+        raise ValueError(f"Start or target node not in graph. Start: {start}, Target: {target}")
+    g_score = {v: float('inf') for v in graph.vertices}
+    f_score = {v: float('inf') for v in graph.vertices}
+    pred = {v: None for v in graph.vertices}
+    visited = {v: False for v in graph.vertices}
+    g_score[start] = 0
+    f_score[start] = manhattan_distance(start, target)
+    pq = PriorityQueue(implementation='binomial_heap')
+    pq.push(start, f_score[start])
+    while not pq.is_empty:
+        current = pq.pop()
+        if current == target:
+            return g_score[target], {target: start}
+        visited[current] = True
+        for neighbor in graph.neighbors(current):
+            if visited[neighbor.name]:
+                continue
+            edge = graph.get_edge(current, neighbor.name)
+            if not edge:
+                continue
+            tentative_g_score = g_score[current] + edge.value
+            if tentative_g_score < g_score[neighbor.name]:
+                pred[neighbor.name] = current
+                g_score[neighbor.name] = tentative_g_score
+                f_score[neighbor.name] = (
+                    tentative_g_score + 
+                    manhattan_distance(neighbor.name, target)
+                )
+                pq.push(neighbor.name, f_score[neighbor.name])
+    raise ValueError(f"No path exists between {start} and {target}")
+_a_star_with_manhattan_adjacency_matrix = _a_star_with_manhattan_adjacency_list
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
     """
