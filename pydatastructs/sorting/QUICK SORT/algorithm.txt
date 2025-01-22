@@ -1,0 +1,53 @@
+
+Purpose
+
+Quick Sort is a highly efficient divide-and-conquer sorting algorithm. 
+It is commonly used because of its performance, simplicity, and ability to work in-place without requiring additional memory.
+The algorithm works by partitioning the array around a pivot element and recursively sorting the subarrays.
+
+
+
+algorithm:-
+
+-> Input
+    An unsorted array arr[] of size n.
+    Two indices start and end representing the segment of the array to be sorted.
+
+-> Output
+    A sorted version of the array arr[] in ascending order.
+
+QuickSort(arr, start, end):
+    Base Condition:
+        If start is greater than or equal to end, return (the array segment is already sorted).
+
+Partitioning:
+    Call the Partition() function to partition the array into two segments:
+        Elements smaller than or equal to the pivot.
+        Elements greater than the pivot.
+        The function returns the index of the pivot (pivotIndex), where the pivot is in its correct position.
+
+Recursive Sorting:
+
+    Recursively sort the left subarray (start to pivotIndex - 1).
+    Recursively sort the right subarray (pivotIndex + 1 to end).
+
+Termination:
+    The recursion terminates when all subarrays are reduced to size 1 or 0, and the entire array is sorted.
+
+Partition(arr, start, end):
+    Select the pivot element, typically the last element of the segment:
+        pivot ← arr[end].
+
+Initialize a pointer partitionIndex to start. This will keep track of the position where the next smaller element should be placed.
+
+Iterate through the array segment from start to end - 1:
+
+    For each element:
+        If the element is smaller than or equal to the pivot:
+            Swap the element with the element at partitionIndex.
+            Increment partitionIndex.
+
+After the loop, place the pivot in its correct position by swapping it with the element at partitionIndex.
+
+Return the partitionIndex, which is the final position of the pivot.
+
