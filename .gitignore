@@ -72,3 +72,4 @@ venv/
 _site
 Gemfile.lock
 node_modules
+.pyd
