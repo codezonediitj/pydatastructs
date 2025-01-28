@@ -72,4 +72,4 @@ venv/
 _site
 Gemfile.lock
 node_modules
-.pyd
+.cp312-win_amd64.pyd
