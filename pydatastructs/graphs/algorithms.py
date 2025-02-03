@@ -753,13 +753,6 @@ def shortest_paths(graph: Graph, algorithm: str,
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
-    if algorithm == 'a_star_with_manhattan':
-        # A* with this implementation requires both source and target
-        if not target:
-            raise ValueError("Target must be specified for A* algorithm")
-        
-        func = "_a_star_with_manhattan_" + graph._impl
-        return getattr(algorithms, func)(graph, source, target)
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
         raise NotImplementedError(
