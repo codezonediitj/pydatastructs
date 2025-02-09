@@ -25,7 +25,7 @@ __all__ = [
     'topological_sort',
     'topological_sort_parallel',
     'max_flow'
-    'a_star_with_manhattan'
+    '_a_star_with_manhattan_adjacency_list'
 ]
 
 Stack = Queue = deque
@@ -743,10 +743,6 @@ def shortest_paths(graph: Graph, algorithm: str,
     >>> grid_graph.add_edge('0,0', '1,1', 2)
     >>> shortest_paths(grid_graph, 'a_star_with_manhattan', '0,0', '1,1')
     (2, {'1,1': '0,0'})
-<<<<<<< HEAD
-=======
-
->>>>>>> main
     References
     ==========
 
@@ -757,12 +753,6 @@ def shortest_paths(graph: Graph, algorithm: str,
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
-    if algorithm == 'a_star_with_manhattan':
-        if not target:
-            raise ValueError("Target must be specified for A* algorithm")
-        
-        func = "_a_star_with_manhattan_adjacency_list"
-        return getattr(algorithms, func)(graph, source, target)
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
         raise NotImplementedError(
