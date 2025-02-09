@@ -380,10 +380,12 @@ class DynamicOneDimensionalArray(DynamicArray, OneDimensionalArray):
         below load factor.
         """
         if force:
-            i = -1
-            while self._data[i] is None:
-                i -= 1
-            self._last_pos_filled = i%self._size
+            left = 0
+            for i in range(self._size):
+                if self._data[i] is not None:
+                    self._data[left], self._data[i] = self._data[i], self._data[left]  
+                    left += 1
+            self._last_pos_filled = left - 1
         if (self._num/self._size < self._load_factor):
             arr_new = OneDimensionalArray(self._dtype, 2*self._num + 1)
             j = 0
