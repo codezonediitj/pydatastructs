@@ -828,6 +828,9 @@ def _a_star_with_manhattan_adjacency_list(graph: Graph, start: str, target: str,
     """
     A* algorithm with Manhattan distance as the heuristic function for grid-based graphs.
     """
+    raise_if_backend_is_not_python(
+        _a_star_with_manhattan_adjacency_list, kwargs.get('backend', Backend.PYTHON)
+    )
     def manhattan_distance(node1: str, node2: str) -> float:
         try:
             x1, y1 = map(int, node1.split(","))
@@ -869,6 +872,7 @@ def _a_star_with_manhattan_adjacency_list(graph: Graph, start: str, target: str,
                 pq.push(neighbor.name, f_score[neighbor.name])
     raise ValueError(f"No path exists between {start} and {target}")
 _a_star_with_manhattan_adjacency_matrix = _a_star_with_manhattan_adjacency_list
+
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
     """
