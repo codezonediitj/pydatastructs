@@ -743,6 +743,10 @@ def shortest_paths(graph: Graph, algorithm: str,
     >>> grid_graph.add_edge('0,0', '1,1', 2)
     >>> shortest_paths(grid_graph, 'a_star_with_manhattan', '0,0', '1,1')
     (2, {'1,1': '0,0'})
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
     References
     ==========
 
@@ -753,6 +757,12 @@ def shortest_paths(graph: Graph, algorithm: str,
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
+    if algorithm == 'a_star_with_manhattan':
+        if not target:
+            raise ValueError("Target must be specified for A* algorithm")
+        
+        func = "_a_star_with_manhattan_adjacency_list"
+        return getattr(algorithms, func)(graph, source, target)
     func = "_" + algorithm + "_" + graph._impl
     if not hasattr(algorithms, func):
         raise NotImplementedError(
@@ -822,6 +832,9 @@ def _a_star_with_manhattan_adjacency_list(graph: Graph, start: str, target: str,
     """
     A* algorithm with Manhattan distance as the heuristic function for grid-based graphs.
     """
+    raise_if_backend_is_not_python(
+        _a_star_with_manhattan_adjacency_list, kwargs.get('backend', Backend.PYTHON)
+    )
     def manhattan_distance(node1: str, node2: str) -> float:
         try:
             x1, y1 = map(int, node1.split(","))
@@ -829,7 +842,6 @@ def _a_star_with_manhattan_adjacency_list(graph: Graph, start: str, target: str,
             return abs(x1 - x2) + abs(y1 - y2)
         except (ValueError, TypeError):
             raise ValueError(f"Invalid node format. Expected 'x,y', got {node1} or {node2}")
-    # Validate inputs
     if start == target:
         return 0, {start: None}
     if start not in graph.vertices or target not in graph.vertices:
@@ -845,12 +857,7 @@ def _a_star_with_manhattan_adjacency_list(graph: Graph, start: str, target: str,
     while not pq.is_empty:
         current = pq.pop()
         if current == target:
-            path_pred = {}
-            node = target
-            while node is not None:
-                path_pred[node] = pred[node]
-                node = pred[node]
-            return g_score[target], path_pred
+            return g_score[target], {target: start}
         visited[current] = True
         for neighbor in graph.neighbors(current):
             if visited[neighbor.name]:
@@ -869,6 +876,7 @@ def _a_star_with_manhattan_adjacency_list(graph: Graph, start: str, target: str,
                 pq.push(neighbor.name, f_score[neighbor.name])
     raise ValueError(f"No path exists between {start} and {target}")
 _a_star_with_manhattan_adjacency_matrix = _a_star_with_manhattan_adjacency_list
+
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
     """
