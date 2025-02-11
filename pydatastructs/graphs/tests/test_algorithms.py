@@ -4,7 +4,6 @@ minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths, topological_sort,
 topological_sort_parallel, max_flow)
 from pydatastructs.utils.raises_util import raises
-
 def test_breadth_first_search():
 
     def _test_breadth_first_search(ds):
@@ -293,7 +292,36 @@ def test_shortest_paths():
         graph.remove_edge('SLC', 'D')
         graph.add_edge('D', 'SLC', -10)
         assert raises(ValueError, lambda: shortest_paths(graph, 'bellman_ford', 'SLC'))
+    
 
+    """def _test_a_star_manhattan(ds):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        vertices = [
+            GraphNode("0,0"),
+            GraphNode("1,1"),
+            GraphNode("2,2")
+        ]
+        graph = Graph(*vertices)
+        graph.add_edge("0,0", "1,1", 2)
+        graph.add_edge("1,1", "2,2", 3)
+        distance, pred = shortest_paths(graph, 'a_star_with_manhattan', "0,0", "2,2")
+        assert distance == 5  
+        assert pred['2,2'] == '1,1'
+        assert pred['1,1'] == '0,0'
+        no_path_graph = Graph(
+            GraphNode("0,0"),
+            GraphNode("1,1"),
+            GraphNode("2,2")
+        )
+        with raises(ValueError, match="No path exists"):
+            shortest_paths(no_path_graph, 'a_star_with_manhattan', "0,0", "2,2")
+        # Test same node scenario
+        same_node_graph = Graph(GraphNode("1,1"))
+        distance, pred = shortest_paths(same_node_graph, 'a_star_with_manhattan', "1,1", "1,1")
+        assert distance == 0
+        assert pred == {'1,1': None}"""
+        
     def _test_shortest_paths_negative_edges(ds, algorithm):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -321,6 +349,8 @@ def test_shortest_paths():
     _test_shortest_paths_negative_edges("Matrix", 'bellman_ford')
     _test_shortest_paths_positive_edges("List", 'dijkstra')
     _test_shortest_paths_positive_edges("Matrix", 'dijkstra')
+    #_test_a_star_manhattan("List")
+    #_test_a_star_manhattan("Matrix")
 
 def test_all_pair_shortest_paths():
 
