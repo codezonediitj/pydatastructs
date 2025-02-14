@@ -700,12 +700,14 @@ def shortest_paths(graph: Graph, algorithm: str,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
 
         'dijkstra' -> Dijkstra algorithm as given in [2].
+
+        'A_star' -> A* algorithm as given in [3].
     source: str
         The name of the source the node.
     target: str
         The name of the target node.
         Optional, by default, all pair shortest paths
-        are returned.
+        are returned. Required for A* algorithm.
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -736,12 +738,20 @@ def shortest_paths(graph: Graph, algorithm: str,
     ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
     >>> shortest_paths(G, 'dijkstra', 'V1')
     ({'V2': 11, 'V3': 21, 'V1': 0}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
-
+    >>> start = AdjacencyListGraphNode("0,0")
+    >>> middle = AdjacencyListGraphNode("1,1")
+    >>> goal = AdjacencyListGraphNode("2,2")
+    >>> G2 = Graph(start, middle, goal)
+    >>> G2.add_edge('0,0', '1,1', 2)
+    >>> G2.add_edge('1,1', '2,2', 2)
+    >>> shortest_paths(G2, 'A_star', '0,0', '2,2')
+    (4, {'0,0': None, '1,1': '0,0', '2,2': '1,1'})
     References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
     .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    .. [3] https://en.wikipedia.org/wiki/A*_search_algorithm
     """
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
@@ -810,6 +820,58 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
     return dist, pred
 
 _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
+
+def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
+    """
+    A* pathfinding algorithm implementation similar to Dijkstra's structure.
+    
+    Parameters
+    ==========
+    graph: Graph
+        The graph to search through
+    source: str
+        Starting node name
+    target: str
+        Target node name
+        
+    Returns
+    =======
+    (distance, predecessors): tuple
+        Distance to target and dictionary of predecessors
+    """
+    def heuristic(node: str, goal: str) -> float:
+        """Manhattan distance heuristic for A*"""
+        x1, y1 = map(int, node.split(','))
+        x2, y2 = map(int, goal.split(','))
+        return abs(x1 - x2) + abs(y1 - y2)
+    visited = {v: False for v in graph.vertices}
+    dist = {v: float('inf') for v in graph.vertices}
+    pred = {v: None for v in graph.vertices}
+    dist[source] = 0
+    # Priority queue using f-score (g_score + heuristic)
+    pq = PriorityQueue(implementation='binomial_heap')
+    pq.push(source, heuristic(source, target))
+    while not pq.is_empty:
+        current = pq.pop()
+        if current == target:
+            return dist[target], pred
+        if visited[current]:
+            continue
+        visited[current] = True
+        for neighbor in graph.neighbors(current):
+            if visited[neighbor.name]:
+                continue
+            edge = graph.get_edge(current, neighbor.name)
+            if not edge:
+                continue
+            new_dist = dist[current] + edge.value
+            if new_dist < dist[neighbor.name]:
+                dist[neighbor.name] = new_dist
+                pred[neighbor.name] = current
+                f_score = new_dist + heuristic(neighbor.name, target)
+                pq.push(neighbor.name, f_score)
+    return float('inf'), pred
+_a_star_adjacency_matrix = _a_star_adjacency_list
 
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
