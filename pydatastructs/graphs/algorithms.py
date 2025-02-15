@@ -744,7 +744,7 @@ def shortest_paths(graph: Graph, algorithm: str,
     >>> G2 = Graph(start, middle, goal)
     >>> G2.add_edge('0,0', '1,1', 2)
     >>> G2.add_edge('1,1', '2,2', 2)
-    >>> shortest_paths(G2, 'A_star', '0,0', '2,2')
+    >>> shortest_paths(G2, 'a_star', '0,0', '2,2')
     (4, {'0,0': None, '1,1': '0,0', '2,2': '1,1'})
     References
     ==========
@@ -756,7 +756,7 @@ def shortest_paths(graph: Graph, algorithm: str,
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
-    func = "_" + algorithm + "_" + graph._impl
+    func = "_" + algorithm.lower() + "_" + graph._impl
     if not hasattr(algorithms, func):
         raise NotImplementedError(
         "Currently %s algorithm isn't implemented for "
@@ -824,7 +824,6 @@ _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
 def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
     """
     A* pathfinding algorithm implementation similar to Dijkstra's structure.
-    
     Parameters
     ==========
     graph: Graph
@@ -833,7 +832,6 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
         Starting node name
     target: str
         Target node name
-        
     Returns
     =======
     (distance, predecessors): tuple
