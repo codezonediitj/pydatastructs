@@ -839,9 +839,14 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
     """
     def heuristic(node: str, goal: str) -> float:
         """Manhattan distance heuristic for A*"""
-        x1, y1 = map(int, node.split(','))
-        x2, y2 = map(int, goal.split(','))
-        return abs(x1 - x2) + abs(y1 - y2)
+        try:
+            x1, y1 = map(int, node.split(','))
+            x2, y2 = map(int, goal.split(','))
+            return abs(x1 - x2) + abs(y1 - y2)
+        except ValueError:
+            raise ValueError(f"Invalid node format: {node}. Expected 'x,y'.")
+    if source not in graph.vertices or target not in graph.vertices:
+        raise KeyError(f"Either source '{source}' or target '{target}' is not in the graph.")
     visited = {v: False for v in graph.vertices}
     dist = {v: float('inf') for v in graph.vertices}
     pred = {v: None for v in graph.vertices}
@@ -849,14 +854,18 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
     # Priority queue using f-score (g_score + heuristic)
     pq = PriorityQueue(implementation='binomial_heap')
     pq.push(source, heuristic(source, target))
-    while not pq.is_empty:
+    while not pq.is_empty():
         current = pq.pop()
         if current == target:
+            print(f"Returning: {dist[target]}, {pred}")
             return dist[target], pred
         if visited[current]:
             continue
         visited[current] = True
-        for neighbor in graph.neighbors(current):
+        neighbors = graph.neighbors(current)
+        if not neighbors:
+            continue
+        for neighbor in neighbors:
             if visited[neighbor.name]:
                 continue
             edge = graph.get_edge(current, neighbor.name)
@@ -868,6 +877,7 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
                 pred[neighbor.name] = current
                 f_score = new_dist + heuristic(neighbor.name, target)
                 pq.push(neighbor.name, f_score)
+    print(f"Returning: {float('inf')}, {pred}")
     return float('inf'), pred
 _a_star_adjacency_matrix = _a_star_adjacency_list
 
