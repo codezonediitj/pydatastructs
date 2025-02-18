@@ -24,3 +24,19 @@ def test_invalid_key_size():
         assert "Key must be exactly 32 bytes" in str(e)
     else:
         assert False, "ValueError was not raised for long key"
+
+def test_invalid_nonce_size():
+    """Test invalid nonce sizes."""
+    try:
+        ChaCha20(VALID_KEY, b"short")
+    except ValueError as e:
+        assert "Nonce must be exactly 12 bytes" in str(e)
+    else:
+        assert False, "ValueError was not raised for short nonce"
+
+    try:
+        ChaCha20(VALID_KEY, b"A" * 13)
+    except ValueError as e:
+        assert "Nonce must be exactly 12 bytes" in str(e)
+    else:
+        assert False, "ValueError was not raised for long nonce"
