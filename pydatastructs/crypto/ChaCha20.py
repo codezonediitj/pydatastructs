@@ -21,11 +21,25 @@ class ChaCha20:
             raise ValueError("Key must be exactly 32 bytes (256 bits).")
         if not isinstance(nonce, bytes) or len(nonce) != 12:
             raise ValueError("Nonce must be exactly 12 bytes (96 bits).")
+        if not isinstance(counter, int) or counter < 0:
+            raise ValueError("Counter must be a non-negative integer.")
         instance = super().__new__(cls)
         instance.key = key
         instance.nonce = nonce
         instance.counter = counter
         return instance
+    
+    def __init__(self, key: bytes, nonce: bytes, counter: int = 0):
+        """Initializes the ChaCha20 object."""
+        # Guard against multiple initializations
+        if hasattr(self, "_initialized") and self._initialized:
+            return
+        self._initialized = True
+
+    def __repr__(self):
+        """Returns a string representation of the object for debugging."""
+        return f"<ChaCha20(key={self.key[:4].hex()}..., nonce={self.nonce.hex()}, counter={self.counter})>"
+
     def _quarter_round(self, state: List[int], a: int, b: int, c: int, d: int):
         state[a] = (state[a] + state[b]) % (2**32)
         state[d] ^= state[a]
@@ -134,3 +148,9 @@ class ChaCha20:
             bytes: The resulting plaintext.
         """
         return self.apply_keystream(ciphertext)
+    
+    def reset(self, counter: int = 0):
+        """Resets the ChaCha20 counter to the specified value (default is 0)."""
+        if not isinstance(counter, int) or counter < 0:
+            raise ValueError("Counter must be a non-negative integer.")
+        self.counter = counter
