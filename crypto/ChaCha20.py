@@ -38,3 +38,12 @@ class ChaCha20:
         state[c] = (state[c] + state[d]) % (2**32)
         state[b] ^= state[c]
         state[b] = ((state[b] << 7) | (state[b] >> 25)) % (2**32)
+    def _double_round(self, state: List[int]):
+        self._quarter_round(state, 0, 4, 8, 12)
+        self._quarter_round(state, 1, 5, 9, 13)
+        self._quarter_round(state, 2, 6, 10, 14)
+        self._quarter_round(state, 3, 7, 11, 15)
+        self._quarter_round(state, 0, 5, 10, 15)
+        self._quarter_round(state, 1, 6, 11, 12)
+        self._quarter_round(state, 2, 7, 8, 13)
+        self._quarter_round(state, 3, 4, 9, 14)
