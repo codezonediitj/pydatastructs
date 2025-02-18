@@ -25,3 +25,16 @@ class ChaCha20:
         instance.nonce = nonce
         instance.counter = counter
         return instance
+    def _quarter_round(self, state: List[int], a: int, b: int, c: int, d: int):
+        state[a] = (state[a] + state[b]) % (2**32)
+        state[d] ^= state[a]
+        state[d] = ((state[d] << 16) | (state[d] >> 16)) % (2**32)
+        state[c] = (state[c] + state[d]) % (2**32)
+        state[b] ^= state[c]
+        state[b] = ((state[b] << 12) | (state[b] >> 20)) % (2**32)
+        state[a] = (state[a] + state[b]) % (2**32)
+        state[d] ^= state[a]
+        state[d] = ((state[d] << 8) | (state[d] >> 24)) % (2**32)
+        state[c] = (state[c] + state[d]) % (2**32)
+        state[b] ^= state[c]
+        state[b] = ((state[b] << 7) | (state[b] >> 25)) % (2**32)
