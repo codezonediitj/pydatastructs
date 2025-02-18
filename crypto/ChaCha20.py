@@ -103,3 +103,19 @@ class ChaCha20:
                 xor_block.append(input_byte ^ keystream_byte)
             result += bytes(xor_block)
         return result
+    def encrypt(self, plaintext: bytes) -> bytes:
+        """
+        Encrypts the given plaintext using the ChaCha20 stream cipher.
+
+        This method uses the ChaCha20 keystream generated from the 
+        key, nonce, and counter to XOR with the plaintext, producing ciphertext.
+
+        Args:
+            plaintext (bytes): The plaintext data to be encrypted.
+
+        Returns:
+            bytes: The resulting ciphertext.
+        """
+        return self._apply_keystream(plaintext)
+    
+    
