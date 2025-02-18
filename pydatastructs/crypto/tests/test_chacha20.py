@@ -64,10 +64,10 @@ def test_key_reuse_simple():
     """
     Test the vulnerability of key reuse in ChaCha20 encryption.
 
-    This test demonstrates the security flaw of reusing the same key and nonce 
-    for different plaintexts in stream ciphers. It exploits the property that 
-    XORing two ciphertexts from the same keystream cancels out the keystream, 
-    revealing the XOR of the plaintexts. 
+    This test demonstrates the security flaw of reusing the same key and nonce
+    for different plaintexts in stream ciphers. It exploits the property that
+    XORing two ciphertexts from the same keystream cancels out the keystream,
+    revealing the XOR of the plaintexts.
 
     Encrypt two different plaintexts with the same key and nonce.
     XOR the resulting ciphertexts to remove the keystream, leaving only the XOR of plaintexts.
@@ -75,12 +75,12 @@ def test_key_reuse_simple():
     Assert that the recovered plaintext matches the original second plaintext.
 
     Expected Behavior:
-    - If the ChaCha20 implementation is correct, reusing the same key and nonce 
+    - If the ChaCha20 implementation is correct, reusing the same key and nonce
       will expose the XOR relationship between plaintexts.
     - The test should successfully recover the second plaintext using XOR operations.
 
     Assertion:
-    - Raises an AssertionError if the recovered plaintext does not match the 
+    - Raises an AssertionError if the recovered plaintext does not match the
       original second plaintext, indicating a failure in the XOR recovery logic.
 
     Output:
@@ -89,11 +89,11 @@ def test_key_reuse_simple():
     - Displays the XOR result (hexadecimal format) for inspection.
 
     Security Note:
-    - This test highlights why it is critical never to reuse the same key and nonce 
+    - This test highlights why it is critical never to reuse the same key and nonce
       in stream ciphers like ChaCha20.
     """
 
-    
+
     cipher1 = ChaCha20(VALID_KEY, VALID_NONCE)
     cipher2 = ChaCha20(VALID_KEY, VALID_NONCE)
 
