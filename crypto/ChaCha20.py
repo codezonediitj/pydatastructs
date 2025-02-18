@@ -88,6 +88,8 @@ class ChaCha20:
             bytes: The result of XORing the input data with the ChaCha20 keystream 
                 (ciphertext if plaintext was provided, plaintext if ciphertext was provided).
         """
+        if len(data) == 0:
+            return b""
         result = b""
         chunk_size = 64
         start = 0
