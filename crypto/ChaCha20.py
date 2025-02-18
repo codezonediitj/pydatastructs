@@ -67,3 +67,39 @@ class ChaCha20:
             self._double_round(working_state)
         final_state = (working_state + state) % (2**32)
         return struct.pack('<16I', *final_state.flatten())
+    
+    def _apply_keystream(self, data: bytes) -> bytes:
+        """
+        Applies the ChaCha20 keystream to the input data (plaintext or ciphertext) 
+        to perform encryption or decryption.
+
+        This method processes the input data in 64-byte blocks. For each block:
+        - A 64-byte keystream is generated using the `_chacha20_block()` function.
+        - Each byte of the input block is XORed with the corresponding keystream byte.
+        - The XORed result is appended to the output.
+
+        The same function is used for both encryption and decryption because 
+        XORing the ciphertext with the same keystream returns the original plaintext.
+
+        Args:
+            data (bytes): The input data to be encrypted or decrypted (plaintext or ciphertext).
+
+        Returns:
+            bytes: The result of XORing the input data with the ChaCha20 keystream 
+                (ciphertext if plaintext was provided, plaintext if ciphertext was provided).
+        """
+        result = b""
+        chunk_size = 64
+        start = 0
+        while start < len(data):
+            chunk = data[start:start + chunk_size]
+            start += chunk_size
+            keystream = self._chacha20_block(self.counter)
+            self.counter += 1
+            xor_block = []
+            for idx in range(len(chunk)):
+                input_byte = chunk[idx]
+                keystream_byte = keystream[idx]
+                xor_block.append(input_byte ^ keystream_byte)
+            result += bytes(xor_block)
+        return result
