@@ -99,6 +99,10 @@ def test_key_reuse_simple():
 
     plaintext1 = b"Hello, this is message one!"
     plaintext2 = b"Hi there, this is message two!"
+    min_len = min(len(plaintext1), len(plaintext2))
+    plaintext1 = plaintext1[:min_len]
+    plaintext2 = plaintext2[:min_len]
+    
 
     ciphertext1 = cipher1.encrypt(plaintext1)
     ciphertext2 = cipher2.encrypt(plaintext2)

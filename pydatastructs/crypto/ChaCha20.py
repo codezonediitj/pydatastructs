@@ -167,6 +167,7 @@ class ChaCha20:
             chunk = data[start:start + chunk_size]
             start += chunk_size
             keystream = self._chacha20_block(self.counter)
+            
             self.counter += 1
             xor_block = []
             for idx in range(len(chunk)):
@@ -188,6 +189,7 @@ class ChaCha20:
         Returns:
             bytes: The resulting ciphertext.
         """
+        self.reset(counter=0)
         return self._apply_keystream(plaintext)
 
     def decrypt(self, ciphertext: bytes) -> bytes:
@@ -203,6 +205,7 @@ class ChaCha20:
         Returns:
             bytes: The resulting plaintext.
         """
+        self.reset(counter=0)
         return self._apply_keystream(ciphertext)
 
     def reset(self, counter: int = 0):
