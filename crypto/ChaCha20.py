@@ -118,4 +118,17 @@ class ChaCha20:
         """
         return self._apply_keystream(plaintext)
     
-    
+    def decrypt(self, ciphertext: bytes) -> bytes:
+        """
+        Decrypts the given ciphertext using the ChaCha20 stream cipher.
+
+        Since ChaCha20 uses XOR for encryption, decryption is performed 
+        using the same keystream and XOR operation.
+
+        Args:
+            ciphertext (bytes): The ciphertext data to be decrypted.
+
+        Returns:
+            bytes: The resulting plaintext.
+        """
+        return self.apply_keystream(ciphertext)
