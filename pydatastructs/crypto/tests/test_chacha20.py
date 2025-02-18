@@ -1,6 +1,6 @@
 import random
 import string
-from crypto.ChaCha20 import ChaCha20
+from pydatastructs.crypto.ChaCha20 import ChaCha20
 
 VALID_KEY = b"\x00" *32
 assert len(VALID_KEY) == 32, "VALID_KEY must be exactly 32 bytes"
