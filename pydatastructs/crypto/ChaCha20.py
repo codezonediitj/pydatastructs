@@ -6,7 +6,7 @@ __all__ = ['ChaCha20']
 class ChaCha20:
     """
     Implementation of the ChaCha20 stream cipher.
-    
+
     Attributes
     ----------
     key : bytes
@@ -28,7 +28,7 @@ class ChaCha20:
         instance.nonce = nonce
         instance.counter = counter
         return instance
-    
+
     def __init__(self, key: bytes, nonce: bytes, counter: int = 0):
         """Initializes the ChaCha20 object."""
         # Guard against multiple initializations
@@ -81,10 +81,10 @@ class ChaCha20:
             self._double_round(working_state)
         final_state = (working_state + state) % (2**32)
         return struct.pack('<16I', *final_state.flatten())
-    
+
     def _apply_keystream(self, data: bytes) -> bytes:
         """
-        Applies the ChaCha20 keystream to the input data (plaintext or ciphertext) 
+        Applies the ChaCha20 keystream to the input data (plaintext or ciphertext)
         to perform encryption or decryption.
 
         This method processes the input data in 64-byte blocks. For each block:
@@ -92,14 +92,14 @@ class ChaCha20:
         - Each byte of the input block is XORed with the corresponding keystream byte.
         - The XORed result is appended to the output.
 
-        The same function is used for both encryption and decryption because 
+        The same function is used for both encryption and decryption because
         XORing the ciphertext with the same keystream returns the original plaintext.
 
         Args:
             data (bytes): The input data to be encrypted or decrypted (plaintext or ciphertext).
 
         Returns:
-            bytes: The result of XORing the input data with the ChaCha20 keystream 
+            bytes: The result of XORing the input data with the ChaCha20 keystream
                 (ciphertext if plaintext was provided, plaintext if ciphertext was provided).
         """
         if len(data) == 0:
@@ -123,7 +123,7 @@ class ChaCha20:
         """
         Encrypts the given plaintext using the ChaCha20 stream cipher.
 
-        This method uses the ChaCha20 keystream generated from the 
+        This method uses the ChaCha20 keystream generated from the
         key, nonce, and counter to XOR with the plaintext, producing ciphertext.
 
         Args:
@@ -133,12 +133,12 @@ class ChaCha20:
             bytes: The resulting ciphertext.
         """
         return self._apply_keystream(plaintext)
-    
+
     def decrypt(self, ciphertext: bytes) -> bytes:
         """
         Decrypts the given ciphertext using the ChaCha20 stream cipher.
 
-        Since ChaCha20 uses XOR for encryption, decryption is performed 
+        Since ChaCha20 uses XOR for encryption, decryption is performed
         using the same keystream and XOR operation.
 
         Args:
@@ -148,7 +148,7 @@ class ChaCha20:
             bytes: The resulting plaintext.
         """
         return self.apply_keystream(ciphertext)
-    
+
     def reset(self, counter: int = 0):
         """Resets the ChaCha20 counter to the specified value (default is 0)."""
         if not isinstance(counter, int) or counter < 0:
