@@ -1,6 +1,7 @@
 from typing import List
 import struct
-
+import numpy as np
+from copy import deepcopy as dp
 __all__ = ['ChaCha20']
 class ChaCha20:
     """
@@ -47,3 +48,22 @@ class ChaCha20:
         self._quarter_round(state, 1, 6, 11, 12)
         self._quarter_round(state, 2, 7, 8, 13)
         self._quarter_round(state, 3, 4, 9, 14)
+    def _chacha20_block(self, counter: int) -> bytes:
+        """
+        Generates a 64-byte keystream block from 16-word (512-bit) state
+        The initial state is copied to preserve the original.
+        20 rounds (10 double rounds) are performed using quarter-round operations.
+        The modified working state is combined with the original state using modular addition (mod 2^32).
+        The result is returned as a 64-byte keystream block.
+        """
+        constants = b"expand 32-byte k"
+        state_values = struct.unpack(
+            '<16I',
+            constants + self.key + struct.pack('<I', counter) + self.nonce
+        )
+        state = np.array(state_values, dtype=np.uint32).reshape(4, 4)
+        working_state = dp(state)
+        for _ in range(10):
+            self._double_round(working_state)
+        final_state = (working_state + state) % (2**32)
+        return struct.pack('<16I', *final_state.flatten())
