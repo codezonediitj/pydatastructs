@@ -78,34 +78,33 @@ class ChaCha20:
         cx, cy = c
         dx, dy = d
 
-        state[ax, ay] += state[bx, by]
+        state[ax, ay] = ((state[ax, ay].astype(np.uint32) + state[bx, by].astype(np.uint32)) & 0xFFFFFFFF).astype(np.uint32)
         state[dx, dy] ^= state[ax, ay]
         state[dx, dy] = np.bitwise_or(
-        np.left_shift(state[dx, dy], 16),
-        np.right_shift(state[dx, dy], 16)
-    )
+        np.left_shift(state[dx, dy].astype(np.uint32), 16) & 0xFFFFFFFF,
+        np.right_shift(state[dx, dy].astype(np.uint32), 16)
+)
 
-        state[cx, cy] += state[dx, dy]
+        state[cx, cy] = ((state[cx, cy].astype(np.uint32) + state[dx, dy].astype(np.uint32)) & 0xFFFFFFFF).astype(np.uint32)
         state[bx, by] ^= state[cx, cy]
         state[bx, by] = np.bitwise_or(
-        np.left_shift(state[bx, by], 12),
-        np.right_shift(state[bx, by], 20)
-    )
+        np.left_shift(state[bx, by].astype(np.uint32), 12) & 0xFFFFFFFF,
+        np.right_shift(state[bx, by].astype(np.uint32), 20)
+)
 
-        state[ax, ay] += state[bx, by]
-        state[dx, dy] ^= state[ax,  ay]
+        state[ax, ay] = ((state[ax, ay].astype(np.uint32) + state[bx, by].astype(np.uint32)) & 0xFFFFFFFF).astype(np.uint32)
+        state[dx, dy] ^= state[ax, ay]
         state[dx, dy] = np.bitwise_or(
-        np.left_shift(state[dx, dy], 8),
-        np.right_shift(state[dx, dy], 24)
-    )
+        np.left_shift(state[dx, dy].astype(np.uint32), 8) & 0xFFFFFFFF,
+        np.right_shift(state[dx, dy].astype(np.uint32), 24)
+)
 
-        state[cx, cy] += state[dx, dy]
+        state[cx, cy] = ((state[cx, cy].astype(np.uint32) + state[dx, dy].astype(np.uint32)) & 0xFFFFFFFF).astype(np.uint32)
         state[bx, by] ^= state[cx, cy]
         state[bx, by] = np.bitwise_or(
-        np.left_shift(state[bx, by], 7),
-        np.right_shift(state[bx, by], 25)
-    )
-
+        np.left_shift(state[bx, by].astype(np.uint32), 7) & 0xFFFFFFFF,
+        np.right_shift(state[bx, by].astype(np.uint32), 25)
+)
     def _double_round(self, state: np.ndarray):
 
         self._quarter_round(state, (0, 0), (1, 0), (2, 0), (3, 0))
@@ -136,7 +135,7 @@ class ChaCha20:
         working_state = dp(state)
         for _ in range(10):
             self._double_round(working_state)
-        final_state = (working_state + state) % (2**32)
+        final_state = np.bitwise_and(working_state + state, np.uint32(0xFFFFFFFF))
         return struct.pack('<16I', *final_state.flatten())
 
     def _apply_keystream(self, data: bytes) -> bytes:
