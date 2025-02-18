@@ -203,7 +203,7 @@ class ChaCha20:
         Returns:
             bytes: The resulting plaintext.
         """
-        return self.apply_keystream(ciphertext)
+        return self._apply_keystream(ciphertext)
 
     def reset(self, counter: int = 0):
         """Resets the ChaCha20 counter to the specified value (default is 0)."""
