@@ -40,28 +40,73 @@ class ChaCha20:
         """Returns a string representation of the object for debugging."""
         return f"<ChaCha20(key={self.key[:4].hex()}..., nonce={self.nonce.hex()}, counter={self.counter})>"
 
-    def _quarter_round(self, state: List[int], a: int, b: int, c: int, d: int):
-        state[a] = (state[a] + state[b]) % (2**32)
-        state[d] ^= state[a]
-        state[d] = ((state[d] << 16) | (state[d] >> 16)) % (2**32)
-        state[c] = (state[c] + state[d]) % (2**32)
-        state[b] ^= state[c]
-        state[b] = ((state[b] << 12) | (state[b] >> 20)) % (2**32)
-        state[a] = (state[a] + state[b]) % (2**32)
-        state[d] ^= state[a]
-        state[d] = ((state[d] << 8) | (state[d] >> 24)) % (2**32)
-        state[c] = (state[c] + state[d]) % (2**32)
-        state[b] ^= state[c]
-        state[b] = ((state[b] << 7) | (state[b] >> 25)) % (2**32)
-    def _double_round(self, state: List[int]):
-        self._quarter_round(state, 0, 4, 8, 12)
-        self._quarter_round(state, 1, 5, 9, 13)
-        self._quarter_round(state, 2, 6, 10, 14)
-        self._quarter_round(state, 3, 7, 11, 15)
-        self._quarter_round(state, 0, 5, 10, 15)
-        self._quarter_round(state, 1, 6, 11, 12)
-        self._quarter_round(state, 2, 7, 8, 13)
-        self._quarter_round(state, 3, 4, 9, 14)
+    
+    def _quarter_round(self, state: np.ndarray, a: tuple, b: tuple, c: tuple, d: tuple):
+        
+        """
+        Performs the ChaCha20 quarter-round operation on the 4x4 state matrix.
+
+        The quarter-round consists of four operations (Add, XOR, and Rotate) performed on
+        four elements of the state. It is a core component of the ChaCha20 algorithm, ensuring
+        diffusion of bits for cryptographic security.
+
+        Parameters:
+        -----------
+        state : np.ndarray
+            A 4x4 matrix (NumPy array) representing the ChaCha20 state.
+        
+        a, b, c, d : tuple
+            Each tuple represents the (row, column) indices of four elements in the state matrix
+            to be processed in the quarter-round.
+
+        Operations:
+        -----------
+        - Add: Adds two values modulo 2^32.
+        - XOR: Performs a bitwise XOR operation.
+        - Rotate: Rotates bits (circular shift) to the left.
+
+        Formula for the quarter-round (performed four times):
+        -----------------------------------------------------
+        1. a += b; d ^= a; d <<<= 16
+        2. c += d; b ^= c; b <<<= 12
+        3. a += b; d ^= a; d <<<= 8
+        4. c += d; b ^= c; b <<<= 7
+        
+    """
+        ax, ay = a
+        bx, by = b
+        cx, cy = c
+        dx, dy = d
+        
+        state[ax, ay] = (state[ax, ay] + state[bx, by]) % (2**32)
+        state[dx, dy] ^= state[ax, ay]
+        state[dx, dy] = ((state[dx, dy] << 16) | (state[dx, dy] >> 16)) % (2**32)
+        
+        state[cx, cy] = (state[cx, cy] + state[dx, dy]) % (2**32)
+        state[bx, by] ^= state[cx, cy]
+        state[bx, by] = ((state[bx, by] << 12) | (state[bx, by] >> 20)) % (2**32)
+        
+        state[ax, ay] = (state[ax, ay] + state[bx, by]) % (2**32)
+        state[dx, dy] ^= state[ax, ay]
+        state[dx, dy] = ((state[dx, dy] << 8) | (state[dx, dy] >> 24)) % (2**32)
+        
+        state[cx, cy] = (state[cx, cy] + state[dx, dy]) % (2**32)
+        state[bx, by] ^= state[cx, cy]
+        state[bx, by] = ((state[bx, by] << 7) | (state[bx, by] >> 25)) % (2**32)
+    
+    def _double_round(self, state: np.ndarray):
+    
+        self._quarter_round(state, (0, 0), (1, 0), (2, 0), (3, 0))
+        self._quarter_round(state, (0, 1), (1, 1), (2, 1), (3, 1))
+        self._quarter_round(state, (0, 2), (1, 2), (2, 2), (3, 2))
+        self._quarter_round(state, (0, 3), (1, 3), (2, 3), (3, 3))
+
+        self._quarter_round(state, (0, 0), (1, 1), (2, 2), (3, 3))
+        self._quarter_round(state, (0, 1), (1, 2), (2, 3), (3, 0))
+        self._quarter_round(state, (0, 2), (1, 3), (2, 0), (3, 1))
+        self._quarter_round(state, (0, 3), (1, 0), (2, 1), (3, 2))
+        
+
     def _chacha20_block(self, counter: int) -> bytes:
         """
         Generates a 64-byte keystream block from 16-word (512-bit) state
