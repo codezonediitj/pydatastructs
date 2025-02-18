@@ -15,3 +15,13 @@ class ChaCha20:
     counter : int
         32-bit counter, typically starts at 0.
     """
+    def __new__(cls, key: bytes, nonce: bytes, counter: int = 0):
+        if not isinstance(key, bytes) or len(key) != 32:
+            raise ValueError("Key must be exactly 32 bytes (256 bits).")
+        if not isinstance(nonce, bytes) or len(nonce) != 12:
+            raise ValueError("Nonce must be exactly 12 bytes (96 bits).")
+        instance = super().__new__(cls)
+        instance.key = key
+        instance.nonce = nonce
+        instance.counter = counter
+        return instance
