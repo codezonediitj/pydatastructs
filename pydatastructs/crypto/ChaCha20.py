@@ -78,21 +78,33 @@ class ChaCha20:
         cx, cy = c
         dx, dy = d
 
-        state[ax, ay] = (state[ax, ay] + state[bx, by]) % (2**32)
+        state[ax, ay] += state[bx, by]
         state[dx, dy] ^= state[ax, ay]
-        state[dx, dy] = ((state[dx, dy] << 16) | (state[dx, dy] >> 16)) % (2**32)
+        state[dx, dy] = np.bitwise_or(
+        np.left_shift(state[dx, dy], 16),
+        np.right_shift(state[dx, dy], 16)
+    )
 
-        state[cx, cy] = (state[cx, cy] + state[dx, dy]) % (2**32)
+        state[cx, cy] += state[dx, dy]
         state[bx, by] ^= state[cx, cy]
-        state[bx, by] = ((state[bx, by] << 12) | (state[bx, by] >> 20)) % (2**32)
+        state[bx, by] = np.bitwise_or(
+        np.left_shift(state[bx, by], 12),
+        np.right_shift(state[bx, by], 20)
+    )
 
-        state[ax, ay] = (state[ax, ay] + state[bx, by]) % (2**32)
-        state[dx, dy] ^= state[ax, ay]
-        state[dx, dy] = ((state[dx, dy] << 8) | (state[dx, dy] >> 24)) % (2**32)
+        state[ax, ay] += state[bx, by]
+        state[dx, dy] ^= state[ax,  ay]
+        state[dx, dy] = np.bitwise_or(
+        np.left_shift(state[dx, dy], 8),
+        np.right_shift(state[dx, dy], 24)
+    )
 
-        state[cx, cy] = (state[cx, cy] + state[dx, dy]) % (2**32)
+        state[cx, cy] += state[dx, dy]
         state[bx, by] ^= state[cx, cy]
-        state[bx, by] = ((state[bx, by] << 7) | (state[bx, by] >> 25)) % (2**32)
+        state[bx, by] = np.bitwise_or(
+        np.left_shift(state[bx, by], 7),
+        np.right_shift(state[bx, by], 25)
+    )
 
     def _double_round(self, state: np.ndarray):
 
