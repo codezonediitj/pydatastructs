@@ -167,7 +167,7 @@ class ChaCha20:
             chunk = data[start:start + chunk_size]
             start += chunk_size
             keystream = self._chacha20_block(self.counter)
-            
+
             self.counter += 1
             xor_block = []
             for idx in range(len(chunk)):
