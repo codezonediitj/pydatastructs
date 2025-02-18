@@ -59,3 +59,56 @@ def test_encrypt_decrypt():
     decrypted = cipher.decrypt(ciphertext)
 
     assert decrypted == plaintext, "Decryption failed. Plaintext does not match."
+
+def test_key_reuse_simple():
+    """
+    Test the vulnerability of key reuse in ChaCha20 encryption.
+
+    This test demonstrates the security flaw of reusing the same key and nonce 
+    for different plaintexts in stream ciphers. It exploits the property that 
+    XORing two ciphertexts from the same keystream cancels out the keystream, 
+    revealing the XOR of the plaintexts. 
+
+    Encrypt two different plaintexts with the same key and nonce.
+    XOR the resulting ciphertexts to remove the keystream, leaving only the XOR of plaintexts.
+    XOR the result with the first plaintext to recover the second plaintext.
+    Assert that the recovered plaintext matches the original second plaintext.
+
+    Expected Behavior:
+    - If the ChaCha20 implementation is correct, reusing the same key and nonce 
+      will expose the XOR relationship between plaintexts.
+    - The test should successfully recover the second plaintext using XOR operations.
+
+    Assertion:
+    - Raises an AssertionError if the recovered plaintext does not match the 
+      original second plaintext, indicating a failure in the XOR recovery logic.
+
+    Output:
+    - Prints the original second plaintext.
+    - Prints the recovered plaintext (should be identical to the original).
+    - Displays the XOR result (hexadecimal format) for inspection.
+
+    Security Note:
+    - This test highlights why it is critical never to reuse the same key and nonce 
+      in stream ciphers like ChaCha20.
+    """
+
+    
+    cipher1 = ChaCha20(VALID_KEY, VALID_NONCE)
+    cipher2 = ChaCha20(VALID_KEY, VALID_NONCE)
+
+    plaintext1 = b"Hello, this is message one!"
+    plaintext2 = b"Hi there, this is message two!"
+
+    ciphertext1 = cipher1.encrypt(plaintext1)
+    ciphertext2 = cipher2.encrypt(plaintext2)
+
+    xor_result = []
+    for c1_byte, c2_byte in zip(ciphertext1, ciphertext2):
+        xor_result.append(c1_byte ^ c2_byte)
+    xor_bytes = bytes(xor_result)
+    recovered = []
+    for xor_byte, p1_byte in zip(xor_bytes, plaintext1):
+        recovered.append(xor_byte ^ p1_byte)
+    recovered_plaintext = bytes(recovered)
+    assert recovered_plaintext == plaintext2, "Failed to recover second plaintext from XOR pattern"
