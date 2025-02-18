@@ -40,9 +40,9 @@ class ChaCha20:
         """Returns a string representation of the object for debugging."""
         return f"<ChaCha20(key={self.key[:4].hex()}..., nonce={self.nonce.hex()}, counter={self.counter})>"
 
-    
+
     def _quarter_round(self, state: np.ndarray, a: tuple, b: tuple, c: tuple, d: tuple):
-        
+
         """
         Performs the ChaCha20 quarter-round operation on the 4x4 state matrix.
 
@@ -54,7 +54,7 @@ class ChaCha20:
         -----------
         state : np.ndarray
             A 4x4 matrix (NumPy array) representing the ChaCha20 state.
-        
+
         a, b, c, d : tuple
             Each tuple represents the (row, column) indices of four elements in the state matrix
             to be processed in the quarter-round.
@@ -71,31 +71,31 @@ class ChaCha20:
         2. c += d; b ^= c; b <<<= 12
         3. a += b; d ^= a; d <<<= 8
         4. c += d; b ^= c; b <<<= 7
-        
+
     """
         ax, ay = a
         bx, by = b
         cx, cy = c
         dx, dy = d
-        
+
         state[ax, ay] = (state[ax, ay] + state[bx, by]) % (2**32)
         state[dx, dy] ^= state[ax, ay]
         state[dx, dy] = ((state[dx, dy] << 16) | (state[dx, dy] >> 16)) % (2**32)
-        
+
         state[cx, cy] = (state[cx, cy] + state[dx, dy]) % (2**32)
         state[bx, by] ^= state[cx, cy]
         state[bx, by] = ((state[bx, by] << 12) | (state[bx, by] >> 20)) % (2**32)
-        
+
         state[ax, ay] = (state[ax, ay] + state[bx, by]) % (2**32)
         state[dx, dy] ^= state[ax, ay]
         state[dx, dy] = ((state[dx, dy] << 8) | (state[dx, dy] >> 24)) % (2**32)
-        
+
         state[cx, cy] = (state[cx, cy] + state[dx, dy]) % (2**32)
         state[bx, by] ^= state[cx, cy]
         state[bx, by] = ((state[bx, by] << 7) | (state[bx, by] >> 25)) % (2**32)
-    
+
     def _double_round(self, state: np.ndarray):
-    
+
         self._quarter_round(state, (0, 0), (1, 0), (2, 0), (3, 0))
         self._quarter_round(state, (0, 1), (1, 1), (2, 1), (3, 1))
         self._quarter_round(state, (0, 2), (1, 2), (2, 2), (3, 2))
@@ -105,7 +105,7 @@ class ChaCha20:
         self._quarter_round(state, (0, 1), (1, 2), (2, 3), (3, 0))
         self._quarter_round(state, (0, 2), (1, 3), (2, 0), (3, 1))
         self._quarter_round(state, (0, 3), (1, 0), (2, 1), (3, 2))
-        
+
 
     def _chacha20_block(self, counter: int) -> bytes:
         """
