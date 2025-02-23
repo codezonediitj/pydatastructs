@@ -23,7 +23,7 @@ __all__ = [
     'all_pair_shortest_paths',
     'topological_sort',
     'topological_sort_parallel',
-    'max_flow'
+    'max_flow',
 ]
 
 Stack = Queue = deque
@@ -851,20 +851,20 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
     dist = {v: float('inf') for v in graph.vertices}
     pred = {v: None for v in graph.vertices}
     dist[source] = 0
-    # Priority queue using f-score (g_score + heuristic)
-    pq = PriorityQueue(implementation='binomial_heap')
-    pq.push(source, heuristic(source, target))
-    while not pq.is_empty():
+    from pydatastructs.miscellaneous_data_structures.queue import PriorityQueue, BinomialHeapPriorityQueue
+    pq = PriorityQueue(implementation='binomial_heap') 
+    f_score = heuristic(source, target)
+    pq.push(source, f_score)
+    while not pq.is_empty:  
         current = pq.pop()
         if current == target:
-            print(f"Returning: {dist[target]}, {pred}")
             return dist[target], pred
         if visited[current]:
             continue
-        visited[current] = True
+        visited[current] = True      
         neighbors = graph.neighbors(current)
         if not neighbors:
-            continue
+            continue    
         for neighbor in neighbors:
             if visited[neighbor.name]:
                 continue
@@ -877,10 +877,8 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
                 pred[neighbor.name] = current
                 f_score = new_dist + heuristic(neighbor.name, target)
                 pq.push(neighbor.name, f_score)
-    print(f"Returning: {float('inf')}, {pred}")
     return float('inf'), pred
 _a_star_adjacency_matrix = _a_star_adjacency_list
-
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
     """
