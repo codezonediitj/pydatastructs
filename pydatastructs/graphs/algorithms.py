@@ -744,8 +744,11 @@ def shortest_paths(graph: Graph, algorithm: str,
     >>> G2 = Graph(start, middle, goal)
     >>> G2.add_edge('0,0', '1,1', 2)
     >>> G2.add_edge('1,1', '2,2', 2)
-    >>> shortest_paths(G2, 'a_star', '0,0', '2,2')
-    (4, {'0,0': None, '1,1': '0,0', '2,2': '1,1'})
+    >>> dist, pred = shortest_paths(G2, 'a_star', '0,0', '2,2')
+    >>> dist
+    4
+    >>> pred == {'0,0': None, '1,1': '0,0', '2,2': '1,1'}
+    True
     References
     ==========
 
@@ -852,19 +855,20 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
     pred = {v: None for v in graph.vertices}
     dist[source] = 0
     from pydatastructs.miscellaneous_data_structures.queue import PriorityQueue, BinomialHeapPriorityQueue
-    pq = PriorityQueue(implementation='binomial_heap') 
+    pq = PriorityQueue(implementation='binomial_heap')
     f_score = heuristic(source, target)
     pq.push(source, f_score)
-    while not pq.is_empty:  
+    while not pq.is_empty:
         current = pq.pop()
         if current == target:
-            return dist[target], pred
+            result = (dist[target], dict(sorted(pred.items())))
+            return result
         if visited[current]:
             continue
-        visited[current] = True      
+        visited[current] = True
         neighbors = graph.neighbors(current)
         if not neighbors:
-            continue    
+            continue
         for neighbor in neighbors:
             if visited[neighbor.name]:
                 continue
@@ -877,7 +881,9 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
                 pred[neighbor.name] = current
                 f_score = new_dist + heuristic(neighbor.name, target)
                 pq.push(neighbor.name, f_score)
-    return float('inf'), pred
+    if dist[target] == float('inf'):
+        raise ValueError(f"Either source '{source}' and target '{target}' have no path between them.")           
+    return float('inf'), dict(sorted(pred.items()))
 _a_star_adjacency_matrix = _a_star_adjacency_list
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
