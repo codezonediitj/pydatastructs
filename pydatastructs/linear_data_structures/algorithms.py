@@ -1807,7 +1807,7 @@ def intro_sort(array, **kwargs) -> Array:
         intro_sort, kwargs.get('backend', Backend.PYTHON))
 
     # Always sorts in increasing order, this is because of
-    # heapsort's limitation
+    # heapsort's limitatio
     comp = lambda u, v: u <= v
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
