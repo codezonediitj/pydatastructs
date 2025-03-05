@@ -177,8 +177,8 @@ jobs:
           update-conda: true
           python-version: ${{ matrix.python-version }}
           conda-channels: anaconda, conda-forge
-      - run: conda --version
-      - run: which python
+      - run: conda config --set always_yes yes --set changeps1 no
+      - run: conda info -a
 
       - name: Upgrade pip version
         run: |
