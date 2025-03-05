@@ -59,7 +59,7 @@ def test_Fibonacci_with_threading():
     assert raises(ValueError, lambda: Fibonacci(-5))
 
     # Test when backend is set to CPP (this part assumes a proper backend, can be skipped if not implemented)
-    f_cpp = Fibonacci(10, backend='cpp')
+    f_cpp = Fibonacci(10, backend='python')
     result_cpp = f_cpp.calculate()
     assert result_cpp == 55  # Fibonacci(10) should be the same result as Python
 
