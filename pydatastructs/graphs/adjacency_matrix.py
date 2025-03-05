@@ -74,29 +74,28 @@ class AdjacencyMatrix(Graph):
         # so we'll first identify which edges to remove first
 
         edges_to_remove = []
-        
+
         for target in self.matrix[node]:
             if self.matrix[node].get(target, False):
                 edges_to_remove.append((node, target))
-        
+
         for source in self.vertices:
             if self.matrix[source].get(node):
                 edges_to_remove.append((source, node))
-        
+
         # remove the identified edge weights
         for source, target in edges_to_remove:
             edge_key = str(source) + "_" + str(target)
             self.edge_weights.pop(edge_key)
-        
+
         self.vertices.remove(node)
         # eliminate all outgoing edges
         self.matrix.pop(node, None)
-        
+
         # eliminate all incoming edges
         for source in self.vertices:
             self.matrix[source].pop(node, None)
-        
-        
+
         if hasattr(self, node):
             delattr(self, node)
 
