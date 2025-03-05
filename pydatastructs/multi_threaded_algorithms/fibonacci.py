@@ -53,4 +53,6 @@ class Fibonacci:
     @property
     def sequence(self):
         """Returns the Fibonacci sequence up to the nth number."""
+        if self.result[0] is None:
+            self.calculate()
         return self.result[:self.n + 1]
