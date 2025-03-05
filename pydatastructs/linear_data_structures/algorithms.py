@@ -31,7 +31,7 @@ __all__ = [
     'selection_sort',
     'insertion_sort',
     'intro_sort',
-    'maximum_subarray_sum'
+    'maximum_subarray_sum_1'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1852,9 +1852,10 @@ def intro_sort(array, **kwargs) -> Array:
 
         return array
 
-def maximum_subarray_sum(array, **kwargs):
+def maximum_subarray_sum_1(array, **kwargs): 
     """
-    Finds the maximum subarray sum of the given array.
+    Finds the maximum subarray sum of the given array using a brute force approach.
+
     Parameters
     ==========
     array: OneDimensionalArray
@@ -1879,33 +1880,37 @@ def maximum_subarray_sum(array, **kwargs):
         The backend to be used.
         Optional, by default, the best available
         backend is used.
+
     Returns
     =======
     output: int
         The maximum subarray sum.
+
     Examples
     ========
-    >>> from pydatastructs import OneDimensionalArray as ODA, maximum_subarray_sum
+    >>> from pydatastructs import OneDimensionalArray as ODA, maximum_subarray_sum_1
     >>> arr = ODA(int, [-2, 1, -3, 4, -1, 2, 1, -5, 4])
-    >>> maximum_subarray_sum(arr)
+    >>> maximum_subarray_sum_1(arr)
     6
     >>> arr = ODA(int, [1, 2, 3, 4, 5])
-    >>> maximum_subarray_sum(arr)
+    >>> maximum_subarray_sum_1(arr)
     15
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Maximum_subarray_problem
     """
     raise_if_backend_is_not_python(
-        maximum_subarray_sum, kwargs.get('backend', Backend.PYTHON))
+        maximum_subarray_sum_1, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get('comp', lambda u, v: u <= v)
 
-    max_sum = array[start]
-    max_ending_here = array[start]
-    for i in range(start + 1, end + 1):
-        max_ending_here = max(array[i], max_ending_here + array[i])
-        max_sum = max(max_sum, max_ending_here)
+    max_sum = float('-inf')
+    for i in range(start, end + 1):
+        curr_sum = 0
+        for j in range(i, end + 1):
+            curr_sum += array[j]
+            max_sum = max(max_sum, curr_sum)
 
     return max_sum

@@ -47,4 +47,4 @@ Algorithms
 
 .. autofunction:: pydatastructs.intro_sort
 
-.. autofunction:: pydatastructs.maximum_subarray_sum
+.. autofunction:: pydatastructs.maximum_subarray_sum_1

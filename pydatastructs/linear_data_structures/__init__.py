@@ -48,6 +48,6 @@ from .algorithms import (
     selection_sort,
     insertion_sort,
     intro_sort,
-    maximum_subarray_sum
+    maximum_subarray_sum_1
 )
 __all__.extend(algorithms.__all__)
