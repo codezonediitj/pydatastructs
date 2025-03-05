@@ -16,7 +16,6 @@ class Fibonacci:
         self.backend = backend
         self.result = [None] * (n + 1)  # To store Fibonacci numbers
         self.threads = []  # List to store thread references
-        
         # Check for valid backend
         if backend != 'python':
             raise NotImplementedError(f"Backend '{backend}' is not implemented.")

@@ -49,7 +49,7 @@ def test_Fibonacci_with_threading():
     # Test the Fibonacci sequence correctness for medium size n
     assert f_medium.sequence == [
         0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181,
-        6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229
+        6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040
     ]
 
     # Check that sequence length is correct for large n (e.g., Fibonacci(50))
@@ -75,11 +75,9 @@ def test_Fibonacci_with_threads():
     # Test multi-threaded calculation is correct for different n
     f_threaded = Fibonacci(25)
     assert f_threaded.calculate() == 75025  # Fibonacci(25)
-    
     # Validate that the thread pool handles large n correctly
     f_threaded_large = Fibonacci(40)
     assert f_threaded_large.calculate() == 102334155  # Fibonacci(40)
-    
     # Ensure that no threads are left hanging (checks for thread cleanup)
     threads_before = threading.active_count()
     f_threaded.calculate()
