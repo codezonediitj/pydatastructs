@@ -28,30 +28,33 @@ jobs:
       - name: Upgrade pip version
         run: |
           python -m pip install --upgrade pip
+
       - name: Install requirements
         run: |
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
-
+      
       - name: Install lcov
         run: |
           sudo apt-get update
           sudo apt-get install -y lcov
+
       - name: Build package
         run: |
           CXXFLAGS=--coverage CFLAGS=--coverage python scripts/build/install.py
-          
-      # coverage tests     
+# coverage tests     
       - name: Run tests
         run: |
           python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+
       - name: Capture Coverage Data with lcov
         run: |
           lcov --capture --directory . --output-file coverage.info --no-external
-          
+  
       - name: Generate HTML Coverage Report with genhtml
         run: |
           genhtml coverage.info --output-directory coverage_report
+
       - name: Upload Coverage
         uses: codecov/codecov-action@v3
         with:
@@ -91,16 +94,20 @@ jobs:
       - name: Upgrade pip version
         run: |
           python -m pip install --upgrade pip
+
       - name: Install requirements
         run: |
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
+
       - name: Build package
         run: |
           python scripts/build/install.py
+
       - name: Run tests
         run: |
           python -c "import pydatastructs; pydatastructs.test(only_benchmarks=True)"
+
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
@@ -128,16 +135,20 @@ jobs:
       - name: Upgrade pip version
         run: |
           python -m pip install --upgrade pip
+
       - name: Install requirements
         run: |
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
+
       - name: Build package
         run: |
           python scripts/build/install.py
+
       - name: Run tests
         run: |
           python -c "import pydatastructs; pydatastructs.test()"
+
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
@@ -160,34 +171,31 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # Manually install Miniconda and setup
-      - name: Install Miniconda
-        run: |
-          curl -o Miniconda3-latest-Windows-x86_64.exe https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
-          start /wait Miniconda3-latest-Windows-x86_64.exe /S /D=C:\Miniconda
-          C:\Miniconda\Scripts\conda.exe init
-
-      - name: Check Conda Version
-        run: |
-          C:\Miniconda\Scripts\conda.exe --version
-
-      - name: Check Conda Info
-        run: |
-          C:\Miniconda\Scripts\conda.exe info
+      - name: Setup conda
+        uses: s-weigand/setup-conda@v1
+        with:
+          update-conda: true
+          python-version: ${{ matrix.python-version }}
+          conda-channels: anaconda, conda-forge
+      - run: which python
 
       - name: Upgrade pip version
         run: |
           python -m pip install --upgrade pip
+
       - name: Install requirements
         run: |
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
+
       - name: Build package
         run: |
           python scripts/build/install.py
+
       - name: Run tests
         run: |
           python -c "import pydatastructs; pydatastructs.test()"
+
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
