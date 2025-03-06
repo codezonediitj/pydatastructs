@@ -6,4 +6,4 @@ def add_dummy_submodules():
         for dummy_submodule in dummy_submodules:
             open('/'.join([project, module, backend, cpp, dummy_submodule]), 'w+').close()
 
-add_dummy_submodules()
+add_dummy_submodules();
