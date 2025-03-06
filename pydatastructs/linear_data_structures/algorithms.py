@@ -1892,10 +1892,12 @@ def maximum_subarray_sum_1(array, **kwargs):
     >>> arr = ODA(int, [1, 2, 3, 4, 5])
     >>> maximum_subarray_sum_1(arr)
     15
+
     References
     ==========
     .. [1] https://en.wikipedia.org/wiki/Maximum_subarray_problem
-    """
+    python -m doctest -v pydatastructs/linear_data_structures/algorithms.py
+"""
     raise_if_backend_is_not_python(
         maximum_subarray_sum_1, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
