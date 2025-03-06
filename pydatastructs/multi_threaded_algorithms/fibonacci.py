@@ -13,7 +13,7 @@ class Fibonacci:
 
     def __init__(self, n, backend='python'):
         if n<0:
-            raise ValueError("n cannot be negative")
+            raise ValueError("n cannot be negative") # Checking invalid input
         self.n = n
         self.backend = backend
         self.result = [None] * (n + 1)  # To store Fibonacci numbers
