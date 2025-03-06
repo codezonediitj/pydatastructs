@@ -45,6 +45,8 @@ print(graph.list_snapshots())  # Output: [timestamp1, timestamp2]
 
 # Retrieve a past graph state
 old_graph = graph.get_snapshot(graph.list_snapshots()[0])
+```
+
 ## Future Enhancements
 
 - **Secure Graph Snapshots for Banking & Finance**: Implement HMAC or cryptographic signing to prevent unauthorized modifications in financial transaction networks.
