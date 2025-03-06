@@ -93,6 +93,13 @@ class Graph(object):
             """Automatically assigns timestamps using system time."""
             timestamp = int(time.time())  # Secure real-time timestamp
             self.snapshots[timestamp] = copy.deepcopy(self)
+        def get_snapshot(self, timestamp: int):
+            """Retrieves a past version of the graph if the timestamp exists."""
+            if timestamp not in self.snapshots:
+                raise ValueError(f"Snapshot for timestamp {timestamp} does not exist. "
+                                 f"Available timestamps: {sorted(self.snapshots.keys())}")
+            
+            return self.snapshots[timestamp]
         
     def is_adjacent(self, node1, node2):
         """
