@@ -1,4 +1,4 @@
-from pydatastructs.strings import find
+from pydatastructs.strings import find, bitap_search
 
 import random, string
 
@@ -13,6 +13,16 @@ def test_bm():
 
 def test_zf():
     _test_common_string_matching('z_function')
+
+def test_bitap_search():
+    assert bitap_search("hello world", "world") == 6
+    assert bitap_search("abcdef", "def") == 3
+    assert bitap_search("abcdef", "gh") == -1
+    assert bitap_search("aaaaa", "aa") == 0
+    assert bitap_search("abababab", "bab") == 1
+    assert bitap_search("", "a") == -1
+    assert bitap_search("a", "") == 0
+    print("All tests passed.")
 
 def _test_common_string_matching(algorithm):
     true_text_pattern_dictionary = {
