@@ -4,7 +4,8 @@ from pydatastructs.utils.misc_util import Backend, raise_if_backend_is_not_pytho
 __all__ = [
     'Graph'
 ]
-
+import copy
+import time
 class Graph(object):
     """
     Represents generic concept of graphs.
@@ -87,7 +88,12 @@ class Graph(object):
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
-
+        obj.snapshots = {}
+        def add_snapshot(self):
+            """Automatically assigns timestamps using system time."""
+            timestamp = int(time.time())  # Secure real-time timestamp
+            self.snapshots[timestamp] = copy.deepcopy(self)
+        
     def is_adjacent(self, node1, node2):
         """
         Checks if the nodes with the given
