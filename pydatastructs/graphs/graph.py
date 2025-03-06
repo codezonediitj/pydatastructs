@@ -100,6 +100,16 @@ class Graph(object):
                                  f"Available timestamps: {sorted(self.snapshots.keys())}")
             
             return self.snapshots[timestamp]
+        def list_snapshots(self):
+            """Returns all stored timestamps in sorted order."""
+            return sorted(self.snapshots.keys())
+        
+        # Attach functions to the object
+        obj.add_snapshot = add_snapshot.__get__(obj)
+        obj.get_snapshot = get_snapshot.__get__(obj)
+        obj.list_snapshots = list_snapshots.__get__(obj)
+        
+        return obj
         
     def is_adjacent(self, node1, node2):
         """
