@@ -75,6 +75,19 @@ class Graph(object):
             cls, kwargs.get('backend', Backend.PYTHON))
         default_impl = args[0]._impl if args else 'adjacency_list'
         implementation = kwargs.get('implementation', default_impl)
+        if implementation == 'adjacency_list':
+            from pydatastructs.graphs.adjacency_list import AdjacencyList
+            obj = AdjacencyList(*args)
+            obj._impl = implementation
+            
+        elif implementation == 'adjacency_matrix':
+            from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
+            obj = AdjacencyMatrix(*args)
+            obj._impl = implementation
+            
+        else:
+            raise NotImplementedError("%s implementation is not a part "
+                                      "of the library currently."%(implementation))
         obj._impl = implementation
         obj.snapshots = {}  
 
@@ -97,21 +110,7 @@ class Graph(object):
         obj.add_snapshot = add_snapshot.__get__(obj)
         obj.get_snapshot = get_snapshot.__get__(obj)
         obj.list_snapshots = list_snapshots.__get__(obj)
-        
-        
-        if implementation == 'adjacency_list':
-            from pydatastructs.graphs.adjacency_list import AdjacencyList
-            obj = AdjacencyList(*args)
-            obj._impl = implementation
-            return obj
-        elif implementation == 'adjacency_matrix':
-            from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
-            obj = AdjacencyMatrix(*args)
-            obj._impl = implementation
-            return obj
-        else:
-            raise NotImplementedError("%s implementation is not a part "
-                                      "of the library currently."%(implementation))
+        return obj
       
         
     def is_adjacent(self, node1, node2):
