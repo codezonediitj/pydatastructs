@@ -82,18 +82,15 @@ class Graph(object):
             from pydatastructs.graphs.adjacency_list import AdjacencyList
             obj = AdjacencyList(*args)
             obj._impl = implementation
-            
         elif implementation == 'adjacency_matrix':
             from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
             obj = AdjacencyMatrix(*args)
             obj._impl = implementation
-            
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
         obj._impl = implementation
-        obj.snapshots = {}  
-
+        obj.snapshots = {}
         def add_snapshot(self):
             """Automatically assigns timestamps using system time."""
             timestamp = int(time.time())
@@ -112,19 +109,14 @@ class Graph(object):
             if timestamp not in self.snapshots:
                 raise ValueError(f"Snapshot for timestamp {timestamp} does not exist. "
                                  f"Available timestamps: {sorted(self.snapshots.keys())}")
-            
             return self.snapshots[timestamp]
         def list_snapshots(self):
             """Returns all stored timestamps in sorted order."""
             return sorted(self.snapshots.keys())
-        
-       
         obj.add_snapshot = add_snapshot.__get__(obj)
         obj.get_snapshot = get_snapshot.__get__(obj)
         obj.list_snapshots = list_snapshots.__get__(obj)
         return obj
-      
-        
     def is_adjacent(self, node1, node2):
         """
         Checks if the nodes with the given
