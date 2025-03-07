@@ -1,5 +1,8 @@
 
 from pydatastructs.utils.misc_util import Backend, raise_if_backend_is_not_python
+from pydatastructs.utils.misc_util import GraphEdge
+from pydatastructs.utils import AdjacencyListGraphNode
+
 
 __all__ = [
     'Graph'
@@ -94,7 +97,16 @@ class Graph(object):
         def add_snapshot(self):
             """Automatically assigns timestamps using system time."""
             timestamp = int(time.time())
-            self.snapshots[timestamp] = copy.deepcopy(self)
+            snapshot_copy = self.__class__(implementation=self._impl)
+            for vertex_name in self.vertices:
+                snapshot_copy.add_vertex(AdjacencyListGraphNode(vertex_name))
+            snapshot_copy.edge_weights = {
+                key: GraphEdge(edge.source, edge.target, edge.value)
+                for key, edge in self.edge_weights.items()
+    }
+            for key, edge in snapshot_copy.edge_weights.items():
+                snapshot_copy.__getattribute__(edge.source.name).add_adjacent_node(edge.target.name)
+            self.snapshots[timestamp] = snapshot_copy
         def get_snapshot(self, timestamp: int):
             """Retrieves a past version of the graph if the timestamp exists."""
             if timestamp not in self.snapshots:
