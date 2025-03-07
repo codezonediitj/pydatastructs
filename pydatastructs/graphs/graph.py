@@ -75,6 +75,30 @@ class Graph(object):
             cls, kwargs.get('backend', Backend.PYTHON))
         default_impl = args[0]._impl if args else 'adjacency_list'
         implementation = kwargs.get('implementation', default_impl)
+        obj._impl = implementation
+        obj.snapshots = {}  
+
+        def add_snapshot(self):
+            """Automatically assigns timestamps using system time."""
+            timestamp = int(time.time())
+            self.snapshots[timestamp] = copy.deepcopy(self)
+        def get_snapshot(self, timestamp: int):
+            """Retrieves a past version of the graph if the timestamp exists."""
+            if timestamp not in self.snapshots:
+                raise ValueError(f"Snapshot for timestamp {timestamp} does not exist. "
+                                 f"Available timestamps: {sorted(self.snapshots.keys())}")
+            
+            return self.snapshots[timestamp]
+        def list_snapshots(self):
+            """Returns all stored timestamps in sorted order."""
+            return sorted(self.snapshots.keys())
+        
+       
+        obj.add_snapshot = add_snapshot.__get__(obj)
+        obj.get_snapshot = get_snapshot.__get__(obj)
+        obj.list_snapshots = list_snapshots.__get__(obj)
+        
+        
         if implementation == 'adjacency_list':
             from pydatastructs.graphs.adjacency_list import AdjacencyList
             obj = AdjacencyList(*args)
@@ -88,28 +112,7 @@ class Graph(object):
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
-        obj.snapshots = {}
-        def add_snapshot(self):
-            """Automatically assigns timestamps using system time."""
-            timestamp = int(time.time())  # Secure real-time timestamp
-            self.snapshots[timestamp] = copy.deepcopy(self)
-        def get_snapshot(self, timestamp: int):
-            """Retrieves a past version of the graph if the timestamp exists."""
-            if timestamp not in self.snapshots:
-                raise ValueError(f"Snapshot for timestamp {timestamp} does not exist. "
-                                 f"Available timestamps: {sorted(self.snapshots.keys())}")
-            
-            return self.snapshots[timestamp]
-        def list_snapshots(self):
-            """Returns all stored timestamps in sorted order."""
-            return sorted(self.snapshots.keys())
-        
-        # Attach functions to the object
-        obj.add_snapshot = add_snapshot.__get__(obj)
-        obj.get_snapshot = get_snapshot.__get__(obj)
-        obj.list_snapshots = list_snapshots.__get__(obj)
-        
-        return obj
+      
         
     def is_adjacent(self, node1, node2):
         """
