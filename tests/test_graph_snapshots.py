@@ -1,12 +1,13 @@
 import unittest
 import time
 from pydatastructs.graphs import Graph
+from pydatastructs.utils import AdjacencyListGraphNode, AdjacencyMatrixGraphNode
 
 class TestGraphSnapshots(unittest.TestCase):
     def test_snapshot_creation(self):
         graph = Graph(implementation='adjacency_list')
-        graph.add_vertex("A")
-        graph.add_vertex("B")
+        graph.add_vertex(AdjacencyListGraphNode("A"))
+        graph.add_vertex(AdjacencyListGraphNode("B"))
         graph.add_edge("A", "B", cost=5)
         graph.add_snapshot()
 
@@ -14,8 +15,8 @@ class TestGraphSnapshots(unittest.TestCase):
 
     def test_snapshot_retrieval(self):
         graph = Graph(implementation='adjacency_list')
-        graph.add_vertex("A")
-        graph.add_vertex("B")
+        graph.add_vertex(AdjacencyListGraphNode("A"))
+        graph.add_vertex(AdjacencyListGraphNode("B"))
         graph.add_edge("A", "B", cost=5)
         graph.add_snapshot()
         snapshot_time = graph.list_snapshots()[0]
