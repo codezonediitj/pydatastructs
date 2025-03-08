@@ -17,7 +17,10 @@ def get_secret_key():
     secret_key = os.getenv("HMAC_SECRET_KEY")
     if secret_key is None:
         raise RuntimeError("Secret key is missing!")    
-    return secret_key.encode()   
+    return secret_key.encode()  
+def generate_hmac(data):
+    """Generating HMAC signature for integrity verification"""
+    return hmac.new(get_secret_key(), data.encode(),hashlib.sha256).haxdigit()
 __all__ = [
     'Graph'
 ]
