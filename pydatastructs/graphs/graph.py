@@ -12,6 +12,12 @@ def rotate_secret_key():
     while True:
         os.environ["HMAC_SECRET_KEY"] = secrets.token_hax(32)
         time.sleep(30 * 24 * 60 * 60)
+def get_secret_key():
+    """ Gets the HMAC secret key """ 
+    secret_key = os.getenv("HMAC_SECRET_KEY")
+    if secret_key is None:
+        raise RuntimeError("Secret key is missing!")    
+    return secret_key.encode()   
 __all__ = [
     'Graph'
 ]
