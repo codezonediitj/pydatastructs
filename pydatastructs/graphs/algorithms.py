@@ -826,6 +826,7 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str,
         are implemented,
 
         'floyd_warshall' -> Floyd Warshall algorithm as given in [1].
+        'johnson' -> Johnson's Algorithm as given in [2]
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -858,6 +859,7 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str,
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Johnson's_algorithm
     """
     raise_if_backend_is_not_python(
         all_pair_shortest_paths, kwargs.get('backend', Backend.PYTHON))
@@ -901,49 +903,47 @@ def _floyd_warshall_adjacency_list(graph: Graph):
 _floyd_warshall_adjacency_matrix = _floyd_warshall_adjacency_list
 
 def _johnson_adjacency_list(graph: Graph):
-    new_vertex=AdjacencyListGraphNode('q')
+    new_vertex=AdjacencyListGraphNode('__q__')
     graph.add_vertex(new_vertex)
 
     for vertex in graph.vertices:
-        if vertex != 'q':
-            graph.add_edge('q',vertex,0)
+        if vertex != '__q__':
+            graph.add_edge('__q__',vertex,0)
 
-    distances, predecessors=shortest_paths(graph,'bellman_ford','q')
+    distances, predecessors = shortest_paths(graph,'bellman_ford','__q__')
 
-    edges_to_remove=[]
+    edges_to_remove = []
     for edge in graph.edge_weights:
-        edge_node=graph.edge_weights[edge]
-        if edge_node.source.name=='q':
+        edge_node = graph.edge_weights[edge]
+        if edge_node.source.name == '__q__':
             edges_to_remove.append((edge_node.source.name,edge_node.target.name))
 
     for u,v in edges_to_remove:
         graph.remove_edge(u,v)
-    graph.remove_vertex('q')
+    graph.remove_vertex('__q__')
 
     for edge in graph.edge_weights:
-        edge_node=graph.edge_weights[edge]
-        u,v=edge_node.source.name,edge_node.target.name
-        graph.edge_weights[edge].value+=distances[u]-distances[v]
+        edge_node = graph.edge_weights[edge]
+        u,v = edge_node.source.name,edge_node.target.name
+        graph.edge_weights[edge].value += distances[u]-distances[v]
 
-    print(graph.edge_weights)
-    all_distances={}
-    all_next_vertex={}
+    all_distances = {}
+    all_next_vertex = {}
 
     for vertex in graph.vertices:
         u = vertex
-        dijkstra_dist,dijkstra_pred=shortest_paths(graph, 'dijkstra', u)
-        print(dijkstra_pred)
-        all_distances[u]={}
+        dijkstra_dist,dijkstra_pred = shortest_paths(graph, 'dijkstra', u)
+        all_distances[u] = {}
         all_next_vertex[u] = {}
         for v in graph.vertices:
-            if dijkstra_pred[v]==None or dijkstra_pred[v]==u :
-                all_next_vertex[u][v]=u
+            if dijkstra_pred[v] is None or dijkstra_pred[v] == u :
+                all_next_vertex[u][v] = u
             else:
-                all_next_vertex[u][v]=None
+                all_next_vertex[u][v] = None
             if v in dijkstra_dist:
-                all_distances[u][v]=dijkstra_dist[v]-distances[u]+distances[v]
+                all_distances[u][v] = dijkstra_dist[v]-distances[u]+distances[v]
             else:
-                all_distances[u][v]=float('inf')
+                all_distances[u][v] = float('inf')
 
     return (all_distances,all_next_vertex)
 
