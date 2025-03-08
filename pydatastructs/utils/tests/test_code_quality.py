@@ -174,7 +174,7 @@ def _apis():
     pyds.Trie, pyds.TrieNode, pyds.SkipList, pyds.RangeQueryStatic, pyds.RangeQueryDynamic, pyds.SparseTable,
     pyds.miscellaneous_data_structures.segment_tree.OneDimensionalArraySegmentTree,
     pyds.bubble_sort, pyds.linear_search, pyds.binary_search, pyds.jump_search,
-    pyds.selection_sort, pyds.insertion_sort, pyds.quick_sort, pyds.intro_sort]
+    pyds.selection_sort, pyds.insertion_sort, pyds.quick_sort, pyds.intro_sort, pyds.maximum_subarray_sum]
 
 def test_public_api():
     pyds = pydatastructs

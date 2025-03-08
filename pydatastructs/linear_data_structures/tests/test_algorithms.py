@@ -5,7 +5,7 @@ from pydatastructs import (
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
-    selection_sort, insertion_sort, intro_sort, Backend)
+    selection_sort, insertion_sort, intro_sort, maximum_subarray_sum, Backend)
 
 from pydatastructs.utils.raises_util import raises
 import random
