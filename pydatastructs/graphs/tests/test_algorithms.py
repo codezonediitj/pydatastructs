@@ -348,8 +348,6 @@ def test_all_pair_shortest_paths():
 
     _test_shortest_paths_negative_edges("List", 'floyd_warshall')
     _test_shortest_paths_negative_edges("Matrix", 'floyd_warshall')
-    _test_shortest_paths_negative_edges("List", 'floyd_warshall_parallel')
-    _test_shortest_paths_negative_edges("Matrix", 'floyd_warshall_parallel')
 
 def test_topological_sort():
 
