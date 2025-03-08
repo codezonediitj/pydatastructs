@@ -1,7 +1,7 @@
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
-depth_first_search, shortest_paths, topological_sort,
+depth_first_search, shortest_paths, all_pair_shortest_paths, topological_sort,
 topological_sort_parallel, max_flow)
 from pydatastructs.utils.raises_util import raises
 
@@ -336,7 +336,7 @@ def test_all_pair_shortest_paths():
         graph.add_edge('2', '3', 3)
         graph.add_edge('3', '4', 2)
         graph.add_edge('4', '2', -1)
-        dist, next_v = shortest_paths(graph, algorithm, 's')
+        dist, next_v = all_pair_shortest_paths(graph, algorithm)
         assert dist == {'1': {'3': -2, '1': 0, '4': 0, '2': -1},
                         '2': {'1': 4, '3': 2, '2': 0, '4': 4},
                         '3': {'4': 2, '3': 0, '1': 5, '2': 1},
@@ -345,6 +345,11 @@ def test_all_pair_shortest_paths():
                           '2': {'1': '2', '3': None, '2': '2', '4': None},
                           '3': {'4': '3', '3': '3', '1': None, '2': None},
                           '4': {'2': '4', '4': '4', '1': None, '3': None}}
+
+    _test_shortest_paths_negative_edges("List", 'floyd_warshall')
+    _test_shortest_paths_negative_edges("Matrix", 'floyd_warshall')
+    _test_shortest_paths_negative_edges("List", 'floyd_warshall_parallel')
+    _test_shortest_paths_negative_edges("Matrix", 'floyd_warshall_parallel')
 
 def test_topological_sort():
 

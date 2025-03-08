@@ -3,6 +3,7 @@ Contains algorithms associated with graph
 data structure.
 """
 from collections import deque
+from typing import Tuple, Dict
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils.misc_util import (
     _comp, raise_if_backend_is_not_python, Backend)
@@ -826,6 +827,7 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str,
         are implemented,
 
         'floyd_warshall' -> Floyd Warshall algorithm as given in [1].
+        'floyd_warshall_parallel' -> Parallel Floyd Warshall algorithm as given in [2].
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -853,11 +855,17 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str,
     21
     >>> dist['V3']['V1']
     5
+    >>> dist, _ = all_pair_shortest_paths(G, 'floyd_warshall_parallel')
+    >>> dist['V1']['V3']
+    21
+    >>> dist['V3']['V1']
+    5
 
     References
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm#Parallel_execution
     """
     raise_if_backend_is_not_python(
         all_pair_shortest_paths, kwargs.get('backend', Backend.PYTHON))
@@ -899,6 +907,44 @@ def _floyd_warshall_adjacency_list(graph: Graph):
     return (dist, next_vertex)
 
 _floyd_warshall_adjacency_matrix = _floyd_warshall_adjacency_list
+
+def _floyd_warshall_parallel_adjacency_list(graph: Graph) -> Tuple[Dict, Dict]:
+    """
+    Parallel Floyd-Warshall using ThreadPoolExecutor.
+    Ensures correct updates of both distance and next_vertex matrices.
+
+    :param graph: Graph object with vertices and edge_weights.
+    :return: Tuple (dist, next_vertex) matrices.
+    """
+    dist, next_vertex = {}, {}
+    V, E = graph.vertices, graph.edge_weights
+
+    # Initialize distance and next vertex matrices
+    for v in V:
+        dist[v] = {u: float('inf') for u in V}
+        next_vertex[v] = {u: None for u in V}
+        dist[v][v] = 0  # Distance to itself is 0
+
+    # Populate initial distances from edges
+    for name, edge in E.items():
+        dist[edge.source.name][edge.target.name] = edge.value
+        next_vertex[edge.source.name][edge.target.name] = edge.target.name
+
+    def _update_row(i, k):
+        """Update a single row in parallel."""
+        for j in V:
+            if dist[i][j] > dist[i][k] + dist[k][j]:
+                dist[i][j] = dist[i][k] + dist[k][j]
+                next_vertex[i][j] = next_vertex[i][k] if next_vertex[i][k] else k
+
+    # Parallel Floyd-Warshall execution
+    for k in V:
+        with ThreadPoolExecutor() as executor:
+            executor.map(lambda i: _update_row(i, k), V)
+
+    return dist, next_vertex
+
+_floyd_warshall_parallel_adjacency_matrix = _floyd_warshall_parallel_adjacency_list
 
 def topological_sort(graph: Graph, algorithm: str,
                      **kwargs) -> list:
