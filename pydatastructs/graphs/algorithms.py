@@ -722,11 +722,11 @@ def shortest_paths(graph: Graph, algorithm: str, source: str, target: str="", **
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
-    func = "_" + algorithm + "_" + graph._impl
-    if algorithm not in ['bellman_ford', 'dijkstra', 'A_star']:
-        raise NotImplementedError(f"Algorithm {algorithm} is not implemented.")
+    func = "_" + algorithm.lower() + "_" + graph._impl
     if not hasattr(algorithms, func):
-        raise NotImplementedError(f"Currently {algorithm} algorithm isn't implemented for finding shortest paths in graphs.")
+        raise NotImplementedError(
+        "Currently %s algorithm isn't implemented for "
+        "finding shortest paths in graphs."%(algorithm))
     return getattr(algorithms, func)(graph, source, target)
 
 def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
@@ -797,21 +797,22 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
 
     from pydatastructs.miscellaneous_data_structures.queue import PriorityQueue
     pq = PriorityQueue(implementation='binomial_heap')
-    pq.push(source, distances[source] + heuristic(source, target))  # Fixed push
+    pq.push(source, distances[source])
 
     def heuristic(node: str, goal: str) -> float:
+        """Manhattan distance heuristic for A*"""
         try:
-            x1, y1 = map(int, node.split(','))
-            x2, y2 = map(int, goal.split(','))
-            return abs(x1 - x2) + abs(y1 - y2)
+            if "," in node and "," in goal:  # Check if node names are in "x,y" format
+                x1, y1 = map(int, node.split(','))
+                x2, y2 = map(int, goal.split(','))
+                return abs(x1 - x2) + abs(y1 - y2)
+            else:
+                return 0  # If not in coordinate format, return 0 heuristic
         except ValueError:
-            raise ValueError(f"Invalid node format: {node}. Expected 'x,y'.")
+            return 0  # Fallback heuristic if parsing fails
 
     while not pq.is_empty:
         current = pq.pop()
-
-        if current == target:
-            return (distances[target], predecessor)
 
         neighbors = graph.neighbors(current)
         for neighbor in neighbors:
@@ -823,10 +824,15 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
                     predecessor[neighbor.name] = current
                     pq.push(neighbor.name, new_dist + heuristic(neighbor.name, target))
 
-    if distances[target] == float('inf'):
-        raise ValueError(f"Either source '{source}' and target '{target}' have no path between them.")
+    # ✅ Handle case when target is empty (all-pairs shortest paths)
+    if target == "":
+        return (distances, predecessor)
 
-    return (distances, predecessor)
+    # ✅ Handle no path found case properly
+    if target not in distances or distances[target] == float('inf'):
+        return (float('inf'), predecessor)
+
+    return (distances[target], predecessor)
 
 _a_star_adjacency_matrix = _a_star_adjacency_list  # Ensure matrix version exists
 
