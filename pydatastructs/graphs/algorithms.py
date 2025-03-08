@@ -718,6 +718,29 @@ def shortest_paths(graph: Graph, algorithm: str, source: str, target: str="", **
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
         'bellman_ford'/'dijkstra'/'A_star'.
+    
+    Examples
+    ========
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import shortest_paths
+    >>> V1 = AdjacencyListGraphNode("V1")
+    >>> V2 = AdjacencyListGraphNode("V2")
+    >>> V3 = AdjacencyListGraphNode("V3")
+    >>> G = Graph(V1, V2, V3)
+    >>> G.add_edge('V2', 'V3', 10)
+    >>> G.add_edge('V1', 'V2', 11)
+    >>> shortest_paths(G, 'bellman_ford', 'V1')
+    ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+    >>> shortest_paths(G, 'dijkstra', 'V1')
+    ({'V2': 11, 'V3': 21, 'V1': 0}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+    >>> shortest_paths(G, 'A_star', 'V1', 'V3')
+    (21, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+
+    References
+    ==========
+    .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    .. [3] https://en.wikipedia.org/wiki/A*_search_algorithm
     """
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
