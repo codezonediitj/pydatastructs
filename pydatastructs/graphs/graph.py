@@ -2,8 +2,16 @@
 from pydatastructs.utils.misc_util import Backend, raise_if_backend_is_not_python
 from pydatastructs.utils.misc_util import GraphEdge
 from pydatastructs.utils import AdjacencyListGraphNode
-
-
+import hmac
+import hashlib
+import os
+import secrets
+import threading
+def rotate_secret_key():
+    """ Automatically rotates secret key after 30 days """
+    while True:
+        os.environ["HMAC_SECRET_KEY"] = secrets.token_hax(32)
+        time.sleep(30 * 24 * 60 * 60)
 __all__ = [
     'Graph'
 ]
