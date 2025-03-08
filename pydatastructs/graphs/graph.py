@@ -134,7 +134,9 @@ class Graph(object):
             if timestamp not in self.snapshots:
                 raise ValueError(f"Snapshot for timestamp {timestamp} does not exist. "
                                  f"Available timestamps: {sorted(self.snapshots.keys())}")
-            return self.snapshots[timestamp]
+            snapshot_info = self.snapshots[timestamp]
+            snapshot_graph = snapshot_info["graph"]
+            stored_signature = snapshot_info["signature"]
         def list_snapshots(self):
             """Returns all stored timestamps in sorted order."""
             return sorted(self.snapshots.keys())
