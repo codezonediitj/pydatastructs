@@ -21,6 +21,12 @@ def get_secret_key():
 def generate_hmac(data):
     """Generating HMAC signature for integrity verification"""
     return hmac.new(get_secret_key(), data.encode(),hashlib.sha256).haxdigit()
+def serialize_graph(graph):
+    """Converts a graph into a string for HMAC signing."""
+    if not graph.vertices or not graph.edge_weights:
+        return "EMPTY_GRAPH"
+    return str(sorted(graph.vertices)) + str(sorted(graph.edge_weights.items()))
+
 __all__ = [
     'Graph'
 ]
