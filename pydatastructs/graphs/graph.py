@@ -126,7 +126,9 @@ class Graph(object):
     }
             for key, edge in snapshot_copy.edge_weights.items():
                 snapshot_copy.__getattribute__(edge.source.name).add_adjacent_node(edge.target.name)
-            self.snapshots[timestamp] = snapshot_copy
+            snapshot_data = serialize_graph(snapshot_copy)
+            snapshot_signature = generate_hmac(snapshot_data)
+            self.snapshots[timestamp] = {"graph": snapshot_copy, "signature": snapshot_signature}
         def get_snapshot(self, timestamp: int):
             """Retrieves a past version of the graph if the timestamp exists."""
             if timestamp not in self.snapshots:
