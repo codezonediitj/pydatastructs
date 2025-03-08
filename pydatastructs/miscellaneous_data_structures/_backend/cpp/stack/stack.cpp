@@ -4,6 +4,19 @@
 #include <memory>
 #include <sstream>
 #include <typeinfo>
+#include <Python.h>
+
+static PyModuleDef moduledef = {
+    PyModuleDef_HEAD_INIT,
+    "_stack", /* name of module */
+    nullptr,  /* module documentation */
+    -1,       /* size of per-interpreter state of the module */
+    nullptr   /* methods of the module */
+};
+
+PyMODINIT_FUNC PyInit__stack(void) {
+    return PyModule_Create(&moduledef);
+}
 
 namespace pydatastructs {
 
