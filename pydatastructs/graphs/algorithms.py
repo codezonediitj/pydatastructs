@@ -797,7 +797,7 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
 
     from pydatastructs.miscellaneous_data_structures.queue import PriorityQueue
     pq = PriorityQueue(implementation='binomial_heap')
-    pq.push(source, 0)
+    pq.push(source, distances[source] + heuristic(source, target))  # Fixed push
 
     def heuristic(node: str, goal: str) -> float:
         try:
@@ -828,7 +828,7 @@ def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
 
     return (distances, predecessor)
 
-_a_star_adjacency_matrix = _a_star_adjacency_list
+_a_star_adjacency_matrix = _a_star_adjacency_list  # Ensure matrix version exists
 
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
