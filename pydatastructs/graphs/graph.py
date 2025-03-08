@@ -137,6 +137,9 @@ class Graph(object):
             snapshot_info = self.snapshots[timestamp]
             snapshot_graph = snapshot_info["graph"]
             stored_signature = snapshot_info["signature"]
+            snapshot_data = serialize_graph(snapshot_graph)
+            computed_signature = generate_hmac(snapshot_data)
+
         def list_snapshots(self):
             """Returns all stored timestamps in sorted order."""
             return sorted(self.snapshots.keys())
