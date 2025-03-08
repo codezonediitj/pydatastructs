@@ -682,7 +682,7 @@ def _depth_first_search_adjacency_list(
 
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
 
-def shortest_paths(graph: Graph, algorithm: str, source: str, target: str="", **kwargs) -> tuple:
+def shortest_paths(graph: Graph, algorithm: str, source: str, target: str = "", **kwargs) -> tuple:
     """
     Finds shortest paths in the given graph from a given source.
 
