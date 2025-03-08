@@ -718,7 +718,7 @@ def shortest_paths(graph: Graph, algorithm: str, source: str, target: str = "", 
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
         'bellman_ford'/'dijkstra'/'A_star'.
-    
+
     Examples
     ========
     >>> from pydatastructs import Graph, AdjacencyListGraphNode
