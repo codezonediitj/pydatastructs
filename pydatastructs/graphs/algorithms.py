@@ -682,15 +682,12 @@ def _depth_first_search_adjacency_list(
 
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
 
-def shortest_paths(graph: Graph, algorithm: str,
-                   source: str, target: str="",
-                   **kwargs) -> tuple:
+def shortest_paths(graph: Graph, algorithm: str, source: str, target: str="", **kwargs) -> tuple:
     """
     Finds shortest paths in the given graph from a given source.
 
     Parameters
     ==========
-
     graph: Graph
         The graph under consideration.
     algorithm: str
@@ -700,8 +697,10 @@ def shortest_paths(graph: Graph, algorithm: str,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
 
         'dijkstra' -> Dijkstra algorithm as given in [2].
+
+        'A_star' -> A* algorithm as given in [3].
     source: str
-        The name of the source the node.
+        The name of the source node.
     target: str
         The name of the target node.
         Optional, by default, all pair shortest paths
@@ -713,35 +712,12 @@ def shortest_paths(graph: Graph, algorithm: str,
 
     Returns
     =======
-
     (distances, predecessors): (dict, dict)
         If target is not provided and algorithm used
-        is 'bellman_ford'/'dijkstra'.
+        is 'bellman_ford'/'dijkstra'/'A_star'.
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
-        'bellman_ford'/'dijkstra'.
-
-    Examples
-    ========
-
-    >>> from pydatastructs import Graph, AdjacencyListGraphNode
-    >>> from pydatastructs import shortest_paths
-    >>> V1 = AdjacencyListGraphNode("V1")
-    >>> V2 = AdjacencyListGraphNode("V2")
-    >>> V3 = AdjacencyListGraphNode("V3")
-    >>> G = Graph(V1, V2, V3)
-    >>> G.add_edge('V2', 'V3', 10)
-    >>> G.add_edge('V1', 'V2', 11)
-    >>> shortest_paths(G, 'bellman_ford', 'V1')
-    ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
-    >>> shortest_paths(G, 'dijkstra', 'V1')
-    ({'V2': 11, 'V3': 21, 'V1': 0}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
-
-    References
-    ==========
-
-    .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
-    .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+        'bellman_ford'/'dijkstra'/'A_star'.
     """
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
@@ -810,6 +786,49 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
     return dist, pred
 
 _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
+
+def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
+    distances, predecessor = {}, {}
+
+    for v in graph.vertices:
+        distances[v] = float('inf')
+        predecessor[v] = None
+    distances[source] = 0
+
+    from pydatastructs.miscellaneous_data_structures.queue import PriorityQueue
+    pq = PriorityQueue(implementation='binomial_heap')
+    pq.push(source, 0)
+
+    def heuristic(node: str, goal: str) -> float:
+        try:
+            x1, y1 = map(int, node.split(','))
+            x2, y2 = map(int, goal.split(','))
+            return abs(x1 - x2) + abs(y1 - y2)
+        except ValueError:
+            raise ValueError(f"Invalid node format: {node}. Expected 'x,y'.")
+
+    while not pq.is_empty:
+        current = pq.pop()
+
+        if current == target:
+            return (distances[target], predecessor)
+
+        neighbors = graph.neighbors(current)
+        for neighbor in neighbors:
+            edge = graph.get_edge(current, neighbor.name)
+            if edge:
+                new_dist = distances[current] + edge.value
+                if new_dist < distances[neighbor.name]:
+                    distances[neighbor.name] = new_dist
+                    predecessor[neighbor.name] = current
+                    pq.push(neighbor.name, new_dist + heuristic(neighbor.name, target))
+
+    if distances[target] == float('inf'):
+        raise ValueError(f"Either source '{source}' and target '{target}' have no path between them.")
+
+    return (distances, predecessor)
+
+_a_star_adjacency_matrix = _a_star_adjacency_list
 
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
