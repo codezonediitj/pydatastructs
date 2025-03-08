@@ -13,7 +13,7 @@ def rotate_secret_key():
         os.environ["HMAC_SECRET_KEY"] = secrets.token_hex(32)
         time.sleep(30 * 24 * 60 * 60)
 def get_secret_key():
-    """ Gets the HMAC secret key """ 
+    """Gets the HMAC secret key"""
     secret_key = os.getenv("HMAC_SECRET_KEY")
     if secret_key is None:
         try:
@@ -22,10 +22,10 @@ def get_secret_key():
         except FileNotFoundError:
             raise RuntimeError("Secret key is missing! Set HMAC_SECRET_KEY or create hmac_key.txt.")
     return secret_key.encode()
-  
+
 def generate_hmac(data):
     """Generating HMAC signature for integrity verification"""
-    return hmac.new(get_secret_key(), data.encode(),hashlib.sha256).hexdigit()
+    return hmac.new(get_secret_key(), data.encode(),hashlib.sha256).hexdigest()
 def serialize_graph(graph):
     """Converts a graph into a string for HMAC signing."""
     if not graph.vertices or not graph.edge_weights:
@@ -228,4 +228,3 @@ class Graph(object):
         raise NotImplementedError(
             "This is an abstract method.")
 threading.Thread(target=rotate_secret_key, daemon=True).start()
-
