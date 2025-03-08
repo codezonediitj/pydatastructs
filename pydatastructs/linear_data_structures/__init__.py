@@ -47,6 +47,7 @@ from .algorithms import (
     jump_search,
     selection_sort,
     insertion_sort,
-    intro_sort
+    intro_sort,
+    maximum_subarray_sum_1
 )
 __all__.extend(algorithms.__all__)
