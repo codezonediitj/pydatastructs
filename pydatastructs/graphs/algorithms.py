@@ -723,10 +723,10 @@ def shortest_paths(graph: Graph, algorithm: str, source: str, target: str="", **
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
     func = "_" + algorithm + "_" + graph._impl
+    if algorithm not in ['bellman_ford', 'dijkstra', 'A_star']:
+        raise NotImplementedError(f"Algorithm {algorithm} is not implemented.")
     if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently %s algorithm isn't implemented for "
-        "finding shortest paths in graphs."%(algorithm))
+        raise NotImplementedError(f"Currently {algorithm} algorithm isn't implemented for finding shortest paths in graphs.")
     return getattr(algorithms, func)(graph, source, target)
 
 def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
