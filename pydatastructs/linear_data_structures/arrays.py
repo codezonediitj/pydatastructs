@@ -552,10 +552,10 @@ class OneDimensionalImplicitArray(ImplicitArray):
             raise ValueError("Too many arguments to create a implicit 1D array, "
                              "pass the function of the array "
                              "and the size of the array")
-            
+
         obj = Array.__new__(cls)
         obj._dtype = dtype
-        
+
         if callable(args[0]) and \
             _check_type(args[1], int):
             obj._function = args[0]
@@ -567,7 +567,7 @@ class OneDimensionalImplicitArray(ImplicitArray):
         else:
             raise TypeError("Expected type of function is function "
                             "and expected type of size is int")
-       
+ 
         return obj
 
     def __getitem__(self, i):
@@ -580,5 +580,5 @@ class OneDimensionalImplicitArray(ImplicitArray):
         return self._size
 
     @property
-    def _data(self): 
+    def _data(self):
         return [self._function(i) for i in range(self._size)]
