@@ -524,9 +524,9 @@ class OneDimensionalImplicitArray(ImplicitArray):
     >>> from pydatastructs import OneDimensionalImplicitArray
     >>> arr = OneDimensionalImplicitArray(int, lambda i: i+1, 5)
     >>> arr[0]
-    6
+    1
     >>> arr[1]
-    7
+    2
 
     References
     ==========
@@ -567,7 +567,7 @@ class OneDimensionalImplicitArray(ImplicitArray):
         else:
             raise TypeError("Expected type of function is function "
                             "and expected type of size is int")
- 
+
         return obj
 
     def __getitem__(self, i):
