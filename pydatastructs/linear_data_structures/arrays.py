@@ -515,14 +515,14 @@ class OneDimensionalImplicitArray(ImplicitArray):
     Note
     ====
 
-    At least one parameter should be passed as an argument along
+    At least two parameters should be passed as an argument along
     with the dtype.
 
     Examples
     ========
 
     >>> from pydatastructs import OneDimensionalImplicitArray
-    >>> arr = OneDimensionalImplicitArray(lambda i: i+1, int, 5)
+    >>> arr = OneDimensionalImplicitArray(int, lambda i: i+1, 5)
     >>> arr[0]
     6
     >>> arr[1]
