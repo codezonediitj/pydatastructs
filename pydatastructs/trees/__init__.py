@@ -5,7 +5,8 @@ from . import (
     m_ary_trees,
     space_partitioning_trees,
     heaps,
-    _extensions
+    _extensions,
+    trie  # Import the new trie module
 )
 
 from .binary_trees import (
@@ -24,7 +25,6 @@ __all__.extend(binary_trees.__all__)
 from .m_ary_trees import (
     MAryTreeNode, MAryTree
 )
-
 __all__.extend(m_ary_trees.__all__)
 
 from .space_partitioning_trees import (
@@ -39,3 +39,6 @@ from .heaps import (
     BinomialHeap
 )
 __all__.extend(heaps.__all__)
+
+from .trie import Trie  # Import the Trie class
+__all__.append("Trie")  # Add Trie to the list of exported classes
