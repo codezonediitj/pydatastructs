@@ -471,3 +471,10 @@ class ArrayForTrees(DynamicOneDimensionalArray):
             self._size = arr_new._size
             return new_indices
         return None
+
+
+class ImplicitArray(Array):
+    '''
+    Abstract class for implicit arrays
+    '''
+    pass
