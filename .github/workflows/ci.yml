@@ -165,15 +165,9 @@ jobs:
         with:
           update-conda: true
           python-version: ${{ matrix.python-version }}
-          conda-channels: conda-forge, defaults
 
-      - name: Check Conda Version
-        run: |
-          conda --version
-
-      - name: Check Conda Info
-        run: |
-          conda info
+          conda-channels: anaconda, conda-forge
+      - run: which python
 
       - name: Upgrade pip version
         run: |
