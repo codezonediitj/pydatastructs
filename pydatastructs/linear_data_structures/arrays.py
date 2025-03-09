@@ -6,7 +6,8 @@ from pydatastructs.linear_data_structures._backend.cpp import _arrays
 __all__ = [
     'OneDimensionalArray',
     'MultiDimensionalArray',
-    'DynamicOneDimensionalArray'
+    'DynamicOneDimensionalArray',
+    'OneDimensionalImplicitArray',
 ]
 
 class Array(object):
@@ -486,11 +487,11 @@ class OneDimensionalImplicitArray(ImplicitArray):
 
     Parameters
     ==========
+    dtype: type
+        A valid object type.
     function: function
         A function which takes an integer as input and returns
         the value of the element at that index.
-    dtype: type
-        A valid object type.
     size: int
         The number of elements in the array.
     init: a python type
@@ -541,34 +542,31 @@ class OneDimensionalImplicitArray(ImplicitArray):
             return _arrays.OneDimensionalImplicitArray(dtype, *args, **kwargs)
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
-        if len(args) < 1:
-            raise ValueError("Too few arguments to create a 1D implicit array, "
-                             "pass the function of the array")
+        elif not _check_type(dtype, type):
+            raise TypeError("Expected type of dtype is type")
+        if len(args) <= 1:
+            raise ValueError("Too many arguments to create a implicit 1D array, "
+                             "pass the function of the array "
+                             "and the size of the array")
         if len(args) > 2:
             raise ValueError("Too many arguments to create a implicit 1D array, "
                              "pass the function of the array "
-                             "and optionally the size of the array")
+                             "and the size of the array")
             
         obj = Array.__new__(cls)
         obj._dtype = dtype
         
-        if len(args) == 1:
-            if _check_type(args[0], function):
-                obj._function = args[0]
-            else:
-                raise TypeError("Expected type of function is function")
-        elif len(args) == 2:
-            if _check_type(args[0], function) and \
-                _check_type(args[1], int):
-                obj._function = args[0]
-                obj._size = args[1]
-            elif _check_type(args[0], int) and \
-                _check_type(args[1], function):
-                obj._function = args[1]
-                obj._size = args[0]
-            else:
-                raise TypeError("Expected type of function is function "
-                                "and expected type of size is int")
+        if callable(args[0]) and \
+            _check_type(args[1], int):
+            obj._function = args[0]
+            obj._size = args[1]
+        elif _check_type(args[0], int) and \
+            callable(args[1]):
+            obj._function = args[1]
+            obj._size = args[0]
+        else:
+            raise TypeError("Expected type of function is function "
+                            "and expected type of size is int")
        
         return obj
 
@@ -580,3 +578,7 @@ class OneDimensionalImplicitArray(ImplicitArray):
 
     def __len__(self):
         return self._size
+
+    @property
+    def _data(self): 
+        return [self._function(i) for i in range(self._size)]
