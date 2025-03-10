@@ -84,34 +84,26 @@ def find(text, query, algorithm, **kwargs):
         %(algorithm))
     return getattr(algorithms, func)(text, query)
 
-def bitap_search(text: str, pattern: str) -> int:
+def bitap_search(text, pattern):
     """
     Bitap Algorithm (Shift-Or Algorithm) for exact string matching.
     Returns the starting index of the pattern in the text, or -1 if not found.
     """
     m = len(pattern)
-    if m == 0:
-        return 0
-    if m > 64: 
-        raise ValueError("Bitap algorithm supports patterns up to 64 characters.")
-
+    R = ~1  # Bit array for tracking matches
     pattern_mask = {}
-    for i, char in enumerate(pattern):
-        pattern_mask[char] = pattern_mask.get(char, ~0) & ~(1 << i)
 
-    R = ~1
+    # Preprocess the pattern into a bitmask
+    for i in range(m):
+        pattern_mask[pattern[i]] = pattern_mask.get(pattern[i], ~0) & ~(1 << i)
 
-    for i, char in enumerate(text):
-        R = (R << 1) | 1
-        if char in pattern_mask:
-            R &= pattern_mask[char]
-        else:
-            R = ~1
+    for i in range(len(text)):
+        R |= pattern_mask.get(text[i], ~0)
+        R <<= 1
+        if (R & (1 << m)) == 0:
+            return i - m + 1  # Match found
 
-        if (R & (1 << (m - 1))) == 0:
-            return i - m + 1
-
-    return -1
+    return -1  # No match found
 
 def _knuth_morris_pratt(text, query):
     if len(text) == 0 or len(query) == 0:

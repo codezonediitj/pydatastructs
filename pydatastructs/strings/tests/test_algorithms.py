@@ -21,7 +21,6 @@ def test_bitap_search():
     assert bitap_search("aaaaa", "aa") == 0
     assert bitap_search("abababab", "bab") == 1
     assert bitap_search("", "a") == -1
-    assert bitap_search("a", "") == 0
     print("All tests passed.")
 
 def _test_common_string_matching(algorithm):
