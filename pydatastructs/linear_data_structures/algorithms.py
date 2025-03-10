@@ -30,7 +30,8 @@ __all__ = [
     'jump_search',
     'selection_sort',
     'insertion_sort',
-    'intro_sort'
+    'intro_sort',
+    'radix_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
