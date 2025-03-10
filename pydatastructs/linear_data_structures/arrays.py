@@ -539,7 +539,7 @@ class OneDimensionalImplicitArray(ImplicitArray):
     def __new__(cls, dtype=NoneType, *args, **kwargs):
         backend = kwargs.get('backend', Backend.PYTHON)
         if backend == Backend.CPP:
-            return _arrays.OneDimensionalImplicitArray(dtype, *args, **kwargs)
+            return _arrays.OneDimensionalImplicitArray(dtype=dtype, *args, **kwargs)
         if dtype is NoneType:
             raise ValueError("Data type is not defined.")
         elif not _check_type(dtype, type):

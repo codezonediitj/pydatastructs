@@ -14,14 +14,12 @@ typedef struct
         size_t _size;
     PyObject *_dtype;
     PyObject *_function;
-    PyObject *_init;
 } OneDimensionalImplicitArray;
 
 static void OneDimensionalImplicitArray_dealloc(OneDimensionalImplicitArray *self)
 {
     Py_XDECREF(self->_dtype);
     Py_XDECREF(self->_function);
-    Py_XDECREF(self->_init);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject *>(self));
 }
 
@@ -31,25 +29,16 @@ static PyObject *OneDimensionalImplicitArray___new__(PyTypeObject *type, PyObjec
     self = reinterpret_cast<OneDimensionalImplicitArray *>(type->tp_alloc(type, 0));
     size_t len_args = PyObject_Length(args);
 
-    if (len_args < 1)
+    if (len_args < 2)
     {
-        PyErr_SetString(PyExc_ValueError, "Too few arguments to create a 1D implicit array, pass the function of the array");
+        PyErr_SetString(PyExc_ValueError, "Too few arguments to create a 1D implicit array, pass the function of the array and the size of the array");
         return NULL;
     }
     if (len_args > 2)
     {
-        PyErr_SetString(PyExc_ValueError, "Too many arguments to create an implicit 1D array, pass the function of the array and optionally the size of the array");
+        PyErr_SetString(PyExc_ValueError, "Too many arguments to create an implicit 1D array, pass the function of the array and the size of the array");
         return NULL;
     }
-
-    PyObject *function = PyObject_GetItem(args, PyZero);
-    if (!PyCallable_Check(function))
-    {
-        PyErr_SetString(PyExc_TypeError, "Expected type of function is function");
-        return NULL;
-    }
-    self->_function = function;
-    Py_INCREF(self->_function);
 
     PyObject *dtype = PyObject_GetItem(kwds, PyUnicode_FromString("dtype"));
     if (dtype == nullptr)
@@ -60,32 +49,26 @@ static PyObject *OneDimensionalImplicitArray___new__(PyTypeObject *type, PyObjec
     self->_dtype = dtype;
     Py_INCREF(self->_dtype);
 
-    if (len_args == 2)
-    {
-        PyObject *size_obj = PyObject_GetItem(args, PyOne);
-        if (!PyLong_Check(size_obj))
-        {
-            PyErr_SetString(PyExc_TypeError, "Expected type of size is int");
-            return NULL;
-        }
-        self->_size = PyLong_AsSize_t(size_obj);
-    }
-    else
-    {
-        self->_size = 0;
-    }
+    PyObject *args0 = PyObject_GetItem(args, PyZero);
+    PyObject *args1 = PyObject_GetItem(args, PyOne);
 
-    PyObject *init = PyObject_GetItem(kwds, PyUnicode_FromString("init"));
-    if (init == nullptr)
+    if (PyCallable_Check(args0) && PyLong_Check(args1))
     {
-        PyErr_Clear();
-        self->_init = Py_None;
+        self->_function = args0;
+        Py_INCREF(self->_function);
+        self->_size = PyLong_AsSize_t(args1);
+    }
+    else if (PyCallable_Check(args1) && PyLong_Check(args0))
+    {
+        self->_function = args1;
+        Py_INCREF(self->_function);
+        self->_size = PyLong_AsSize_t(args0);
     }
     else
     {
-        self->_init = init;
+        PyErr_SetString(PyExc_TypeError, "Expected one function and one integer for size");
+        return NULL;
     }
-    Py_INCREF(self->_init);
 
     return reinterpret_cast<PyObject *>(self);
 }
@@ -114,6 +97,31 @@ static Py_ssize_t OneDimensionalImplicitArray___len__(OneDimensionalImplicitArra
 {
     return self->_size;
 }
+
+static PyObject *OneDimensionalImplicitArray_get_data(OneDimensionalImplicitArray *self, void *closure)
+{
+    PyObject *list = PyList_New(self->_size);
+    if (!list)
+    {
+        return NULL;
+    }
+    for (size_t i = 0; i < self->_size; i++)
+    {
+        PyObject *item = PyObject_CallFunctionObjArgs(self->_function, PyLong_FromSize_t(i), NULL);
+        if (item == NULL)
+        {
+            Py_DECREF(list);
+            return NULL;
+        }
+        PyList_SET_ITEM(list, i, item);
+    }
+    return list;
+}
+
+static PyGetSetDef OneDimensionalImplicitArray_getsetters[] = {
+    {"_data", (getter)OneDimensionalImplicitArray_get_data, NULL, "data", NULL},
+    {NULL} /* Sentinel */
+};
 
 static PyMappingMethods OneDimensionalImplicitArray_PyMappingMethods = {
     (lenfunc)OneDimensionalImplicitArray___len__,
@@ -150,7 +158,7 @@ static PyTypeObject OneDimensionalImplicitArrayType = {
     /* tp_iternext */ 0,
     /* tp_methods */ 0,
     /* tp_members */ 0,
-    /* tp_getset */ 0,
+    /* tp_getset */ OneDimensionalImplicitArray_getsetters,
     /* tp_base */ &ArrayType,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,
