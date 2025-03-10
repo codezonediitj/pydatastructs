@@ -1906,8 +1906,9 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
 
-    # Handle sub-array selection if start and end are provided
-    sub_array = array[start:end+1]
+    sub_array = []
+    for i in range(start, end + 1):
+        sub_array.append(array[i])
 
     # Remove None values from sub_array before sorting
     sub_array = [x for x in sub_array if x is not None]
