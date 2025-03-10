@@ -1880,11 +1880,11 @@ def longest_alternating_subsequence(array: OneDimensionalArray, **kwargs) -> int
     >>> from pydatastructs import OneDimensionalArray, longest_alternating_subsequence
     >>> arr = OneDimensionalArray(int, [1, 5, 4])
     >>> las = longest_alternating_subsequence(arr)
-    >>> str(las)
+    >>> las
     3
     >>> arr = OneDimensionalArray(int, [1, 5, 4, 3, 2, 6, 7])
     >>> las = longest_alternating_subsequence(arr)
-    >>> str(las)
+    >>> las
     7
 
     References
