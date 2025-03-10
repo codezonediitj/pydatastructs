@@ -2,8 +2,9 @@ from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths,all_pair_shortest_paths, topological_sort,
-topological_sort_parallel, max_flow)
+topological_sort_parallel, max_flow, yen_algorithm)
 from pydatastructs.utils.raises_util import raises
+import pytest
 
 def test_breadth_first_search():
 
@@ -448,3 +449,40 @@ def test_max_flow():
     _test_max_flow("Matrix", "edmonds_karp")
     _test_max_flow("List", "dinic")
     _test_max_flow("Matrix", "dinic")
+
+def test_yen_algorithm():
+    """
+    Test function for Yen's Algorithm to find K shortest paths.
+    """
+    def _test_yen_algorithm(ds):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+
+        V1 = GraphNode("V1")
+        V2 = GraphNode("V2")
+        V3 = GraphNode("V3")
+        V4 = GraphNode("V4")
+        V5 = GraphNode("V5")
+
+        G = Graph(V1, V2, V3, V4, V5)
+
+        G.add_edge(V1.name, V2.name, 1)
+        G.add_edge(V2.name, V3.name, 2)
+        G.add_edge(V3.name, V4.name, 1)
+        G.add_edge(V4.name, V5.name, 3)
+        G.add_edge(V1.name, V3.name, 4)
+        G.add_edge(V3.name, V5.name, 2)
+
+        k_shortest_paths = yen_algorithm(G, V1.name, V5.name, K=3)
+
+        expected_paths = [
+            ['V1', 'V2', 'V3', 'V5'],
+            ['V1', 'V3', 'V5'],
+            ['V1', 'V2', 'V3', 'V4', 'V5']
+        ]
+
+        assert len(k_shortest_paths) == 3, "Expected 3 shortest paths"
+        for i, path in enumerate(k_shortest_paths):
+            assert path == expected_paths[i], f"Path {i} does not match expected path. Got {path}, expected {expected_paths[i]}"
+
+    _test_yen_algorithm("List")
