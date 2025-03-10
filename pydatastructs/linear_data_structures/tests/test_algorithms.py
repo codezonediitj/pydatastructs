@@ -5,7 +5,7 @@ from pydatastructs import (
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
-    selection_sort, insertion_sort, intro_sort, Backend)
+    selection_sort, insertion_sort, intro_sort, longest_alternating_subsequence, Backend)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -414,3 +414,32 @@ def test_binary_search():
 def test_jump_search():
     _test_common_search(jump_search)
     _test_common_search(jump_search, backend=Backend.CPP)
+
+
+def test_longest_alternating_subsequence():
+    ODA = OneDimensionalArray
+
+    arr1 = ODA(int, [-4, 3, -5, 9, 10, 12, 2, -1])
+    output: OneDimensionalArray = longest_alternating_subsequence(arr1)
+    expected_result = [3, -5, 9, 2, -1]
+    assert len(expected_result) == output
+
+    arr2 = ODA(int, [10, 22, 9, 33, 49, 50, 31, 60])
+    output: OneDimensionalArray = longest_alternating_subsequence(arr2)
+    expected_result = [10, 22, 9, 33, 31, 60]
+    assert len(expected_result) == output
+
+    arr3 = ODA(int, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    output: OneDimensionalArray = longest_alternating_subsequence(arr3)
+    expected_result = [1, 2]
+    assert len(expected_result) == output
+
+    arr4 = ODA(int, [9, 8, 7, 6, 5, 4, 3, 2, 1])
+    output: OneDimensionalArray = longest_alternating_subsequence(arr4)
+    expected_result = [9, 8]
+    assert len(expected_result) == output
+
+    arr5 = ODA(int, [1, 5, 4, 3, 2, 1, 6, 7, 8, 9])
+    output: OneDimensionalArray = longest_alternating_subsequence(arr5)
+    expected_result = [1, 5, 4, 6]
+    assert len(expected_result) == output
