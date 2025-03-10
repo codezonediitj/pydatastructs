@@ -30,7 +30,8 @@ __all__ = [
     'jump_search',
     'selection_sort',
     'insertion_sort',
-    'intro_sort'
+    'intro_sort',
+    'radix_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1843,6 +1844,111 @@ def intro_sort(array, **kwargs) -> Array:
     elif maxdepth == 0:
         heapsort(array, start=lower, end=upper)
         return array
+
+def radix_sort(array: Array, **kwargs) -> Array:
+    """
+    Performs radix sort on the given array of non-negative integers.
+    Uses counting sort as a subroutine to sort by each digit position.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted. Must contain only non-negative integers.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, radix_sort
+    >>> arr = OneDimensionalArray(int,[170, 45, 75, 90, 802, 24, 2, 66])
+    >>> out = radix_sort(arr)
+    >>> str(out)
+    '[2, 24, 45, 66, 75, 90, 170, 802]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Radix_sort
+
+    Note
+    ====
+
+    This implementation:
+    1. Only works with non-negative integers
+    2. Uses LSD (Least Significant Digit) radix sort
+    3. Uses base-10 digits
+    """
+    raise_if_backend_is_not_python(
+        radix_sort, kwargs.get('backend', Backend.PYTHON))
+    
+    # Find maximum number to know number of digits
+    max_val = 0
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    
+    for i in range(start, end + 1):
+        if array[i] is not None and array[i] > max_val:
+            max_val = array[i]
+    
+    # Do counting sort for every digit
+    exp = 1
+    while max_val // exp > 0:
+        # Create output array with same type as input
+        output = type(array)(array._dtype, [array[i] for i in range(len(array))])
+        if _check_type(output, DynamicArray):
+            output._modify(force=True)
+        
+        # Store count of occurrences
+        count = [0] * 10
+        
+        # Count occurrences of current digit
+        for i in range(start, end + 1):
+            if array[i] is not None:
+                idx = (array[i] // exp) % 10
+                count[idx] += 1
+        
+        # Change count[i] to position of digit in output
+        for i in range(1, 10):
+            count[i] += count[i - 1]
+        
+        # Build output array
+        i = end
+        while i >= start:
+            if array[i] is not None:
+                idx = (array[i] // exp) % 10
+                output[start + count[idx] - 1] = array[i]
+                count[idx] -= 1
+            i -= 1
+        
+        # Copy output array to array
+        for i in range(start, end + 1):
+            array[i] = output[i]
+        
+        exp *= 10
+    
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
+    
+    return array
     else:
         p = partition(array, lower, upper)
 
