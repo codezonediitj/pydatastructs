@@ -30,7 +30,8 @@ __all__ = [
     'jump_search',
     'selection_sort',
     'insertion_sort',
-    'intro_sort'
+    'intro_sort',
+    'longest_alternating_subsequence',
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1850,3 +1851,69 @@ def intro_sort(array, **kwargs) -> Array:
         intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1, ins_threshold=ins_threshold)
 
         return array
+
+def longest_alternating_subsequence(array: OneDimensionalArray, **kwargs) -> OneDimensionalArray:
+    """
+    Finds the longest alternating subsequence in the given array.
+    An alternating sequence is one in which the elements are in alternating order,
+    i.e., a sequence where the differences between consecutive elements alternate
+    between positive and negative.
+
+    Parameters
+    ==========
+
+    array: OneDimensionalArray
+        The array from which the longest alternating subsequence is to be found.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available backend is used.
+
+    Returns
+    =======
+
+    output: OneDimensionalArray
+        The longest alternating subsequence.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalArray, longest_alternating_subsequence
+    >>> arr = OneDimensionalArray(int, [1, 5, 4])
+    >>> las = longest_alternating_subsequence(arr)
+    >>> str(las)
+    '[1, 5, 4]'
+    >>> arr = OneDimensionalArray(int, [1, 5, 4, 3, 2, 6, 7])
+    >>> las = longest_alternating_subsequence(arr)
+    >>> str(las)
+    '[1, 5, 4, 6, 2, 7]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Longest_alternating_subsequence
+
+    Note
+    ====
+
+    The data types of elements in the array should be comparable.
+    """
+    raise_if_backend_is_not_python(
+        longest_alternating_subsequence, kwargs.get('backend', Backend.PYTHON))
+
+    increasing = 1
+    decreasing = 1
+    n = len(array)
+
+    # Iterate from second element
+    for i in range(1, n):
+
+        # Increasing changes if decreasing changes
+        if (array[i] > array[i-1]):
+            increasing = decreasing + 1
+
+        # Decreasing changes if increasing changes
+        elif (array[i] < array[i-1]):
+            decreasing = increasing + 1
+
+    # Return the maximum length
+    return max(increasing, decreasing)
