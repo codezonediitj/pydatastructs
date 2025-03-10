@@ -30,7 +30,8 @@ __all__ = [
     'jump_search',
     'selection_sort',
     'insertion_sort',
-    'intro_sort'
+    'intro_sort',
+    'radix_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1850,3 +1851,65 @@ def intro_sort(array, **kwargs) -> Array:
         intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1, ins_threshold=ins_threshold)
 
         return array
+
+def _count_sort_for_radix(array, exp, comp):
+    n = len(array)
+    output = [None] * n
+    count = [0] * 10
+
+    for i in range(n):
+        index = (array[i] // exp) % 10
+        count[index] += 1
+
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+
+    i = n - 1
+    while i >= 0:
+        index = (array[i] // exp) % 10
+        output[count[index] - 1] = array[i]
+        count[index] -= 1
+        i -= 1
+
+    for i in range(n):
+        array[i] = output[i]
+
+def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
+    """
+    Implements Radix Sort.
+
+    Parameters
+    ==========
+    array: Array
+        The array which is to be sorted.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+
+    Examples
+    ========
+    >>> from pydatastructs import OneDimensionalArray, radix_sort
+    >>> arr = OneDimensionalArray(int,[170, 45, 75, 90, 802, 24, 2, 66])
+    >>> radix_sort(arr)
+    >>> [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7]]
+    [2, 24, 45, 66, 75, 90, 170, 802]
+
+    References
+    ==========
+    .. [1] https://en.wikipedia.org/wiki/Radix_sort
+    """
+    # Raise error if not Python backend
+    raise_if_backend_is_not_python(radix_sort, kwargs.get('backend', Backend.PYTHON))
+
+    # Get maximum number to determine number of digits
+    max_val = max(array)
+    
+    exp = 1
+    while max_val // exp > 0:
+        _count_sort_for_radix(array, exp, comp)
+        exp *= 10
+
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
