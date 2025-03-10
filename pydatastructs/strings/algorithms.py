@@ -90,10 +90,9 @@ def bitap_search(text, pattern):
     Returns the starting index of the pattern in the text, or -1 if not found.
     """
     m = len(pattern)
-    R = ~1  # Bit array for tracking matches
+    R = ~1
     pattern_mask = {}
 
-    # Preprocess the pattern into a bitmask
     for i in range(m):
         pattern_mask[pattern[i]] = pattern_mask.get(pattern[i], ~0) & ~(1 << i)
 
@@ -101,9 +100,9 @@ def bitap_search(text, pattern):
         R |= pattern_mask.get(text[i], ~0)
         R <<= 1
         if (R & (1 << m)) == 0:
-            return i - m + 1  # Match found
+            return i - m + 1
 
-    return -1  # No match found
+    return -1
 
 def _knuth_morris_pratt(text, query):
     if len(text) == 0 or len(query) == 0:
