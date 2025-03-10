@@ -1852,7 +1852,7 @@ def intro_sort(array, **kwargs) -> Array:
 
         return array
 
-def longest_alternating_subsequence(array: OneDimensionalArray, **kwargs) -> OneDimensionalArray:
+def longest_alternating_subsequence(array: OneDimensionalArray, **kwargs) -> int:
     """
     Finds the longest alternating subsequence in the given array.
     An alternating sequence is one in which the elements are in alternating order,
