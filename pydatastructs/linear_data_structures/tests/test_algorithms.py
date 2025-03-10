@@ -420,26 +420,26 @@ def test_longest_alternating_subsequence():
     ODA = OneDimensionalArray
 
     arr1 = ODA(int, [-4, 3, -5, 9, 10, 12, 2, -1])
-    output: OneDimensionalArray = longest_alternating_subsequence(arr1)
+    output: int = longest_alternating_subsequence(arr1)
     expected_result = [3, -5, 9, 2, -1]
     assert len(expected_result) == output
 
     arr2 = ODA(int, [10, 22, 9, 33, 49, 50, 31, 60])
-    output: OneDimensionalArray = longest_alternating_subsequence(arr2)
+    output: int = longest_alternating_subsequence(arr2)
     expected_result = [10, 22, 9, 33, 31, 60]
     assert len(expected_result) == output
 
     arr3 = ODA(int, [1, 2, 3, 4, 5, 6, 7, 8, 9])
-    output: OneDimensionalArray = longest_alternating_subsequence(arr3)
+    output: int = longest_alternating_subsequence(arr3)
     expected_result = [1, 2]
     assert len(expected_result) == output
 
     arr4 = ODA(int, [9, 8, 7, 6, 5, 4, 3, 2, 1])
-    output: OneDimensionalArray = longest_alternating_subsequence(arr4)
+    output: int = longest_alternating_subsequence(arr4)
     expected_result = [9, 8]
     assert len(expected_result) == output
 
     arr5 = ODA(int, [1, 5, 4, 3, 2, 1, 6, 7, 8, 9])
-    output: OneDimensionalArray = longest_alternating_subsequence(arr5)
+    output: int = longest_alternating_subsequence(arr5)
     expected_result = [1, 5, 4, 6]
     assert len(expected_result) == output
