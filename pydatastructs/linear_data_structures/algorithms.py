@@ -1903,9 +1903,11 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
     # Raise error if not Python backend
     raise_if_backend_is_not_python(radix_sort, kwargs.get('backend', Backend.PYTHON))
 
-    # Get maximum number to determine number of digits
-    max_val = max(array)
+    # Filter out None values
+    array = [x for x in array if x is not None]
     
+    # Get maximum number to determine number of digits
+    max_val = max(array) if array else 0
     exp = 1
     while max_val // exp > 0:
         _count_sort_for_radix(array, exp, comp)
