@@ -1885,7 +1885,7 @@ def longest_alternating_subsequence(array: OneDimensionalArray, **kwargs) -> int
     >>> arr = OneDimensionalArray(int, [1, 5, 4, 3, 2, 6, 7])
     >>> las = longest_alternating_subsequence(arr)
     >>> las
-    7
+    4
 
     References
     ==========
