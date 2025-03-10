@@ -5,7 +5,7 @@ from pydatastructs import (
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
-    selection_sort, insertion_sort, intro_sort, Backend)
+    selection_sort, insertion_sort, intro_sort, Backend, radix_sort)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -414,3 +414,45 @@ def test_binary_search():
 def test_jump_search():
     _test_common_search(jump_search)
     _test_common_search(jump_search, backend=Backend.CPP)
+
+def test_radix_sort():
+    random.seed(1000)
+
+    # Test with DynamicOneDimensionalArray
+    n = random.randint(10, 20)
+    arr = DynamicOneDimensionalArray(int, 0)
+    for _ in range(n):
+        arr.append(random.randint(1, 1000))
+    for _ in range(n//3):
+        arr.delete(random.randint(0, n//2))
+
+    # Test full array sort
+    expected_arr = [102, 134, 228, 247, 362, 373, 448,
+                   480, 548, 686, 688, 696, 779]
+    assert radix_sort(arr)._data == expected_arr
+
+    # Test with OneDimensionalArray
+    arr = OneDimensionalArray(int, [170, 45, 75, 90, 802, 24, 2, 66])
+    expected_arr = [2, 24, 45, 66, 75, 90, 170, 802]
+    out = radix_sort(arr)
+    assert [out[i] for i in range(len(out))] == expected_arr
+
+    # Test partial sort with start/end
+    arr = OneDimensionalArray(int, [170, 45, 75, 90, 802, 24, 2, 66])
+    out = radix_sort(arr, start=2, end=5)
+    expected_arr = [170, 45, 75, 90, 802, 24, 2, 66]
+    assert [out[i] for i in range(len(out))] == expected_arr
+
+    # Test with None values
+    arr = DynamicOneDimensionalArray(int, 0)
+    arr.append(45)
+    arr.append(None)
+    arr.append(12)
+    arr.append(None)
+    arr.append(89)
+    out = radix_sort(arr)
+    assert out[0] == 12
+    assert out[1] == 45
+    assert out[2] == 89
+    assert out[3] is None
+    assert out[4] is None
