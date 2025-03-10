@@ -945,7 +945,7 @@ def _johnson_adjacency_list(graph: Graph):
             else:
                 all_distances[u][v] = float('inf')
 
-    return (all_distances,all_next_vertex)
+    return (all_distances, all_next_vertex)
 
 def topological_sort(graph: Graph, algorithm: str,
                      **kwargs) -> list:
