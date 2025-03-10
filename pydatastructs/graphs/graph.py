@@ -1,10 +1,42 @@
 
 from pydatastructs.utils.misc_util import Backend, raise_if_backend_is_not_python
+from pydatastructs.utils.misc_util import GraphEdge
+from pydatastructs.utils import AdjacencyListGraphNode
+import hmac
+import hashlib
+import os
+import secrets
+import threading
+def rotate_secret_key():
+    """ Automatically rotates secret key after 30 days """
+    while True:
+        os.environ["HMAC_SECRET_KEY"] = secrets.token_hex(32)
+        time.sleep(30 * 24 * 60 * 60)
+def get_secret_key():
+    """Gets the HMAC secret key"""
+    secret_key = os.getenv("HMAC_SECRET_KEY")
+    if secret_key is None:
+        try:
+            with open("hmac_key.txt", "r") as f:
+                secret_key = f.read().strip()
+        except FileNotFoundError:
+            raise RuntimeError("Secret key is missing! Set HMAC_SECRET_KEY or create hmac_key.txt.")
+    return secret_key.encode()
+
+def generate_hmac(data):
+    """Generating HMAC signature for integrity verification"""
+    return hmac.new(get_secret_key(), data.encode(),hashlib.sha256).hexdigest()
+def serialize_graph(graph):
+    """Converts a graph into a string for HMAC signing."""
+    if not graph.vertices or not graph.edge_weights:
+        return "EMPTY_GRAPH"
+    return str(sorted(graph.vertices)) + str(sorted(graph.edge_weights.items()))
 
 __all__ = [
     'Graph'
 ]
-
+import copy
+import time
 class Graph(object):
     """
     Represents generic concept of graphs.
@@ -78,16 +110,50 @@ class Graph(object):
             from pydatastructs.graphs.adjacency_list import AdjacencyList
             obj = AdjacencyList(*args)
             obj._impl = implementation
-            return obj
         elif implementation == 'adjacency_matrix':
             from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
             obj = AdjacencyMatrix(*args)
             obj._impl = implementation
-            return obj
         else:
             raise NotImplementedError("%s implementation is not a part "
                                       "of the library currently."%(implementation))
-
+        obj._impl = implementation
+        obj.snapshots = {}
+        def add_snapshot(self):
+            """Automatically assigns timestamps using system time."""
+            timestamp = int(time.time())
+            snapshot_copy = self.__class__(implementation=self._impl)
+            for vertex_name in self.vertices:
+                snapshot_copy.add_vertex(AdjacencyListGraphNode(vertex_name))
+            snapshot_copy.edge_weights = {
+                key: GraphEdge(edge.source, edge.target, edge.value)
+                for key, edge in self.edge_weights.items()
+    }
+            for key, edge in snapshot_copy.edge_weights.items():
+                snapshot_copy.__getattribute__(edge.source.name).add_adjacent_node(edge.target.name)
+            snapshot_data = serialize_graph(snapshot_copy)
+            snapshot_signature = generate_hmac(snapshot_data)
+            self.snapshots[timestamp] = {"graph": snapshot_copy, "signature": snapshot_signature}
+        def get_snapshot(self, timestamp: int):
+            """Retrieves a past version of the graph if the timestamp exists."""
+            if timestamp not in self.snapshots:
+                raise ValueError(f"Snapshot for timestamp {timestamp} does not exist. "
+                                 f"Available timestamps: {sorted(self.snapshots.keys())}")
+            snapshot_info = self.snapshots[timestamp]
+            snapshot_graph = snapshot_info["graph"]
+            stored_signature = snapshot_info["signature"]
+            snapshot_data = serialize_graph(snapshot_graph)
+            computed_signature = generate_hmac(snapshot_data)
+            if computed_signature != stored_signature:
+                raise ValueError("Snapshot integrity check failed! The snapshot may have been modified.")
+            return snapshot_graph
+        def list_snapshots(self):
+            """Returns all stored timestamps in sorted order."""
+            return sorted(self.snapshots.keys())
+        obj.add_snapshot = add_snapshot.__get__(obj)
+        obj.get_snapshot = get_snapshot.__get__(obj)
+        obj.list_snapshots = list_snapshots.__get__(obj)
+        return obj
     def is_adjacent(self, node1, node2):
         """
         Checks if the nodes with the given
@@ -161,3 +227,4 @@ class Graph(object):
         """
         raise NotImplementedError(
             "This is an abstract method.")
+threading.Thread(target=rotate_secret_key, daemon=True).start()
