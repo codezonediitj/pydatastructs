@@ -1903,15 +1903,30 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
     # Raise error if not Python backend
     raise_if_backend_is_not_python(radix_sort, kwargs.get('backend', Backend.PYTHON))
 
-    # Filter out None values
-    array = [x for x in array if x is not None]
-    
-    # Get maximum number to determine number of digits
-    max_val = max(array) if array else 0
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+
+    # Handle sub-array selection if start and end are provided
+    sub_array = array[start:end+1]
+
+    # Remove None values from sub_array before sorting
+    sub_array = [x for x in sub_array if x is not None]
+
+    # Get maximum value to determine the number of digits
+    max_val = max(sub_array) if sub_array else 0
     exp = 1
     while max_val // exp > 0:
-        _count_sort_for_radix(array, exp, comp)
+        _count_sort_for_radix(sub_array, exp, comp)
         exp *= 10
+
+    index = 0
+    for i in range(start, end + 1):
+        if array[i] is None:
+            continue
+        array[i] = sub_array[index]
+        index += 1
 
     if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
         array._modify(True)
+    
+    return array
