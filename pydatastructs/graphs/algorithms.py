@@ -903,36 +903,36 @@ def _floyd_warshall_adjacency_list(graph: Graph):
 _floyd_warshall_adjacency_matrix = _floyd_warshall_adjacency_list
 
 def _johnson_adjacency_list(graph: Graph):
-    new_vertex=AdjacencyListGraphNode('__q__')
+    new_vertex = AdjacencyListGraphNode('__q__')
     graph.add_vertex(new_vertex)
 
     for vertex in graph.vertices:
         if vertex != '__q__':
-            graph.add_edge('__q__',vertex,0)
+            graph.add_edge('__q__', vertex, 0)
 
-    distances, predecessors = shortest_paths(graph,'bellman_ford','__q__')
+    distances, predecessors = shortest_paths(graph, 'bellman_ford', '__q__')
 
     edges_to_remove = []
     for edge in graph.edge_weights:
         edge_node = graph.edge_weights[edge]
         if edge_node.source.name == '__q__':
-            edges_to_remove.append((edge_node.source.name,edge_node.target.name))
+            edges_to_remove.append((edge_node.source.name, edge_node.target.name))
 
-    for u,v in edges_to_remove:
-        graph.remove_edge(u,v)
+    for u, v in edges_to_remove:
+        graph.remove_edge(u, v)
     graph.remove_vertex('__q__')
 
     for edge in graph.edge_weights:
         edge_node = graph.edge_weights[edge]
-        u,v = edge_node.source.name,edge_node.target.name
-        graph.edge_weights[edge].value += distances[u]-distances[v]
+        u, v = edge_node.source.name, edge_node.target.name
+        graph.edge_weights[edge].value += (distances[u] - distances[v])
 
     all_distances = {}
     all_next_vertex = {}
 
     for vertex in graph.vertices:
         u = vertex
-        dijkstra_dist,dijkstra_pred = shortest_paths(graph, 'dijkstra', u)
+        dijkstra_dist, dijkstra_pred = shortest_paths(graph, 'dijkstra', u)
         all_distances[u] = {}
         all_next_vertex[u] = {}
         for v in graph.vertices:
@@ -941,7 +941,7 @@ def _johnson_adjacency_list(graph: Graph):
             else:
                 all_next_vertex[u][v] = None
             if v in dijkstra_dist:
-                all_distances[u][v] = dijkstra_dist[v]-distances[u]+distances[v]
+                all_distances[u][v] = dijkstra_dist[v] - distances[u] + distances[v]
             else:
                 all_distances[u][v] = float('inf')
 

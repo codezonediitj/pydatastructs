@@ -346,9 +346,9 @@ def test_all_pair_shortest_paths():
                           '3': {'4': '3', '3': '3', '1': None, '2': None},
                           '4': {'2': '4', '4': '4', '1': None, '3': None}}
 
-    _test_shortest_paths_negative_edges("List",'floyd_warshall')
-    _test_shortest_paths_negative_edges("Matrix",'floyd_warshall')
-    _test_shortest_paths_negative_edges("List",'johnson')
+    _test_shortest_paths_negative_edges("List", 'floyd_warshall')
+    _test_shortest_paths_negative_edges("Matrix", 'floyd_warshall')
+    _test_shortest_paths_negative_edges("List", 'johnson')
 
 def test_topological_sort():
 
