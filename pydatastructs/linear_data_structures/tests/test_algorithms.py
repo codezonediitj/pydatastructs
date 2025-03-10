@@ -5,7 +5,7 @@ from pydatastructs import (
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
-    selection_sort, insertion_sort, intro_sort, Backend)
+    selection_sort, insertion_sort, intro_sort, radix_sort, Backend)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -414,3 +414,76 @@ def test_binary_search():
 def test_jump_search():
     _test_common_search(jump_search)
     _test_common_search(jump_search, backend=Backend.CPP)
+
+def test_radix_sort():
+    random.seed(1000)
+
+    # Test with DynamicOneDimensionalArray
+    n = random.randint(10, 20)
+    arr = DynamicOneDimensionalArray(int, 0)
+    generated_ints = []
+    for _ in range(n):
+        integer = random.randint(1, 1000)
+        generated_ints.append(integer)
+        arr.append(integer)
+    for _ in range(n//3):
+        integer = random.randint(0, n//2)
+        generated_ints.append(integer)
+        arr.delete(integer)
+    expected_arr_1 = [686, 779, 102, 134, 362, 448,
+                    480, 548, None, None, None,
+                    228, 688, 247, 373, 696, None,
+                    None, None, None, None, None,
+                    None, None, None, None, None,
+                    None, None, None, None]
+    radix_sort(arr, start=2, end=10)
+    assert arr._data == expected_arr_1
+    radix_sort(arr)
+    expected_arr_2 = [102, 134, 228, 247, 362, 373, 448,
+                    480, 548, 686, 688, 696, 779,
+                    None, None, None, None, None, None,
+                    None, None, None, None, None,
+                    None, None, None, None, None, None, None]
+    assert arr._data == expected_arr_2
+    assert (arr._last_pos_filled, arr._num, arr._size) == (12, 13, 31)
+
+    # Test with DynamicOneDimensionalArray (CPP backend)
+    arr = DynamicOneDimensionalArray(int, 0, backend=Backend.CPP)
+    int_idx = 0
+    for _ in range(n):
+        arr.append(generated_ints[int_idx])
+        int_idx += 1
+    for _ in range(n//3):
+        arr.delete(generated_ints[int_idx])
+        int_idx += 1
+    radix_sort(arr, start=2, end=10)
+    for i in range(len(expected_arr_1)):
+        assert arr[i] == expected_arr_1[i]
+    radix_sort(arr)
+    for i in range(len(expected_arr_2)):
+        assert arr[i] == expected_arr_2[i]
+    assert (arr._last_pos_filled, arr._num, arr.size) == (12, 13, 31)
+
+    # Test with OneDimensionalArray
+    n = random.randint(10, 20)
+    arr = OneDimensionalArray(int, n)
+    generated_ints.clear()
+    for i in range(n):
+        integer = random.randint(1, 1000)
+        arr[i] = integer
+        generated_ints.append(integer)
+    expected_arr_3 = [42, 695, 147, 500, 768,
+                    998, 473, 732, 728, 426,
+                    709, 910]
+    radix_sort(arr, start=2, end=5)
+    assert arr._data == expected_arr_3
+
+    # Test with OneDimensionalArray (CPP backend)
+    arr = OneDimensionalArray(int, n, backend=Backend.CPP)
+    int_idx = 0
+    for i in range(n):
+        arr[i] = generated_ints[int_idx]
+        int_idx += 1
+    radix_sort(arr, start=2, end=5)
+    for i in range(len(expected_arr_3)):
+        assert arr[i] == expected_arr_3
