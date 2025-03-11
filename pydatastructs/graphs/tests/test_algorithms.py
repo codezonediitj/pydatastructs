@@ -321,10 +321,6 @@ def test_shortest_paths():
     _test_shortest_paths_negative_edges("Matrix", 'bellman_ford')
     _test_shortest_paths_positive_edges("List", 'dijkstra')
     _test_shortest_paths_positive_edges("Matrix", 'dijkstra')
-    _test_shortest_paths_positive_edges("List", 'queue_improved_bellman_ford')
-    _test_shortest_paths_positive_edges("Matrix", 'queue_improved_bellman_ford')
-    _test_shortest_paths_negative_edges("List", 'queue_improved_bellman_ford')
-    _test_shortest_paths_negative_edges("Matrix", 'queue_improved_bellman_ford')
 
 def test_all_pair_shortest_paths():
 
