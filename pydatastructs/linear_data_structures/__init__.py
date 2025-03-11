@@ -47,6 +47,7 @@ from .algorithms import (
     jump_search,
     selection_sort,
     insertion_sort,
-    intro_sort
+    intro_sort,
+    longest_alternating_subsequence,
 )
 __all__.extend(algorithms.__all__)
