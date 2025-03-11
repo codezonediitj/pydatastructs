@@ -1881,11 +1881,11 @@ def longest_alternating_subsequence(array: OneDimensionalArray, **kwargs) -> int
     >>> arr = OneDimensionalArray(int, [1, 5, 4])
     >>> las = longest_alternating_subsequence(arr)
     >>> las
-    3
+    [1, 5, 4]
     >>> arr = OneDimensionalArray(int, [1, 5, 4, 3, 2, 6, 7])
     >>> las = longest_alternating_subsequence(arr)
     >>> las
-    4
+    [1, 5, 2, 7]
 
     References
     ==========
@@ -1900,8 +1900,12 @@ def longest_alternating_subsequence(array: OneDimensionalArray, **kwargs) -> int
     raise_if_backend_is_not_python(
         longest_alternating_subsequence, kwargs.get('backend', Backend.PYTHON))
 
-    increasing = 1
-    decreasing = 1
+    # Edge case
+    if len(array) == 0:
+        return OneDimensionalArray(int, [])
+
+    increasing = [array[0]]
+    decreasing = [array[0]]
     n = len(array)
 
     # Iterate from second element
@@ -1909,11 +1913,14 @@ def longest_alternating_subsequence(array: OneDimensionalArray, **kwargs) -> int
 
         # Increasing changes if decreasing changes
         if (array[i] > array[i-1]):
-            increasing = decreasing + 1
+            increasing = decreasing + [array[i]]
 
         # Decreasing changes if increasing changes
         elif (array[i] < array[i-1]):
-            decreasing = increasing + 1
+            decreasing = increasing + [array[i]]
 
     # Return the maximum length
-    return max(increasing, decreasing)
+    if len(increasing) > len(decreasing):
+        return OneDimensionalArray(int, increasing)
+    else:
+        return OneDimensionalArray(int, decreasing)
