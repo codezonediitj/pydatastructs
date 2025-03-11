@@ -1852,7 +1852,7 @@ def intro_sort(array, **kwargs) -> Array:
 
         return array
 
-def _count_sort_for_radix(array, exp, comp):
+def _count_sort_for_radix(array, exp):
     n = len(array)
     output = [None] * n
     count = [0] * 10
@@ -1876,7 +1876,7 @@ def _count_sort_for_radix(array, exp, comp):
     for i in range(n):
         array[i] = output[i]
 
-def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
+def radix_sort(array, **kwargs):
     """
     Implements Radix Sort.
 
@@ -1911,13 +1911,13 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
     # Perform counting sort on the sub_array (without None values)
     exp = 1
     while max_val // exp > 0:
-        _count_sort_for_radix(sub_array, exp, comp)
+        _count_sort_for_radix(sub_array, exp)
         exp *= 10
 
     # Insert None values back at their respective positions
     sorted_array = sub_array[:]
     for idx in none_indices:
-        sorted_array.insert(idx - start, None)  # Insert None back at the correct position
+        sorted_array.insert(end, None)  # Insert None back at the correct position
 
     # Update the original array with the sorted values
     for i in range(start, end + 1):
