@@ -1967,6 +1967,12 @@ class FusionTree(object):
         data: Any
             Optional data to store with the key.
         """
+        # Edge case for root node if not intially inserted
+        if self.size == 1 and self.tree[0].key is None:
+            self.tree[0] = TreeNode(key, data)
+            self.tree[0].is_root = True
+            return
+
         node = TreeNode(key, data)
         self.tree.append(node)
         self.size += 1
