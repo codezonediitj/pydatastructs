@@ -1908,28 +1908,27 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
 
     sub_array = []
     max_val = 0
+    none_count = 0
     for i in range(0,len(array)):
-        sub_array.append(array[i])
         if array[i] is not None:
+            sub_array.append(array[i])
             if array[i]>max_val:
                 max_val = array[i]
+        else:
+            none_count += 1
 
     exp = 1
     while max_val // exp > 0:
         _count_sort_for_radix(sub_array, exp, comp)
         exp *= 10
 
+    sub_array += [None] * none_count
     index = 0
-    none_count = 0
     array = []
     for i in range(start, end + 1):
-        if sub_array[i] is None:
-            none_count += 1
-            continue
         array.append(sub_array[index])
         index += 1
 
-    array = array + [None]*none_count
     if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
         array._modify(True)
     
