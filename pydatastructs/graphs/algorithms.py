@@ -700,6 +700,8 @@ def shortest_paths(graph: Graph, algorithm: str,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1].
 
         'dijkstra' -> Dijkstra algorithm as given in [2].
+
+        'queue_improved_bellman_ford' -> Queue Improved Bellman-Ford algorithm as given in [3].
     source: str
         The name of the source the node.
     target: str
@@ -742,6 +744,7 @@ def shortest_paths(graph: Graph, algorithm: str,
 
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
     .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    .. [3] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm#Improvements
     """
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
@@ -810,6 +813,37 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
     return dist, pred
 
 _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
+
+def _queue_improved_bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
+    distances, predecessor, visited = {}, {}, {}
+
+    for v in graph.vertices:
+        distances[v] = float('inf')
+        predecessor[v] = None
+        visited[v] = False
+    distances[source] = 0
+
+    que = Queue([source])
+
+    while que:
+        u = que.popleft()
+        visited[u] = False
+        neighbors = graph.neighbors(u)
+        for neighbor in neighbors:
+            v = neighbor.name
+            edge_str = u + '_' + v
+            if distances[u] != float('inf') and distances[u] + graph.edge_weights[edge_str].value < distances[v]:
+                distances[v] = distances[u] + graph.edge_weights[edge_str].value
+                predecessor[v] = u
+                if not visited[v]:
+                    que.append(v)
+                    visited[v] = True
+
+    if target != "":
+        return (distances[target], predecessor)
+    return (distances, predecessor)
+
+_queue_improved_bellman_ford_adjacency_matrix = _queue_improved_bellman_ford_adjacency_list
 
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
