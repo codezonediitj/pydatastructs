@@ -1920,7 +1920,7 @@ class FusionTree(object):
     >>> ft.delete(1)
     True
     >>> ft.search(1)
-    None
+
 
     References:
     - https://en.wikipedia.org/wiki/Fusion_tree
