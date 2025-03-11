@@ -1858,17 +1858,19 @@ def _count_sort_for_radix(array, exp, comp):
     count = [0] * 10
 
     for i in range(n):
-        index = (array[i] // exp) % 10
-        count[index] += 1
+        if array[i] is not None:
+            index = (array[i] // exp) % 10
+            count[index] += 1
 
     for i in range(1, 10):
         count[i] += count[i - 1]
 
     i = n - 1
     while i >= 0:
-        index = (array[i] // exp) % 10
-        output[count[index] - 1] = array[i]
-        count[index] -= 1
+        if array[i] is not None:
+            index = (array[i] // exp) % 10
+            output[count[index] - 1] = array[i]
+            count[index] -= 1
         i -= 1
 
     for i in range(n):
@@ -1908,26 +1910,31 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
 
     sub_array = []
     max_val = 0
-    none_count = 0
-    for i in range(0,len(array)):
+    none_indices = []  # To track positions of None values
+    for i in range(0, len(array)):
         if array[i] is not None:
             sub_array.append(array[i])
-            if array[i]>max_val:
+            if array[i] > max_val:
                 max_val = array[i]
         else:
-            none_count += 1
+            none_indices.append(i)  # Track the index of None values
 
+    # Perform counting sort on the sub_array (without None values)
     exp = 1
     while max_val // exp > 0:
         _count_sort_for_radix(sub_array, exp, comp)
         exp *= 10
 
-    sub_array += [None] * none_count
-    index = 0
-    array = []
+    # Reintroduce None values at their original positions
+    for idx in none_indices:
+        sub_array.insert(idx, None)
+
+    # Slice sub_array to ensure we only modify the desired range (start to end)
+    sub_array = sub_array[start:end + 1]
+
+    # Ensure the final array is updated correctly with sorted values
     for i in range(start, end + 1):
-        array.append(sub_array[index])
-        index += 1
+        array[i] = sub_array[i - start]
 
     if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
         array._modify(True)
