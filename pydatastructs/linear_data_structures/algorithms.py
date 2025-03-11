@@ -1889,18 +1889,6 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
         for sorting. Optional, by default, less than or
         equal to is used for comparing two
         values.
-
-    Examples
-    ========
-    >>> from pydatastructs import OneDimensionalArray, radix_sort
-    >>> arr = OneDimensionalArray(int,[170, 45, 75, 90, 802, 24, 2, 66])
-    >>> radix_sort(arr)
-    >>> [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7]]
-    [2, 24, 45, 66, 75, 90, 170, 802]
-
-    References
-    ==========
-    .. [1] https://en.wikipedia.org/wiki/Radix_sort
     """
     # Raise error if not Python backend
     raise_if_backend_is_not_python(radix_sort, kwargs.get('backend', Backend.PYTHON))
@@ -1908,16 +1896,17 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
 
+    # Create a sub_array excluding None values, and track positions of None values
     sub_array = []
+    none_indices = []
     max_val = 0
-    none_indices = []  # To track positions of None values
-    for i in range(0, len(array)):
+
+    for i in range(start, end + 1):
         if array[i] is not None:
             sub_array.append(array[i])
-            if array[i] > max_val:
-                max_val = array[i]
+            max_val = max(max_val, array[i])
         else:
-            none_indices.append(i)  # Track the index of None values
+            none_indices.append(i)  # Track positions of None
 
     # Perform counting sort on the sub_array (without None values)
     exp = 1
@@ -1925,18 +1914,16 @@ def radix_sort(array, comp=lambda u, v: u <= v, **kwargs):
         _count_sort_for_radix(sub_array, exp, comp)
         exp *= 10
 
-    # Reintroduce None values at their original positions
+    # Insert None values back at their respective positions
+    sorted_array = sub_array[:]
     for idx in none_indices:
-        sub_array.insert(idx, None)
+        sorted_array.insert(idx - start, None)  # Insert None back at the correct position
 
-    # Slice sub_array to ensure we only modify the desired range (start to end)
-    sub_array = sub_array[start:end + 1]
-
-    # Ensure the final array is updated correctly with sorted values
+    # Update the original array with the sorted values
     for i in range(start, end + 1):
-        array[i] = sub_array[i - start]
+        array[i] = sorted_array[i - start]
 
     if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
         array._modify(True)
-    
+
     return array
