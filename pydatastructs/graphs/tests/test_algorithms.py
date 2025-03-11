@@ -1,3 +1,4 @@
+import pytest
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
@@ -314,13 +315,56 @@ def test_shortest_paths():
         dist, pred = shortest_paths(graph, algorithm, 's', 'd')
         assert dist == 2
         assert pred == {'s': None, 'a': 'b', 'b': 's', 'c': 'a', 'd': 'c'}
-
+    def _test_a_star_manhattan(ds):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        vertices = [
+            GraphNode("0,0"),
+            GraphNode("1,1"),
+            GraphNode("2,2")
+        ]
+        graph = Graph(*vertices)
+        graph.add_edge("0,0", "1,1", 2)
+        graph.add_edge("1,1", "2,2", 2)
+        distance, pred = shortest_paths(graph, 'a_star', "0,0", "2,2")
+        assert distance == 4
+        assert pred == {'0,0': None, '1,1': '0,0', '2,2': '1,1'}
+        no_path_graph = Graph(
+            GraphNode("0,0"),
+            GraphNode("1,1"),
+            GraphNode("2,2")
+        )
+        with pytest.raises(ValueError, match="Either source '0,0' and target '2,2' have no path between them."):
+            shortest_paths(no_path_graph, 'a_star', "0,0", "2,2")
+        same_node_graph = Graph(GraphNode("1,1"))
+        distance, pred = shortest_paths(same_node_graph, 'a_star', "1,1", "1,1")
+        assert distance == 0
+        assert pred == {'1,1': None}
+        invalid_graph = Graph(GraphNode("invalid"))
+        with pytest.raises(ValueError, match="Invalid node format: invalid. Expected 'x,y'."):
+            shortest_paths(invalid_graph, 'a_star', "invalid", "invalid")
+        complex_vertices = [
+            GraphNode("0,0"),
+            GraphNode("0,1"),
+            GraphNode("1,0"),
+            GraphNode("1,1")
+        ]
+        complex_graph = Graph(*complex_vertices)
+        complex_graph.add_edge("0,0", "0,1", 1)
+        complex_graph.add_edge("0,1", "1,1", 1)
+        complex_graph.add_edge("0,0", "1,0", 2)
+        complex_graph.add_edge("1,0", "1,1", 1)
+        distance, pred = shortest_paths(complex_graph, 'a_star', "0,0", "1,1")
+        assert distance == 2
+        assert pred == {'0,0': None, '0,1': '0,0', '1,1': '0,1', '1,0': '0,0'}
     _test_shortest_paths_positive_edges("List", 'bellman_ford')
     _test_shortest_paths_positive_edges("Matrix", 'bellman_ford')
     _test_shortest_paths_negative_edges("List", 'bellman_ford')
     _test_shortest_paths_negative_edges("Matrix", 'bellman_ford')
     _test_shortest_paths_positive_edges("List", 'dijkstra')
     _test_shortest_paths_positive_edges("Matrix", 'dijkstra')
+    _test_a_star_manhattan("List")
+    _test_a_star_manhattan("Matrix")
 
 def test_all_pair_shortest_paths():
 
