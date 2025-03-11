@@ -151,6 +151,9 @@ def _test_BinaryTreeTraversal(backend):
     bfs = trav.breadth_first_search()
     assert [node.key for node in bfs] == ['F', 'B', 'G', 'A', 'D', 'I', 'C', 'E', 'H']
 
+    morris_in_order = trav.morris_in_order_traversal()
+    assert [node.key for node in morris_in_order] == ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+
     assert raises(NotImplementedError, lambda: trav.breadth_first_search(strategy='iddfs'))
     assert raises(NotImplementedError, lambda: trav.depth_first_search(order='in_out_order'))
     assert raises(TypeError, lambda: BTT(1))
