@@ -697,7 +697,7 @@ def shortest_paths(graph: Graph, algorithm: str,
         The algorithm to be used. Currently, the following algorithms
         are implemented,
 
-        'bellman_ford' -> Bellman-Ford algorithm as given in [1], with a queue to improve performance on sparse graphs.
+        'bellman_ford' -> Bellman-Ford algorithm as given in [1]
 
         'dijkstra' -> Dijkstra algorithm as given in [2].
     source: str
