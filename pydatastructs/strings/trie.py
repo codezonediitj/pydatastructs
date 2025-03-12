@@ -255,7 +255,7 @@ class Trie(object):
     def clear(self) -> None:
         """
         Resets the Trie by replacing the root node with a new empty node.
-        This effectively clears all words from the Trie.
+        This will effectively clears all words from the Trie.
 
         Returns
         =======
