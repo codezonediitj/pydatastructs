@@ -531,6 +531,52 @@ def _strongly_connected_components_kosaraju_adjacency_list(graph):
 _strongly_connected_components_kosaraju_adjacency_matrix = \
     _strongly_connected_components_kosaraju_adjacency_list
 
+def _tarjan_dfs(u, graph, index, stack, indices, low_links, on_stacks, components):
+    indices[u] = index[0]
+    low_links[u] = index[0]
+    index[0] += 1
+    stack.append(u)
+    on_stacks[u] = True
+
+    for node in graph.neighbors(u):
+        v = node.name
+        if indices[v] == -1:
+            _tarjan_dfs(v, graph, index, stack, indices, low_links, on_stacks, components)
+            low_links[u] = min(low_links[u], low_links[v])
+        elif on_stacks[v]:
+            low_links[u] = min(low_links[u], low_links[v])
+
+    if low_links[u] == indices[u]:
+        component = set()
+        while stack:
+            w = stack.pop()
+            on_stacks[w] = False
+            component.add(w)
+            if w == u:
+                break
+        components.append(component)
+
+def _strongly_connected_components_tarjan_adjacency_list(graph):
+    index = [0] # mutable object
+    stack = Stack([])
+    indices, low_links, on_stacks = {}, {}, {}
+
+    for u in graph.vertices:
+        indices[u] = -1
+        low_links[u] = -1
+        on_stacks[u] = False
+
+    components = []
+
+    for u in graph.vertices:
+        if indices[u] == -1:
+            _tarjan_dfs(u, graph, index, stack, indices, low_links, on_stacks, components)
+
+    return components
+
+_strongly_connected_components_tarjan_adjacency_matrix = \
+    _strongly_connected_components_tarjan_adjacency_list
+
 def strongly_connected_components(graph, algorithm, **kwargs):
     """
     Computes strongly connected components for the given
@@ -549,6 +595,7 @@ def strongly_connected_components(graph, algorithm, **kwargs):
         supported,
 
         'kosaraju' -> Kosaraju's algorithm as given in [1].
+        'tarjan' -> Tarjan's algorithm as given in [2].
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -578,6 +625,7 @@ def strongly_connected_components(graph, algorithm, **kwargs):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 
     """
     raise_if_backend_is_not_python(
