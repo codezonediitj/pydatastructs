@@ -1,6 +1,6 @@
 import math, pydatastructs
 from enum import Enum
-from pydatastructs.utils._backend.cpp import _nodes
+from pydatastructs.utils._backend.cpp import _nodes, _graph_utils
 
 __all__ = [
     'TreeNode',
@@ -396,19 +396,21 @@ class AdjacencyListGraphNode(GraphNode):
         return ['__new__', 'add_adjacent_node',
                 'remove_adjacent_node']
 
-    def __new__(cls, name, data=None, adjacency_list=None,
+    def __new__(cls, name, data=None, adjacency_list=[],
                 **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
-        obj = GraphNode.__new__(cls)
-        obj.name, obj.data = str(name), data
-        obj._impl = 'adjacency_list'
-        if adjacency_list is not None:
-            for node in adjacency_list:
-                obj.__setattr__(node.name, node)
-        obj.adjacent = adjacency_list if adjacency_list is not None \
-                       else []
-        return obj
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.PYTHON:
+            obj = GraphNode.__new__(cls)
+            obj.name, obj.data = str(name), data
+            obj._impl = 'adjacency_list'
+            if len(adjacency_list) > 0:
+                for node in adjacency_list:
+                    obj.__setattr__(node.name, node)
+            obj.adjacent = adjacency_list if len(adjacency_list) > 0 \
+                        else []
+            return obj
+        else:
+            return _graph_utils.AdjacencyListGraphNode(name, data, adjacency_list)
 
     def add_adjacent_node(self, name, data=None):
         """
@@ -457,13 +459,15 @@ class AdjacencyMatrixGraphNode(GraphNode):
 
     def __new__(cls, name, data=None,
                 **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
-        obj = GraphNode.__new__(cls)
-        obj.name, obj.data, obj.is_connected = \
-            str(name), data, None
-        obj._impl = 'adjacency_matrix'
-        return obj
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.PYTHON:
+            obj = GraphNode.__new__(cls)
+            obj.name, obj.data, obj.is_connected = \
+                str(name), data, None
+            obj._impl = 'adjacency_matrix'
+            return obj
+        else:
+            return _graph_utils.AdjacencyMatrixGraphNode(str(name), data)
 
 class GraphEdge(object):
     """
@@ -487,12 +491,14 @@ class GraphEdge(object):
 
     def __new__(cls, node1, node2, value=None,
                 **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
-        obj = object.__new__(cls)
-        obj.source, obj.target = node1, node2
-        obj.value = value
-        return obj
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.PYTHON:
+            obj = object.__new__(cls)
+            obj.source, obj.target = node1, node2
+            obj.value = value
+            return obj
+        else:
+            return _graph_utils.GraphEdge(node1, node2, value)
 
     def __str__(self):
         return str((self.source.name, self.target.name))
