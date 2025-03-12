@@ -13,7 +13,7 @@ typedef struct {
 static void AdjacencyMatrixGraphNode_dealloc(AdjacencyMatrixGraphNode* self){
     Py_XDECREF(self->super.data);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyTypeObject*>(self));
-}xf
+}
 
 static PyObject* AdjacencyMatrixGraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds){
     PyObject* base_obj = GraphNode_new(type, args, kwds);

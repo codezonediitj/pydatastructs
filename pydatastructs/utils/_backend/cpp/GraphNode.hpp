@@ -18,7 +18,7 @@ static void GraphNode_dealloc(GraphNode* self){
 
 static PyObject* GraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds){
     GraphNode* self;
-    self = reinterpret_cast<GraphNode*>(type)->tp_alloc(type,0);
+    self = reinterpret_cast<GraphNode*>(type->tp_alloc(type,0));
     if (!self) return NULL;
 
     static char* kwlist[] = { "name", "data", NULL };
@@ -79,12 +79,6 @@ static int GraphNode_set(GraphNode* self, PyObject *value, void *closure) {
     return 0;
 }
 
-static PyGetSetDef GraphNode_get_setters[] = {
-    {"name", (getter)GraphNode_get, (setter)GraphNode_set, "node name", reinterpret_cast<void*>("name")},
-    {"data", (getter)GraphNode_get, (setter)GraphNode_set, "node data", reinterpret_cast<void*>("data")},
-    {NULL},
-};
-
 static PyTypeObject GraphNodeType = {
         /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "GraphNode",
         /* tp_basicsize */ sizeof(GraphNode),
@@ -114,7 +108,7 @@ static PyTypeObject GraphNodeType = {
         /* tp_iternext */ 0,
         /* tp_methods */ 0,
         /* tp_members */ 0,
-        /* tp_getset */ GraphNode_get_setters,
+        /* tp_getset */ 0,
         /* tp_base */ &PyBaseObject_Type,
         /* tp_dict */ 0,
         /* tp_descr_get */ 0,

@@ -27,7 +27,7 @@ static void AdjacencyListGraphNode_dealloc(AdjacencyListGraphNode* self) {
 
 static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     AdjacencyListGraphNode* self;
-    self = reinterpret_cast<AdjacencyListGraphNode*>(type)->tp_alloc(type, 0);
+    self = reinterpret_cast<AdjacencyListGraphNode*>(type->tp_alloc(type, 0));
     if (!self) return NULL;
     new (&self->adjacent) std::unordered_map<std::string, PyObject*>();
 
