@@ -57,12 +57,30 @@ class AdjacencyMatrix(Graph):
         return neighbors
 
     def add_vertex(self, node):
-        raise NotImplementedError("Currently we allow "
-                "adjacency matrix for static graphs only")
+        node_name = str(node.name)
+        if node_name in self.vertices:
+            raise ValueError(f"Vertex {node_name} already exists in the graph.")
+        self.vertices.append(node_name)
+        self.__setattr__(node_name, node)
+        self.matrix[node_name] = {}
+        for vertex in self.vertices:
+            self.matrix[vertex][node_name] = False
+            self.matrix[node_name][vertex] = False
 
     def remove_vertex(self, node):
-        raise NotImplementedError("Currently we allow "
-                "adjacency matrix for static graphs only.")
+        node_name = str(node)
+        if node_name not in self.vertices:
+            raise ValueError(f"Vertex {node_name} does not exist in the graph.")
+        self.vertices.remove(node_name)
+        del self.matrix[node_name]
+        for vertex in self.vertices:
+            del self.matrix[vertex][node_name]
+        edges_to_remove = []
+        for edge in self.edge_weights.keys():
+            if node_name in edge:
+                edges_to_remove.append(edge)
+        for edge in edges_to_remove:
+            del self.edge_weights[edge]
 
     def add_edge(self, source, target, cost=None):
         source, target = str(source), str(target)
