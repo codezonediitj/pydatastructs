@@ -19,6 +19,7 @@ static void GraphNode_dealloc(GraphNode* self){
 static PyObject* GraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds){
     GraphNode* self;
     self = reinterpret_cast<GraphNode*>(type->tp_alloc(type,0));
+    new (&self->name) std::string();
     if (!self) return NULL;
 
     static char* kwlist[] = { "name", "data", NULL };

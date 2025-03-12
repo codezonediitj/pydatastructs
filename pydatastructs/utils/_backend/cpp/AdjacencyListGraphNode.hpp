@@ -21,15 +21,15 @@ static void AdjacencyListGraphNode_dealloc(AdjacencyListGraphNode* self) {
     for (auto& pair : self->adjacent) {
         Py_XDECREF(pair.second);
     }
-    self->adjacent.~unordered_map<std::string, PyObject*>();
+    self->adjacent.clear();
     Py_TYPE(self)->tp_free(reinterpret_cast<PyTypeObject*>(self));
 }
 
 static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
-    AdjacencyListGraphNode* self;
-    self = reinterpret_cast<AdjacencyListGraphNode*>(type->tp_alloc(type, 0));
+    AdjacencyListGraphNode* self = PyObject_New(AdjacencyListGraphNode, &AdjacencyListGraphNodeType);
     if (!self) return NULL;
     new (&self->adjacent) std::unordered_map<std::string, PyObject*>();
+    new (&self->name) std::string();
 
     static char* kwlist[] = { "name", "data", "adjacency_list", NULL };
     const char* name;
