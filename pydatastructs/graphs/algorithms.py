@@ -700,7 +700,7 @@ def shortest_paths(graph: Graph, algorithm: str,
         The algorithm to be used. Currently, the following algorithms
         are implemented,
 
-        'bellman_ford' -> Bellman-Ford algorithm as given in [1].
+        'bellman_ford' -> Bellman-Ford algorithm as given in [1]
 
         'dijkstra' -> Dijkstra algorithm as given in [2].
     source: str
@@ -757,27 +757,34 @@ def shortest_paths(graph: Graph, algorithm: str,
     return getattr(algorithms, func)(graph, source, target)
 
 def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
-    distances, predecessor = {}, {}
+    distances, predecessor, visited, cnts = {}, {}, {}, {}
 
     for v in graph.vertices:
         distances[v] = float('inf')
         predecessor[v] = None
+        visited[v] = False
+        cnts[v] = 0
     distances[source] = 0
+    verticy_num = len(graph.vertices)
 
-    edges = graph.edge_weights.values()
-    for _ in range(len(graph.vertices) - 1):
-        for edge in edges:
-            u, v = edge.source.name, edge.target.name
-            w = edge.value
-            if distances[u] + edge.value < distances[v]:
-                distances[v] = distances[u] + w
+    que = Queue([source])
+
+    while que:
+        u = que.popleft()
+        visited[u] = False
+        neighbors = graph.neighbors(u)
+        for neighbor in neighbors:
+            v = neighbor.name
+            edge_str = u + '_' + v
+            if distances[u] != float('inf') and distances[u] + graph.edge_weights[edge_str].value < distances[v]:
+                distances[v] = distances[u] + graph.edge_weights[edge_str].value
                 predecessor[v] = u
-
-    for edge in edges:
-        u, v = edge.source.name, edge.target.name
-        w = edge.value
-        if distances[u] + w < distances[v]:
-            raise ValueError("Graph contains a negative weight cycle.")
+                cnts[v] = cnts[u] + 1
+                if cnts[v] >= verticy_num:
+                    raise ValueError("Graph contains a negative weight cycle.")
+                if not visited[v]:
+                    que.append(v)
+                    visited[v] = True
 
     if target != "":
         return (distances[target], predecessor)
