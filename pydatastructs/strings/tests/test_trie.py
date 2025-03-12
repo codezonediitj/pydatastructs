@@ -55,12 +55,14 @@ def test_Trie():
     assert trie_1.autocomplete("dict") == ["dict", "dicts", "dicts_lists_tuples"]
 
     trie_2 = Trie()
-    trie_2.bulk_insert(["apple", "app", "apricot", "banana"])
+    trie_2.insert("apple")
+    trie_2.insert("app")
+    trie_2.insert("apricot")
+    trie_2.insert("banana")
     assert trie_2.count_words() == 4
 
     trie_2.clear()
     assert trie_2.count_words() == 0
-    assert trie_2.is_empty()
 
     assert trie_2.is_empty()
 
@@ -70,8 +72,10 @@ def test_Trie():
     assert sorted(trie_3.all_words()) == ["hello", "world"]
 
     trie_4 = Trie()
-    trie_4.bulk_insert(["zebra", "dog", "duck", "dove"])
-    print(trie_4.shortest_unique_prefix())
+    trie_4.insert("zebra")
+    trie_4.insert("dog")
+    trie_4.insert("duck")
+    trie_4.insert("dove")
     assert trie_4.shortest_unique_prefix() == {
         "zebra": "z",
         "dog": "dog",

@@ -180,10 +180,13 @@ class Trie(object):
         """
 
         def _collect(node: TrieNode, prefix: str, strings: list):
-            if node.is_terminal:
-                strings.append(prefix)
-            for child in node._children:
-                _collect(node.get_child(child), prefix + child, strings)
+            stack = [(node, prefix)]
+            while stack:
+                current_node, current_prefix = stack.pop()
+                if current_node.is_terminal:
+                    strings.append(current_prefix)
+                for child in current_node._children:
+                    stack.append((current_node.get_child(child), current_prefix + child))
 
         strings = []
         walk = self.root
@@ -249,27 +252,10 @@ class Trie(object):
         """
         return self.strings_with_prefix(prefix)
 
-    def bulk_insert(self, words: list) -> None:
-        """
-        Inserts multiple words into the trie.
-
-        Parameters
-        ==========
-
-        words: list
-            A list of words to be inserted.
-
-        Returns
-        =======
-
-        None
-        """
-        for word in words:
-            self.insert(word)
-
     def clear(self) -> None:
         """
-        Clears the trie, removing all words.
+        Resets the Trie by replacing the root node with a new empty node.
+        This effectively clears all words from the Trie.
 
         Returns
         =======
