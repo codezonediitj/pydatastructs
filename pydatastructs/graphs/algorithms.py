@@ -23,7 +23,8 @@ __all__ = [
     'all_pair_shortest_paths',
     'topological_sort',
     'topological_sort_parallel',
-    'max_flow'
+    'max_flow',
+    'yen_algorithm'
 ]
 
 Stack = Queue = deque
@@ -1216,3 +1217,116 @@ def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
         f"Currently {algorithm} algorithm isn't implemented for "
         "performing max flow on graphs.")
     return getattr(algorithms, func)(graph, source, sink)
+
+def yen_algorithm(graph, source, target, K, **kwargs):
+    """
+    Finds the K shortest paths from source to target in a graph using Yen's algorithm.
+
+    Parameters
+    ==========
+    graph: Graph
+        The graph on which Yen's algorithm is to be performed.
+    source: str
+        The name of the source node.
+    target: str
+        The name of the target node.
+    K: int
+        The number of shortest paths to find.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available backend is used.
+
+    Returns
+    =======
+    list
+        A list of the K shortest paths, where each path is a list of node names.
+    """
+    raise_if_backend_is_not_python(
+        yen_algorithm, kwargs.get('backend', Backend.PYTHON))
+
+    def dijkstra_shortest_path(graph, source, target):
+        """
+        Helper function to find the shortest path using Dijkstra's algorithm.
+        """
+        dist, pred = {}, {}
+        for v in graph.vertices:
+            dist[v] = float('inf')
+            pred[v] = None
+        dist[source] = 0
+        pq = PriorityQueue(implementation='binomial_heap')
+        for vertex in dist:
+            pq.push(vertex, dist[vertex])
+        while not pq.is_empty:
+            u = pq.pop()
+            if u == target:
+                break
+            for v in graph.neighbors(u):
+                edge_str = u + '_' + v.name
+                if edge_str in graph.edge_weights:
+                    alt = dist[u] + graph.edge_weights[edge_str].value
+                    if alt < dist[v.name]:
+                        dist[v.name] = alt
+                        pred[v.name] = u
+                        pq.push(v.name, alt)
+        path = []
+        if dist[target] != float('inf'):
+            current = target
+            while current is not None:
+                path.append(current)
+                current = pred[current]
+            path.reverse()
+        return path
+
+    A = []
+    B = []
+
+    shortest_path = dijkstra_shortest_path(graph, source, target)
+    if not shortest_path:
+        return A
+    A.append(shortest_path)
+
+    for k in range(1, K):
+        for i in range(len(A[k-1]) - 1):
+            spur_node = A[k-1][i]
+            root_path = A[k-1][:i+1]
+
+            edges_removed = []
+            for path in A:
+                if len(path) > i and root_path == path[:i+1]:
+                    u = path[i]
+                    v = path[i+1]
+                    edge_str = u + '_' + v
+                    if edge_str in graph.edge_weights:
+                        edges_removed.append((u, v, graph.edge_weights[edge_str].value))
+                        graph.remove_edge(u, v)
+
+            nodes_removed = []
+            for node_name in root_path[:-1]:
+                if node_name != spur_node:
+                    node = graph.__getattribute__(node_name)
+                    nodes_removed.append(node)
+                    graph.remove_vertex(node_name)
+
+            spur_path = dijkstra_shortest_path(graph, spur_node, target)
+
+            if spur_path:
+                total_path = root_path[:-1] + spur_path
+                total_cost = sum(graph.edge_weights[total_path[i] + '_' + total_path[i+1]].value
+                              for i in range(len(total_path)-1))
+                B.append((total_cost, total_path))
+
+            for u, v, w in edges_removed:
+                graph.add_edge(u, v, w)
+            for node in nodes_removed:
+                graph.add_vertex(node)
+
+        if not B:
+            break
+
+        B.sort(key=lambda x: x[0])
+
+        shortest_candidate = B.pop(0)[1]
+        if shortest_candidate not in A:
+            A.append(shortest_candidate)
+
+    return A
