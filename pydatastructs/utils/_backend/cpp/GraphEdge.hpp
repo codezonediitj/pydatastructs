@@ -24,7 +24,7 @@ static void GraphEdge_dealloc(GraphEdge* self) {
 
 static PyObject* GraphEdge_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     GraphEdge* self;
-    self = reinterpret_cast<GraphEdge*>(type)->tp_alloc(type, 0);
+    self = reinterpret_cast<GraphEdge*>(type->tp_alloc(type, 0));
     if (!self) return NULL;
 
     static char* kwlist[] = {"node1", "node2", "value", NULL};
