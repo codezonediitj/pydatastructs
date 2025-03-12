@@ -11,8 +11,6 @@ from pydatastructs.miscellaneous_data_structures import (
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
-from copy import deepcopy
-import heapq
 
 __all__ = [
     'breadth_first_search',

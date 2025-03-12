@@ -4,7 +4,6 @@ minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths,all_pair_shortest_paths, topological_sort,
 topological_sort_parallel, max_flow, yen_algorithm)
 from pydatastructs.utils.raises_util import raises
-import pytest
 
 def test_breadth_first_search():
 
