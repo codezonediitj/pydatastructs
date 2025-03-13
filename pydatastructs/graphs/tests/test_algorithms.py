@@ -448,3 +448,4 @@ def test_max_flow():
     _test_max_flow("Matrix", "edmonds_karp")
     _test_max_flow("List", "dinic")
     _test_max_flow("Matrix", "dinic")
+    _test_max_flow("List", "ford_fulkerson")
