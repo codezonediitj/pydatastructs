@@ -1187,16 +1187,11 @@ def _max_flow_ford_fulkerson_(graph: Graph, source, sink):
 
     m_flow = 0
     flow_passed = {}
-
-    # Add residual edges to the graph.
-    print(graph.neighbors('a'))
     
     while True:
-        # Use a dictionary for visited nodes. Reset for each new DFS call.
         visited = {}
         new_flow = _dfs_max_flow(graph_copy, source, sink, flow_passed, visited, float('inf'))
         
-        # If no augmenting path is found, exit the loop.
         if new_flow == 0:
             break
         
