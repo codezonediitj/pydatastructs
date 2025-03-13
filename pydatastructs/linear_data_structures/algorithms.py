@@ -30,7 +30,8 @@ __all__ = [
     'jump_search',
     'selection_sort',
     'insertion_sort',
-    'intro_sort'
+    'intro_sort',
+    'radix_sort',
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1850,3 +1851,71 @@ def intro_sort(array, **kwargs) -> Array:
         intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1, ins_threshold=ins_threshold)
 
         return array
+
+def radix_sort(array, **kwargs):
+    """
+    Implements Radix Sort.
+    Parameters
+    ==========
+    array: Array
+        The array which is to be sorted.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    """
+    raise_if_backend_is_not_python(radix_sort, kwargs.get('backend', Backend.PYTHON))
+
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+
+    sub_array = []
+    none_indices = []
+    max_val = 0
+
+    for i in range(start, end + 1):
+        if array[i] is not None:
+            sub_array.append(array[i])
+            max_val = max(max_val, array[i])
+        else:
+            none_indices.append(i)
+
+    exp = 1
+    while max_val // exp > 0:
+        n = len(sub_array)
+        output = [None] * n
+        count = [0] * 10
+
+        for i in range(n):
+            if sub_array[i] is not None:
+                index = (sub_array[i] // exp) % 10
+                count[index] += 1
+
+        for i in range(1, 10):
+            count[i] += count[i - 1]
+
+        i = n - 1
+        while i >= 0:
+            if sub_array[i] is not None:
+                index = (sub_array[i] // exp) % 10
+                output[count[index] - 1] = sub_array[i]
+                count[index] -= 1
+            i -= 1
+
+        for i in range(n):
+            sub_array[i] = output[i]
+
+        exp *= 10
+
+    sorted_array = sub_array[:]
+    for idx in none_indices:
+        sorted_array.insert(end, None)
+
+    for i in range(start, end + 1):
+        array[i] = sorted_array[i - start]
+
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
+
+    return array

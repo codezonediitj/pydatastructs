@@ -5,7 +5,7 @@ from pydatastructs import (
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
-    selection_sort, insertion_sort, intro_sort, Backend)
+    selection_sort, insertion_sort, intro_sort, radix_sort, Backend)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -93,6 +93,9 @@ def test_heapsort():
 
 def test_bucket_sort():
     _test_common_sort(bucket_sort)
+
+def test_radix_sort():
+    _test_common_sort(radix_sort)
 
 def test_counting_sort():
     random.seed(1000)
