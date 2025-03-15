@@ -23,7 +23,8 @@ __all__ = [
     'all_pair_shortest_paths',
     'topological_sort',
     'topological_sort_parallel',
-    'max_flow'
+    'max_flow',
+    'is_bipartite'
 ]
 
 Stack = Queue = deque
@@ -1216,3 +1217,57 @@ def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
         f"Currently {algorithm} algorithm isn't implemented for "
         "performing max flow on graphs.")
     return getattr(algorithms, func)(graph, source, sink)
+
+def is_bipartite(graph):
+    """
+    Determines whether the given undirected graph is bipartite using BFS.
+
+    Parameters
+    ==========
+    graph : Graph
+        An undirected graph instance.
+
+    Returns
+    =======
+    (bool, dict)
+        A tuple where the first element is True if the graph is bipartite and False otherwise.
+        The second element is a dictionary mapping each vertex (its name) to a color (0 or 1)
+        if the graph is bipartite; if not, the dictionary may be partially filled.
+
+    Examples
+    ========
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, is_bipartite
+    >>> v0 = AdjacencyListGraphNode(0)
+    >>> v1 = AdjacencyListGraphNode(1)
+    >>> v2 = AdjacencyListGraphNode(2)
+    >>> v3 = AdjacencyListGraphNode(3)
+    >>> graph = Graph(v0, v1, v2, v3, implementation='adjacency_list')
+    >>> graph.add_edge(v0.name, v1.name)
+    >>> graph.add_edge(v1.name, v2.name)
+    >>> graph.add_edge(v2.name, v3.name)
+    >>> graph.add_edge(v3.name, v0.name)
+    >>> is_bipartite(graph)
+    (True, {'0': 0, '1': 1, '2': 0, '3': 1})
+
+    References
+    ==========
+    .. [1] https://en.wikipedia.org/wiki/Bipartite_graph
+    """
+    from collections import deque
+    color = {}
+
+    for vertex in graph.vertices:
+        vertex_name = vertex.name if hasattr(vertex, "name") else vertex
+        if vertex_name not in color:
+            color[vertex_name] = 0
+            queue = deque([vertex_name])
+            while queue:
+                u = queue.popleft()
+                for neighbor in graph.neighbors(u):
+                    v = neighbor.name if hasattr(neighbor, "name") else neighbor
+                    if v not in color:
+                        color[v] = 1 - color[u]
+                        queue.append(v)
+                    elif color[v] == color[u]:
+                        return (False, color)
+    return (True, color)
