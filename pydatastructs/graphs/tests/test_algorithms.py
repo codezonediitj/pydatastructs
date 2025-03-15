@@ -2,7 +2,7 @@ from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths,all_pair_shortest_paths, topological_sort,
-topological_sort_parallel, max_flow)
+topological_sort_parallel, max_flow, is_bipartite)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -448,3 +448,38 @@ def test_max_flow():
     _test_max_flow("Matrix", "edmonds_karp")
     _test_max_flow("List", "dinic")
     _test_max_flow("Matrix", "dinic")
+
+def test_is_bipartite():
+    import pydatastructs.utils.misc_util as utils
+    def _test_bipartite(ds):
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        impl = 'adjacency_list' if ds == "List" else 'adjacency_matrix'
+
+        v0 = GraphNode(0)
+        v1 = GraphNode(1)
+        v2 = GraphNode(2)
+        v3 = GraphNode(3)
+        graph = Graph(v0, v1, v2, v3, implementation=impl)
+        graph.add_edge(v0.name, v1.name)
+        graph.add_edge(v1.name, v2.name)
+        graph.add_edge(v2.name, v3.name)
+        graph.add_edge(v3.name, v0.name)
+        bip, colors = is_bipartite(graph)
+        assert bip is True
+        assert colors[v0.name] != colors[v1.name]
+        assert colors[v1.name] != colors[v2.name]
+        assert colors[v2.name] != colors[v3.name]
+        assert colors[v3.name] != colors[v0.name]
+
+        u0 = GraphNode(0)
+        u1 = GraphNode(1)
+        u2 = GraphNode(2)
+        graph = Graph(u0, u1, u2, implementation=impl)
+        graph.add_edge(u0.name, u1.name)
+        graph.add_edge(u1.name, u2.name)
+        graph.add_edge(u2.name, u0.name)
+        bip, _ = is_bipartite(graph)
+        assert bip is False
+
+    _test_bipartite("List")
+    _test_bipartite("Matrix")
