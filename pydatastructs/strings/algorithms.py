@@ -245,3 +245,48 @@ def _z_function(text, query):
             positions.append(pos)
 
     return positions
+
+def _raita(text, query):
+    """
+    Implements the Raita algorithm for string matching.
+
+    Parameters
+    ==========
+    text: str
+        The text in which the pattern is to be searched.
+    query: str
+        The pattern to be searched in the text.
+
+    Returns
+    =======
+    DynamicOneDimensionalArray
+        An array of starting positions of the pattern in the text.
+    """
+    positions = DynamicOneDimensionalArray(int, 0)
+    n, m = len(text), len(query)
+
+    if m == 0 or n == 0 or m > n:
+        return positions
+
+    bad_char = {}
+    for i in range(m):
+        bad_char[query[i]] = i
+
+    middle_char = query[m // 2]
+
+    i = 0
+    while i <= n - m:
+        if query[0] == text[i] and query[-1] == text[i + m - 1] and middle_char == text[i + m // 2]:
+            j = 1
+            while j < m - 1 and query[j] == text[i + j]:
+                j += 1
+            if j == m - 1:
+                positions.append(i)
+
+        if i + m < n:
+            shift = bad_char.get(text[i + m], -1)
+            i += max(1, m - 1 - shift)
+        else:
+            break
+
+    return positions

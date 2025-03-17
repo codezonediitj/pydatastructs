@@ -14,6 +14,9 @@ def test_bm():
 def test_zf():
     _test_common_string_matching('z_function')
 
+def test_raita():
+    _test_common_string_matching('raita')
+
 def _test_common_string_matching(algorithm):
     true_text_pattern_dictionary = {
         "Knuth-Morris-Pratt": "-Morris-",
