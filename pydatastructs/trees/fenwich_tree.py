@@ -1,3 +1,7 @@
+__all__ = [
+    'fenwich_tree'
+]
+
 class fenwich_tree:
     """
     Implementation of Fenwich tree/Binary Indexed Tree

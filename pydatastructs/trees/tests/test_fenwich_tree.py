@@ -1,5 +1,5 @@
 import unittest
-from pydatastructs import fenwich_tree
+from pydatastructs.trees.fenwich_tree import fenwich_tree
 
 class TestFenwickTree(unittest.TestCase):
 
