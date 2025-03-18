@@ -206,6 +206,39 @@ class LinkedList(object):
         """
         return self.extract(-1)
 
+    def is_palindrome(self) -> bool:
+        """
+        Checks if the linked list is a palindrome.
+
+        Returns
+        =======
+
+        bool
+            True if the linked list is a palindrome, otherwise False.
+
+        Examples
+        ========
+
+        >>> from pydatastructs import SinglyLinkedList
+        >>> sll = SinglyLinkedList()
+        >>> sll.append(1)
+        >>> sll.append(2)
+        >>> sll.append(1)
+        >>> sll.is_palindrome()
+        True
+        >>> sll.append(3)
+        >>> sll.is_palindrome()
+        False
+        """
+        elements = []
+        current_node = self.head
+        while current_node is not None:
+            elements.append(current_node.key)
+            current_node = current_node.next
+            if current_node == self.head:
+                break
+        return elements == elements[::-1]
+
 class DoublyLinkedList(LinkedList):
     """
     Represents Doubly Linked List

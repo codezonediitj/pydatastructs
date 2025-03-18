@@ -43,6 +43,20 @@ def test_DoublyLinkedList():
     assert str(dll_copy) == "[]"
     assert raises(ValueError, lambda: dll_copy.extract(1))
 
+    dll_palindrome = DoublyLinkedList()
+    dll_palindrome.append(1)
+    dll_palindrome.append(2)
+    dll_palindrome.append(3)
+    dll_palindrome.append(2)
+    dll_palindrome.append(1)
+    assert dll_palindrome.is_palindrome() is True
+
+    dll_not_palindrome = DoublyLinkedList()
+    dll_not_palindrome.append(1)
+    dll_not_palindrome.append(2)
+    dll_not_palindrome.append(3)
+    assert dll_not_palindrome.is_palindrome() is False
+
 def test_SinglyLinkedList():
     random.seed(1000)
     sll = SinglyLinkedList()
@@ -78,6 +92,20 @@ def test_SinglyLinkedList():
         sll_copy.extract(index)
     assert str(sll_copy) == "[]"
     assert raises(ValueError, lambda: sll_copy.extract(1))
+
+    sll_palindrome = SinglyLinkedList()
+    sll_palindrome.append(1)
+    sll_palindrome.append(2)
+    sll_palindrome.append(3)
+    sll_palindrome.append(2)
+    sll_palindrome.append(1)
+    assert sll_palindrome.is_palindrome() is True
+
+    sll_not_palindrome = SinglyLinkedList()
+    sll_not_palindrome.append(1)
+    sll_not_palindrome.append(2)
+    sll_not_palindrome.append(3)
+    assert sll_not_palindrome.is_palindrome() is False
 
 def test_SinglyCircularLinkedList():
     random.seed(1000)
@@ -115,6 +143,20 @@ def test_SinglyCircularLinkedList():
         scll_copy.extract(index)
     assert str(scll_copy) == "[]"
     assert raises(ValueError, lambda: scll_copy.extract(1))
+
+    scll_palindrome = SinglyCircularLinkedList()
+    scll_palindrome.append(1)
+    scll_palindrome.append(2)
+    scll_palindrome.append(3)
+    scll_palindrome.append(2)
+    scll_palindrome.append(1)
+    assert scll_palindrome.is_palindrome() is True
+
+    scll_not_palindrome = SinglyCircularLinkedList()
+    scll_not_palindrome.append(1)
+    scll_not_palindrome.append(2)
+    scll_not_palindrome.append(3)
+    assert scll_not_palindrome.is_palindrome() is False
 
 def test_DoublyCircularLinkedList():
     random.seed(1000)
@@ -154,6 +196,20 @@ def test_DoublyCircularLinkedList():
         dcll_copy.extract(index)
     assert str(dcll_copy) == "[]"
     assert raises(ValueError, lambda: dcll_copy.extract(1))
+
+    dcll_palindrome = DoublyCircularLinkedList()
+    dcll_palindrome.append(1)
+    dcll_palindrome.append(2)
+    dcll_palindrome.append(3)
+    dcll_palindrome.append(2)
+    dcll_palindrome.append(1)
+    assert dcll_palindrome.is_palindrome() is True
+
+    dcll_not_palindrome = DoublyCircularLinkedList()
+    dcll_not_palindrome.append(1)
+    dcll_not_palindrome.append(2)
+    dcll_not_palindrome.append(3)
+    assert dcll_not_palindrome.is_palindrome() is False
 
 def test_SkipList():
     random.seed(0)
