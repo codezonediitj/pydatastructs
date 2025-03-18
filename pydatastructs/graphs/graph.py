@@ -161,3 +161,28 @@ class Graph(object):
         """
         raise NotImplementedError(
             "This is an abstract method.")
+
+    def add_bidirectional_edge(self, node1, node2, cost=None):
+        """
+        Adds edges between node1 and node2 in both directions.
+        """
+        self.add_edge(node1, node2, cost)
+        self.add_edge(node2, node1, cost)
+
+    def to_undirected_adjacency_list(self):
+        """
+        Converts the graph to undirected graph.
+        """
+        vertexes = []
+        undirected_graph = Graph(implementation='adjacency_list')
+        for vertex in self.vertices:
+            undirected_graph.add_vertex(
+                self.__getattribute__(vertex)
+            )
+
+        for vertex in self.vertices:
+            for v in self.neighbors(vertex):
+                edge = self.get_edge(vertex, v.name)
+                undirected_graph.add_bidirectional_edge(vertex, v.name, edge)
+
+        return undirected_graph
