@@ -7,9 +7,9 @@ from pydatastructs import (
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
     selection_sort, insertion_sort, intro_sort, Backend)
 
-from pydatastructs.linear_data_structures.algorithms import shell_sort
+from pydatastructs.linear_data_structures.algorithms import shell_sort, radix_sort
 from pydatastructs.utils.raises_util import raises
-import random
+import random, pytest
 
 def _test_common_sort(sort, *args, **kwargs):
     random.seed(1000)
@@ -436,3 +436,24 @@ def test_shell_sort():
     input_data = [-5, 3, -10, 7, 0, -2]
     expected = [-10, -5, -2, 0, 3, 7]
     assert shell_sort(input_data) == expected
+
+def test_radix_sort():
+    assert radix_sort([]) == []
+
+    assert radix_sort([42]) == [42]
+
+    input_data = [1, 2, 3, 4, 5]
+    expected = [1, 2, 3, 4, 5]
+    assert radix_sort(input_data) == expected
+
+    input_data = [5, 4, 3, 2, 1]
+    expected = [1, 2, 3, 4, 5]
+    assert radix_sort(input_data) == expected
+
+    input_data = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
+    expected = [1, 1, 2, 3, 3, 4, 5, 5, 6, 9]
+    assert radix_sort(input_data) == expected
+
+    input_data = [1000, 10, 100, 1, 10000]
+    expected = [1, 10, 100, 1000, 10000]
+    assert radix_sort(input_data) == expected

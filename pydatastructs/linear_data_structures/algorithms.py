@@ -1925,3 +1925,99 @@ def shell_sort(array, **kwargs):
         array._modify(True)
 
     return array
+
+def radix_sort(array, **kwargs):
+    """
+    Implements radix sort algorithm for non-negative integers.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted. Must contain non-negative integers.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.linear_data_structures.algorithms import OneDimensionalArray, radix_sort
+    >>> arr = OneDimensionalArray(int, [170, 45, 75, 90, 802, 24, 2, 66])
+    >>> out = radix_sort(arr)
+    >>> str(out)
+    '[2, 24, 45, 66, 75, 90, 170, 802]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Radix_sort
+    """
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.radix_sort(array, **kwargs)
+    start = int(kwargs.get('start', 0))
+    end = int(kwargs.get('end', len(array) - 1))
+
+    if start >= end:
+        return array
+
+    n = end - start + 1
+    if n <= 0:
+        return array
+
+    max_val = array[start]
+    for i in range(start + 1, end + 1):
+        if array[i] > max_val:
+            max_val = array[i]
+    if max_val < 0:
+        raise ValueError("Radix sort requires non-negative integers")
+
+    exp = 1
+    while max_val // exp > 0:
+        count = [0] * 10
+        output = [0] * n
+        for i in range(start, end + 1):
+            digit = (array[i] // exp) % 10
+            count[digit] += 1
+
+        for i in range(1, 10):
+            count[i] += count[i - 1]
+
+        for i in range(end, start - 1, -1):
+            digit = (array[i] // exp) % 10
+            count[digit] -= 1
+            output[count[digit]] = array[i]
+
+        for i in range(n):
+            array[start + i] = output[i]
+
+        exp *= 10
+
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
+
+    return array
