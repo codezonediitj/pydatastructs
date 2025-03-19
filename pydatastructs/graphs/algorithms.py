@@ -11,6 +11,7 @@ from pydatastructs.miscellaneous_data_structures import (
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
+from typing import Tuple, Dict
 
 __all__ = [
     'breadth_first_search',
@@ -1220,7 +1221,7 @@ def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
         "performing max flow on graphs.")
     return getattr(algorithms, func)(graph, source, sink)
 
-def bipartite_coloring(graph: Graph, **kwargs) -> tuple[bool, dict]:
+def bipartite_coloring(graph: Graph, **kwargs) -> Tuple[bool, Dict]:
     """
     Finds a 2-coloring of the given graph if it is bipartite.
 
@@ -1479,7 +1480,7 @@ def _maximum_matching_hopcroft_karp_parallel(graph: Graph, num_threads: int) -> 
     return matching
 
 
-def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **kwargs):
+def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **kwargs) -> set:
     """
     Finds the maximum matching in the given graph using the given algorithm using
     the given number of threads.
