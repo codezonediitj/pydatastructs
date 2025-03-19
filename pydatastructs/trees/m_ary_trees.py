@@ -204,9 +204,15 @@ class ParentPointerTree(MAryTree):
         raise_if_backend_is_not_python(
             cls, kwargs.get('backend', Backend.PYTHON))
         obj = object.__new__(cls)
-        if key is None and root_data is not None:
-            raise ValueError('Key required.')
-        key = None if root_data is None else key
+
+        # Empty tree
+        if key is None:
+            obj.root_idx = None
+            obj.tree, obj.size = ArrayForTrees(ParentPointerTreeNode, []), 0
+            obj.comparator = lambda key1, key2: key1 < key2 \
+                if comp is None else comp
+            return obj
+
         root = ParentPointerTreeNode(key, root_data)
         root.is_root = True
         obj.root_idx = 0
@@ -238,16 +244,29 @@ class ParentPointerTree(MAryTree):
 
         None
         """
-        if parent_key is None:
-            raise ValueError("Parent key is required.")
         if key is None:
             raise ValueError("Key is required.")
+
+        # Empty tree
+        if self.size == 0:
+            if parent_key is not None:
+                raise ValueError("Parent key should be None.")
+
+            root = ParentPointerTreeNode(key, data)
+            root.is_root = True
+            self.tree.append(root)
+            self.size += 1
+            return
+
+        if parent_key is None:
+            raise ValueError("Parent key is required.")
+
         if self.search(key) is not None:
             raise ValueError("Key already exists.")
-        
-        parent_node = self.search(parent_key, parent=True)
+
+        parent_node = self.search(parent_key)
         new_node = ParentPointerTreeNode(key, data, parent_node)
-                
+
         self.tree.append(new_node)
         self.size += 1
 
@@ -278,11 +297,12 @@ class ParentPointerTree(MAryTree):
         The node is deleted means that the connection to that
         node are removed but the it is still in tree.
         """
-        for idx in range(self.size): 
-            if self.tree[idx].key == key:
+        for idx in range(self.tree._last_pos_filled + 1):
+            if self.tree[idx] and self.tree[idx].key == key:
                 self.tree.delete(idx)
+                self.size -= 1
                 return True
-            
+
         return None
 
     def search(self, key, **kwargs):
@@ -295,7 +315,7 @@ class ParentPointerTree(MAryTree):
 
         key
             The key for searching.
-        parent: bool
+        get_parent: bool
             If true then returns node of the
             parent of the node with the passed
             key.
@@ -312,7 +332,7 @@ class ParentPointerTree(MAryTree):
         """
         parent = kwargs.get('parent', False)
 
-        for idx in range(self.size):
+        for idx in range(self.tree._last_pos_filled + 1):
             node = self.tree[idx]
             if node is not None and node.key == key:
                 if parent:
@@ -320,11 +340,11 @@ class ParentPointerTree(MAryTree):
                 return node
 
         return None
-        
+
 
     def least_common_ancestor(self, first_child_key, second_child_key):
         """
-        Finds the least common ancestor of two nodes in 
+        Finds the least common ancestor of two nodes in
         the tree.
 
         Parameters
@@ -343,16 +363,13 @@ class ParentPointerTree(MAryTree):
         None
             If either of the nodes doesn't exist in the tree.
         """
-        first_node_idx = self.search(first_child_key)
-        second_node_idx = self.search(second_child_key)
+        first_node = self.search(first_child_key)
+        second_node = self.search(second_child_key)
 
         # One or both nodes do not exist
-        if first_node_idx is None or second_node_idx is None:
-            return None  
+        if first_node is None or second_node is None:
+            return None
 
-        first_node = self.tree[first_node_idx]
-        second_node = self.tree[second_node_idx]
-        
         first_ancestors = set()
 
         while first_node is not None:
@@ -367,9 +384,9 @@ class ParentPointerTree(MAryTree):
         return None  # No common ancestor found
 
     def __str__(self):
-        to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
+        to_be_printed = []
         for i in range(self.tree._last_pos_filled + 1):
             if self.tree[i] is not None:
                 node = self.tree[i]
-                to_be_printed[i] = (node.key, node.data, node.parent)
+                to_be_printed.append((node.key, node.data, str(node.parent)))
         return str(to_be_printed)
