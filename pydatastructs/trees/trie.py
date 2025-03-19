@@ -101,17 +101,6 @@ class Trie:
 
         return collect_words(self.root)
 
-    def shortest_unique_prefix(self, word):
-        """Determines the shortest unique prefix for a given word."""
-        node = self.root
-        prefix = ""
-        for char in word:
-            prefix += char
-            if len(node.children[char].children) <= 1 and node.children[char].is_end_of_word is False :
-                return prefix
-            node = node.children[char]
-        return word
-
     def longest_word(self):
         """Finds and returns the longest word in the Trie."""
         all_words = self.find_all_words()
