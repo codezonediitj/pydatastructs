@@ -7,6 +7,7 @@ from pydatastructs import (
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
     selection_sort, insertion_sort, intro_sort, Backend)
 
+from pydatastructs.linear_data_structures.algorithms import shell_sort
 from pydatastructs.utils.raises_util import raises
 import random
 
@@ -414,3 +415,24 @@ def test_binary_search():
 def test_jump_search():
     _test_common_search(jump_search)
     _test_common_search(jump_search, backend=Backend.CPP)
+
+def test_shell_sort():
+    assert shell_sort([]) == []
+
+    assert shell_sort([42]) == [42]
+
+    input_data = [1, 2, 3, 4, 5]
+    expected = [1, 2, 3, 4, 5]
+    assert shell_sort(input_data) == expected
+
+    input_data = [5, 4, 3, 2, 1]
+    expected = [1, 2, 3, 4, 5]
+    assert shell_sort(input_data) == expected
+
+    input_data = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
+    expected = [1, 1, 2, 3, 3, 4, 5, 5, 6, 9]
+    assert shell_sort(input_data) == expected
+
+    input_data = [-5, 3, -10, 7, 0, -2]
+    expected = [-10, -5, -2, 0, 3, 7]
+    assert shell_sort(input_data) == expected

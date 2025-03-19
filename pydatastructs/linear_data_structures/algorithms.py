@@ -1850,3 +1850,78 @@ def intro_sort(array, **kwargs) -> Array:
         intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1, ins_threshold=ins_threshold)
 
         return array
+
+def shell_sort(array, **kwargs):
+    """
+    Implements shell sort algorithm.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.linear_data_structures.algorithms import OneDimensionalArray, shell_sort
+    >>> arr = OneDimensionalArray(int, [3, 2, 1])
+    >>> out = shell_sort(arr)
+    >>> str(out)
+    '[1, 2, 3]'
+    >>> out = shell_sort(arr, comp=lambda u, v: u > v)
+    >>> str(out)
+    '[3, 2, 1]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Shellsort
+    """
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.shell_sort(array, **kwargs)
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+    comp = kwargs.get('comp', lambda u, v: u <= v)
+    n = end - start + 1
+    gap = n // 2
+    while gap > 0:
+        for i in range(start + gap, end + 1):
+            temp = array[i]
+            j = i
+            while j >= start + gap and not _comp(array[j - gap], temp, comp):
+                array[j] = array[j - gap]
+                j -= gap
+            array[j] = temp
+        gap //= 2
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
+
+    return array
