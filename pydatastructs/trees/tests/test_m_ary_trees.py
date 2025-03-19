@@ -1,5 +1,5 @@
-from pydatastructs import MAryTree, FusionTree
 from pydatastructs.utils.misc_util import Backend
+from pydatastructs.trees.m_ary_trees import MAryTree, FusionTree
 
 def test_MAryTree():
     m = MAryTree(1, 1)
