@@ -2,47 +2,47 @@ class TrieNode:
     """Represents a node in the Trie data structure."""
     def __init__(self):
         """Initializes a TrieNode with empty children and is_end_of_word set to False."""
-        self.children = {}  
-        self.is_end_of_word = False  
-        self.word = None 
+        self.children = {}
+        self.is_end_of_word = False
+        self.word = None
 
 class Trie:
     """Represents the Trie (prefix tree) data structure."""
     def __init__(self):
         """Initializes an empty Trie with a root TrieNode."""
-        self.root = TrieNode() 
+        self.root = TrieNode()
         self.word_count = 0
 
     def insert(self, word):
         """Inserts a word into the Trie."""
-        node = self.root  
+        node = self.root
         for char in word:
             if char not in node.children:
                 node.children[char] = TrieNode()
-            node = node.children[char]  
+            node = node.children[char]
         if not node.is_end_of_word:
-          node.is_end_of_word = True  
+          node.is_end_of_word = True
           node.word = word
           self.word_count += 1
 
     def search(self, word):
         """Searches for a word in the Trie."""
-        node = self.root  
+        node = self.root
         for char in word:
             if char not in node.children:
                 return False
-            node = node.children[char]  
-        return node.is_end_of_word  
+            node = node.children[char]
+        return node.is_end_of_word
 
     def starts_with(self, prefix):
         """Checks if any word in the Trie starts with the given prefix."""
-        node = self.root  
+        node = self.root
         for char in prefix:
             if char not in node.children:
                 return False
-            node = node.children[char] 
-        return True  
-    
+            node = node.children[char]
+        return True
+
     def count_words(self):
         """Returns the total number of words stored in the Trie."""
         return self.word_count

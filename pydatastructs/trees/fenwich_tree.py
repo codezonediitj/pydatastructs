@@ -18,7 +18,7 @@ class fenwich_tree:
         if isinstance(size_or_array, int):
             self.size = size_or_array
             self.tree = [0] * (self.size + 1)
-            self.original_array = [0] * self.size 
+            self.original_array = [0] * self.size
         elif isinstance(size_or_array, list):
             self.original_array = list(size_or_array)
             self.size = len(self.original_array)
@@ -27,7 +27,7 @@ class fenwich_tree:
                 self._update_tree(i, val)
         else:
             raise ValueError("size_or_array must be an integer or a list.")
-        
+
     def _update_tree(self, index, delta):
         """
         Internal helper to update the Fenwick Tree after a change in the original array.
@@ -67,9 +67,9 @@ class fenwich_tree:
         sum_val = 0
         while index > 0:
             sum_val += self.tree[index]
-            index -= index & (-index)  
+            index -= index & (-index)
         return sum_val
-    
+
     def range_sum(self, start_index, end_index):
         """
         Calculates the sum of elements within the given range (inclusive).
@@ -83,7 +83,7 @@ class fenwich_tree:
         """
         if not (0 <= start_index <= end_index < self.size):
             raise IndexError("Indices out of bounds")
-        if start_index is 0:
+        if start_index == 0:
             return self.prefix_sum(end_index)
         else:
             return self.prefix_sum(end_index) - self.prefix_sum(start_index - 1)
