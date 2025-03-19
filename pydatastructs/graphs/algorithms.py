@@ -1262,8 +1262,8 @@ def bipartite_coloring(graph: Graph, **kwargs) -> Tuple[bool, Dict]:
     >>> graph.add_edge('v_1', 'v_2')
     >>> graph.add_edge('v_2', 'v_3')
     >>> graph.add_edge('v_4', 'v_1')
-    >>> bipartite_coloring(graph)
-    >>> (True, {'v_1': 0, 'v_2': 1, 'v_4': 1, 'v_3': 0})
+    >>> bipartite_coloring(graph, make_undirected=True)
+    (True, {'v_1': 0, 'v_2': 1, 'v_4': 1, 'v_3': 0})
 
     References
     ==========
@@ -1409,7 +1409,7 @@ def maximum_matching(graph: Graph, algorithm: str, **kwargs) -> set:
     >>> graph.add_edge('v_2', 'v_3')
     >>> graph.add_edge('v_4', 'v_1')
     >>> maximum_matching(graph, 'hopcroft_karp', make_undirected=True)
-    >>> {('v_1', 'v_4'), ('v_3', 'v_2')}
+    {('v_1', 'v_4'), ('v_3', 'v_2')}
 
     References
     ==========
@@ -1593,8 +1593,8 @@ def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **
     >>> graph.add_bidirectional_edge('v_1', 'v_2')
     >>> graph.add_bidirectional_edge('v_2', 'v_3')
     >>> graph.add_bidirectional_edge('v_4', 'v_1')
-    >>> maximum_matching_parallel(graph, 'hopcroft_karp', 1, make_undirected=True)
-    >>> {('v_1', 'v_4'), ('v_3', 'v_2')}
+    >>> maximum_matching_parallel(graph, 'hopcroft_karp', 1)
+    {('v_1', 'v_4'), ('v_3', 'v_2')}
 
     References
     ==========
