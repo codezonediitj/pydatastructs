@@ -1327,29 +1327,43 @@ def _maximum_matching_hopcroft_karp_(graph: Graph):
             u = queue.popleft()
             if dist[u] < dist[None]:
                 for v in graph.neighbors(u):
-                    if dist[pair_V[v.name]] == float('inf'):
-                        dist[pair_V[v.name]] = dist[u] + 1
-                        queue.append(pair_V[v.name])
-        return dist[None] != float('inf')
+                    if v.name in pair_V:
+                        alt = pair_V[v.name]
+                        if alt is None:
+                            dist[None] = dist[u] + 1
+                            queue.append(None)
+                        elif dist.get(alt, float('inf')) == float('inf'):
+                            dist[alt] = dist[u] + 1
+                            queue.append(alt)
+        return dist.get(None, float('inf')) != float('inf')
 
     def dfs(u):
-        if u is not None:
-            for v in graph.neighbors(u):
-                if dist[pair_V[v.name]] == dist[u] + 1:
-                    if dfs(pair_V[v.name]):
+        if u is None:
+            return True
+        for v in graph.neighbors(u):
+            if v.name in pair_V:
+                alt = pair_V[v.name]
+                if alt is None:
+                    pair_V[v.name] = u
+                    pair_U[u] = v.name
+                    return True
+                elif dist.get(alt, float('inf')) == dist.get(u, float('inf')) + 1:
+                    if dfs(alt):
                         pair_V[v.name] = u
                         pair_U[u] = v.name
                         return True
-            dist[u] = float('inf')
-            return False
-        return True
+        dist[u] = float('inf')
+        return False
 
     matching = set()
     while bfs():
         for u in U:
             if pair_U[u] is None:
-                if dfs(u):
-                    matching.add((u, pair_U[u]))
+                dfs(u)
+
+    for u in U:
+        if pair_U[u] is not None:
+            matching.add((u, pair_U[u]))
 
     return matching
 
@@ -1392,8 +1406,8 @@ def maximum_matching(graph: Graph, algorithm: str, **kwargs) -> set:
     >>> graph.add_edge('v_1', 'v_2')
     >>> graph.add_edge('v_2', 'v_3')
     >>> graph.add_edge('v_4', 'v_1')
-    >>> maximum_matching(graph, 'hopcroft_karp')
-    >>> {('v_1', 'v_4'), ('v_3', 'v_2')}
+    >>> maximum_matching(graph, 'hopcroft_karp', make_undirected=True)
+    >>> {('v_3', 'v_2'), ('v_1', 'v_4')}
 
     References
     ==========
@@ -1448,22 +1462,33 @@ def _maximum_matching_hopcroft_karp_parallel(graph: Graph, num_threads: int) -> 
             u = queue.popleft()
             if dist[u] < dist[None]:
                 for v in graph.neighbors(u):
-                    if dist[pair_V[v.name]] == float('inf'):
-                        dist[pair_V[v.name]] = dist[u] + 1
-                        queue.append(pair_V[v.name])
-        return dist[None] != float('inf')
+                    if v.name in pair_V:
+                        alt = pair_V[v.name]
+                        if alt is None:
+                            dist[None] = dist[u] + 1
+                            queue.append(None)
+                        elif dist.get(alt, float('inf')) == float('inf'):
+                            dist[alt] = dist[u] + 1
+                            queue.append(alt)
+        return dist.get(None, float('inf')) != float('inf')
 
     def dfs(u):
-        if u is not None:
-            for v in graph.neighbors(u):
-                if dist[pair_V[v.name]] == dist[u] + 1:
-                    if dfs(pair_V[v.name]):
+        if u is None:
+            return True
+        for v in graph.neighbors(u):
+            if v.name in pair_V:
+                alt = pair_V[v.name]
+                if alt is None:
+                    pair_V[v.name] = u
+                    pair_U[u] = v.name
+                    return True
+                elif dist.get(alt, float('inf')) == dist.get(u, float('inf')) + 1:
+                    if dfs(alt):
                         pair_V[v.name] = u
                         pair_U[u] = v.name
                         return True
-            dist[u] = float('inf')
-            return False
-        return True
+        dist[u] = float('inf')
+        return False
 
     matching = set()
 
@@ -1474,7 +1499,7 @@ def _maximum_matching_hopcroft_karp_parallel(graph: Graph, num_threads: int) -> 
             results = Executor.map(dfs, unmatched_nodes)
 
         for u, success in zip(unmatched_nodes, results):
-            if success:
+            if success and pair_U[u] is not None:
                 matching.add((u, pair_U[u]))
 
     return matching
@@ -1497,6 +1522,8 @@ def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **
         'hopcroft_karp' -> Hopcroft-Karp algorithm for Bipartite Graphs as given in [1].
     num_threads: int
         The maximum number of threads to be used.
+    make_undirected: bool
+        If False, the graph should be undirected or unwanted results may be obtained. The graph can be made undirected by setting this to true.
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -1520,8 +1547,8 @@ def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **
     >>> graph.add_bidirectional_edge('v_1', 'v_2')
     >>> graph.add_bidirectional_edge('v_2', 'v_3')
     >>> graph.add_bidirectional_edge('v_4', 'v_1')
-    >>> maximum_matching_parallel(graph, 'hopcroft_karp', 1)
-    >>> {('v_1', 'v_4'), ('v_3', 'v_2')}
+    >>> maximum_matching_parallel(graph, 'hopcroft_karp', 1, make_undirected=True)
+    >>> {('v_3', 'v_2'), ('v_1', 'v_4')}
 
     References
     ==========
@@ -1531,6 +1558,9 @@ def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **
 
     raise_if_backend_is_not_python(
         maximum_matching_parallel, kwargs.get('backend', Backend.PYTHON))
+    make_undirected = kwargs.get('make_undirected', False)
+    if make_undirected:
+        graph = graph.to_undirected_adjacency_list()
 
     import pydatastructs.graphs.algorithms as algorithms
     func = "_maximum_matching_" + algorithm + "_parallel"
