@@ -142,6 +142,9 @@ def _test_BinaryTreeTraversal(backend):
     ino = trav.depth_first_search()
     assert [node.key for node in ino] == ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
 
+    morris_ino = trav.morris_in_order()
+    assert [node.key for node in morris_ino] == ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+
     out = trav.depth_first_search(order='out_order')
     assert [node.key for node in out] == ['I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
 

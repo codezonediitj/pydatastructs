@@ -171,6 +171,47 @@ static PyObject* BinaryTreeTraversal__out_order(BinaryTreeTraversal* self, PyObj
     return visit;
 }
 
+static PyObject* BinaryTreeTraversal_morris_in_order(BinaryTreeTraversal* self, PyObject *args) {
+    PyObject* node = NULL;
+    if (!PyArg_ParseTuple(args, "|O", &node)) return NULL;
+
+    if (node == NULL) node = self->tree->root_idx;
+
+    PyObject* visit = PyList_New(0);
+    ArrayForTrees* tree = self->tree->tree;
+    PyObject* current = node;
+
+    if (current == Py_None || self->tree->size == 0) return visit;
+
+    while (current != Py_None) {
+        TreeNode* curr_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[PyLong_AsLong(current)]);
+
+        if (curr_node->left == Py_None) {
+            PyList_Append(visit, reinterpret_cast<PyObject*>(curr_node));
+            current = curr_node->right;
+        } else {
+            PyObject* pre_obj = curr_node->left;
+            TreeNode* pre_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[PyLong_AsLong(pre_obj)]);
+
+            while (pre_node->right != Py_None && pre_node->right != current) {
+                pre_obj = pre_node->right;
+                pre_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[PyLong_AsLong(pre_obj)]);
+            }
+
+            if (pre_node->right == Py_None) {
+                pre_node->right = current;
+                current = curr_node->left;
+            } else {
+                pre_node->right = Py_None;
+                PyList_Append(visit, reinterpret_cast<PyObject*>(curr_node));
+                current = curr_node->right;
+            }
+        }
+    }
+
+    return visit;
+}
+
 static PyObject* BinaryTreeTraversal_depth_first_search(BinaryTreeTraversal* self, PyObject *args, PyObject *kwds) {
     Py_INCREF(Py_None);
     PyObject* node = Py_None;
@@ -242,6 +283,7 @@ static struct PyMethodDef BinaryTreeTraversal_PyMethodDef[] = {
     {"_in_order", (PyCFunction) BinaryTreeTraversal__in_order, METH_VARARGS, NULL},
     {"_out_order", (PyCFunction) BinaryTreeTraversal__out_order, METH_VARARGS, NULL},
     {"_post_order", (PyCFunction) BinaryTreeTraversal__post_order, METH_VARARGS, NULL},
+    {"morris_in_order", (PyCFunction) BinaryTreeTraversal_morris_in_order, METH_VARARGS, NULL},
     {"depth_first_search", (PyCFunction) BinaryTreeTraversal_depth_first_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {"breadth_first_search", (PyCFunction) BinaryTreeTraversal_breadth_first_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
