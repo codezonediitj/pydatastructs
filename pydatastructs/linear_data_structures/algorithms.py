@@ -1855,8 +1855,10 @@ def intro_sort(array, **kwargs) -> Array:
 def radix_sort(array, **kwargs):
     """
     Implements Radix Sort.
+
     Parameters
     ==========
+
     array: Array
         The array which is to be sorted.
     comp: lambda/function
