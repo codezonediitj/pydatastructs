@@ -109,3 +109,4 @@ def test_longest_word():
     assert trie.longest_word() == "application"
     trie.insert("a")
     assert trie.longest_word() == "application"
+

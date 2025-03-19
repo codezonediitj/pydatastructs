@@ -88,4 +88,3 @@ class fenwich_tree:
         else:
             return self.prefix_sum(end_index) - self.prefix_sum(start_index - 1)
         
-
