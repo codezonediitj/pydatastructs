@@ -21,7 +21,8 @@ from .algorithms import (
     all_pair_shortest_paths,
     topological_sort,
     topological_sort_parallel,
-    max_flow
+    max_flow,
+    find_bridges
 )
 
 __all__.extend(algorithms.__all__)
