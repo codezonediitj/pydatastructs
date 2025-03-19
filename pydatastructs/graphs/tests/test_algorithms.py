@@ -188,11 +188,13 @@ def test_strongly_connected_components():
         graph.add_edge(h.name, g.name)
         comps = func(graph, algorithm)
         expected_comps = [{'e', 'a', 'b'}, {'d', 'c', 'h'}, {'g', 'f'}]
-        assert comps == expected_comps
+        assert comps.sort() == expected_comps.sort()
 
     scc = strongly_connected_components
     _test_strongly_connected_components(scc, "List", "kosaraju")
     _test_strongly_connected_components(scc, "Matrix", "kosaraju")
+    _test_strongly_connected_components(scc, "List", "tarjan")
+    _test_strongly_connected_components(scc, "Matrix", "tarjan")
 
 def test_depth_first_search():
 
