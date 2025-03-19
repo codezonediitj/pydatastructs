@@ -18,5 +18,3 @@ Binary Trees
 .. autoclass:: pydatastructs.RedBlackTree
 
 .. autoclass:: pydatastructs.BinaryTreeTraversal
-
-.. autoclass:: pydatastructs.FusionTree
