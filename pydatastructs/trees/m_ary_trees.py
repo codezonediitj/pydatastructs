@@ -171,7 +171,7 @@ class MAryTree(object):
                         to_be_printed[i].append(j)
         return str(to_be_printed)
 
-class ParentPointerTree(object):
+class ParentPointerTree(MAryTree):
     """
     Implements a tree with parent pointers.
 
@@ -296,7 +296,7 @@ class ParentPointerTree(object):
         key
             The key for searching.
         parent: bool
-            If true then returns index of the
+            If true then returns node of the
             parent of the node with the passed
             key.
             By default, False
@@ -304,16 +304,67 @@ class ParentPointerTree(object):
         Returns
         =======
 
-        int
-            If the node with the passed key is
+        ParentPointerTreeNode
+            The tree node if it was found
             in the tree.
-        tuple
-            The index of the searched node and
-            the index of the parent of that node.
         None
             In all other cases.
         """
+        parent = kwargs.get('parent', False)
+
+        for idx in range(self.size):
+            node = self.tree[idx]
+            if node is not None and node.key == key:
+                if parent:
+                    return node.parent
+                return node
+
+        return None
         
+
+    def least_common_ancestor(self, first_child_key, second_child_key):
+        """
+        Finds the least common ancestor of two nodes in 
+        the tree.
+
+        Parameters
+        ==========
+
+        first_child_key
+            The key of the first child node.
+        second_child_key
+            The key of the second child node.
+
+        Returns
+        =======
+
+        ParentPointerTreeNode
+            The least common ancestor node.
+        None
+            If either of the nodes doesn't exist in the tree.
+        """
+        first_node_idx = self.search(first_child_key)
+        second_node_idx = self.search(second_child_key)
+
+        # One or both nodes do not exist
+        if first_node_idx is None or second_node_idx is None:
+            return None  
+
+        first_node = self.tree[first_node_idx]
+        second_node = self.tree[second_node_idx]
+        
+        first_ancestors = set()
+
+        while first_node is not None:
+            first_ancestors.add(first_node)
+            first_node = first_node.parent
+
+        while second_node is not None:
+            if second_node in first_ancestors:
+                return second_node  # Found the least common ancestor
+            second_node = second_node.parent
+
+        return None  # No common ancestor found
 
     def __str__(self):
         to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
