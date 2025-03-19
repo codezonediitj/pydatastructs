@@ -4,6 +4,8 @@ data structure.
 """
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Manager
+import threading
 from pydatastructs.utils.misc_util import (
     _comp, raise_if_backend_is_not_python, Backend, AdjacencyListGraphNode)
 from pydatastructs.miscellaneous_data_structures import (
@@ -1407,7 +1409,7 @@ def maximum_matching(graph: Graph, algorithm: str, **kwargs) -> set:
     >>> graph.add_edge('v_2', 'v_3')
     >>> graph.add_edge('v_4', 'v_1')
     >>> maximum_matching(graph, 'hopcroft_karp', make_undirected=True)
-    >>> {('v_3', 'v_2'), ('v_1', 'v_4')}
+    >>> {('v_1', 'v_4'), ('v_3', 'v_2')}
 
     References
     ==========
@@ -1431,6 +1433,7 @@ def maximum_matching(graph: Graph, algorithm: str, **kwargs) -> set:
     return getattr(algorithms, func)(graph)
 
 def _maximum_matching_hopcroft_karp_parallel(graph: Graph, num_threads: int) -> set:
+
     U = set()
     V = set()
     bipartiteness, coloring = bipartite_coloring(graph)
@@ -1444,13 +1447,14 @@ def _maximum_matching_hopcroft_karp_parallel(graph: Graph, num_threads: int) -> 
         else:
             V.add(node)
 
-
-    pair_U = {u: None for u in U}
-    pair_V = {v: None for v in V}
-    dist = {}
+    manager = Manager()
+    pair_U = manager.dict({u: None for u in U})
+    pair_V = manager.dict({v: None for v in V})
+    lock = threading.RLock()
 
     def bfs():
         queue = Queue()
+        dist = {}
         for u in U:
             if pair_U[u] is None:
                 dist[u] = 0
@@ -1458,6 +1462,7 @@ def _maximum_matching_hopcroft_karp_parallel(graph: Graph, num_threads: int) -> 
             else:
                 dist[u] = float('inf')
         dist[None] = float('inf')
+
         while queue:
             u = queue.popleft()
             if dist[u] < dist[None]:
@@ -1470,36 +1475,77 @@ def _maximum_matching_hopcroft_karp_parallel(graph: Graph, num_threads: int) -> 
                         elif dist.get(alt, float('inf')) == float('inf'):
                             dist[alt] = dist[u] + 1
                             queue.append(alt)
-        return dist.get(None, float('inf')) != float('inf')
 
-    def dfs(u):
+        return dist, dist.get(None, float('inf')) != float('inf')
+
+    def dfs_worker(u, dist, local_pair_U, local_pair_V, thread_results):
+        if dfs(u, dist, local_pair_U, local_pair_V) and u in local_pair_U and local_pair_U[u] is not None:
+            thread_results.append((u, local_pair_U[u]))
+            return True
+        return False
+
+    def dfs(u, dist, local_pair_U, local_pair_V):
         if u is None:
             return True
+
         for v in graph.neighbors(u):
-            if v.name in pair_V:
-                alt = pair_V[v.name]
+            if v.name in local_pair_V:
+                alt = local_pair_V[v.name]
                 if alt is None:
-                    pair_V[v.name] = u
-                    pair_U[u] = v.name
+                    local_pair_V[v.name] = u
+                    local_pair_U[u] = v.name
                     return True
                 elif dist.get(alt, float('inf')) == dist.get(u, float('inf')) + 1:
-                    if dfs(alt):
-                        pair_V[v.name] = u
-                        pair_U[u] = v.name
+                    if dfs(alt, dist, local_pair_U, local_pair_V):
+                        local_pair_V[v.name] = u
+                        local_pair_U[u] = v.name
                         return True
+
         dist[u] = float('inf')
         return False
 
     matching = set()
 
-    while bfs():
-        unmatched_nodes = [u for u in U if pair_U[u] is None]
+    while True:
+        dist, has_path = bfs()
+        if not has_path:
+            break
 
-        with ThreadPoolExecutor(max_workers=num_threads) as Executor:
-            results = Executor.map(dfs, unmatched_nodes)
+        unmatched = [u for u in U if pair_U[u] is None]
+        if not unmatched:
+            break
 
-        for u, success in zip(unmatched_nodes, results):
-            if success and pair_U[u] is not None:
+        batch_size = max(1, len(unmatched) // num_threads)
+        batches = [unmatched[i:i+batch_size] for i in range(0, len(unmatched), batch_size)]
+
+        for batch in batches:
+            all_results = []
+
+            with ThreadPoolExecutor(max_workers=num_threads) as executor:
+                futures = []
+                for u in batch:
+                    local_pair_U = dict(pair_U)
+                    local_pair_V = dict(pair_V)
+                    thread_results = []
+
+                    futures.append(executor.submit(
+                        dfs_worker, u, dist.copy(), local_pair_U, local_pair_V, thread_results
+                    ))
+
+                for future in futures:
+                    future.result()
+
+            with lock:
+                for u in batch:
+                    if pair_U[u] is None:
+                        result = dfs(u, dist.copy(), pair_U, pair_V)
+                        if result and pair_U[u] is not None:
+                            matching.add((u, pair_U[u]))
+
+    with lock:
+        matching = set()
+        for u in U:
+            if pair_U[u] is not None:
                 matching.add((u, pair_U[u]))
 
     return matching
@@ -1548,7 +1594,7 @@ def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **
     >>> graph.add_bidirectional_edge('v_2', 'v_3')
     >>> graph.add_bidirectional_edge('v_4', 'v_1')
     >>> maximum_matching_parallel(graph, 'hopcroft_karp', 1, make_undirected=True)
-    >>> {('v_3', 'v_2'), ('v_1', 'v_4')}
+    >>> {('v_1', 'v_4'), ('v_3', 'v_2')}
 
     References
     ==========
