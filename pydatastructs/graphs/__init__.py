@@ -22,7 +22,8 @@ from .algorithms import (
     topological_sort,
     topological_sort_parallel,
     max_flow,
-    find_bridges
+    find_bridges,
+    find_maximal_cliques
 )
 
 __all__.extend(algorithms.__all__)

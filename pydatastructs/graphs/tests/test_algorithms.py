@@ -2,7 +2,7 @@ from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths,all_pair_shortest_paths, topological_sort,
-topological_sort_parallel, max_flow, find_bridges)
+topological_sort_parallel, max_flow, find_bridges, find_maximal_cliques)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -382,8 +382,8 @@ def test_topological_sort():
     _test_topological_sort(topological_sort, "List", "kahn")
     _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)
 
-
 def test_max_flow():
+
     def _test_max_flow(ds, algorithm):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -451,8 +451,8 @@ def test_max_flow():
     _test_max_flow("List", "dinic")
     _test_max_flow("Matrix", "dinic")
 
-
 def test_find_bridges():
+
     def _test_find_bridges(ds):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
@@ -504,3 +504,35 @@ def test_find_bridges():
 
     _test_find_bridges("List")
     _test_find_bridges("Matrix")
+
+def test_maximal_cliques():
+
+    def _test_maximal_cliques(ds, algorithm):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+        a, b, c, d, e, f = \
+        [GraphNode(chr(x)) for x in range(ord('a'), ord('f') + 1)]
+
+        graph = Graph(a, b, c, d, e, f)
+
+        graph.add_edge(a.name, b.name)
+        graph.add_edge(a.name, e.name)
+        graph.add_edge(b.name, a.name)
+        graph.add_edge(b.name, c.name)
+        graph.add_edge(b.name, e.name)
+        graph.add_edge(c.name, b.name)
+        graph.add_edge(c.name, d.name)
+        graph.add_edge(d.name, c.name)
+        graph.add_edge(d.name, e.name)
+        graph.add_edge(d.name, f.name)
+        graph.add_edge(e.name, a.name)
+        graph.add_edge(e.name, b.name)
+        graph.add_edge(e.name, d.name)
+        graph.add_edge(f.name, d.name)
+
+        cliques = find_maximal_cliques(graph, algorithm)
+        expected_cliques = [['a', 'b', 'e'], ['b', 'c'], ['c', 'd'], ['d', 'e'], ['d', 'f']]
+        assert cliques == expected_cliques
+
+    _test_maximal_cliques("List", "bron_kerbosc")
+    _test_maximal_cliques("Matrix", "bron_kerbosc")
