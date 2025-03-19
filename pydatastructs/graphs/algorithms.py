@@ -1697,6 +1697,9 @@ def find_bridges(graph):
     >>> graph.add_edge(v3.name, v4.name)
     >>> find_bridges(graph)
     [('0', '1'), ('1', '2'), ('2', '3'), ('3', '4')]
+
+    References
+    ==========
     .. [1] https://en.wikipedia.org/wiki/Bridge_(graph_theory)
     """
 
