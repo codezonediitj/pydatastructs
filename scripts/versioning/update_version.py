@@ -2,6 +2,15 @@ import sys
 
 from pydatastructs.utils.tests.test_code_quality import _list_files
 
+# Files to be updated with the new version number
+# The first element of the tuple is the directory path
+# and the second element is a lambda function that
+# returns True if the file should be updated.
+FILES_TO_BE_SCANNED = {
+    'pydatastructs': ('./pydatastructs', lambda _file: _file.endswith('.py')),
+    'docs': ('./docs/source', lambda _file: _file.endswith('.rst') or _file.endswith('.py'))
+}
+
 
 def update_version_in_files(file_paths, origin_version, new_version):
     """
@@ -43,11 +52,10 @@ def main():
     origin_version, new_version = sys.argv[1], sys.argv[2]
     print(f'Updating version number from {origin_version} to {new_version}...')
 
-    pydatastructs_files = _list_files(lambda _file: _file.endswith('.py'),
-                                      './pydatastructs')
-    docs_files = _list_files(lambda _file: _file.endswith('.rst') or _file.endswith('.py'),
-                             './docs/source')
-    file_paths = ['README.md', 'setup.py'] + pydatastructs_files + docs_files
+    file_paths = ['README.md', 'setup.py']
+
+    for _, (dir_path, checker) in FILES_TO_BE_SCANNED.items():
+        file_paths.extend(_list_files(checker, dir_path))
 
     was_updated = update_version_in_files(
         file_paths, origin_version, new_version)
