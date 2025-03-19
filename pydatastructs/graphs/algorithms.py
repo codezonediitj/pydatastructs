@@ -1460,7 +1460,7 @@ def maximum_matching(graph: Graph, algorithm: str, **kwargs) -> set:
     >>> graph.add_edge('v_2', 'v_3')
     >>> graph.add_edge('v_4', 'v_1')
     >>> maximum_matching(graph, 'hopcroft_karp', make_undirected=True)
-    {('v_1', 'v_4'), ('v_3', 'v_2')}
+    {('v_3', 'v_2'), ('v_1', 'v_4')}
 
     References
     ==========
@@ -1645,7 +1645,8 @@ def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **
     >>> graph.add_bidirectional_edge('v_2', 'v_3')
     >>> graph.add_bidirectional_edge('v_4', 'v_1')
     >>> maximum_matching_parallel(graph, 'hopcroft_karp', 1)
-    {('v_1', 'v_4'), ('v_3', 'v_2')}
+    {('v_3', 'v_2'), ('v_1', 'v_4')}
+
 
     References
     ==========
