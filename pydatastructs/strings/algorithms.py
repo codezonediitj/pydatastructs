@@ -252,6 +252,7 @@ def _raita(text, query):
 
     Parameters
     ==========
+
     text: str
         The text in which the pattern is to be searched.
     query: str
@@ -259,6 +260,7 @@ def _raita(text, query):
 
     Returns
     =======
+
     DynamicOneDimensionalArray
         An array of starting positions of the pattern in the text.
     """
