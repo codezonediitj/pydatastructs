@@ -24,7 +24,8 @@ from .algorithms import (
     max_flow,
     maximum_matching,
     maximum_matching_parallel,
-    bipartite_coloring
+    bipartite_coloring,
+    find_bridges
 )
 
 __all__.extend(algorithms.__all__)
