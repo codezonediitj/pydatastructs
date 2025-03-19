@@ -83,8 +83,9 @@ class fenwich_tree:
         """
         if not (0 <= start_index <= end_index < self.size):
             raise IndexError("Indices out of bounds")
-        if start_index == 0:
+        if start_index is 0:
             return self.prefix_sum(end_index)
         else:
             return self.prefix_sum(end_index) - self.prefix_sum(start_index - 1)
         
+

@@ -623,5 +623,3 @@ def summation(x_y):
         return x if y is None else y
 
     return x + y
-
-

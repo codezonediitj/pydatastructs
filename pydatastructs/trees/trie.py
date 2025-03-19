@@ -51,7 +51,7 @@ class Trie:
         """Finds the longest common prefix among all words in the Trie."""
         node = self.root
         prefix = ""
-        while len(node.children) == 1 and not node.is_end_of_word:
+        while len(node.children) is 1 and not node.is_end_of_word:
             char = next(iter(node.children))
             prefix += char
             node = node.children[char]
@@ -87,7 +87,7 @@ class Trie:
 
     def is_empty(self):
         """Returns True if the Trie is empty, otherwise False."""
-        return self.word_count == 0
+        return self.word_count is 0
 
     def find_all_words(self):
         """Retrieves all words currently stored in the Trie."""
@@ -107,7 +107,7 @@ class Trie:
         prefix = ""
         for char in word:
             prefix += char
-            if len(node.children[char].children) <= 1 and node.children[char].is_end_of_word == False :
+            if len(node.children[char].children) <= 1 and node.children[char].is_end_of_word is False :
                 return prefix
             node = node.children[char]
         return word
@@ -118,3 +118,4 @@ class Trie:
         if not all_words:
             return None
         return max(all_words, key=len)
+    
