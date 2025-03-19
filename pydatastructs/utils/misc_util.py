@@ -300,7 +300,7 @@ class ParentPointerTreeNode(TreeNode):
     def methods(cls):
         return ['__new__', '__str__']
 
-    def __new__(cls, key, data=None, parent=None, **kwargs):
+    def __new__(cls, key, data=None, parent: 'ParentPointerTreeNode' = None, **kwargs):
         raise_if_backend_is_not_python(
             cls, kwargs.get('backend', Backend.PYTHON))
         obj = Node.__new__(cls)

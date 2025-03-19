@@ -1,4 +1,4 @@
-from pydatastructs.utils import MAryTreeNode
+from pydatastructs.utils import MAryTreeNode, ParentPointerTreeNode
 from pydatastructs.linear_data_structures.arrays import ArrayForTrees
 from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
@@ -169,4 +169,156 @@ class MAryTree(object):
                 for j in node.children:
                     if j is not None:
                         to_be_printed[i].append(j)
+        return str(to_be_printed)
+
+class ParentPointerTree(object):
+    """
+    Implements a tree with parent pointers.
+
+    Parameters
+    ==========
+
+    key
+        Required if tree is to be instantiated with
+        root otherwise not needed.
+    root_data
+        Optional, the root node of the tree.
+        If not of type TreeNode, it will consider
+        root as data and a new root node will
+        be created.
+    comp: lambda
+        Optional, A lambda function which will be used
+        for comparison of keys. Should return a
+        bool value. By default it implements less
+        than operator.
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Tree_(data_structure)#Parent_pointer_tree
+    """
+
+    __slots__ = ['root_idx', 'comparator', 'tree', 'size']
+
+    def __new__(cls, key=None, root_data=None, comp=None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
+        obj = object.__new__(cls)
+        if key is None and root_data is not None:
+            raise ValueError('Key required.')
+        key = None if root_data is None else key
+        root = ParentPointerTreeNode(key, root_data)
+        root.is_root = True
+        obj.root_idx = 0
+        obj.tree, obj.size = ArrayForTrees(ParentPointerTreeNode, [root]), 1
+        obj.comparator = lambda key1, key2: key1 < key2 \
+            if comp is None else comp
+
+        return obj
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__str__']
+
+    def insert(self, parent_key, key, data=None):
+        """
+        Inserts data by the passed key using iterative
+        algorithm.
+
+        Parameters
+        ==========
+
+        key
+            The key for comparison.
+        data
+            The data to be inserted.
+
+        Returns
+        =======
+
+        None
+        """
+        if parent_key is None:
+            raise ValueError("Parent key is required.")
+        if key is None:
+            raise ValueError("Key is required.")
+        if self.search(key) is not None:
+            raise ValueError("Key already exists.")
+        
+        parent_node = self.search(parent_key, parent=True)
+        new_node = ParentPointerTreeNode(key, data, parent_node)
+                
+        self.tree.append(new_node)
+        self.size += 1
+
+    def delete(self, key):
+        """
+        Deletes the data with the passed key
+        using iterative algorithm.
+
+        Parameters
+        ==========
+
+        key
+            The key of the node which is
+            to be deleted.
+
+        Returns
+        =======
+
+        True
+            If the node is deleted successfully.
+
+        None
+            If the node to be deleted doesn't exists.
+
+        Note
+        ====
+
+        The node is deleted means that the connection to that
+        node are removed but the it is still in tree.
+        """
+        for idx in range(self.size): 
+            if self.tree[idx].key == key:
+                self.tree.delete(idx)
+                return True
+            
+        return None
+
+    def search(self, key, **kwargs):
+        """
+        Searches for the data in the tree
+        using iterative algorithm.
+
+        Parameters
+        ==========
+
+        key
+            The key for searching.
+        parent: bool
+            If true then returns index of the
+            parent of the node with the passed
+            key.
+            By default, False
+
+        Returns
+        =======
+
+        int
+            If the node with the passed key is
+            in the tree.
+        tuple
+            The index of the searched node and
+            the index of the parent of that node.
+        None
+            In all other cases.
+        """
+        
+
+    def __str__(self):
+        to_be_printed = ['' for i in range(self.tree._last_pos_filled + 1)]
+        for i in range(self.tree._last_pos_filled + 1):
+            if self.tree[i] is not None:
+                node = self.tree[i]
+                to_be_printed[i] = (node.key, node.data, node.parent)
         return str(to_be_printed)
