@@ -1,5 +1,5 @@
 import pytest
-from trie import Trie
+from pydatastructs.trees.trie import Trie
 
 def test_trie_insert_search():
     trie = Trie()

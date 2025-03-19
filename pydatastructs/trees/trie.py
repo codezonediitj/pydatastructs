@@ -1,5 +1,3 @@
-# trie.py
-
 class TrieNode:
     """Represents a node in the Trie data structure."""
     def __init__(self):
