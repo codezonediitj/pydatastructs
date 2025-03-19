@@ -1,4 +1,4 @@
-from pydatastructs.strings import find
+from pydatastructs.strings import find, manacher
 
 import random, string
 
@@ -13,6 +13,27 @@ def test_bm():
 
 def test_zf():
     _test_common_string_matching('z_function')
+
+def test_manacher():
+    """
+    Test cases for Manacher's Algorithm to find the longest palindromic substring.
+    """
+    test_cases = [
+        # (input_text, expected_longest_palindrome)
+        ("", ""),  # Empty string
+        ("a", "a"),  # Single character
+        ("abacdfgdcaba", "aba"),  # Odd-length palindrome
+        ("abba", "abba"),  # Even-length palindrome
+        ("forgeeksskeegfor", "geeksskeeg"),  # Long palindrome
+        ("abcde", "a"),  # No palindrome longer than 1
+        ("racecar", "racecar"),  # Full string is a palindrome
+        ("abacaba", "abacaba"),  # Overlapping palindromes
+        ("abacabacabb", "bacabacab"),  # Complex case
+    ]
+
+    for text, expected in test_cases:
+        result = manacher(text)
+        assert result == expected, f"Failed for input: {text}. Expected: {expected}, Got: {result}"
 
 def _test_common_string_matching(algorithm):
     true_text_pattern_dictionary = {

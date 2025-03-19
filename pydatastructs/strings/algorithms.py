@@ -4,7 +4,8 @@ from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
 
 __all__ = [
-    'find'
+    'find',
+    'manacher'
 ]
 
 PRIME_NUMBER, MOD = 257, 1000000007
@@ -83,6 +84,57 @@ def find(text, query, algorithm, **kwargs):
         %(algorithm))
     return getattr(algorithms, func)(text, query)
 
+def manacher(text: str) -> str:
+    """
+    Finds the longest palindromic substring in the given text using Manacher's algorithm.
+
+    Parameters
+    ==========
+    text: str
+        The input string in which to find the longest palindromic substring.
+
+    Returns
+    =======
+    str
+        The longest palindromic substring found in the input text.
+
+    Examples
+    ========
+    >>> manacher("abacdfgdcaba")
+    'aba'
+    >>> manacher("forgeeksskeegfor")
+    'geeksskeeg'
+    """
+    if not text:
+        return ""
+
+    processed_text = "#" + "#".join(text) + "#"
+    n = len(processed_text)
+    lps = [0] * n
+    center = 0
+    right = 0
+    max_len = 0
+    max_center = 0
+
+    for i in range(n):
+        if i < right:
+            lps[i] = min(right - i, lps[2 * center - i])
+
+        while (i + lps[i] + 1 < n and i - lps[i] - 1 >= 0 and
+               processed_text[i + lps[i] + 1] == processed_text[i - lps[i] - 1]):
+            lps[i] += 1
+
+        if lps[i] > max_len:
+            max_len = lps[i]
+            max_center = i
+
+        if i + lps[i] > right:
+            center = i
+            right = i + lps[i]
+
+    start = (max_center - max_len) // 2
+    end = start + max_len
+    return text[start:end]
 
 def _knuth_morris_pratt(text, query):
     if len(text) == 0 or len(query) == 0:
