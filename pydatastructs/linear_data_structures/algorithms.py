@@ -1853,7 +1853,7 @@ def intro_sort(array, **kwargs) -> Array:
 
         return array
 
-def shell_sort(array, **kwargs):
+def shell_sort(array, *args, **kwargs):
     """
     Implements shell sort algorithm.
 
@@ -1906,9 +1906,10 @@ def shell_sort(array, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Shellsort
     """
-    start = kwargs.get('start', 0)
-    end = kwargs.get('end', len(array) - 1)
+    start = int(kwargs.get('start', 0))
+    end = int(kwargs.get('end', len(array) - 1))
     comp = kwargs.get('comp', lambda u, v: u <= v)
+
     n = end - start + 1
     gap = n // 2
     while gap > 0:
@@ -1920,12 +1921,13 @@ def shell_sort(array, **kwargs):
                 j -= gap
             array[j] = temp
         gap //= 2
+
     if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
         array._modify(True)
 
     return array
 
-def radix_sort(array, **kwargs):
+def radix_sort(array, *args, **kwargs):
     """
     Implements radix sort algorithm for non-negative integers.
 
@@ -1977,36 +1979,31 @@ def radix_sort(array, **kwargs):
     """
     start = int(kwargs.get('start', 0))
     end = int(kwargs.get('end', len(array) - 1))
-
-    if start >= end:
-        return array
+    comp = kwargs.get('comp', lambda u, v: u <= v)
 
     n = end - start + 1
-    if n <= 0:
-        return array
-
     max_val = array[start]
     for i in range(start + 1, end + 1):
-        if array[i] > max_val:
+        if array[i] is not None and array[i] > max_val:
             max_val = array[i]
-    if max_val < 0:
-        raise ValueError("Radix sort requires non-negative integers")
-
     exp = 1
     while max_val // exp > 0:
         count = [0] * 10
-        output = [0] * n
+        output = [None] * n
+
         for i in range(start, end + 1):
-            digit = (array[i] // exp) % 10
-            count[digit] += 1
+            if array[i] is not None:
+                digit = (array[i] // exp) % 10
+                count[digit] += 1
 
         for i in range(1, 10):
             count[i] += count[i - 1]
 
         for i in range(end, start - 1, -1):
-            digit = (array[i] // exp) % 10
-            count[digit] -= 1
-            output[count[digit]] = array[i]
+            if array[i] is not None:
+                digit = (array[i] // exp) % 10
+                count[digit] -= 1
+                output[count[digit]] = array[i]
 
         for i in range(n):
             array[start + i] = output[i]
