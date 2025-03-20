@@ -30,7 +30,9 @@ __all__ = [
     'jump_search',
     'selection_sort',
     'insertion_sort',
-    'intro_sort'
+    'intro_sort',
+    'shell_sort',
+    'radix_sort'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1904,9 +1906,6 @@ def shell_sort(array, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Shellsort
     """
-    backend = kwargs.pop("backend", Backend.PYTHON)
-    if backend == Backend.CPP:
-        return _algorithms.shell_sort(array, **kwargs)
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get('comp', lambda u, v: u <= v)
@@ -1976,9 +1975,6 @@ def radix_sort(array, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Radix_sort
     """
-    backend = kwargs.pop("backend", Backend.PYTHON)
-    if backend == Backend.CPP:
-        return _algorithms.radix_sort(array, **kwargs)
     start = int(kwargs.get('start', 0))
     end = int(kwargs.get('end', len(array) - 1))
 
