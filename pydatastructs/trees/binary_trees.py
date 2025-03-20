@@ -17,7 +17,7 @@ __all__ = [
     'CartesianTree',
     'Treap',
     'SplayTree',
-    'RedBlackTree'
+    'RedBlackTree',
 ]
 
 class BinaryTree(object):
