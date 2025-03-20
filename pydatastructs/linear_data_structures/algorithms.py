@@ -1979,7 +1979,6 @@ def radix_sort(array, *args, **kwargs):
     """
     start = int(kwargs.get('start', 0))
     end = int(kwargs.get('end', len(array) - 1))
-    comp = kwargs.get('comp', lambda u, v: u <= v)
 
     n = end - start + 1
     max_val = array[start]
