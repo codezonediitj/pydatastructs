@@ -8,7 +8,7 @@ from pydatastructs import (
     selection_sort, insertion_sort, intro_sort, shell_sort, radix_sort, Backend)
 
 from pydatastructs.utils.raises_util import raises
-import random, pytest
+import random
 
 def _test_common_sort(sort, *args, **kwargs):
     random.seed(1000)
