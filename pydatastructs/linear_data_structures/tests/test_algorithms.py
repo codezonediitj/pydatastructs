@@ -5,7 +5,7 @@ from pydatastructs import (
     cocktail_shaker_sort, quick_sort, longest_common_subsequence, is_ordered,
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
-    selection_sort, insertion_sort, intro_sort, Backend)
+    selection_sort, insertion_sort, intro_sort, shell_sort, radix_sort, reverse_array, Backend)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -200,15 +200,15 @@ def test_is_ordered():
         assert output == expected_result
 
         expected_result = True
-        arr3 = ODA(int, [0, -1, -2, -3, -4, 4])
-        output = is_ordered(arr3, start=1, end=4,
+        arr2 = ODA(int, [0, -1, -2, -3, -4, 4])
+        output = is_ordered(arr2, start=1, end=4,
                             comp=lambda u, v: u > v, **kwargs)
         assert output == expected_result
 
         expected_result = True
-        arr4 = DODA(int, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        arr4.delete(0)
-        output = is_ordered(arr4, **kwargs)
+        arr3 = DODA(int, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        arr3.delete(0)
+        output = is_ordered(arr3, **kwargs)
         assert output == expected_result
 
     _test_inner_ordered()
@@ -227,13 +227,13 @@ def test_upper_bound():
     expected_result = 2
     assert expected_result == output
 
-    arr3 = ODA(int, [6, 6, 7, 8, 9])
-    output = upper_bound(arr3, 5, start=2, end=4)
+    arr2 = ODA(int, [6, 6, 7, 8, 9])
+    output = upper_bound(arr2, 5, start=2, end=4)
     expected_result = 2
     assert expected_result == output
 
-    arr4 = ODA(int, [3, 4, 4, 6])
-    output = upper_bound(arr4, 5, start=1, end=3)
+    arr3 = ODA(int, [3, 4, 4, 6])
+    output = upper_bound(arr3, 5, start=1, end=3)
     expected_result = 3
     assert expected_result == output
 
@@ -242,13 +242,13 @@ def test_upper_bound():
     expected_result = 5
     assert expected_result == output
 
-    arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr6, 2, start=2, comp=lambda x, y: x > y)
+    arr4 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr4, 2, start=2, comp=lambda x, y: x > y)
     expected_result = 8
     assert expected_result == output
 
-    arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = upper_bound(arr7, 9, start=3, end=7, comp=lambda x, y: x > y)
+    arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = upper_bound(arr5, 9, start=3, end=7, comp=lambda x, y: x > y)
     expected_result = 3
     assert expected_result == output
 
@@ -270,13 +270,13 @@ def test_lower_bound():
     expected_result = 3
     assert expected_result == output
 
-    arr3 = ODA(int, [6, 6, 7, 8, 9])
-    output = lower_bound(arr3, 5, end=3)
+    arr2 = ODA(int, [6, 6, 7, 8, 9])
+    output = lower_bound(arr2, 5, end=3)
     expected_result = 0
     assert expected_result == output
 
-    arr4 = ODA(int, [3, 4, 4, 4])
-    output = lower_bound(arr4, 5)
+    arr3 = ODA(int, [3, 4, 4, 4])
+    output = lower_bound(arr3, 5)
     expected_result = 4
     assert expected_result == output
 
@@ -285,13 +285,13 @@ def test_lower_bound():
     expected_result = 5
     assert expected_result == output
 
-    arr6 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr6, 2, start=4, comp=lambda x, y: x > y)
+    arr4 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr4, 2, start=4, comp=lambda x, y: x > y)
     expected_result = 8
     assert expected_result == output
 
-    arr7 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
-    output = lower_bound(arr7, 9, end=5, comp=lambda x, y: x > y)
+    arr5 = ODA(int, [7, 6, 6, 6, 6, 5, 4, 3])
+    output = lower_bound(arr5, 9, end=5, comp=lambda x, y: x > y)
     expected_result = 0
     assert expected_result == output
 
@@ -313,13 +313,13 @@ def test_longest_increasing_subsequence():
     expected_result = [-1, 2, 3, 7, 9, 10]
     assert str(expected_result) == str(output)
 
-    arr3 = ODA(int, [6, 6, 6, 19, 9])
-    output = longest_increasing_subsequence(arr3)
+    arr2 = ODA(int, [6, 6, 6, 19, 9])
+    output = longest_increasing_subsequence(arr2)
     expected_result = [6, 9]
     assert str(expected_result) == str(output)
 
-    arr4 = ODA(int, [5, 4, 4, 3, 3, 6, 6, 8])
-    output = longest_increasing_subsequence(arr4)
+    arr3 = ODA(int, [5, 4, 4, 3, 3, 6, 6, 8])
+    output = longest_increasing_subsequence(arr3)
     expected_result = [3, 6, 8]
     assert str(expected_result) == str(output)
 
@@ -414,3 +414,32 @@ def test_binary_search():
 def test_jump_search():
     _test_common_search(jump_search)
     _test_common_search(jump_search, backend=Backend.CPP)
+
+def test_shell_sort():
+    _test_common_sort(shell_sort)
+
+def test_radix_sort():
+    _test_common_sort(radix_sort)
+
+def test_reverse_array():
+    arr1 = DynamicOneDimensionalArray(int, [1, 2, 3, 4, 5])
+    reverse_array(arr1)
+    assert arr1._data == [5, 4, 3, 2, 1]
+
+    arr2 = DynamicOneDimensionalArray(int, [1, 2, 3])
+    original_data = arr2._data.copy()
+    reverse_array(arr2, start=2, end=1)
+    assert arr2._data == original_data
+
+    arr3 = DynamicOneDimensionalArray(int, [42])
+    reverse_array(arr3, start=0, end=0)
+    assert arr3._data == [42]
+
+    arr4 = DynamicOneDimensionalArray(int, [5, -3, 1, -10, 7])
+    reverse_array(arr4, start=1, end=3)
+    assert arr4._data == [5, -10, 1, -3, 7]
+
+    arr5 = OneDimensionalArray(int, 5)
+    arr5._data = [1, 2, 3, 4, 5]
+    reverse_array(arr5, start=1, end=3)
+    assert arr5._data == [1, 4, 3, 2, 5]

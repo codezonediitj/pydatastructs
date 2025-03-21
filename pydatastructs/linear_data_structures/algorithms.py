@@ -30,7 +30,10 @@ __all__ = [
     'jump_search',
     'selection_sort',
     'insertion_sort',
-    'intro_sort'
+    'intro_sort',
+    'shell_sort',
+    'radix_sort',
+    'reverse_array'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -1850,3 +1853,211 @@ def intro_sort(array, **kwargs) -> Array:
         intro_sort(array, start=p+1, end=upper,  maxdepth=maxdepth-1, ins_threshold=ins_threshold)
 
         return array
+
+def shell_sort(array, *args, **kwargs):
+    """
+    Implements shell sort algorithm.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.linear_data_structures.algorithms import OneDimensionalArray, shell_sort
+    >>> arr = OneDimensionalArray(int, [3, 2, 1])
+    >>> out = shell_sort(arr)
+    >>> str(out)
+    '[1, 2, 3]'
+    >>> out = shell_sort(arr, comp=lambda u, v: u > v)
+    >>> str(out)
+    '[3, 2, 1]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Shellsort
+    """
+    start = int(kwargs.get('start', 0))
+    end = int(kwargs.get('end', len(array) - 1))
+    comp = kwargs.get('comp', lambda u, v: u <= v)
+
+    n = end - start + 1
+    gap = n // 2
+    while gap > 0:
+        for i in range(start + gap, end + 1):
+            temp = array[i]
+            j = i
+            while j >= start + gap and not _comp(array[j - gap], temp, comp):
+                array[j] = array[j - gap]
+                j -= gap
+            array[j] = temp
+        gap //= 2
+
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
+
+    return array
+
+def radix_sort(array, *args, **kwargs):
+    """
+    Implements radix sort algorithm for non-negative integers.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array which is to be sorted. Must contain non-negative integers.
+    start: int
+        The starting index of the portion
+        which is to be sorted.
+        Optional, by default 0
+    end: int
+        The ending index of the portion which
+        is to be sorted.
+        Optional, by default the index
+        of the last position filled.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. If the function returns
+        False then only swapping is performed.
+        Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The sorted array.
+
+    Examples
+    ========
+
+    >>> from pydatastructs.linear_data_structures.algorithms import OneDimensionalArray, radix_sort
+    >>> arr = OneDimensionalArray(int, [170, 45, 75, 90, 802, 24, 2, 66])
+    >>> out = radix_sort(arr)
+    >>> str(out)
+    '[2, 24, 45, 66, 75, 90, 170, 802]'
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Radix_sort
+    """
+    start = int(kwargs.get('start', 0))
+    end = int(kwargs.get('end', len(array) - 1))
+
+    n = end - start + 1
+    max_val = array[start]
+    for i in range(start + 1, end + 1):
+        if array[i] is not None and array[i] > max_val:
+            max_val = array[i]
+    exp = 1
+    while max_val // exp > 0:
+        count = [0] * 10
+        output = [None] * n
+
+        for i in range(start, end + 1):
+            if array[i] is not None:
+                digit = (array[i] // exp) % 10
+                count[digit] += 1
+
+        for i in range(1, 10):
+            count[i] += count[i - 1]
+
+        for i in range(end, start - 1, -1):
+            if array[i] is not None:
+                digit = (array[i] // exp) % 10
+                count[digit] -= 1
+                output[count[digit]] = array[i]
+
+        for i in range(n):
+            array[start + i] = output[i]
+
+        exp *= 10
+
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
+
+    return array
+
+def reverse_array(array, *args, **kwargs):
+    """
+    Reverses the specified portion of the array in-place.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array to be reversed (DynamicOneDimensionalArray or OneDimensionalArray).
+    start: int
+        The starting index of the portion to reverse.
+        Optional, by default 0
+    end: int
+        The ending index of the portion to reverse.
+        Optional, by default the index of the last position filled.
+    backend: pydatastructs.Backend
+        The backend to be used (PYTHON or CPP).
+        Optional, by default, the best available backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The array with the specified portion reversed.
+    """
+    start = int(kwargs.get('start', 0))
+    end = int(kwargs.get('end', len(array) - 1))
+
+    if start >= end:
+        return array
+    n = end - start + 1
+
+    elements = [(array[i], i) for i in range(start, end + 1) if array[i] is not None]
+    elem_values = [e[0] for e in elements]
+    elem_values.reverse()
+
+    k = 0
+    for i in range(start, end + 1):
+        if array[i] is not None:
+            array[i] = elem_values[k]
+            k += 1
+
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
+
+    return array
