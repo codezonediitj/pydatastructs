@@ -22,6 +22,9 @@ from .algorithms import (
     topological_sort,
     topological_sort_parallel,
     max_flow,
+    maximum_matching,
+    maximum_matching_parallel,
+    bipartite_coloring,
     find_bridges
 )
 

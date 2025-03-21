@@ -2,7 +2,8 @@ from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths,all_pair_shortest_paths, topological_sort,
-topological_sort_parallel, max_flow, find_bridges)
+topological_sort_parallel, max_flow, maximum_matching, maximum_matching_parallel,
+bipartite_coloring, find_bridges)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -451,6 +452,176 @@ def test_max_flow():
     _test_max_flow("List", "dinic")
     _test_max_flow("Matrix", "dinic")
 
+def test_maximum_matching():
+    def _test_maximum_matching(func, ds, algorithm, **kwargs):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+        e = GraphNode('e')
+
+        G = Graph(a, b, c, d, e)
+
+        G.add_bidirectional_edge('a', 'b')
+        G.add_bidirectional_edge('a', 'c')
+        G.add_bidirectional_edge('b', 'd')
+        G.add_bidirectional_edge('c', 'd')
+        G.add_bidirectional_edge('d', 'e')
+
+        assert len(func(G, algorithm, **kwargs)) == 2
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+        e = GraphNode('e')
+        f = GraphNode('f')
+
+        G2 = Graph(a, b, c, d, e, f)
+
+        G2.add_bidirectional_edge('a', 'b')
+        G2.add_bidirectional_edge('a', 'c')
+        G2.add_bidirectional_edge('b', 'd')
+        G2.add_bidirectional_edge('c', 'd')
+        G2.add_bidirectional_edge('d', 'e')
+        G2.add_bidirectional_edge('d', 'f')
+
+        assert len(func(G2, algorithm, **kwargs)) == 2
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+
+        G3 = Graph(a, b, c, d)
+
+        G3.add_bidirectional_edge('a', 'b')
+        G3.add_bidirectional_edge('a', 'c')
+        G3.add_bidirectional_edge('b', 'd')
+        G3.add_bidirectional_edge('c', 'd')
+
+        assert len(func(G3, algorithm, **kwargs)) == 2
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+        e = GraphNode('e')
+        f = GraphNode('f')
+        g = GraphNode('g')
+        h = GraphNode('h')
+        i = GraphNode('i')
+
+        G4 = Graph(a, b, c, d, e, f, g, h, i)
+
+        G4.add_bidirectional_edge('a', 'b')
+        G4.add_bidirectional_edge('a', 'c')
+        G4.add_bidirectional_edge('b', 'd')
+        G4.add_bidirectional_edge('c', 'd')
+        G4.add_bidirectional_edge('d', 'e')
+        G4.add_bidirectional_edge('d', 'f')
+        G4.add_bidirectional_edge('e', 'g')
+        G4.add_bidirectional_edge('f', 'g')
+        G4.add_bidirectional_edge('g', 'h')
+        G4.add_bidirectional_edge('g', 'i')
+
+        assert len(func(G4, algorithm, **kwargs)) == 3
+
+    _test_maximum_matching(maximum_matching, "List", "hopcroft_karp")
+    _test_maximum_matching(maximum_matching, "Matrix", "hopcroft_karp")
+    _test_maximum_matching(maximum_matching_parallel, "List", "hopcroft_karp", num_threads=2)
+    _test_maximum_matching(maximum_matching_parallel, "Matrix", "hopcroft_karp", num_threads=2)
+
+
+def test_bipartite_coloring():
+    def _assert_correctness(graph, answer):
+        valid = True
+        for v in graph.vertices:
+            for u in graph.neighbors(v):
+                if answer[u.name] == answer[v.name]:
+                    valid = False
+                    break
+            if not valid:
+                break
+        return valid
+
+    def _test_bipartite_coloring(ds):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+        e = GraphNode('e')
+        f = GraphNode('f')
+
+        G1 = Graph(a, b, c, d, e, f)
+
+        G1.add_bidirectional_edge('a', 'b')
+        G1.add_bidirectional_edge('a', 'c')
+        G1.add_bidirectional_edge('b', 'd')
+        G1.add_bidirectional_edge('c', 'd')
+        G1.add_bidirectional_edge('d', 'e')
+        G1.add_bidirectional_edge('d', 'f')
+
+        valid, coloring = bipartite_coloring(G1)
+
+        assert valid
+        assert _assert_correctness(G1, coloring)
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+        e = GraphNode('e')
+
+        G2 = Graph(a, b, c, d, e)
+
+        G2.add_bidirectional_edge('a', 'b')
+        G2.add_bidirectional_edge('a', 'c')
+        G2.add_bidirectional_edge('b', 'c')
+        G2.add_bidirectional_edge('c', 'd')
+        G2.add_bidirectional_edge('d', 'e')
+        G2.add_bidirectional_edge('e', 'a')
+
+        valid, coloring = bipartite_coloring(G2)
+
+        assert not valid
+
+        a = GraphNode('a')
+        b = GraphNode('b')
+        c = GraphNode('c')
+        d = GraphNode('d')
+        e = GraphNode('e')
+        f = GraphNode('f')
+        g = GraphNode('g')
+        h = GraphNode('h')
+        i = GraphNode('i')
+
+        G3 = Graph(a, b, c, d, e, f, g, h, i)
+
+        G3.add_bidirectional_edge('a', 'b')
+        G3.add_bidirectional_edge('b', 'c')
+        G3.add_bidirectional_edge('c', 'd')
+        G3.add_bidirectional_edge('d', 'e')
+        G3.add_bidirectional_edge('e', 'f')
+        G3.add_bidirectional_edge('f', 'a')
+        G3.add_bidirectional_edge('g', 'f')
+        G3.add_bidirectional_edge('g', 'd')
+        G3.add_bidirectional_edge('f', 'h')
+        G3.add_bidirectional_edge('h', 'i')
+        G3.add_bidirectional_edge('i', 'g')
+        G3.add_bidirectional_edge('i', 'c')
+        G3.add_bidirectional_edge('h', 'b')
+
+        valid, coloring = bipartite_coloring(G3)
+
+        assert valid
+        assert _assert_correctness(G3, coloring)
 
 def test_find_bridges():
     def _test_find_bridges(ds):

@@ -4,6 +4,8 @@ data structure.
 """
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Manager
+import threading
 from pydatastructs.utils.misc_util import (
     _comp, raise_if_backend_is_not_python, Backend, AdjacencyListGraphNode)
 from pydatastructs.miscellaneous_data_structures import (
@@ -11,6 +13,7 @@ from pydatastructs.miscellaneous_data_structures import (
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
+from typing import Tuple, Dict
 
 __all__ = [
     'breadth_first_search',
@@ -24,6 +27,9 @@ __all__ = [
     'topological_sort',
     'topological_sort_parallel',
     'max_flow',
+    'maximum_matching',
+    'maximum_matching_parallel',
+    'bipartite_coloring',
     'find_bridges'
 ]
 
@@ -1267,6 +1273,401 @@ def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
     return getattr(algorithms, func)(graph, source, sink)
 
 
+def bipartite_coloring(graph: Graph, **kwargs) -> Tuple[bool, Dict]:
+    """
+    Finds a 2-coloring of the given graph if it is bipartite.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    invert: bool
+        If True, the colors are inverted.
+    make_undirected: bool
+        If False, the input graph should be undirected else it can be made undirected by setting this to True
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    tuple
+        A tuple containing a boolean value and a dictionary.
+        The boolean value is True if the graph is bipartite
+        and False otherwise. The dictionary contains the
+        color assigned to each vertex.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, bipartite_coloring
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> v_3 = AdjacencyListGraphNode('v_3')
+    >>> v_4 = AdjacencyListGraphNode('v_4')
+    >>> graph = Graph(v_1, v_2, v_3, v_4)
+    >>> graph.add_edge('v_1', 'v_2')
+    >>> graph.add_edge('v_2', 'v_3')
+    >>> graph.add_edge('v_4', 'v_1')
+    >>> bipartite_coloring(graph, make_undirected=True)
+    (True, {'v_1': 0, 'v_2': 1, 'v_4': 1, 'v_3': 0})
+
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bipartite_graph
+    """
+
+    color = {}
+    queue = Queue()
+    invert = kwargs.get('invert', False)
+    make_unidirected = kwargs.get('make_undirected', False)
+
+    if make_unidirected:
+        graph = graph.to_undirected_adjacency_list()
+
+    for start in graph.vertices:
+        if start not in color:
+            queue.append(start)
+            color[start] = 1 if invert else 0
+
+            while queue:
+                u = queue.popleft()
+                for v in graph.neighbors(u):
+                    v_name = v.name
+                    if v_name not in color:
+                        color[v_name] = 1 - color[u]
+                        queue.append(v_name)
+                    elif color[v_name] == color[u]:
+                        return (False, {})
+
+    return (True, color)
+
+
+def _maximum_matching_hopcroft_karp_(graph: Graph):
+    U = set()
+    V = set()
+    bipartiteness, coloring = bipartite_coloring(graph)
+
+    if not bipartiteness:
+        raise ValueError("Graph is not bipartite.")
+
+    for node, c in coloring.items():
+        if c == 0:
+            U.add(node)
+        else:
+            V.add(node)
+
+
+    pair_U = {u: None for u in U}
+    pair_V = {v: None for v in V}
+    dist = {}
+
+    def bfs():
+        queue = Queue()
+        for u in U:
+            if pair_U[u] is None:
+                dist[u] = 0
+                queue.append(u)
+            else:
+                dist[u] = float('inf')
+        dist[None] = float('inf')
+        while queue:
+            u = queue.popleft()
+            if dist[u] < dist[None]:
+                for v in graph.neighbors(u):
+                    if v.name in pair_V:
+                        alt = pair_V[v.name]
+                        if alt is None:
+                            dist[None] = dist[u] + 1
+                            queue.append(None)
+                        elif dist.get(alt, float('inf')) == float('inf'):
+                            dist[alt] = dist[u] + 1
+                            queue.append(alt)
+        return dist.get(None, float('inf')) != float('inf')
+
+    def dfs(u):
+        if u is None:
+            return True
+        for v in graph.neighbors(u):
+            if v.name in pair_V:
+                alt = pair_V[v.name]
+                if alt is None:
+                    pair_V[v.name] = u
+                    pair_U[u] = v.name
+                    return True
+                elif dist.get(alt, float('inf')) == dist.get(u, float('inf')) + 1:
+                    if dfs(alt):
+                        pair_V[v.name] = u
+                        pair_U[u] = v.name
+                        return True
+        dist[u] = float('inf')
+        return False
+
+    matching = set()
+    while bfs():
+        for u in U:
+            if pair_U[u] is None:
+                dfs(u)
+
+    for u in U:
+        if pair_U[u] is not None:
+            matching.add((u, pair_U[u]))
+
+    return matching
+
+def maximum_matching(graph: Graph, algorithm: str, **kwargs) -> set:
+    """
+    Finds the maximum matching in the given undirected using the given algorithm.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used.
+        Currently, following are supported,
+
+        'hopcroft_karp' -> Hopcroft-Karp algorithm for Bipartite Graphs as given in [1].
+    make_undirected: bool
+        If False, the graph should be undirected or unwanted results may be obtained. The graph can be made undirected by setting this to true.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    set
+        The set of edges which form the maximum matching.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, maximum_matching
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> v_3 = AdjacencyListGraphNode('v_3')
+    >>> v_4 = AdjacencyListGraphNode('v_4')
+    >>> graph = Graph(v_1, v_2, v_3, v_4)
+    >>> graph.add_edge('v_1', 'v_2')
+    >>> graph.add_edge('v_2', 'v_3')
+    >>> graph.add_edge('v_4', 'v_1')
+    >>> sorted(maximum_matching(graph, 'hopcroft_karp', make_undirected=True))
+    [('v_1', 'v_4'), ('v_3', 'v_2')]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm
+    """
+
+
+    raise_if_backend_is_not_python(
+        maximum_matching, kwargs.get('backend', Backend.PYTHON))
+    make_undirected = kwargs.get('make_undirected', False)
+    if make_undirected:
+        graph = graph.to_undirected_adjacency_list()
+
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_maximum_matching_" + algorithm + "_"
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        f"Currently {algorithm} algorithm isn't implemented for "
+        "finding maximum matching in graphs.")
+    return getattr(algorithms, func)(graph)
+
+def _maximum_matching_hopcroft_karp_parallel(graph: Graph, num_threads: int) -> set:
+
+    U = set()
+    V = set()
+    bipartiteness, coloring = bipartite_coloring(graph)
+
+    if not bipartiteness:
+        raise ValueError("Graph is not bipartite.")
+
+    for node, c in coloring.items():
+        if c == 0:
+            U.add(node)
+        else:
+            V.add(node)
+
+    manager = Manager()
+    pair_U = manager.dict({u: None for u in U})
+    pair_V = manager.dict({v: None for v in V})
+    lock = threading.RLock()
+
+    def bfs():
+        queue = Queue()
+        dist = {}
+        for u in U:
+            if pair_U[u] is None:
+                dist[u] = 0
+                queue.append(u)
+            else:
+                dist[u] = float('inf')
+        dist[None] = float('inf')
+
+        while queue:
+            u = queue.popleft()
+            if dist[u] < dist[None]:
+                for v in graph.neighbors(u):
+                    if v.name in pair_V:
+                        alt = pair_V[v.name]
+                        if alt is None:
+                            dist[None] = dist[u] + 1
+                            queue.append(None)
+                        elif dist.get(alt, float('inf')) == float('inf'):
+                            dist[alt] = dist[u] + 1
+                            queue.append(alt)
+
+        return dist, dist.get(None, float('inf')) != float('inf')
+
+    def dfs_worker(u, dist, local_pair_U, local_pair_V, thread_results):
+        if dfs(u, dist, local_pair_U, local_pair_V) and u in local_pair_U and local_pair_U[u] is not None:
+            thread_results.append((u, local_pair_U[u]))
+            return True
+        return False
+
+    def dfs(u, dist, local_pair_U, local_pair_V):
+        if u is None:
+            return True
+
+        for v in graph.neighbors(u):
+            if v.name in local_pair_V:
+                alt = local_pair_V[v.name]
+                if alt is None:
+                    local_pair_V[v.name] = u
+                    local_pair_U[u] = v.name
+                    return True
+                elif dist.get(alt, float('inf')) == dist.get(u, float('inf')) + 1:
+                    if dfs(alt, dist, local_pair_U, local_pair_V):
+                        local_pair_V[v.name] = u
+                        local_pair_U[u] = v.name
+                        return True
+
+        dist[u] = float('inf')
+        return False
+
+    matching = set()
+
+    while True:
+        dist, has_path = bfs()
+        if not has_path:
+            break
+
+        unmatched = [u for u in U if pair_U[u] is None]
+        if not unmatched:
+            break
+
+        batch_size = max(1, len(unmatched) // num_threads)
+        batches = [unmatched[i:i+batch_size] for i in range(0, len(unmatched), batch_size)]
+
+        for batch in batches:
+            all_results = []
+
+            with ThreadPoolExecutor(max_workers=num_threads) as executor:
+                futures = []
+                for u in batch:
+                    local_pair_U = dict(pair_U)
+                    local_pair_V = dict(pair_V)
+                    thread_results = []
+
+                    futures.append(executor.submit(
+                        dfs_worker, u, dist.copy(), local_pair_U, local_pair_V, thread_results
+                    ))
+
+                for future in futures:
+                    future.result()
+
+            with lock:
+                for u in batch:
+                    if pair_U[u] is None:
+                        result = dfs(u, dist.copy(), pair_U, pair_V)
+                        if result and pair_U[u] is not None:
+                            matching.add((u, pair_U[u]))
+
+    with lock:
+        matching = set()
+        for u in U:
+            if pair_U[u] is not None:
+                matching.add((u, pair_U[u]))
+
+    return matching
+
+
+def maximum_matching_parallel(graph: Graph, algorithm: str, num_threads: int, **kwargs) -> set:
+    """
+    Finds the maximum matching in the given graph using the given algorithm using
+    the given number of threads.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used.
+        Currently, following are supported,
+
+        'hopcroft_karp' -> Hopcroft-Karp algorithm for Bipartite Graphs as given in [1].
+    num_threads: int
+        The maximum number of threads to be used.
+    make_undirected: bool
+        If False, the graph should be undirected or unwanted results may be obtained. The graph can be made undirected by setting this to true.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    set
+        The set of edges which form the maximum matching.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, maximum_matching_parallel
+    >>> v_1 = AdjacencyListGraphNode('v_1')
+    >>> v_2 = AdjacencyListGraphNode('v_2')
+    >>> v_3 = AdjacencyListGraphNode('v_3')
+    >>> v_4 = AdjacencyListGraphNode('v_4')
+    >>> graph = Graph(v_1, v_2, v_3, v_4)
+    >>> graph.add_bidirectional_edge('v_1', 'v_2')
+    >>> graph.add_bidirectional_edge('v_2', 'v_3')
+    >>> graph.add_bidirectional_edge('v_4', 'v_1')
+    >>> sorted(maximum_matching_parallel(graph, 'hopcroft_karp', 1))
+    [('v_1', 'v_4'), ('v_3', 'v_2')]
+
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm
+    """
+
+    raise_if_backend_is_not_python(
+        maximum_matching_parallel, kwargs.get('backend', Backend.PYTHON))
+    make_undirected = kwargs.get('make_undirected', False)
+    if make_undirected:
+        graph = graph.to_undirected_adjacency_list()
+
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_maximum_matching_" + algorithm + "_parallel"
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        f"Currently {algorithm} algorithm isn't implemented for "
+        "finding maximum matching in graphs.")
+    return getattr(algorithms, func)(graph, num_threads)
+
 def find_bridges(graph):
     """
     Finds all bridges in an undirected graph using Tarjan's Algorithm.
@@ -1300,7 +1701,6 @@ def find_bridges(graph):
 
     References
     ==========
-
     .. [1] https://en.wikipedia.org/wiki/Bridge_(graph_theory)
     """
 
