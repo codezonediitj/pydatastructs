@@ -49,6 +49,7 @@ from .algorithms import (
     insertion_sort,
     intro_sort,
     shell_sort,
-    radix_sort
+    radix_sort,
+    reverse_array
 )
 __all__.extend(algorithms.__all__)

@@ -50,3 +50,5 @@ Algorithms
 .. autofunction:: pydatastructs.shell_sort
 
 .. autofunction:: pydatastructs.radix_sort
+
+.. autofunction:: pydatastructs.reverse_array

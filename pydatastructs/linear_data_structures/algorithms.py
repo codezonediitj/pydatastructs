@@ -32,7 +32,8 @@ __all__ = [
     'insertion_sort',
     'intro_sort',
     'shell_sort',
-    'radix_sort'
+    'radix_sort',
+    'reverse_array'
 ]
 
 def _merge(array, sl, el, sr, er, end, comp):
@@ -2008,6 +2009,53 @@ def radix_sort(array, *args, **kwargs):
             array[start + i] = output[i]
 
         exp *= 10
+
+    if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
+        array._modify(True)
+
+    return array
+
+def reverse_array(array, *args, **kwargs):
+    """
+    Reverses the specified portion of the array in-place.
+
+    Parameters
+    ==========
+
+    array: Array
+        The array to be reversed (DynamicOneDimensionalArray or OneDimensionalArray).
+    start: int
+        The starting index of the portion to reverse.
+        Optional, by default 0
+    end: int
+        The ending index of the portion to reverse.
+        Optional, by default the index of the last position filled.
+    backend: pydatastructs.Backend
+        The backend to be used (PYTHON or CPP).
+        Optional, by default, the best available backend is used.
+
+    Returns
+    =======
+
+    output: Array
+        The array with the specified portion reversed.
+    """
+    start = int(kwargs.get('start', 0))
+    end = int(kwargs.get('end', len(array) - 1))
+
+    if start >= end:
+        return array
+    n = end - start + 1
+
+    elements = [(array[i], i) for i in range(start, end + 1) if array[i] is not None]
+    elem_values = [e[0] for e in elements]
+    elem_values.reverse()
+
+    k = 0
+    for i in range(start, end + 1):
+        if array[i] is not None:
+            array[i] = elem_values[k]
+            k += 1
 
     if _check_type(array, (DynamicArray, _arrays.DynamicOneDimensionalArray)):
         array._modify(True)
