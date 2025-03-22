@@ -6,6 +6,7 @@ from . import (
     queue,
     disjoint_set,
     sparse_table,
+    bloom_filter,
     _extensions,
 )
 
@@ -50,3 +51,8 @@ from .multiset import (
     Multiset
 )
 __all__.extend(multiset.__all__)
+
+from .bloom_filter import (
+    BloomFilter
+)
+__all__.extend(bloom_filter.__all__)
