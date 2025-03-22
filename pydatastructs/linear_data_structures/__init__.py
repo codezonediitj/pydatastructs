@@ -47,6 +47,7 @@ from .algorithms import (
     jump_search,
     selection_sort,
     insertion_sort,
-    intro_sort
+    intro_sort,
+    radix_sort
 )
 __all__.extend(algorithms.__all__)

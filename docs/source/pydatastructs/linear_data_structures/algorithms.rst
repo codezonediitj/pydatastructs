@@ -46,3 +46,5 @@ Algorithms
 .. autofunction:: pydatastructs.jump_search
 
 .. autofunction:: pydatastructs.intro_sort
+    
+.. autofunction:: pydatastructs.radix_sort
