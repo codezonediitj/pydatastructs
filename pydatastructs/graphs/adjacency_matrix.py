@@ -57,12 +57,47 @@ class AdjacencyMatrix(Graph):
         return neighbors
 
     def add_vertex(self, node):
-        raise NotImplementedError("Currently we allow "
-                "adjacency matrix for static graphs only")
+        if node.name in self.matrix:
+            raise ValueError("Vertex %s already exists in the graph." % node.name)
+        self.vertices.append(node.name)
+        setattr(self, node.name, node)
+        self.matrix[node.name] = {}
 
     def remove_vertex(self, node):
-        raise NotImplementedError("Currently we allow "
-                "adjacency matrix for static graphs only.")
+        node = str(node)
+        if node not in self.matrix:
+            raise ValueError("Vertex '%s' is not present in the graph." % node)
+
+        # first we need to remove the edges involving the `node`
+
+        # removing records from dict while iterating over them is tricky
+        # so we'll first identify which edges to remove first
+
+        edges_to_remove = []
+
+        for target in self.matrix[node]:
+            if self.matrix[node].get(target, False):
+                edges_to_remove.append((node, target))
+
+        for source in self.vertices:
+            if self.matrix[source].get(node):
+                edges_to_remove.append((source, node))
+
+        # remove the identified edge weights
+        for source, target in edges_to_remove:
+            edge_key = str(source) + "_" + str(target)
+            self.edge_weights.pop(edge_key)
+
+        self.vertices.remove(node)
+        # eliminate all outgoing edges
+        self.matrix.pop(node, None)
+
+        # eliminate all incoming edges
+        for source in self.vertices:
+            self.matrix[source].pop(node, None)
+
+        if hasattr(self, node):
+            delattr(self, node)
 
     def add_edge(self, source, target, cost=None):
         source, target = str(source), str(target)
