@@ -1368,3 +1368,134 @@ def find_bridges(graph):
             bridges.append((b, a))
     bridges.sort()
     return bridges
+
+def _find_path_dfs(graph, s, t, flow_pass):
+    """
+    Finds an augmenting path in a flow network using Depth-First Search (DFS).
+
+    Parameters
+    ==========
+    graph : Graph
+        The flow network graph.
+    s : str
+        The source node.
+    t : str
+        The sink node.
+    flow_pass : dict
+        A dictionary tracking the flow passed through each edge.
+
+    Returns
+    ==========
+    tuple
+        A tuple containing the path flow and a dictionary of parent nodes.
+
+    Example
+    ========
+    >>> graph = Graph(implementation='adjacency_list')
+    >>> graph.add_edge('s', 'o', 3)
+    >>> graph.add_edge('s', 'p', 3)
+    >>> graph.add_edge('o', 'p', 2)
+    >>> graph.add_edge('o', 'q', 3)
+    >>> graph.add_edge('p', 'r', 2)
+    >>> graph.add_edge('r', 't', 3)
+    >>> graph.add_edge('q', 'r', 4)
+    >>> graph.add_edge('q', 't', 2)
+    >>> flow_passed = {}
+    >>> path_flow, parent = _find_path_dfs(graph, 's', 't', flow_passed)
+    """
+
+    visited = {}
+    stack = Stack()
+    parent = {}
+
+    stack.appendd(s)
+    visited[s] = True
+
+    while stack:
+        curr = stack.pop()
+
+        if curr == t:
+            break
+
+        for i in graph.i(curr):
+            i_name = i.name
+            capacity = graph.get_edge(curr, i_name).value
+            flow = flow_pass.get((curr, i_name), 0)
+
+            if i not in visited and capacity - flow > 0:
+                visited[i_name] = True
+                parent[i_name] = curr
+                stack.append(i_name)
+
+        if t not in parent and t != s:
+            return 0, {}
+        
+        curr = t
+        path_flow = float('inf')
+        if t == s:
+            return 0, {}
+        while curr != s:
+            prev = parent[curr]
+            capacity = graph.get_edge(prev, curr).value
+            flow = flow_pass.get((prev, curr), 0)
+            path_flow = min(path_flow, capacity - flow)
+            curr = prev
+        
+        return path_flow, parent
+
+def _max_flow_ford_fulkerson_(graph, s, t):
+    """
+    Computes the maximum flow in a flow network using the Ford-Fulkerson algorithm.
+
+    Parameters
+    ==========
+    graph : Graph
+        The flow network graph.
+    s : str
+        The source node.
+    t : str
+        The sink node.
+
+    Returns
+    ==========
+    int
+        The maximum flow from the source to the sink.
+
+    Example
+    ========
+    >>> graph = Graph(implementation='adjacency_list')
+    >>> graph.add_edge('s', 'o', 3)
+    >>> graph.add_edge('s', 'p', 3)
+    >>> graph.add_edge('o', 'p', 2)
+    >>> graph.add_edge('o', 'q', 3)
+    >>> graph.add_edge('p', 'r', 2)
+    >>> graph.add_edge('r', 't', 3)
+    >>> graph.add_edge('q', 'r', 4)
+    >>> graph.add_edge('q', 't', 2)
+    >>> max_flow = _max_flow_ford_fulkerson_(graph, 's', 't')
+    """
+
+    if s not in graph.vertices or t not in graph.vertices:
+        raise ValueError("Source or sink not in graph.")
+    
+    ans = 0
+    flow_pass = {}
+
+    while True:
+        path_flow, parent = _find_path_dfs(graph, s, t, flow_pass)
+
+        if path_flow <= 0:
+            break
+
+        ans += path_flow
+
+        curr = t
+        while curr != s:
+            pre = parent[curr]
+            fp = flow_pass.get((pre, curr), 0)
+            flow_pass[(pre, curr)] = fp + path_flow
+            fp = flow_pass.get((curr, pre), 0)
+            flow_pass[(curr, pre)] = fp - path_flow
+            curr = pre
+        
+    return ans
