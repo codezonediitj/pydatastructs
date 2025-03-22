@@ -5,6 +5,8 @@ from pydatastructs.utils.misc_util import _check_type, Backend
 
 def test_BloomFilter():
     assert raises(ValueError, lambda: BloomFilter(capacity=10**5, error_rate=0))
+    assert raises(ValueError, lambda: BloomFilter(capacity=10**5, error_rate=1))
+    assert raises(ValueError, lambda: BloomFilter(capacity=0, error_rate=0.005))
 
     bf = BloomFilter(capacity=10**5, error_rate=0.005)
     bf.add(1)
@@ -29,7 +31,19 @@ def test_BloomFilter():
     assert len(bf) == 3
     assert False in bf
 
+    bf = BloomFilter(capacity=10**2, init_elements=[1, 2, 3, 4, 5])
+    assert 1 in bf
+    assert 2 in bf
+    assert 3 in bf
+    assert len(bf) == 5
 
+    bf.add(b'q')
+    assert b'q' in bf
+    assert b'Q' not in bf
+
+    bf = BloomFilter(capacity=1, init_elements=[], backend=Backend.PYTHON)
+    bf.add(1)
+    assert raises(ValueError, lambda: bf.add(2))
 
 def test_BitArray():
     ba = BitArray(10, bits_per_slice=8)
@@ -55,4 +69,9 @@ def test_BitArray():
     assert raises(IndexError, lambda: ba[10])
     assert raises(IndexError, lambda: ba[-1])
 
+    def set():
+        ba[10] = 1
+    assert raises(IndexError, set)
+
     assert raises(ValueError, lambda: BitArray(10, bits_per_slice=0))
+    assert raises(ValueError, lambda: BitArray(0, bits_per_slice=2))
