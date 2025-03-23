@@ -1408,7 +1408,7 @@ def _find_path_dfs(graph, s, t, flow_pass):
     stack = Stack()
     parent = {}
 
-    stack.appendd(s)
+    stack.append(s)
     visited[s] = True
 
     while stack:
@@ -1417,19 +1417,19 @@ def _find_path_dfs(graph, s, t, flow_pass):
         if curr == t:
             break
 
-        for i in graph.i(curr):
+        for i in graph.neighbors(curr):
             i_name = i.name
             capacity = graph.get_edge(curr, i_name).value
             flow = flow_pass.get((curr, i_name), 0)
 
-            if i not in visited and capacity - flow > 0:
+            if i_name not in visited and capacity - flow > 0:
                 visited[i_name] = True
                 parent[i_name] = curr
                 stack.append(i_name)
 
-        if t not in parent and t != s:
+        if t not in parent and t == s:
             return 0, {}
-        
+
         curr = t
         path_flow = float('inf')
         if t == s:
@@ -1440,7 +1440,7 @@ def _find_path_dfs(graph, s, t, flow_pass):
             flow = flow_pass.get((prev, curr), 0)
             path_flow = min(path_flow, capacity - flow)
             curr = prev
-        
+
         return path_flow, parent
 
 def _max_flow_ford_fulkerson_(graph, s, t):
@@ -1477,7 +1477,7 @@ def _max_flow_ford_fulkerson_(graph, s, t):
 
     if s not in graph.vertices or t not in graph.vertices:
         raise ValueError("Source or sink not in graph.")
-    
+
     ans = 0
     flow_pass = {}
 
@@ -1492,10 +1492,8 @@ def _max_flow_ford_fulkerson_(graph, s, t):
         curr = t
         while curr != s:
             pre = parent[curr]
-            fp = flow_pass.get((pre, curr), 0)
-            flow_pass[(pre, curr)] = fp + path_flow
-            fp = flow_pass.get((curr, pre), 0)
-            flow_pass[(curr, pre)] = fp - path_flow
+            flow_pass[(pre, curr)] = flow_pass.get((pre, curr), 0) + path_flow
+            flow_pass[(curr, pre)] = flow_pass.get((curr, pre), 0) - path_flow
             curr = pre
-        
+
     return ans
