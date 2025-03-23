@@ -30,3 +30,12 @@ def test_AdjacencyMatrix():
     assert raises(ValueError, lambda: g.add_edge('v', 'x'))
     assert raises(ValueError, lambda: g.add_edge(2, 3))
     assert raises(ValueError, lambda: g.add_edge(3, 2))
+    v_3 = AdjacencyMatrixGraphNode(3, 3)
+    g.add_vertex(v_3)
+    assert '3' in g.vertices
+    assert g.is_adjacent(3, 0) is False
+    g.add_edge(3, 0, 0)
+    assert g.is_adjacent(3, 0) is True
+    g.remove_vertex(3)
+    assert '3' not in g.vertices
+    assert raises(ValueError, lambda: g.add_edge(3, 0))
