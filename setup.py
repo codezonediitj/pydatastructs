@@ -3,6 +3,7 @@ from pydatastructs import utils
 from pydatastructs import linear_data_structures
 from pydatastructs import miscellaneous_data_structures
 from pydatastructs import trees
+from pydatastructs import strings
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -13,6 +14,7 @@ extensions.extend(utils._extensions.extensions)
 extensions.extend(linear_data_structures._extensions.extensions)
 extensions.extend(miscellaneous_data_structures._extensions.extensions)
 extensions.extend(trees._extensions.extensions)
+extensions.extend(strings._extensions.extensions)
 
 setuptools.setup(
     name="cz-pydatastructs",
