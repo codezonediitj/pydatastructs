@@ -278,6 +278,11 @@ def test_shortest_paths():
                     GraphNode('D')]
 
         graph = Graph(*vertices)
+        graph.add_vertex('S')
+        graph.add_vertex('C')
+        graph.add_vertex('SLC')
+        graph.add_vertex('SF')
+        graph.add_vertex('D')
         graph.add_edge('S', 'SLC', 2)
         graph.add_edge('C', 'S', 4)
         graph.add_edge('C', 'D', 2)
@@ -304,6 +309,11 @@ def test_shortest_paths():
                     GraphNode('d')]
 
         graph = Graph(*vertices)
+        graph.add_vertex('s')
+        graph.add_vertex('a')
+        graph.add_vertex('b')
+        graph.add_vertex('c')
+        graph.add_vertex('d')
         graph.add_edge('s', 'a', 3)
         graph.add_edge('s', 'b', 2)
         graph.add_edge('a', 'c', 1)
@@ -333,6 +343,10 @@ def test_all_pair_shortest_paths():
                     GraphNode('3'), GraphNode('4')]
 
         graph = Graph(*vertices)
+        graph.add_vertex('1')
+        graph.add_vertex('2')
+        graph.add_vertex('3')
+        graph.add_vertex('4')
         graph.add_edge('1', '3', -2)
         graph.add_edge('2', '1', 4)
         graph.add_edge('2', '3', 3)
@@ -362,6 +376,14 @@ def test_topological_sort():
                     GraphNode('11'), GraphNode('9')]
 
         graph = Graph(*vertices)
+        graph.add_vertex('2')
+        graph.add_vertex('3')
+        graph.add_vertex('5')
+        graph.add_vertex('7')
+        graph.add_vertex('8')
+        graph.add_vertex('10')
+        graph.add_vertex('11')
+        graph.add_vertex('9')
         graph.add_edge('5', '11')
         graph.add_edge('7', '11')
         graph.add_edge('7', '8')
@@ -395,7 +417,11 @@ def test_max_flow():
         e = GraphNode('e')
 
         G = Graph(a, b, c, d, e)
-
+        G.add_vertex('a')
+        G.add_vertex('b')
+        G.add_vertex('c')
+        G.add_vertex('d')
+        G.add_vertex('e')
         G.add_edge('a', 'b', 3)
         G.add_edge('a', 'c', 4)
         G.add_edge('b', 'c', 2)
@@ -414,7 +440,12 @@ def test_max_flow():
         f = GraphNode('f')
 
         G2 = Graph(a, b, c, d, e, f)
-
+        G2.add_vertex('a')
+        G2.add_vertex('b')
+        G2.add_vertex('c')
+        G2.add_vertex('d')
+        G2.add_vertex('e')
+        G2.add_vertex('f')
         G2.add_edge('a', 'b', 16)
         G2.add_edge('a', 'c', 13)
         G2.add_edge('b', 'c', 10)
@@ -435,7 +466,10 @@ def test_max_flow():
         d = GraphNode('d')
 
         G3 = Graph(a, b, c, d)
-
+        G3.add_vertex('a')
+        G3.add_vertex('b')
+        G3.add_vertex('c')
+        G3.add_vertex('d')
         G3.add_edge('a', 'b', 3)
         G3.add_edge('a', 'c', 2)
         G3.add_edge('b', 'c', 2)
@@ -468,6 +502,11 @@ def test_find_bridges():
         v4 = GraphNode(4)
 
         G1 = Graph(v0, v1, v2, v3, v4, implementation=impl)
+        G1.add_vertex('0')
+        G1.add_vertex('1')
+        G1.add_vertex('2')
+        G1.add_vertex('3')
+        G1.add_vertex('4')
         G1.add_edge(v0.name, v1.name)
         G1.add_edge(v1.name, v2.name)
         G1.add_edge(v2.name, v3.name)
@@ -482,6 +521,9 @@ def test_find_bridges():
         u2 = GraphNode(2)
 
         G2 = Graph(u0, u1, u2, implementation=impl)
+        G2.add_vertex('0')
+        G2.add_vertex('1')
+        G2.add_vertex('2')
         G2.add_edge(u0.name, u1.name)
         G2.add_edge(u1.name, u2.name)
         G2.add_edge(u2.name, u0.name)
@@ -496,6 +538,11 @@ def test_find_bridges():
         w4 = GraphNode(4)
 
         G3 = Graph(w0, w1, w2, w3, w4, implementation=impl)
+        G3.add_vertex('0')
+        G3.add_vertex('1')
+        G3.add_vertex('2')
+        G3.add_vertex('3')
+        G3.add_vertex('4')
         G3.add_edge(w0.name, w1.name)
         G3.add_edge(w1.name, w2.name)
         G3.add_edge(w3.name, w4.name)
