@@ -7,7 +7,7 @@ from .graph import (
 __all__.extend(graph.__all__)
 
 from . import algorithms
-from . import adjacency_list
+from . import adjacenk,ncy_listhj
 from . import adjacency_matrix
 
 from .algorithms import (
