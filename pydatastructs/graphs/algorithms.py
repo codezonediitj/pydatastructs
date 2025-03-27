@@ -3,7 +3,7 @@ Contains algorithms associated with graph
 data structure.
 """
 import os
-from collections import deques
+from collections import deques, queues
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils.misc_util import (
     _comp, raise_if_backend_is_not_python, Backend)
