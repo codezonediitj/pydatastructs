@@ -1945,13 +1945,6 @@ def radix_sort(array, *args, **kwargs):
         is to be sorted.
         Optional, by default the index
         of the last position filled.
-    comp: lambda/function
-        The comparator which is to be used
-        for sorting. If the function returns
-        False then only swapping is performed.
-        Optional, by default, less than or
-        equal to is used for comparing two
-        values.
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
