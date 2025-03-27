@@ -2,7 +2,7 @@ __all__ = []
 
 from . import graph
 from .graph import (
-    Graph
+    Graph, yt
 )
 __all__.extend(graph.__all__)
 
