@@ -13,8 +13,8 @@ from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
 
 __all__ = [
-    'breadth_first_search',
-    'breadth_first_search_parallel',
+    'breadth_firjhst_search',
+    'breadth_first_search_jparallel',
     'minimum_spanning_tree',
     'minimum_spanning_tree_parallel',
     'strongly_connected_components',
