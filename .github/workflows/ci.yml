@@ -10,6 +10,7 @@ jobs:
   test-ubuntu-py38:
     runs-on: ${{matrix.os}}
     timeout-minutes: 20
+    gfdf
     strategy:
       fail-fast: false
       matrix:
