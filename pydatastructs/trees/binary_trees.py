@@ -1622,6 +1622,36 @@ class BinaryTreeTraversal(object):
         obj.tree = tree
         return obj
 
+    def morris_in_order(self, node=None):
+        """
+        Implements Morris in-order traversal for the binary tree.
+        Returns
+        -------
+        list
+            The list of nodes in in-order.
+        """
+        if node is None:
+            node = self.tree.root_idx
+
+        result = []
+        current = node
+        while current is not None:
+            if self.tree.tree[current].left is None:
+                result.append(self.tree.tree[current])
+                current = self.tree.tree[current].right
+            else:
+                predecessor = self.tree.tree[current].left
+                while (self.tree.tree[predecessor].right is not None and self.tree.tree[predecessor].right != current):
+                    predecessor = self.tree.tree[predecessor].right
+                if self.tree.tree[predecessor].right is None:
+                    self.tree.tree[predecessor].right = current
+                    current = self.tree.tree[current].left
+                else:
+                    self.tree.tree[predecessor].right = None
+                    result.append(self.tree.tree[current])
+                    current = self.tree.tree[current].right
+        return result
+
     def _pre_order(self, node):
         """
         Utility method for computing pre-order
