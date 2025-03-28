@@ -6,6 +6,7 @@ from pydatastructs import (
     upper_bound, lower_bound, longest_increasing_subsequence, next_permutation,
     prev_permutation, bubble_sort, linear_search, binary_search, jump_search,
     selection_sort, insertion_sort, intro_sort, radix_sort, Backend)
+    selection_sort, insertion_sort, intro_sort, shell_sort, radix_sort, Backend)
 
 from pydatastructs.utils.raises_util import raises
 import random
@@ -414,6 +415,9 @@ def test_binary_search():
 def test_jump_search():
     _test_common_search(jump_search)
     _test_common_search(jump_search, backend=Backend.CPP)
+
+def test_shell_sort():
+    _test_common_sort(shell_sort)
 
 def test_radix_sort():
     _test_common_sort(radix_sort)

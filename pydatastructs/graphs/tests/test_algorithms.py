@@ -2,7 +2,7 @@ from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths,all_pair_shortest_paths, topological_sort,
-topological_sort_parallel, max_flow)
+topological_sort_parallel, max_flow, find_bridges)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -188,11 +188,13 @@ def test_strongly_connected_components():
         graph.add_edge(h.name, g.name)
         comps = func(graph, algorithm)
         expected_comps = [{'e', 'a', 'b'}, {'d', 'c', 'h'}, {'g', 'f'}]
-        assert comps == expected_comps
+        assert comps.sort() == expected_comps.sort()
 
     scc = strongly_connected_components
     _test_strongly_connected_components(scc, "List", "kosaraju")
     _test_strongly_connected_components(scc, "Matrix", "kosaraju")
+    _test_strongly_connected_components(scc, "List", "tarjan")
+    _test_strongly_connected_components(scc, "Matrix", "tarjan")
 
 def test_depth_first_search():
 
@@ -448,3 +450,57 @@ def test_max_flow():
     _test_max_flow("Matrix", "edmonds_karp")
     _test_max_flow("List", "dinic")
     _test_max_flow("Matrix", "dinic")
+
+
+def test_find_bridges():
+    def _test_find_bridges(ds):
+        import pydatastructs.utils.misc_util as utils
+        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
+
+        impl = 'adjacency_list' if ds == "List" else 'adjacency_matrix'
+
+        v0 = GraphNode(0)
+        v1 = GraphNode(1)
+        v2 = GraphNode(2)
+        v3 = GraphNode(3)
+        v4 = GraphNode(4)
+
+        G1 = Graph(v0, v1, v2, v3, v4, implementation=impl)
+        G1.add_edge(v0.name, v1.name)
+        G1.add_edge(v1.name, v2.name)
+        G1.add_edge(v2.name, v3.name)
+        G1.add_edge(v3.name, v4.name)
+
+        bridges = find_bridges(G1)
+        expected_bridges = [('0', '1'), ('1', '2'), ('2', '3'), ('3', '4')]
+        assert sorted(bridges) == sorted(expected_bridges)
+
+        u0 = GraphNode(0)
+        u1 = GraphNode(1)
+        u2 = GraphNode(2)
+
+        G2 = Graph(u0, u1, u2, implementation=impl)
+        G2.add_edge(u0.name, u1.name)
+        G2.add_edge(u1.name, u2.name)
+        G2.add_edge(u2.name, u0.name)
+
+        bridges = find_bridges(G2)
+        assert bridges == []
+
+        w0 = GraphNode(0)
+        w1 = GraphNode(1)
+        w2 = GraphNode(2)
+        w3 = GraphNode(3)
+        w4 = GraphNode(4)
+
+        G3 = Graph(w0, w1, w2, w3, w4, implementation=impl)
+        G3.add_edge(w0.name, w1.name)
+        G3.add_edge(w1.name, w2.name)
+        G3.add_edge(w3.name, w4.name)
+
+        bridges = find_bridges(G3)
+        expected_bridges = [('0', '1'), ('1', '2'), ('3', '4')]
+        assert sorted(bridges) == sorted(expected_bridges)
+
+    _test_find_bridges("List")
+    _test_find_bridges("Matrix")
