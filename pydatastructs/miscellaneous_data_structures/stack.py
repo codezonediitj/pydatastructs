@@ -1,5 +1,5 @@
 from pydatastructs.linear_data_structures import DynamicOneDimensionalArray, SinglyLinkedList
-from pydatastructs.miscellaneous_data_structures._backend.cpp import _stack
+from pydatastructs.miscellaneous_data_structures._backend.cpp.stack import _stack
 from pydatastructs.utils.misc_util import (
     _check_type, NoneType, Backend,
     raise_if_backend_is_not_python)

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <typeinfo>
 #include <Python.h>
+#include "ArrayStack.hpp"
 
 static PyModuleDef moduledef = {
     PyModuleDef_HEAD_INIT,
