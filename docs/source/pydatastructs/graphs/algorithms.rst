@@ -20,3 +20,5 @@ Algorithms
 .. autofunction:: pydatastructs.topological_sort
 
 .. autofunction:: pydatastructs.topological_sort_parallel
+
+.. autofunction:: pydatastructs.find_bridges
