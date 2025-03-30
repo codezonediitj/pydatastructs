@@ -26,11 +26,16 @@ def get_secret_key():
 def generate_hmac(data):
     """Generating HMAC signature for integrity verification"""
     return hmac.new(get_secret_key(), data.encode(),hashlib.sha256).hexdigest()
-def serialize_graph(graph):
+def serialize_graph(graph, include_weights=True):
     """Converts a graph into a string for HMAC signing."""
     if not graph.vertices or not graph.edge_weights:
         return "EMPTY_GRAPH"
-    return str(sorted(graph.vertices)) + str(sorted(graph.edge_weights.items()))
+    vertices = sorted(graph.vertices)
+    if include_weights:
+        edges = sorted((str(k), v) for k, v in graph.edge_weights.items())
+    else:
+        edges = sorted(str(k) for k in graph.edge_weights)
+    return str(vertices) + str(edges)
 def pedersen_commitment(graph, g, h, p, q, include_weights=True):
     """
     Returns a Pedersen commitment for the given graph.
