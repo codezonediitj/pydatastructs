@@ -31,9 +31,37 @@ def serialize_graph(graph):
     if not graph.vertices or not graph.edge_weights:
         return "EMPTY_GRAPH"
     return str(sorted(graph.vertices)) + str(sorted(graph.edge_weights.items()))
+def pedersen_commitment(graph, g, h, p, q, include_weights=True):
+    """
+    Returns a Pedersen commitment for the given graph.
+
+    This function creates a cryptographic commitment of the graph's structure.
+    The commitment hides node and edge information but allows later verification
+    by revealing the original graph and blinding factor.
+
+    Parameters
+    ----------
+    graph : Graph
+        The PyDataStructs graph object to commit.
+
+    g : int
+        A generator of a subgroup of order q (g^q ≡ 1 mod p).
+
+    h : int
+        A second, independent generator of the same subgroup.
+
+    p : int
+        A large prime modulus (≥1024 bits) such that q divides p - 1.
+
+    q : int
+        A prime number representing the subgroup order (≥160 bits).
+
+    include_weights : bool, optional
+        Whether to include edge weights in the graph serialization. Default is True.
+
 
 __all__ = [
-    'Graph'
+    'Graph', 'pedersen_commitment'
 ]
 import copy
 import time
