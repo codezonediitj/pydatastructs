@@ -58,6 +58,16 @@ def pedersen_commitment(graph, g, h, p, q, include_weights=True):
 
     include_weights : bool, optional
         Whether to include edge weights in the graph serialization. Default is True.
+    """
+    if p.bit_length() < 1024:
+        raise ValueError("p must be a 1024-bit prime or larger.")
+    if q.bit_length() < 160:
+        raise ValueError("q must be a 160-bit prime or larger.")
+    if (p - 1) % q != 0:
+        raise ValueError("q must divide (p - 1).")
+    if pow(g, q, p) != 1 or pow(h, q, p) != 1:
+        raise ValueError("g and h must be generators of a subgroup of order q.")
+
 
 
 __all__ = [
