@@ -69,8 +69,9 @@ def pedersen_commitment(graph, g, h, p, q, include_weights=True):
         raise ValueError("g and h must be generators of a subgroup of order q.")
     data = serialize_graph(graph, include_weights)
     m = int(hashlib.sha256(data.encode()).hexdigest(), 16) % q
-
-
+    r = secrets.randbelow(q)
+    commitment = (pow(g, m, p) * pow(h, r, p)) % p
+    return commitment, r
 __all__ = [
     'Graph', 'pedersen_commitment'
 ]
