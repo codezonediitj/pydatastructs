@@ -36,64 +36,8 @@ def serialize_graph(graph, include_weights=True):
     else:
         edges = sorted(str(k) for k in graph.edge_weights)
     return str(vertices) + str(edges)
-def pedersen_commitment(graph, g, h, p, q, include_weights=True):
-    """
-    Returns a Pedersen commitment for the given graph.
-
-    This function creates a cryptographic commitment of the graph's structure.
-    The commitment hides node and edge information but allows later verification
-    by revealing the original graph and blinding factor.
-
-    Parameters
-    ----------
-    graph : Graph
-        The PyDataStructs graph object to commit.
-
-    g : int
-        A generator of a subgroup of order q (g^q ≡ 1 mod p).
-
-    h : int
-        A second, independent generator of the same subgroup.
-
-    p : int
-        A large prime modulus (≥1024 bits) such that q divides p - 1.
-
-    q : int
-        A prime number representing the subgroup order (≥160 bits).
-
-    include_weights : bool, optional
-        Whether to include edge weights in the graph serialization. Default is True.
-    Toy Example
-    -----------
-    >>> g = Graph(implementation='adjacency_list')
-    >>> g.add_edge('A', 'B', 5)
-    >>> p = 208351617316091241234326746312124448251235562226470491514186331217050270460481
-    >>> q = 233970423115425145524320034830162017933
-    >>> commitment, r = pedersen_commitment(g, g=5, h=7, p=p, q=q)
-    >>> print(commitment)
-    98392819481230984098123
-
-    Notes
-    -----
-    - The blinding factor `r` must be kept private.
-    - Changing even a single edge or vertex will yield a different commitment.
-    
-    """
-    if p.bit_length() < 1024:
-        raise ValueError("p must be a 1024-bit prime or larger.")
-    if q.bit_length() < 160:
-        raise ValueError("q must be a 160-bit prime or larger.")
-    if (p - 1) % q != 0:
-        raise ValueError("q must divide (p - 1).")
-    if pow(g, q, p) != 1 or pow(h, q, p) != 1:
-        raise ValueError("g and h must be generators of a subgroup of order q.")
-    data = serialize_graph(graph, include_weights)
-    m = int(hashlib.sha256(data.encode()).hexdigest(), 16) % q
-    r = secrets.randbelow(q)
-    commitment = (pow(g, m, p) * pow(h, r, p)) % p
-    return commitment, r
 __all__ = [
-    'Graph', 'pedersen_commitment'
+    'Graph'
 ]
 import copy
 import time
