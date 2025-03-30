@@ -5,7 +5,7 @@ data structure.
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils.misc_util import (
-    _comp, raise_if_backend_is_not_python, Backend)
+    _comp, raise_if_backend_is_not_python, Backend, AdjacencyListGraphNode)
 from pydatastructs.miscellaneous_data_structures import (
     DisjointSetForest, PriorityQueue)
 from pydatastructs.graphs.graph import Graph
@@ -25,7 +25,8 @@ __all__ = [
     'all_pair_shortest_paths',
     'topological_sort',
     'topological_sort_parallel',
-    'max_flow'
+    'max_flow',
+    'find_bridges'
 ]
 
 Stack = Queue = deque
@@ -532,6 +533,52 @@ def _strongly_connected_components_kosaraju_adjacency_list(graph):
 _strongly_connected_components_kosaraju_adjacency_matrix = \
     _strongly_connected_components_kosaraju_adjacency_list
 
+def _tarjan_dfs(u, graph, index, stack, indices, low_links, on_stacks, components):
+    indices[u] = index[0]
+    low_links[u] = index[0]
+    index[0] += 1
+    stack.append(u)
+    on_stacks[u] = True
+
+    for node in graph.neighbors(u):
+        v = node.name
+        if indices[v] == -1:
+            _tarjan_dfs(v, graph, index, stack, indices, low_links, on_stacks, components)
+            low_links[u] = min(low_links[u], low_links[v])
+        elif on_stacks[v]:
+            low_links[u] = min(low_links[u], low_links[v])
+
+    if low_links[u] == indices[u]:
+        component = set()
+        while stack:
+            w = stack.pop()
+            on_stacks[w] = False
+            component.add(w)
+            if w == u:
+                break
+        components.append(component)
+
+def _strongly_connected_components_tarjan_adjacency_list(graph):
+    index = [0] # mutable object
+    stack = Stack([])
+    indices, low_links, on_stacks = {}, {}, {}
+
+    for u in graph.vertices:
+        indices[u] = -1
+        low_links[u] = -1
+        on_stacks[u] = False
+
+    components = []
+
+    for u in graph.vertices:
+        if indices[u] == -1:
+            _tarjan_dfs(u, graph, index, stack, indices, low_links, on_stacks, components)
+
+    return components
+
+_strongly_connected_components_tarjan_adjacency_matrix = \
+    _strongly_connected_components_tarjan_adjacency_list
+
 def strongly_connected_components(graph, algorithm, **kwargs):
     """
     Computes strongly connected components for the given
@@ -550,6 +597,7 @@ def strongly_connected_components(graph, algorithm, **kwargs):
         supported,
 
         'kosaraju' -> Kosaraju's algorithm as given in [1].
+        'tarjan' -> Tarjan's algorithm as given in [2].
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -579,6 +627,7 @@ def strongly_connected_components(graph, algorithm, **kwargs):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 
     """
     raise_if_backend_is_not_python(
@@ -699,7 +748,7 @@ def shortest_paths(graph: Graph, algorithm: str,
         The algorithm to be used. Currently, the following algorithms
         are implemented,
 
-        'bellman_ford' -> Bellman-Ford algorithm as given in [1].
+        'bellman_ford' -> Bellman-Ford algorithm as given in [1]
 
         'dijkstra' -> Dijkstra algorithm as given in [2].
     source: str
@@ -802,27 +851,34 @@ def pedersen_commitment(graph, g, h, p, q, include_weights=True):
     return commitment, r
 
 def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
-    distances, predecessor = {}, {}
+    distances, predecessor, visited, cnts = {}, {}, {}, {}
 
     for v in graph.vertices:
         distances[v] = float('inf')
         predecessor[v] = None
+        visited[v] = False
+        cnts[v] = 0
     distances[source] = 0
+    verticy_num = len(graph.vertices)
 
-    edges = graph.edge_weights.values()
-    for _ in range(len(graph.vertices) - 1):
-        for edge in edges:
-            u, v = edge.source.name, edge.target.name
-            w = edge.value
-            if distances[u] + edge.value < distances[v]:
-                distances[v] = distances[u] + w
+    que = Queue([source])
+
+    while que:
+        u = que.popleft()
+        visited[u] = False
+        neighbors = graph.neighbors(u)
+        for neighbor in neighbors:
+            v = neighbor.name
+            edge_str = u + '_' + v
+            if distances[u] != float('inf') and distances[u] + graph.edge_weights[edge_str].value < distances[v]:
+                distances[v] = distances[u] + graph.edge_weights[edge_str].value
                 predecessor[v] = u
-
-    for edge in edges:
-        u, v = edge.source.name, edge.target.name
-        w = edge.value
-        if distances[u] + w < distances[v]:
-            raise ValueError("Graph contains a negative weight cycle.")
+                cnts[v] = cnts[u] + 1
+                if cnts[v] >= verticy_num:
+                    raise ValueError("Graph contains a negative weight cycle.")
+                if not visited[v]:
+                    que.append(v)
+                    visited[v] = True
 
     if target != "":
         return (distances[target], predecessor)
@@ -847,7 +903,7 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
         visited[u] = True
         for v in graph.vertices:
             edge_str = u + '_' + v
-            if (edge_str in graph.edge_weights and graph.edge_weights[edge_str].value > 0 and
+            if (edge_str in graph.edge_weights and graph.edge_weights[edge_str].value >= 0 and
                 visited[v] is False and dist[v] > dist[u] + graph.edge_weights[edge_str].value):
                 dist[v] = dist[u] + graph.edge_weights[edge_str].value
                 pred[v] = u
@@ -874,6 +930,7 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str,
         are implemented,
 
         'floyd_warshall' -> Floyd Warshall algorithm as given in [1].
+        'johnson' -> Johnson's Algorithm as given in [2]
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -906,6 +963,7 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str,
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Johnson's_algorithm
     """
     raise_if_backend_is_not_python(
         all_pair_shortest_paths, kwargs.get('backend', Backend.PYTHON))
@@ -947,6 +1005,51 @@ def _floyd_warshall_adjacency_list(graph: Graph):
     return (dist, next_vertex)
 
 _floyd_warshall_adjacency_matrix = _floyd_warshall_adjacency_list
+
+def _johnson_adjacency_list(graph: Graph):
+    new_vertex = AdjacencyListGraphNode('__q__')
+    graph.add_vertex(new_vertex)
+
+    for vertex in graph.vertices:
+        if vertex != '__q__':
+            graph.add_edge('__q__', vertex, 0)
+
+    distances, predecessors = shortest_paths(graph, 'bellman_ford', '__q__')
+
+    edges_to_remove = []
+    for edge in graph.edge_weights:
+        edge_node = graph.edge_weights[edge]
+        if edge_node.source.name == '__q__':
+            edges_to_remove.append((edge_node.source.name, edge_node.target.name))
+
+    for u, v in edges_to_remove:
+        graph.remove_edge(u, v)
+    graph.remove_vertex('__q__')
+
+    for edge in graph.edge_weights:
+        edge_node = graph.edge_weights[edge]
+        u, v = edge_node.source.name, edge_node.target.name
+        graph.edge_weights[edge].value += (distances[u] - distances[v])
+
+    all_distances = {}
+    all_next_vertex = {}
+
+    for vertex in graph.vertices:
+        u = vertex
+        dijkstra_dist, dijkstra_pred = shortest_paths(graph, 'dijkstra', u)
+        all_distances[u] = {}
+        all_next_vertex[u] = {}
+        for v in graph.vertices:
+            if dijkstra_pred[v] is None or dijkstra_pred[v] == u :
+                all_next_vertex[u][v] = u
+            else:
+                all_next_vertex[u][v] = None
+            if v in dijkstra_dist:
+                all_distances[u][v] = dijkstra_dist[v] - distances[u] + distances[v]
+            else:
+                all_distances[u][v] = float('inf')
+
+    return (all_distances, all_next_vertex)
 
 def topological_sort(graph: Graph, algorithm: str,
                      **kwargs) -> list:
@@ -1210,3 +1313,106 @@ def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
         f"Currently {algorithm} algorithm isn't implemented for "
         "performing max flow on graphs.")
     return getattr(algorithms, func)(graph, source, sink)
+
+
+def find_bridges(graph):
+    """
+    Finds all bridges in an undirected graph using Tarjan's Algorithm.
+
+    Parameters
+    ==========
+    graph : Graph
+        An undirected graph instance.
+
+    Returns
+    ==========
+    List[tuple]
+        A list of bridges, where each bridge is represented as a tuple (u, v)
+        with u <= v.
+
+    Example
+    ========
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, find_bridges
+    >>> v0 = AdjacencyListGraphNode(0)
+    >>> v1 = AdjacencyListGraphNode(1)
+    >>> v2 = AdjacencyListGraphNode(2)
+    >>> v3 = AdjacencyListGraphNode(3)
+    >>> v4 = AdjacencyListGraphNode(4)
+    >>> graph = Graph(v0, v1, v2, v3, v4, implementation='adjacency_list')
+    >>> graph.add_edge(v0.name, v1.name)
+    >>> graph.add_edge(v1.name, v2.name)
+    >>> graph.add_edge(v2.name, v3.name)
+    >>> graph.add_edge(v3.name, v4.name)
+    >>> find_bridges(graph)
+    [('0', '1'), ('1', '2'), ('2', '3'), ('3', '4')]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bridge_(graph_theory)
+    """
+
+    vertices = list(graph.vertices)
+    processed_vertices = []
+    for v in vertices:
+        if hasattr(v, "name"):
+            processed_vertices.append(v.name)
+        else:
+            processed_vertices.append(v)
+
+    n = len(processed_vertices)
+    adj = {v: [] for v in processed_vertices}
+    for v in processed_vertices:
+        for neighbor in graph.neighbors(v):
+            if hasattr(neighbor, "name"):
+                nbr = neighbor.name
+            else:
+                nbr = neighbor
+            adj[v].append(nbr)
+
+    mapping = {v: idx for idx, v in enumerate(processed_vertices)}
+    inv_mapping = {idx: v for v, idx in mapping.items()}
+
+    n_adj = [[] for _ in range(n)]
+    for v in processed_vertices:
+        idx_v = mapping[v]
+        for u in adj[v]:
+            idx_u = mapping[u]
+            n_adj[idx_v].append(idx_u)
+
+    visited = [False] * n
+    disc = [0] * n
+    low = [0] * n
+    parent = [-1] * n
+    bridges_idx = []
+    time = 0
+
+    def dfs(u):
+        nonlocal time
+        visited[u] = True
+        disc[u] = low[u] = time
+        time += 1
+        for v in n_adj[u]:
+            if not visited[v]:
+                parent[v] = u
+                dfs(v)
+                low[u] = min(low[u], low[v])
+                if low[v] > disc[u]:
+                    bridges_idx.append((u, v))
+            elif v != parent[u]:
+                low[u] = min(low[u], disc[v])
+
+    for i in range(n):
+        if not visited[i]:
+            dfs(i)
+
+    bridges = []
+    for u, v in bridges_idx:
+        a = inv_mapping[u]
+        b = inv_mapping[v]
+        if a <= b:
+            bridges.append((a, b))
+        else:
+            bridges.append((b, a))
+    bridges.sort()
+    return bridges
