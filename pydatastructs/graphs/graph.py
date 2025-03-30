@@ -67,7 +67,8 @@ def pedersen_commitment(graph, g, h, p, q, include_weights=True):
         raise ValueError("q must divide (p - 1).")
     if pow(g, q, p) != 1 or pow(h, q, p) != 1:
         raise ValueError("g and h must be generators of a subgroup of order q.")
-
+    data = serialize_graph(graph, include_weights)
+    m = int(hashlib.sha256(data.encode()).hexdigest(), 16) % q
 
 
 __all__ = [
