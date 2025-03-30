@@ -58,6 +58,21 @@ def pedersen_commitment(graph, g, h, p, q, include_weights=True):
 
     include_weights : bool, optional
         Whether to include edge weights in the graph serialization. Default is True.
+    Toy Example
+    -----------
+    >>> g = Graph(implementation='adjacency_list')
+    >>> g.add_edge('A', 'B', 5)
+    >>> p = 208351617316091241234326746312124448251235562226470491514186331217050270460481
+    >>> q = 233970423115425145524320034830162017933
+    >>> commitment, r = pedersen_commitment(g, g=5, h=7, p=p, q=q)
+    >>> print(commitment)
+    98392819481230984098123
+
+    Notes
+    -----
+    - The blinding factor `r` must be kept private.
+    - Changing even a single edge or vertex will yield a different commitment.
+    
     """
     if p.bit_length() < 1024:
         raise ValueError("p must be a 1024-bit prime or larger.")
