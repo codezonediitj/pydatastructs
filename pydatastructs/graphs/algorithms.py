@@ -23,7 +23,8 @@ __all__ = [
     'all_pair_shortest_paths',
     'topological_sort',
     'topological_sort_parallel',
-    'max_flow'
+    'max_flow',
+    'find_bridges'
 ]
 
 Stack = Queue = deque
@@ -530,6 +531,52 @@ def _strongly_connected_components_kosaraju_adjacency_list(graph):
 _strongly_connected_components_kosaraju_adjacency_matrix = \
     _strongly_connected_components_kosaraju_adjacency_list
 
+def _tarjan_dfs(u, graph, index, stack, indices, low_links, on_stacks, components):
+    indices[u] = index[0]
+    low_links[u] = index[0]
+    index[0] += 1
+    stack.append(u)
+    on_stacks[u] = True
+
+    for node in graph.neighbors(u):
+        v = node.name
+        if indices[v] == -1:
+            _tarjan_dfs(v, graph, index, stack, indices, low_links, on_stacks, components)
+            low_links[u] = min(low_links[u], low_links[v])
+        elif on_stacks[v]:
+            low_links[u] = min(low_links[u], low_links[v])
+
+    if low_links[u] == indices[u]:
+        component = set()
+        while stack:
+            w = stack.pop()
+            on_stacks[w] = False
+            component.add(w)
+            if w == u:
+                break
+        components.append(component)
+
+def _strongly_connected_components_tarjan_adjacency_list(graph):
+    index = [0] # mutable object
+    stack = Stack([])
+    indices, low_links, on_stacks = {}, {}, {}
+
+    for u in graph.vertices:
+        indices[u] = -1
+        low_links[u] = -1
+        on_stacks[u] = False
+
+    components = []
+
+    for u in graph.vertices:
+        if indices[u] == -1:
+            _tarjan_dfs(u, graph, index, stack, indices, low_links, on_stacks, components)
+
+    return components
+
+_strongly_connected_components_tarjan_adjacency_matrix = \
+    _strongly_connected_components_tarjan_adjacency_list
+
 def strongly_connected_components(graph, algorithm, **kwargs):
     """
     Computes strongly connected components for the given
@@ -548,6 +595,7 @@ def strongly_connected_components(graph, algorithm, **kwargs):
         supported,
 
         'kosaraju' -> Kosaraju's algorithm as given in [1].
+        'tarjan' -> Tarjan's algorithm as given in [2].
     backend: pydatastructs.Backend
         The backend to be used.
         Optional, by default, the best available
@@ -577,6 +625,7 @@ def strongly_connected_components(graph, algorithm, **kwargs):
     ==========
 
     .. [1] https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 
     """
     raise_if_backend_is_not_python(
@@ -1260,3 +1309,106 @@ def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
         f"Currently {algorithm} algorithm isn't implemented for "
         "performing max flow on graphs.")
     return getattr(algorithms, func)(graph, source, sink)
+
+
+def find_bridges(graph):
+    """
+    Finds all bridges in an undirected graph using Tarjan's Algorithm.
+
+    Parameters
+    ==========
+    graph : Graph
+        An undirected graph instance.
+
+    Returns
+    ==========
+    List[tuple]
+        A list of bridges, where each bridge is represented as a tuple (u, v)
+        with u <= v.
+
+    Example
+    ========
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode, find_bridges
+    >>> v0 = AdjacencyListGraphNode(0)
+    >>> v1 = AdjacencyListGraphNode(1)
+    >>> v2 = AdjacencyListGraphNode(2)
+    >>> v3 = AdjacencyListGraphNode(3)
+    >>> v4 = AdjacencyListGraphNode(4)
+    >>> graph = Graph(v0, v1, v2, v3, v4, implementation='adjacency_list')
+    >>> graph.add_edge(v0.name, v1.name)
+    >>> graph.add_edge(v1.name, v2.name)
+    >>> graph.add_edge(v2.name, v3.name)
+    >>> graph.add_edge(v3.name, v4.name)
+    >>> find_bridges(graph)
+    [('0', '1'), ('1', '2'), ('2', '3'), ('3', '4')]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bridge_(graph_theory)
+    """
+
+    vertices = list(graph.vertices)
+    processed_vertices = []
+    for v in vertices:
+        if hasattr(v, "name"):
+            processed_vertices.append(v.name)
+        else:
+            processed_vertices.append(v)
+
+    n = len(processed_vertices)
+    adj = {v: [] for v in processed_vertices}
+    for v in processed_vertices:
+        for neighbor in graph.neighbors(v):
+            if hasattr(neighbor, "name"):
+                nbr = neighbor.name
+            else:
+                nbr = neighbor
+            adj[v].append(nbr)
+
+    mapping = {v: idx for idx, v in enumerate(processed_vertices)}
+    inv_mapping = {idx: v for v, idx in mapping.items()}
+
+    n_adj = [[] for _ in range(n)]
+    for v in processed_vertices:
+        idx_v = mapping[v]
+        for u in adj[v]:
+            idx_u = mapping[u]
+            n_adj[idx_v].append(idx_u)
+
+    visited = [False] * n
+    disc = [0] * n
+    low = [0] * n
+    parent = [-1] * n
+    bridges_idx = []
+    time = 0
+
+    def dfs(u):
+        nonlocal time
+        visited[u] = True
+        disc[u] = low[u] = time
+        time += 1
+        for v in n_adj[u]:
+            if not visited[v]:
+                parent[v] = u
+                dfs(v)
+                low[u] = min(low[u], low[v])
+                if low[v] > disc[u]:
+                    bridges_idx.append((u, v))
+            elif v != parent[u]:
+                low[u] = min(low[u], disc[v])
+
+    for i in range(n):
+        if not visited[i]:
+            dfs(i)
+
+    bridges = []
+    for u, v in bridges_idx:
+        a = inv_mapping[u]
+        b = inv_mapping[v]
+        if a <= b:
+            bridges.append((a, b))
+        else:
+            bridges.append((b, a))
+    bridges.sort()
+    return bridges
