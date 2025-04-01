@@ -1299,6 +1299,61 @@ def _max_flow_dinic_(graph: Graph, source, sink):
 
 
 def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
+    """
+    Computes the maximum flow in a flow network using the specified algorithm.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The flow network represented as a graph.
+    source: str
+        The source node in the flow network.
+    sink: str
+        The sink node in the flow network.
+    algorithm: str, optional
+        The algorithm to be used for computing maximum flow.
+        Currently, the following is supported:
+
+        'edmonds_karp' -> Edmonds-Karp algorithm as described in [1].
+        'ford_fulkerson' -> Ford-Fulkerson algorithm as described in [2].
+        'dinic' -> Dinic's algorithm as described in [3].
+
+        Default is 'edmonds_karp'.
+    **kwargs:
+        Additional keyword arguments specific to the chosen algorithm.
+
+    Returns
+    =======
+
+    float
+        The maximum flow value from source to sink in the flow network.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, max_flow, AdjacencyListGraphNode
+    >>> a = AdjacencyListGraphNode("a")
+    >>> b = AdjacencyListGraphNode("b")
+    >>> c = AdjacencyListGraphNode("c")
+    >>> d = AdjacencyListGraphNode("d")
+    >>> e = AdjacencyListGraphNode("e")
+    >>> G = Graph(a, b, c, d, e)
+    >>> G.add_edge('a', 'b', 3)
+    >>> G.add_edge('a', 'c', 4)
+    >>> G.add_edge('b', 'c', 2)
+    >>> G.add_edge('b', 'd', 3)
+    >>> G.add_edge('c', 'd', 1)
+    >>> G.add_edge('d', 'e', 6)
+    4
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm
+    .. [3] https://en.wikipedia.org/wiki/Dinic%27s_algorithm
+    """
     raise_if_backend_is_not_python(
         max_flow, kwargs.get('backend', Backend.PYTHON))
 
