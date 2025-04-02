@@ -8,13 +8,13 @@ static PyMethodDef bfs_PyMethodDef[] = {
 
 static struct PyModuleDef bfs_module = {
     PyModuleDef_HEAD_INIT,
-    "bfs",
+    "_bfs",
     "BFS algorithms module",
     -1,
     bfs_PyMethodDef
 };
 
-PyMODINIT_FUNC PyInit_bfs(void) {
+PyMODINIT_FUNC PyInit__bfs(void) {
     PyObject *module = PyModule_Create(&bfs_module);
     if (module == NULL) return NULL;
     return module;
