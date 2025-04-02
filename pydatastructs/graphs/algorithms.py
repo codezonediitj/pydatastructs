@@ -11,6 +11,7 @@ from pydatastructs.miscellaneous_data_structures import (
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
+from pydatastructs.graphs._backend.cpp._bfs import bfs as _bfs_cpp
 
 __all__ = [
     'breadth_first_search',
@@ -24,7 +25,8 @@ __all__ = [
     'topological_sort',
     'topological_sort_parallel',
     'max_flow',
-    'find_bridges'
+    'find_bridges',
+    'bfs'
 ]
 
 Stack = Queue = deque
@@ -1368,3 +1370,18 @@ def find_bridges(graph):
             bridges.append((b, a))
     bridges.sort()
     return bridges
+
+def bfs(graph, start_vertex, backend=Backend.PYTHON):
+    if backend == Backend.CPP:
+        return _bfs_cpp(graph, start_vertex)
+    from collections import deque
+    visited = set()
+    q = deque([start_vertex])
+    result = []
+    while q:
+        vertex = q.popleft()
+        if vertex not in visited:
+            visited.add(vertex)
+            result.append(vertex)
+            q.extend(graph.get(vertex, []))
+    return result

@@ -1,6 +1,11 @@
-__all__ = []
+__all__ = [
+    'bfs'
+    ]
 
-from . import graph
+from . import (
+    graph,
+    _extensions
+)
 from .graph import (
     Graph
 )
@@ -22,7 +27,8 @@ from .algorithms import (
     topological_sort,
     topological_sort_parallel,
     max_flow,
-    find_bridges
+    find_bridges,
+    bfs
 )
 
 __all__.extend(algorithms.__all__)

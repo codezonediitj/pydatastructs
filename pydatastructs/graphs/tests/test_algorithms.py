@@ -2,7 +2,7 @@ from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths,all_pair_shortest_paths, topological_sort,
-topological_sort_parallel, max_flow, find_bridges)
+topological_sort_parallel, max_flow, find_bridges, bfs, Backend)
 from pydatastructs.utils.raises_util import raises
 
 def test_breadth_first_search():
@@ -504,3 +504,20 @@ def test_find_bridges():
 
     _test_find_bridges("List")
     _test_find_bridges("Matrix")
+
+def test_bfs():
+    graph = {
+        0: [1, 2],
+        1: [0, 3],
+        2: [0],
+        3: [1]
+    }
+    start_vertex = 0
+    expected = [0, 1, 2, 3]
+
+    result_python = bfs(graph, start_vertex, backend=Backend.PYTHON)
+    assert result_python == expected
+
+    result_cpp = bfs(graph, start_vertex, backend=Backend.CPP)
+    result_cpp_list = [x for x in result_cpp]
+    assert result_cpp_list == expected
