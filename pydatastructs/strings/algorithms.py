@@ -5,7 +5,7 @@ from pydatastructs.utils.misc_util import (
 import struct
 
 __all__ = [
-    'find'
+    'find',
     'Crypto'
 ]
 
@@ -249,12 +249,44 @@ def _z_function(text, query):
     return positions
 
 class Crypto:
+
     @staticmethod
     def _right_rotate(value, shift, size=32):
         return (value >> shift) | (value << (size - shift)) & (2**size - 1)
 
     @staticmethod
-    def sha256_encrypt(text):
+    def sha256_encrypt(text) -> str:
+        """
+        Finds the SHA256 ciphertext of the given plaintext
+
+        Parameters
+        ==========
+
+        text: str
+            The string on which SHA256 encryption is to be performed.
+
+        Returns
+        =======
+
+        text: str
+            The SHA256 encoded ciphertext
+
+        Examples
+        ========
+
+        >>> from pydatastructs.strings.algorithms import Crypto
+        >>> text = "PyDataStructs"
+        >>> ciphertext = Crypto.sha256_encrypt(text)
+        >>> print(ciphertext)
+        "777a305fe4f1cfc7ce270891ec50651331e2ab6d09312b906740a5ea413bd057"
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/SHA-2
+        .. [2] https://github.com/TheAlgorithms/Python/blob/master/hashes/sha256.py
+
+        """
         # SHA-256 Constants
         k = [
             0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
