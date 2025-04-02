@@ -76,7 +76,7 @@ def _test_common_string_matching(algorithm):
             assert positions.size == 0
 
 def _test_sha256_encrypt():
-    
+
     test_cases = [
         "HelloWorld",
         "1234567890",
@@ -85,7 +85,7 @@ def _test_sha256_encrypt():
         "The quick brown fox jumps over the lazy dog",
         "Pydatastructs"
     ]
-    
+
     expected_hashes = [
         "872e4e50ce9990d8b041330c47c9ddd11bec6b503ae9386a99da8584e9bb12c4",
         "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646",
@@ -94,6 +94,6 @@ def _test_sha256_encrypt():
         "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
         "1b5b22944c188c3e90d126ebd27e10d7497fbf5924f23c05775fa2dd9e1d8c86"
     ]
-    
+
     for text, expected in zip(test_cases, expected_hashes):
         assert Crypto.sha256_encrypt(text) == expected

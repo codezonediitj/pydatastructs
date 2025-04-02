@@ -274,11 +274,11 @@ class Crypto:
         Examples
         ========
 
-        >>> from pydatastructs.strings.algorithms import Crypto
+        >>> from pydatastructs import Crypto
         >>> text = "PyDataStructs"
         >>> ciphertext = Crypto.sha256_encrypt(text)
         >>> print(ciphertext)
-        "777a305fe4f1cfc7ce270891ec50651331e2ab6d09312b906740a5ea413bd057"
+        777a305fe4f1cfc7ce270891ec50651331e2ab6d09312b906740a5ea413bd057
 
         References
         ==========
@@ -298,19 +298,19 @@ class Crypto:
             0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
             0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
         ]
-        
+
         h = [
             0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
             0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
         ]
-        
+
         message = bytearray(text, 'utf-8')
         length = len(message) * 8
         message.append(0x80)
         while (len(message) * 8) % 512 != 448:
             message.append(0)
         message += struct.pack('>Q', length)
-        
+
         for i in range(0, len(message), 64):
             chunk = message[i:i+64]
             w = list(struct.unpack('>16L', chunk)) + [0] * 48
@@ -318,9 +318,9 @@ class Crypto:
                 s0 = (Crypto._right_rotate(w[j-15], 7) ^ Crypto._right_rotate(w[j-15], 18) ^ (w[j-15] >> 3))
                 s1 = (Crypto._right_rotate(w[j-2], 17) ^ Crypto._right_rotate(w[j-2], 19) ^ (w[j-2] >> 10))
                 w[j] = (w[j-16] + s0 + w[j-7] + s1) & 0xFFFFFFFF
-            
+
             a, b, c, d, e, f, g, h0 = h
-            
+
             for j in range(64):
                 S1 = Crypto._right_rotate(e, 6) ^ Crypto._right_rotate(e, 11) ^ Crypto._right_rotate(e, 25)
                 ch = (e & f) ^ (~e & g)
@@ -328,9 +328,9 @@ class Crypto:
                 S0 = Crypto._right_rotate(a, 2) ^ Crypto._right_rotate(a, 13) ^ Crypto._right_rotate(a, 22)
                 maj = (a & b) ^ (a & c) ^ (b & c)
                 temp2 = (S0 + maj) & 0xFFFFFFFF
-                
+
                 h0, g, f, e, d, c, b, a = (g, f, e, (d + temp1) & 0xFFFFFFFF, c, b, a, (temp1 + temp2) & 0xFFFFFFFF)
-            
+
             h = [(x + y) & 0xFFFFFFFF for x, y in zip(h, [a, b, c, d, e, f, g, h0])]
-        
+
         return ''.join(f'{value:08x}' for value in h)
