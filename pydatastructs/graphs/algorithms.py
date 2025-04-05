@@ -11,6 +11,7 @@ from pydatastructs.miscellaneous_data_structures import (
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
+from pydatastructs.graphs._backend.cpp.alogorithms import algorithms
 
 __all__ = [
     'breadth_first_search',
@@ -83,15 +84,8 @@ def breadth_first_search(
     """
     raise_if_backend_is_not_python(
         breadth_first_search, kwargs.get('backend', Backend.PYTHON))
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_breadth_first_search_" + graph._impl
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently breadth first search isn't implemented for "
-        "%s graphs."%(graph._impl))
-    return getattr(algorithms, func)(
-           graph, source_node, operation, *args, **kwargs)
-
+    return algorithms.breadth_first_search(graph, source_node, operation)
+    
 def _breadth_first_search_adjacency_list(
     graph, source_node, operation, *args, **kwargs):
     bfs_queue = Queue()
@@ -171,14 +165,8 @@ def breadth_first_search_parallel(
     """
     raise_if_backend_is_not_python(
         breadth_first_search_parallel, kwargs.get('backend', Backend.PYTHON))
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_breadth_first_search_parallel_" + graph._impl
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently breadth first search isn't implemented for "
-        "%s graphs."%(graph._impl))
-    return getattr(algorithms, func)(
-           graph, source_node, num_threads, operation, *args, **kwargs)
+    return algorithms.breadth_first_search_parallel(graph, source_node, num_threads, operation)
+
 
 def _generate_layer(**kwargs):
     _args, _kwargs = kwargs.get('args'), kwargs.get('kwargs')
