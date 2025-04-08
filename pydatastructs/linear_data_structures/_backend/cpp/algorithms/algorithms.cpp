@@ -4,6 +4,8 @@
 #include "misc_algorithms.hpp"
 
 static PyMethodDef algorithms_PyMethodDef[] = {
+    {"cocktail_shaker_sort", (PyCFunction) cocktail_shaker_sort,
+        METH_VARARGS | METH_KEYWORDS, ""},
     {"quick_sort", (PyCFunction) quick_sort,
      METH_VARARGS | METH_KEYWORDS, ""},
     {"bubble_sort", (PyCFunction) bubble_sort,
