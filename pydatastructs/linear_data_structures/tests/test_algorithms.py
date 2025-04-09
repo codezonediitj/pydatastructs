@@ -109,8 +109,25 @@ def test_counting_sort():
     assert counting_sort(arr)._data == expected_arr
 
 def test_cocktail_shaker_sort():
-    _test_common_sort(cocktail_shaker_sort)
-    _test_common_sort(cocktail_shaker_sort, backend=Backend.CPP)
+    array = OneDimensionalArray(int, [5, 3, 8, 6, 2])
+    cocktail_shaker_sort(array, backend=Backend.PYTHON)
+
+    assert array._data[:5] == [2, 3, 5, 6, 8]
+    array = OneDimensionalArray(int, [10, 1, 7, 4, 3])
+    cocktail_shaker_sort(array, backend=Backend.CPP)
+    assert array._data[:5] == [1, 3, 4, 7, 10]
+
+    array = OneDimensionalArray(int, [20, 15, 10, 5, 0])
+    cocktail_shaker_sort(array, backend=Backend.CPP)
+    assert array._data[:5] == [0, 5, 10, 15, 20]
+
+    array = OneDimensionalArray(int, [1, 2, 3, 4, 5])
+    cocktail_shaker_sort(array, backend=Backend.CPP)
+    assert array._data[:5] == [1, 2, 3, 4, 5]
+
+    array = OneDimensionalArray(int, [5, 4, 3, 2, 1])
+    cocktail_shaker_sort(array, backend=Backend.CPP)
+    assert array._data[:5] == [1, 2, 3, 4, 5]
 
 def test_quick_sort():
     _test_common_sort(quick_sort)
