@@ -110,6 +110,7 @@ def test_counting_sort():
 
 def test_cocktail_shaker_sort():
     _test_common_sort(cocktail_shaker_sort)
+    _test_common_sort(cocktail_shaker_sort, backend=Backend.CPP)
 
 def test_quick_sort():
     _test_common_sort(quick_sort)
