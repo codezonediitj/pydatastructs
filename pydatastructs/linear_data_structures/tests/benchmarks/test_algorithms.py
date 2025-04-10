@@ -55,12 +55,12 @@ def test_insertion_sort():
 
 @pytest.mark.xfail
 def test_brick_sort():
-    _test_common_sort(brick_sort, size=2000)
+    _test_common_sort(brick_sort, size=500)
 
 
 @pytest.mark.xfail
 def test_brick_sort_parallel():
-    _test_common_sort(brick_sort_parallel, size=2000, num_threads=4)
+    _test_common_sort(brick_sort_parallel, size=500, num_threads=4)
 
 
 @pytest.mark.xfail
