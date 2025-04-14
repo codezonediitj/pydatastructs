@@ -1,10 +1,15 @@
+# launcher.py (updated to use new level selector)
+
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox
 )
-from PyQt5.QtGui import QFont, QPalette, QColor
+from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
-from commitment_game import ZKPCommitmentGame
+
+from ui.level_selector import LevelSelector
+
+
 class ZKPGUILauncher(QWidget):
     def __init__(self):
         super().__init__()
@@ -16,7 +21,7 @@ class ZKPGUILauncher(QWidget):
         layout = QVBoxLayout()
 
         # Title label
-        title = QLabel("\ud83c\udf93 Zero-Knowledge Proof Playground")
+        title = QLabel("🎓 Zero-Knowledge Proof Playground")
         title.setFont(QFont("Arial", 16, QFont.Bold))
         title.setStyleSheet("color: white; padding: 20px;")
         title.setAlignment(Qt.AlignCenter)
@@ -37,9 +42,9 @@ class ZKPGUILauncher(QWidget):
         """
 
         buttons = [
-            ("\ud83d\udd10 Commitment Game", self.commitment_game),
-            ("\ud83d\udc65 Prover-Verifier ZKP", self.zkp_game),
-            ("\ud83c\udfad Indistinguishability Game", self.ind_game)
+            ("🔐 Commitment Puzzle Book", self.commitment_game),
+            ("👥 Prover-Verifier ZKP", self.zkp_game),
+            ("🎭 Indistinguishability Game", self.ind_game)
         ]
 
         for label, handler in buttons:
@@ -52,13 +57,14 @@ class ZKPGUILauncher(QWidget):
         self.setLayout(layout)
 
     def commitment_game(self):
-        self.commit_window = ZKPCommitmentGame()
-        self.commit_window.show()
+        self.level_selector = LevelSelector()
+        self.level_selector.show()
+
     def zkp_game(self):
-        QMessageBox.information(self, "Coming Soon", "\ud83d\udc65 Prover-Verifier ZKP Game will launch here!")
+        QMessageBox.information(self, "Coming Soon", "👥 Prover-Verifier ZKP Game will launch here!")
 
     def ind_game(self):
-        QMessageBox.information(self, "Coming Soon", "\ud83c\udfad Indistinguishability Game will launch here!")
+        QMessageBox.information(self, "Coming Soon", "🎭 Indistinguishability Game will launch here!")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
