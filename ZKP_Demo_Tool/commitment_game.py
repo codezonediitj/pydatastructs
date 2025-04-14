@@ -157,8 +157,3 @@ class ZKPCommitmentGame(QWidget):
         self.narration.setText("🔁 Game reset. 👩‍💼 Prover: Let's try again!")
 
 # ------------------ Run Application ------------------
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = ZKPCommitmentGame()
-    window.show()
-    sys.exit(app.exec_())
