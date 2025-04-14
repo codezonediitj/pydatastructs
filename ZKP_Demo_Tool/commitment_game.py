@@ -1,106 +1,217 @@
 import sys
 import hashlib
 import secrets
+import random
+import networkx as nx
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit,
-    QMessageBox, QHBoxLayout, QTextEdit
+    QMessageBox, QHBoxLayout, QTextEdit, QGraphicsEllipseItem,
+    QGraphicsTextItem, QColorDialog, QComboBox, QGraphicsScene, QGraphicsView,QDialog, QDialogButtonBox
 )
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QBrush, QColor, QPen
+from PyQt5.QtCore import Qt, QRectF
 
-class CommitmentGameWindow(QWidget):
+class CommitmentGame(QWidget):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("ZKP Commitment Game - Master Edition")
+        self.setGeometry(100, 100, 1200, 700)
 
-        self.setWindowTitle("🔒 Commitment Game")
-        self.setFixedSize(500, 500)
-        self.setStyleSheet("background-color: #2C3E50;")
+        self.graph = nx.cycle_graph(5)
+        self.colors = {}
+        self.commitments = {}
+        self.nonces = {}
+        self.revealed = set()
 
-        layout = QVBoxLayout()
+        self.init_ui()
+        self.draw_graph()
 
-        title = QLabel("🔐 Commitment Scheme Simulation")
-        title.setFont(QFont("Arial", 16, QFont.Bold))
-        title.setStyleSheet("color: white; padding: 10px;")
-        title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
+    def init_ui(self):
+        layout = QHBoxLayout()
 
-        role_label = QLabel("🧑‍💻 You are the Prover. The system plays the Verifier.")
-        role_label.setStyleSheet("color: #ECF0F1; padding: 5px;")
-        role_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(role_label)
+        self.scene = QGraphicsScene()
+        self.view = QGraphicsView(self.scene)
+        layout.addWidget(self.view, 70)
 
-        self.secret_input = QLineEdit()
-        self.secret_input.setPlaceholderText("Enter your secret value")
-        self.secret_input.setFont(QFont("Arial", 12))
-        self.secret_input.setStyleSheet("padding: 8px;")
-        layout.addWidget(self.secret_input)
+        control_panel = QVBoxLayout()
 
-        commit_btn = QPushButton("🔒 Commit to Secret")
-        commit_btn.setFont(QFont("Arial", 12))
-        commit_btn.setStyleSheet("margin: 10px; padding: 10px;")
-        commit_btn.clicked.connect(self.generate_commitment)
-        layout.addWidget(commit_btn)
+        self.commit_button = QPushButton("🔒 Commit to Colors")
+        self.commit_button.clicked.connect(self.commit_colors)
+        control_panel.addWidget(self.commit_button)
 
-        reveal_btn = QPushButton("🔓 Reveal to Verifier")
-        reveal_btn.setFont(QFont("Arial", 12))
-        reveal_btn.setStyleSheet("margin: 10px; padding: 10px;")
-        reveal_btn.clicked.connect(self.reveal_secret)
-        layout.addWidget(reveal_btn)
+        self.challenge_button = QPushButton("🎯 Verifier: Challenge Random Edge")
+        self.challenge_button.clicked.connect(self.challenge_edge)
+        control_panel.addWidget(self.challenge_button)
 
-        self.commitment_label = QLabel("Commitment: ...")
-        self.commitment_label.setStyleSheet("color: #ECF0F1; margin: 10px;")
-        layout.addWidget(self.commitment_label)
+        self.cheat_button = QPushButton("😈 Try to Cheat (Change Color)")
+        self.cheat_button.clicked.connect(self.try_to_cheat)
+        control_panel.addWidget(self.cheat_button)
 
-        self.transcript_box = QTextEdit()
-        self.transcript_box.setReadOnly(True)
-        self.transcript_box.setStyleSheet("background-color: #34495E; color: #F1C40F; padding: 10px;")
-        layout.addWidget(self.transcript_box)
+        self.education_button = QPushButton("🧠 What’s Happening?")
+        self.education_button.clicked.connect(self.show_education_modal)
+        control_panel.addWidget(self.education_button)
 
-        self.result_label = QLabel("")
-        self.result_label.setStyleSheet("color: #1ABC9C; font-weight: bold; padding: 10px;")
-        layout.addWidget(self.result_label)
+        self.color_select = QComboBox()
+        self.color_select.addItems(["Red", "Green", "Blue"])
+        control_panel.addWidget(QLabel("Choose color for next node click:"))
+        control_panel.addWidget(self.color_select)
 
+        self.status = QLabel("🔐 Set colors by clicking nodes. Then commit.")
+        self.status.setWordWrap(True)
+        control_panel.addWidget(self.status)
+
+        self.transcript = QTextEdit()
+        self.transcript.setReadOnly(True)
+        self.transcript.setFont(QFont("Courier", 10))
+        control_panel.addWidget(QLabel("📝 ZKP Transcript:"))
+        control_panel.addWidget(self.transcript)
+
+        layout.addLayout(control_panel, 30)
         self.setLayout(layout)
 
-        self.nonce = None
-        self.commitment = None
+    def draw_graph(self):
+        self.scene.clear()
+        self.pos = nx.spring_layout(self.graph, seed=42)
+        self.node_items = {}
 
-    def generate_commitment(self):
-        secret = self.secret_input.text().strip()
-        if not secret:
-            QMessageBox.warning(self, "Input Error", "Please enter a secret value.")
+        for node in self.graph.nodes:
+            x, y = self.pos[node]
+            x, y = x * 300 + 300, y * 300 + 200
+            ellipse = QGraphicsEllipseItem(QRectF(x, y, 40, 40))
+            ellipse.setBrush(QBrush(Qt.lightGray))
+            ellipse.setPen(QPen(Qt.black))
+            ellipse.setFlag(QGraphicsEllipseItem.ItemIsSelectable)
+            ellipse.mousePressEvent = lambda event, n=node: self.set_node_color(n)
+            self.scene.addItem(ellipse)
+
+            label = QGraphicsTextItem(str(node))
+            label.setPos(x + 12, y + 10)
+            self.scene.addItem(label)
+
+            self.node_items[node] = (ellipse, label)
+
+        for u, v in self.graph.edges:
+            x1, y1 = self.pos[u]
+            x2, y2 = self.pos[v]
+            x1, y1 = x1 * 300 + 320, y1 * 300 + 220
+            x2, y2 = x2 * 300 + 320, y2 * 300 + 220
+            self.scene.addLine(x1, y1, x2, y2, QPen(Qt.black))
+
+    def set_node_color(self, node):
+        color = self.color_select.currentText()
+        self.colors[node] = color
+        ellipse, _ = self.node_items[node]
+        ellipse.setBrush(QBrush(QColor(color)))
+        self.status.setText(f"🎨 Node {node} set to {color} (only you know this)")
+        self.transcript.append(f"[Prover] Sets node {node} to {color}")
+
+    def commit_colors(self):
+        self.commitments.clear()
+        self.nonces.clear()
+        self.revealed.clear()
+
+        missing = [n for n in self.graph.nodes if n not in self.colors]
+        if missing:
+            self.status.setText(f"⚠️ Color all nodes first! Missing: {missing}")
             return
 
-        self.nonce = secrets.token_hex(8)
-        combined = secret + self.nonce
-        self.commitment = hashlib.sha256(combined.encode()).hexdigest()
+        for node, color in self.colors.items():
+            nonce = secrets.token_hex(8)
+            self.nonces[node] = nonce
+            self.commitments[node] = hashlib.sha256((color + nonce).encode()).hexdigest()
+            ellipse, _ = self.node_items[node]
+            ellipse.setBrush(QBrush(Qt.darkGray))
+            self.transcript.append(f"[Prover] Commits to node {node} with hash = {self.commitments[node]}")
 
-        self.commitment_label.setText(f"Commitment: {self.commitment}")
-        self.transcript_box.clear()
-        self.transcript_box.append("Prover commits to a secret using SHA-256(secret || nonce)")
-        self.transcript_box.append(f"nonce: {self.nonce}")
-        self.transcript_box.append("Commitment sent to Verifier")
-        self.result_label.setText("✅ Secret committed. You may now reveal.")
-        self.result_label.setStyleSheet("color: #1ABC9C; font-weight: bold; padding: 10px;")
+        self.status.setText("🔒 All node colors committed! Verifier may now challenge an edge.")
 
-    def reveal_secret(self):
-        if not self.commitment:
-            QMessageBox.warning(self, "No Commitment", "Please commit to a value first.")
+    def challenge_edge(self):
+        edge = random.choice(list(self.graph.edges))
+        u, v = edge
+
+        if u in self.revealed or v in self.revealed:
+            self.status.setText("⏭️ This edge was already revealed. Try again.")
             return
 
-        secret = self.secret_input.text().strip()
-        combined = secret + self.nonce
-        check = hashlib.sha256(combined.encode()).hexdigest()
+        self.revealed.update([u, v])
+        result = self.reveal_and_verify(u, v)
+        self.status.setText(result)
 
-        self.transcript_box.append("\nProver reveals the secret and nonce...")
-        self.transcript_box.append(f"secret: {secret}")
-        self.transcript_box.append(f"recomputed hash: {check}")
+    def reveal_and_verify(self, u, v):
+        color_u, color_v = self.colors[u], self.colors[v]
+        nonce_u, nonce_v = self.nonces[u], self.nonces[v]
 
-        if check == self.commitment:
-            self.result_label.setStyleSheet("color: #1ABC9C; font-weight: bold; padding: 10px;")
-            self.result_label.setText("✅ Reveal successful. Verifier is convinced.")
-            self.transcript_box.append("Verifier confirms: ✅ commitment is valid!")
-        else:
-            self.result_label.setStyleSheet("color: red; font-weight: bold; padding: 10px;")
-            self.result_label.setText("❌ Reveal failed. Commitment mismatch.")
-            self.transcript_box.append("Verifier says: ❌ mismatch in commitment!")
+        commit_u = hashlib.sha256((color_u + nonce_u).encode()).hexdigest()
+        commit_v = hashlib.sha256((color_v + nonce_v).encode()).hexdigest()
+
+        self.transcript.append(f"\n[Verifier] Challenges edge ({u}, {v})")
+        self.transcript.append(f"→ Prover reveals: node {u} = {color_u}, nonce = {nonce_u}")
+        self.transcript.append(f"→ Prover reveals: node {v} = {color_v}, nonce = {nonce_v}")
+        self.transcript.append(f"→ Verifier recomputes H({color_u}||{nonce_u}) = {commit_u}")
+        self.transcript.append(f"→ Verifier recomputes H({color_v}||{nonce_v}) = {commit_v}")
+
+        if commit_u != self.commitments[u] or commit_v != self.commitments[v]:
+            self.transcript.append("❌ Commitment mismatch! Binding property violated!")
+            return "🚨 Verification Failed! Commitment mismatch (binding broken)"
+
+        if color_u == color_v:
+            self.transcript.append("❌ Same color for both nodes! Invalid coloring.")
+            return "❌ Verification Failed! Adjacent nodes have same color."
+
+        ellipse_u, _ = self.node_items[u]
+        ellipse_v, _ = self.node_items[v]
+        ellipse_u.setBrush(QBrush(QColor(color_u)))
+        ellipse_v.setBrush(QBrush(QColor(color_v)))
+
+        self.transcript.append("✅ Commitment verified. Coloring valid for edge.")
+        return f"✅ Edge ({u}, {v}) verified! {color_u} ≠ {color_v}"
+
+    def try_to_cheat(self):
+        if not self.commitments:
+            self.status.setText("⚠️ Commit first before cheating.")
+            return
+
+        node = random.choice(list(self.graph.nodes))
+        new_color = random.choice([c for c in ["Red", "Green", "Blue"] if c != self.colors[node]])
+        self.colors[node] = new_color
+
+        self.status.setText(f"😈 Prover changed color of node {node} to {new_color} post-commit. Now try verifying it!")
+        self.transcript.append(f"🚨 [Prover] Illegally changed color of node {node} to {new_color} after committing!")
+
+    def show_education_modal(self):
+        modal = QDialog(self)
+        modal.setWindowTitle("🔍 Understanding Commitment Schemes")
+        layout = QVBoxLayout()
+
+        explanation = QLabel("""
+        🔐 Commitment Schemes
+        --------------------------
+        ✔️ Hiding: The verifier cannot know the secret until you reveal it.
+        ✔️ Binding: You cannot change your mind after committing.
+
+        Example:
+        - You commit to a color by hashing it with a random nonce.
+        - You lock that value and show the lock to the verifier.
+        - Later, you reveal the color + nonce.
+        - Verifier checks if the lock matches the key.
+
+        🚫 Hash Collisions: Very unlikely two different messages give same hash.
+        
+        That's why commitment = secrecy + honesty.
+        """)
+        explanation.setWordWrap(True)
+        layout.addWidget(explanation)
+
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok)
+        button_box.accepted.connect(modal.accept)
+        layout.addWidget(button_box)
+
+        modal.setLayout(layout)
+        modal.exec_()
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = CommitmentGame()
+    window.show()
+    sys.exit(app.exec_())
