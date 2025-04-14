@@ -116,6 +116,9 @@ class BaseLevel(QWidget):
 
         if color1 == color2:
             result = f"❌ Verifier: Edge {edge} has same colors. Proof fails!"
+            self.update_narration(result)
+            QTimer.singleShot(1500, self.reject_proof)
+            return
         else:
             result = f"✅ Verifier: Edge {edge} looks good."
             self.rounds += 1
@@ -138,6 +141,10 @@ class BaseLevel(QWidget):
     def finish_level(self):
         QMessageBox.information(self, "🎉 Success", "Verifier: I’m convinced! You passed all rounds.")
         self.parent_selector.update_trust_points(points_earned=3)
+        self.close()
+        self.parent_selector.show()
+    def reject_proof(self):
+        QMessageBox.critical(self, "❌ Proof Rejected", "Verifier: The proof failed. I cannot be convinced.")
         self.close()
         self.parent_selector.show()
 
