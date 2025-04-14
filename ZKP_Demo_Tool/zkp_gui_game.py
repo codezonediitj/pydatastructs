@@ -74,3 +74,11 @@ class ZKPDemoApp(QMainWindow):
         container = QWidget()
         container.setLayout(main_layout)
         self.setCentralWidget(container)
+    def run_zkp_simulation(self):
+        start = self.start_selector.currentText()
+        end = self.end_selector.currentText()
+        self.output_panel.append(f"[1] Selected start: {start}, end: {end}")
+        self.output_panel.append("[2] Committing to a path (simulated)...")
+        self.output_panel.append("[3] Verifier asks: Reveal the path length or a random edge?")
+        self.output_panel.append("[4] Revealed segment matches commitment. Proof accepted.\n")
+
