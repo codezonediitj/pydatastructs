@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QFont, QPalette, QColor
 from PyQt5.QtCore import Qt
-from commitment_game import CommitmentGame
+from commitment_game import ZKPCommitmentGame
 class ZKPGUILauncher(QWidget):
     def __init__(self):
         super().__init__()
@@ -52,7 +52,7 @@ class ZKPGUILauncher(QWidget):
         self.setLayout(layout)
 
     def commitment_game(self):
-        self.commit_window = CommitmentGame()
+        self.commit_window = ZKPCommitmentGame()
         self.commit_window.show()
     def zkp_game(self):
         QMessageBox.information(self, "Coming Soon", "\ud83d\udc65 Prover-Verifier ZKP Game will launch here!")
