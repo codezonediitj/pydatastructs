@@ -1,64 +1,110 @@
-from PyQt5.QtWidgets import (
-    QGraphicsEllipseItem, QGraphicsTextItem, QToolTip,
-    QDialog, QVBoxLayout, QPushButton, QHBoxLayout
-)
-from PyQt5.QtGui import QBrush, QColor, QFont
-from PyQt5.QtCore import Qt
+# node_item.py
+from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsTextItem
+from PyQt5.QtGui import QBrush, QColor, QFont, QPen
+from PyQt5.QtCore import Qt, QPointF, QPropertyAnimation
 
 class NodeItem(QGraphicsEllipseItem):
-    def __init__(self, node_id, pos, parent_level):
+    def __init__(self, node_id, pos, parent, label=None):
         super().__init__(-20, -20, 40, 40)
         self.node_id = node_id
-        self.parent_level = parent_level
+        self.parent = parent
         self.setBrush(QBrush(Qt.gray))
+        self.setPen(QPen(Qt.black, 2))
+        self.setZValue(1)
+
         self.setFlag(QGraphicsEllipseItem.ItemIsSelectable)
         self.setAcceptHoverEvents(True)
         self.setPos(pos)
+
         self.locked = False
+        self.role = None
+        self.label = label if label else f"Node {node_id}"
+        self.hash_display = None
 
-        self.text = QGraphicsTextItem(str(node_id))
-        self.text.setDefaultTextColor(Qt.white)
-        self.text.setFont(QFont("Arial", 10, QFont.Bold))
-        self.text.setParentItem(self)
-        self.text.setPos(-8, -10)
+        # Label below node
+        self.text_item = QGraphicsTextItem(self.label, self)
+        self.text_item.setFont(QFont("Arial", 9))
+        self.text_item.setDefaultTextColor(Qt.white)
+        self.text_item.setPos(-self.text_item.boundingRect().width() / 2, 22)
 
-        # Define the allowed color palette
-        self.allowed_colors = {
-            "Red": "#E74C3C",
-            "Green": "#2ECC71",
-            " Blue": "#3498DB",
-            "Yellow": "#F1C40F"
-        }
+        # Lock visual indicator
+        self.lock_icon = QGraphicsTextItem("🔒", self)
+        self.lock_icon.setFont(QFont("Arial", 12))
+        self.lock_icon.setDefaultTextColor(Qt.darkGray)
+        self.lock_icon.setPos(-10, -35)
+        self.lock_icon.setVisible(False)
+    def set_label(self, label_text):
+        if hasattr(self, 'label'):
+            self.scene().removeItem(self.label)
 
+        from PyQt5.QtWidgets import QGraphicsTextItem
+        from PyQt5.QtCore import Qt
+
+        self.label = QGraphicsTextItem(label_text)
+        self.label.setDefaultTextColor(Qt.white)
+        self.label.setParentItem(self)
+        self.label.setPos(-20, -35)
+
+    def set_color(self, color):
+        if not self.locked:
+            self.setBrush(QBrush(QColor(color)))
+    def change_color(self):
+        current_color = self.brush().color()
+        next_color = self.get_next_color(current_color)
+        self.setBrush(QBrush(next_color))
+        self.parent.node_colors[self.node_id] = next_color
     def mousePressEvent(self, event):
-        if not self.locked and not self.parent_level.committed:
-            self.show_color_selection_dialog()
-        super().mousePressEvent(event)
+        self.change_color()
+    def get_next_color(self, current_color):
+        color_cycle = [Qt.red, Qt.green, Qt.blue]  # Or your fixed palette
+        try:
+            i = color_cycle.index(current_color)
+            return color_cycle[(i + 1) % len(color_cycle)]
+        except ValueError:
+            return color_cycle[0]
+    def lock(self):
+        self.locked = True
+        self.setBrush(QBrush(Qt.gray))
+        self.setPen(QPen(Qt.darkGray, 2))
+        self.lock_icon.setVisible(True)
+        self.update()
 
-    def show_color_selection_dialog(self):
-        dialog = QDialog()
-        dialog.setWindowTitle(f"Select a color for Node {self.node_id}")
-        layout = QVBoxLayout()
+    def unlock(self):
+        self.locked = False
+        self.setPen(QPen(Qt.black, 2))
+        self.setBrush(QBrush(Qt.gray))
+        self.lock_icon.setVisible(False)
+        self.update()
 
-        button_row = QHBoxLayout()
-        for label, hex_code in self.allowed_colors.items():
-            btn = QPushButton(label)
-            btn.setStyleSheet(f"background-color: {hex_code}; color: black; font-weight: bold;")
-            btn.clicked.connect(lambda _, c=hex_code: self.select_color(dialog, c))
-            button_row.addWidget(btn)
-
-        layout.addLayout(button_row)
-        dialog.setLayout(layout)
-        dialog.exec_()
-
-    def select_color(self, dialog, color_hex):
-        self.setBrush(QBrush(QColor(color_hex)))
-        self.parent_level.node_colors[self.node_id] = color_hex
-        self.parent_level.update_narration(f"🎨 Prover colored node {self.node_id} with color.")
-        dialog.accept()
-
-    def hoverEnterEvent(self, event):
-        if self.locked:
-            QToolTip.showText(event.screenPos(), "🔒 This node is committed", self.parent_level)
+    def show_hash(self, short_hash):
+        if not self.hash_display:
+            self.hash_display = QGraphicsTextItem(short_hash, self)
+            self.hash_display.setFont(QFont("Courier", 7))
+            self.hash_display.setDefaultTextColor(Qt.lightGray)
+            self.hash_display.setPos(-self.hash_display.boundingRect().width() / 2, 35)
         else:
-            QToolTip.showText(event.screenPos(), f" Node {self.node_id}: Click to choose a color", self.parent_level)
+            self.hash_display.setPlainText(short_hash)
+
+    def hide_hash(self):
+        if self.hash_display:
+            self.scene().removeItem(self.hash_display)
+            self.hash_display = None
+
+    def set_label(self, label):
+        self.label = label
+        self.text_item.setPlainText(label)
+
+    def pulse_red(self):
+        # Animate node glow red for non-repudiation breach
+        animation = QPropertyAnimation(self, b"opacity")
+        animation.setDuration(800)
+        animation.setKeyValueAt(0, 1.0)
+        animation.setKeyValueAt(0.5, 0.3)
+        animation.setKeyValueAt(1, 1.0)
+        animation.start()
+        self.setBrush(QBrush(QColor("red")))
+    def set_label(self, text):
+        label = QGraphicsTextItem(text, self)
+        label.setDefaultTextColor(Qt.black)
+        label.setFont(QFont("Arial", 10))
+        label.setPos(-10, -10)  # Adjust position if needed
