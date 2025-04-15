@@ -6,7 +6,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QFont, QBrush, QColor, QPen, QTextCursor
 from PyQt5.QtCore import Qt, QPointF, QTimer
-
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 from ui.node_item import NodeItem
 
 class BaseLevel(QWidget):
@@ -59,6 +60,17 @@ class BaseLevel(QWidget):
         self.commit_btn.clicked.connect(self.commit_colors)
         self.challenge_btn.clicked.connect(self.challenge_edge_once)
         self.reset_btn.clicked.connect(self.reset_game)
+        self.figure = Figure(figsize=(5, 2.5))
+        self.canvas = FigureCanvas(self.figure)
+        self.ax = self.figure.add_subplot(111)
+        self.success_rates = []
+        self.round_numbers = []
+
+        self.ax.set_title("ZKP Success Rate Over Rounds")
+        self.ax.set_xlabel("Rounds")
+        self.ax.set_ylabel("Success %")
+        self.ax.set_ylim(0, 100)
+        self.layout.addWidget(self.canvas)
 
         self.buttons_layout.addWidget(self.commit_btn)
         self.buttons_layout.addWidget(self.challenge_btn)
@@ -123,7 +135,20 @@ class BaseLevel(QWidget):
         self.committed = True
         if not auto_trigger:
             self.update_narration("🔒 Commitments made. Verifier, choose an edge to challenge!")
-
+    def update_success_chart(self):
+        total = self.valid_proofs + self.invalid_proofs
+        if total == 0:
+            return
+        success = (self.valid_proofs / total) * 100
+        self.round_numbers.append(self.rounds)
+        self.success_rates.append(success)
+        self.ax.clear()
+        self.ax.plot(self.round_numbers, self.success_rates, marker='o', color='lime')
+        self.ax.set_title("ZKP Success Rate Over Rounds")
+        self.ax.set_xlabel("Rounds")
+        self.ax.set_ylabel("Success %")
+        self.ax.set_ylim(0, 100)
+        self.canvas.draw()
     def challenge_edge_once(self, auto=False):
         if not self.committed:
             if not auto:
@@ -155,6 +180,7 @@ class BaseLevel(QWidget):
                 QTimer.singleShot(1500, self.prompt_next_round)
             else:
                 QTimer.singleShot(1500, self.finish_level)
+        self.update_success_chart()
 
     def auto_run_verification(self):
         if self.rounds >= self.auto_total_rounds:
@@ -180,8 +206,13 @@ class BaseLevel(QWidget):
 
         msg = QMessageBox()
         msg.setWindowTitle("📊 Simulation Summary")
-        msg.setText(f"✅ Valid Proofs: {self.valid_proofs}\n❌ Invalid Proofs: {self.invalid_proofs}\n\n"
-                      f"🎯 Success Probability: {success_rate:.2f}%")
+        msg.setText(
+        f"📊 Final Round Report:\n\n"
+        f"✅ You passed {self.valid_proofs} out of {total} rounds.\n"
+        f"❌ You failed {self.invalid_proofs} times.\n"
+        f"🎯 Estimated Trust Level: {success_rate:.2f}%\n\n"
+        f"{'🟢 Verifier is likely convinced.' if success_rate >= 75 else '🔴 Verifier remains skeptical.'}"
+    )
         msg.exec_()
         self.finish_level()
 
@@ -194,7 +225,31 @@ class BaseLevel(QWidget):
         self.reset_game(preserve_round=True)
 
     def finish_level(self):
-        self.parent_selector.update_trust_points(points_earned=3)
+        total = self.valid_proofs + self.invalid_proofs
+        success_rate = (self.valid_proofs / total) * 100 if total > 0 else 0
+
+        # Award logic (adjust as needed)
+        if success_rate >= 90:
+            points = 5
+            message = "🌟 Outstanding! The verifier is truly convinced."
+        elif success_rate >= 75:
+            points = 3
+            message = "✅ Good job! You earned trust."
+        elif success_rate >= 50:
+            points = 1
+            message = "⚠️ Partial success. Try again for full trust."
+        else:
+            points = 0
+            message = "❌ Verifier is not convinced. Try again."
+
+        self.parent_selector.update_trust_points(points_earned=points)
+
+        QMessageBox.information(
+            self,
+            "🎉 Level Complete",
+            f"{message}\n\nYou earned {points} trust point(s) for this level."
+        )
+
         self.close()
         self.parent_selector.show()
 
@@ -221,3 +276,14 @@ class BaseLevel(QWidget):
             self.log_box.clear()
         else:
             self.update_narration("🎨 Prover: Please recolor the graph for the next round.")
+    def show_education_modal(self):
+        QMessageBox.information(
+            self,
+            "📘 Level Introduction",
+            f"Welcome to {self.level_name}!\n\n"
+            "Your goal is to convince the verifier using Zero-Knowledge Proof.\n"
+            "Step 1: Secretly color each node.\n"
+            "Step 2: Commit to your colors.\n"
+            "Step 3: Let the verifier challenge an edge.\n\n"
+            "Make sure adjacent nodes have different colors!"
+        )
