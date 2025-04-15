@@ -4,8 +4,9 @@ from levels.base_level import BaseLevel
 
 
 class Level1Triangle(BaseLevel):
-    def __init__(self, parent_selector):
-        super().__init__("Level 1: Triangle", parent_selector)
+    def __init__(self, parent_selector, auto_mode=False, auto_rounds=3):
+        super().__init__("Level 1: Triangle", parent_selector, auto_mode=auto_mode, auto_rounds=auto_rounds)
+
 
         # Define triangle layout
         positions = [

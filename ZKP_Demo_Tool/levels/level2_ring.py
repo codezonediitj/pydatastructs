@@ -2,14 +2,12 @@ from PyQt5.QtCore import QPointF
 from levels.base_level import BaseLevel
 
 class Level2Ring(BaseLevel):
-    def __init__(self, parent_selector):
-        super().__init__("Level 2: Encrypted Fraud Network", parent_selector)
-
-        # Realistic scenario narration
-        self.update_narration(
-            "🕵️ Prover: These 8 nodes represent accounts in a suspected fraud ring.\n"
-            "Each edge is a known interaction. Prove that directly connected accounts\n"
-            "don’t share the same fraud classification — without revealing any labels."
+    def __init__(self, parent_selector, auto_mode=False, auto_rounds=5):
+        super().__init__(
+            "Level 2: Encrypted Fraud Network",
+            parent_selector,
+            auto_mode=auto_mode,
+            auto_rounds=auto_rounds
         )
 
         # Node layout (visually inspired by screenshot)
