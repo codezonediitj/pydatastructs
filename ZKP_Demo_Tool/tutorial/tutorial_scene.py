@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap, QFont, QColor, QPalette
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 import sys
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QResource
 
 
 class ZKPTutorial(QWidget):
@@ -28,7 +30,7 @@ class ZKPTutorial(QWidget):
 
         # Image area (placeholder)
         self.image_label = QLabel()
-        pixmap = QPixmap("assets/scene1_roles.png")
+        pixmap = QPixmap("../assets/scene1.png")
         if pixmap.isNull():
             self.image_label.setText("[Visual Story: ATM, Bank, Merchant cartoon goes here]")
             self.image_label.setAlignment(Qt.AlignCenter)
@@ -44,14 +46,24 @@ class ZKPTutorial(QWidget):
         self.narration_label.setFont(QFont("Georgia", 16))
         self.narration_label.setAlignment(Qt.AlignLeft)
         self.narration_label.setText(
-            "<p>Every secure system runs on trust —<br>"
-            "But not just <i>who</i> you trust — <b>what role</b> they play.</p>"
-            "<p>Let’s meet the 3 roles in any safe transaction:</p>"
-            "<ul>"
-            "<li>\ud83c\udfe7 <b>ATM</b> → <i>Initiator</i> (starts the transaction)</li>"
-            "<li>\ud83c\udfe6 <b>Bank</b> → <i>Validator</i> (verifies it)</li>"
-            "<li>\ud83c\udfcd\ufe0f <b>Merchant</b> → <i>Receiver</i> (completes it)</li>"
-            "</ul>"
+            "<p>✨ <b>Every adventure needs a team —</b><br>"
+            "and in the world of secure transactions, three heroes take the stage!</p>"
+
+            "<p>🟦 <b>Initiator</b> starts the quest:<br>"
+            "They say, “I want to make a move!” 💸</p>"
+
+            "<p>🔺 <b>Validator</b> checks the map:<br>"
+            "“Is this legit? Let me verify...” 🔍</p>"
+
+            "<p>🟩 <b>Receiver</b> opens the treasure chest:<br>"
+            "“It’s real. I’m in. Transaction complete!” </p>"
+
+            "<p>But here's the twist…<br>"
+            "<b>What if we could prove we did everything right —</b><br>"
+            "💡 <i>without showing the treasure itself?</i></p>"
+
+            "<p>That’s where <b>Zero-Knowledge Proofs</b> enter the story.<br>"
+            " Ready to see some cryptographic magic?</p>"
         )
         self.layout.addWidget(self.narration_label)
 
@@ -81,7 +93,7 @@ class ZKPTutorial(QWidget):
         animation.setStartValue(0.0)
         animation.setEndValue(1.0)
         animation.setEasingCurve(QEasingCurve.InOutQuad)
-        animation.start()
+        animation.start() 
         self.fade_animation = animation  # Keep reference to avoid garbage collection
 
     def go_to_next_scene(self):
