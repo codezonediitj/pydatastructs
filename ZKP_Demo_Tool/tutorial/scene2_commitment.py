@@ -1,12 +1,15 @@
 import sys
+import subprocess
 import hashlib
 import random
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QGraphicsScene,
-    QGraphicsView, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsLineItem, QMessageBox, QHBoxLayout, QGraphicsOpacityEffect
+    QGraphicsView, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsLineItem,
+    QHBoxLayout, QScrollArea
 )
 from PyQt5.QtGui import QFont, QPen, QBrush, QColor
-from PyQt5.QtCore import Qt, QPointF, QLineF, QPropertyAnimation, QEasingCurve
+from PyQt5.QtCore import Qt, QPointF, QLineF
+
 
 class ZKPNode:
     def __init__(self, name, role_label, position, color):
@@ -18,6 +21,7 @@ class ZKPNode:
         self.commitment = hashlib.sha256((role_label + self.nonce).encode()).hexdigest()
         self.revealed_role = role_label
         self.revealed_nonce = self.nonce
+
 
 class NarrationEngine:
     @staticmethod
@@ -43,12 +47,12 @@ Recomputed Hashes:
             log += "   ✅ Matches original commitments — Binding held.\n\n"
 
         if not binding_broken and hiding_ok:
-            log += "✅ Hiding held — Verifier only learns that roles are different.\n ZKP passed successfully.\n"
+            log += "✅ Hiding held — Verifier only learns that roles are different.\nZKP passed successfully.\n"
         elif not binding_broken and not hiding_ok:
-            log += f"⚠️ Hiding broken — {node1.name} and {node2.name} revealed same role!\n ZKP failed. Verifier now knows part of the secret mapping.\n"
+            log += f"⚠️ Hiding broken — {node1.name} and {node2.name} revealed same role!\nZKP failed. Verifier now knows part of the secret mapping.\n"
 
         log += """
-Explanation:
+📘 Explanation:
 - Binding ensures that once a role is committed with a hash, it can't be changed.
 - Hiding ensures that the hash doesn't reveal the actual role until the reveal phase.
 - If two adjacent nodes share the same role, it can indicate a conflict of interest or security flaw.
@@ -56,6 +60,7 @@ Explanation:
   This breaks the fundamental principle of role separation in secure systems.
 """
         return log
+
 
 class SceneZKPGraph(QWidget):
     def __init__(self):
@@ -68,20 +73,40 @@ class SceneZKPGraph(QWidget):
         self.view = QGraphicsView(self.scene)
         self.view.setStyleSheet("background-color: #1e1e1e; border: none;")
 
+        # Scrollable narration box
         self.text_output = QLabel()
         self.text_output.setWordWrap(True)
         self.text_output.setFont(QFont("Courier New", 12))
         self.text_output.setStyleSheet("background-color: #1c1c1c; padding: 10px; border: 1px solid #444; color: white;")
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(self.text_output)
+        scroll.setMinimumHeight(250)
 
         self.verify_button = QPushButton("🎯 Simulate ZKP Verification")
         self.verify_button.setFont(QFont("Arial", 14))
         self.verify_button.setStyleSheet("padding: 10px; background-color: #2d3436; color: white; border-radius: 8px;")
         self.verify_button.clicked.connect(self.reveal_connection)
 
+        self.next_button = QPushButton("➡ Next: Scene 3 - Bipartate Graph")
+        self.next_button.setFont(QFont("Arial", 13, QFont.Bold))
+        self.next_button.setStyleSheet(
+            "background-color: #0055ff; color: white; padding: 10px; border-radius: 10px;"
+        )
+        self.next_button.clicked.connect(self.go_to_next_scene)
+
         layout = QVBoxLayout()
         layout.addWidget(self.view)
         layout.addWidget(self.verify_button)
-        layout.addWidget(self.text_output)
+        layout.addWidget(scroll)
+
+        # Center the button using a horizontal layout
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(self.next_button)
+        button_layout.addStretch()
+        layout.addLayout(button_layout)
+
         self.setLayout(layout)
 
         self.nodes = []
@@ -100,7 +125,7 @@ class SceneZKPGraph(QWidget):
             ("Insider",     "Validator", QPointF(150, 450), QColor("#f1c40f"))
         ]
 
-        connections = [(0,1), (1,2), (2,4), (3,1), (5,2), (0,5)]
+        connections = [(0, 1), (1, 2), (2, 4), (3, 1), (5, 2), (0, 5)]
 
         for name, role, pos, color in layout:
             node = ZKPNode(name, role, pos, color)
@@ -155,6 +180,11 @@ class SceneZKPGraph(QWidget):
             binding_broken=not binding_ok
         )
         self.text_output.setText(log)
+
+    def go_to_next_scene(self):
+        subprocess.Popen(["python", "scene3_bipartate.py"])
+        self.close()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
