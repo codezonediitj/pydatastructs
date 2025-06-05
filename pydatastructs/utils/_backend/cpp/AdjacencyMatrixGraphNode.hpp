@@ -26,7 +26,7 @@ static PyObject* AdjacencyMatrixGraphNode_new(PyTypeObject* type, PyObject* args
     return reinterpret_cast<PyObject*>(self);
 }
 
-PyTypeObject AdjacencyMatrixGraphNodeType = {
+inline PyTypeObject AdjacencyMatrixGraphNodeType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "AdjacencyMatrixGraphNode",
     /* tp_basicsize */ sizeof(AdjacencyMatrixGraphNode),
     /* tp_itemsize */ 0,

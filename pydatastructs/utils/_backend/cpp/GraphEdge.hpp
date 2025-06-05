@@ -64,7 +64,7 @@ static PyObject* GraphEdge_str(GraphEdge* self) {
     return str_repr;
 }
 
-PyTypeObject GraphEdgeType = {
+inline PyTypeObject GraphEdgeType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "GraphEdge",
     /* tp_basicsize */ sizeof(GraphEdge),
     /* tp_itemsize */ 0,

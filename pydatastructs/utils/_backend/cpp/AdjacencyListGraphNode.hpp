@@ -187,7 +187,7 @@ static PyMethodDef AdjacencyListGraphNode_methods[] = {
     {NULL}
 };
 
-PyTypeObject AdjacencyListGraphNodeType = {
+inline PyTypeObject AdjacencyListGraphNodeType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "AdjacencyListGraphNode",
     /* tp_basicsize */ sizeof(AdjacencyListGraphNode),
     /* tp_itemsize */ 0,

@@ -1,4 +1,5 @@
 from pydatastructs.graphs.graph import Graph
+from pydatastructs.graphs._backend.cpp import _graph
 from pydatastructs.utils.misc_util import (
     GraphEdge, Backend, raise_if_backend_is_not_python)
 
@@ -16,14 +17,20 @@ class AdjacencyList(Graph):
     pydatastructs.graphs.graph.Graph
     """
     def __new__(cls, *vertices, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
-        obj = object.__new__(cls)
-        for vertex in vertices:
-            obj.__setattr__(vertex.name, vertex)
-        obj.vertices = [vertex.name for vertex in vertices]
-        obj.edge_weights = {}
-        return obj
+        
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.PYTHON:
+            obj = object.__new__(cls)
+            for vertex in vertices:
+                obj.__setattr__(vertex.name, vertex)
+            obj.vertices = [vertex.name for vertex in vertices]
+            obj.edge_weights = {}
+            return obj
+        else:
+            graph = _graph.AdjacencyListGraph()
+            for vertice in vertices:
+                graph.add_vertex(vertice)
+            return graph
 
     @classmethod
     def methods(self):

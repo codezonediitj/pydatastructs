@@ -1,6 +1,7 @@
 from pydatastructs.graphs import Graph
 from pydatastructs.utils import AdjacencyListGraphNode
 from pydatastructs.utils.raises_util import raises
+from pydatastructs.utils.misc_util import Backend
 
 def test_adjacency_list():
     v_1 = AdjacencyListGraphNode('v_1', 1)
@@ -42,3 +43,43 @@ def test_adjacency_list():
 
     assert raises(ValueError, lambda: g.add_edge('u', 'v'))
     assert raises(ValueError, lambda: g.add_edge('v', 'x'))
+
+    v_4 = AdjacencyListGraphNode('v_4', 4, backend = Backend.CPP)
+    v_5 = AdjacencyListGraphNode('v_5', 5, backend = Backend.CPP)
+    g2 = Graph(v_4,v_5,implementation = 'adjacency_list', backend = Backend.CPP)
+    v_6 = AdjacencyListGraphNode('v_6', 6, backend = Backend.CPP)
+    assert raises(ValueError, lambda: g2.add_vertex(v_5))
+    g2.add_vertex(v_6)
+    g2.add_edge('v_4', 'v_5')
+    g2.add_edge('v_5', 'v_6')
+    g2.add_edge('v_4', 'v_6')
+    assert g2.is_adjacent('v_4', 'v_5') is True
+    assert g2.is_adjacent('v_5', 'v_6') is True
+    assert g2.is_adjacent('v_4', 'v_6') is True
+    assert g2.is_adjacent('v_5', 'v_4') is False
+    assert g2.is_adjacent('v_6', 'v_5') is False
+    assert g2.is_adjacent('v_6', 'v_4') is False
+    assert g2.num_edges() == 3
+    assert g2.num_vertices() == 3
+    neighbors = g2.neighbors('v_4')
+    assert neighbors == [v_6, v_5]
+    v = AdjacencyListGraphNode('v', 4, backend = Backend.CPP)
+    g2.add_vertex(v)
+    g2.add_edge('v_4', 'v', 0)
+    g2.add_edge('v_5', 'v', 0)
+    g2.add_edge('v_6', 'v', 0)
+    assert g2.is_adjacent('v_4', 'v') is True
+    assert g2.is_adjacent('v_5', 'v') is True
+    assert g2.is_adjacent('v_6', 'v') is True
+    e1 = g2.get_edge('v_4', 'v')
+    e2 = g2.get_edge('v_5', 'v')
+    e3 = g2.get_edge('v_6', 'v')
+    assert (str(e1)) == "('v_4', 'v')"
+    assert (str(e2)) == "('v_5', 'v')"
+    assert (str(e3)) == "('v_6', 'v')"
+    g2.remove_edge('v_4', 'v')
+    assert g2.is_adjacent('v_4', 'v') is False
+    g2.remove_vertex('v')
+    assert raises(ValueError, lambda: g2.add_edge('v_4', 'v'))
+
+
