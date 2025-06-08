@@ -14,6 +14,7 @@ extern PyTypeObject AdjacencyListGraphType;
 typedef struct {
 
     PyObject_HEAD
+    PyObject* dict;
     std::vector<AdjacencyListGraphNode *> nodes;
     std::unordered_map<std::string, GraphEdge*> edges;
     std::unordered_map<std::string, AdjacencyListGraphNode*> node_map;
@@ -37,7 +38,7 @@ static void AdjacencyListGraph_dealloc(AdjacencyListGraph* self) {
 }
 
 static PyObject* AdjacencyListGraph_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
-    AdjacencyListGraph* self = (AdjacencyListGraph*)type->tp_alloc(type, 0);
+    AdjacencyListGraph* self = reinterpret_cast<AdjacencyListGraph*>(type->tp_alloc(type, 0));
     if (!self)
         return NULL;
 
@@ -54,11 +55,11 @@ static PyObject* AdjacencyListGraph_new(PyTypeObject* type, PyObject* args, PyOb
             self->nodes.~vector();
             self->edges.~unordered_map();
             self->node_map.~unordered_map();
-            Py_TYPE(self)->tp_free((PyObject*)self);
+            Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
             return NULL;
         }
 
-        AdjacencyListGraphNode* node = (AdjacencyListGraphNode*)node_obj;
+        AdjacencyListGraphNode* node = reinterpret_cast<AdjacencyListGraphNode*>(node_obj);
 
         if (self->node_map.find(node->name) != self->node_map.end()) {
             PyErr_Format(PyExc_ValueError, "Duplicate node with name '%s'", node->name.c_str());
@@ -66,7 +67,7 @@ static PyObject* AdjacencyListGraph_new(PyTypeObject* type, PyObject* args, PyOb
             self->nodes.~vector();
             self->edges.~unordered_map();
             self->node_map.~unordered_map();
-            Py_TYPE(self)->tp_free((PyObject*)self);
+            Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
             return NULL;
         }
 
@@ -74,7 +75,16 @@ static PyObject* AdjacencyListGraph_new(PyTypeObject* type, PyObject* args, PyOb
         self->nodes.push_back(node);
         self->node_map[node->name] = node;
     }
-    return (PyObject*)self;
+    PyObject* impl_str = PyUnicode_FromString("adjacency_list");
+
+    if (PyObject_SetAttrString(reinterpret_cast<PyObject*>(self), "_impl", impl_str) < 0) {
+        Py_DECREF(impl_str);
+        PyErr_SetString(PyExc_RuntimeError, "Failed to set _impl attribute");
+        return NULL;
+    }
+
+    Py_DECREF(impl_str);
+    return reinterpret_cast<PyObject*>(self);
 }
 
 static std::string make_edge_key(const std::string& source, const std::string& target) {
@@ -94,7 +104,7 @@ static PyObject* AdjacencyListGraph_add_vertex(AdjacencyListGraph* self, PyObjec
         return NULL;
     }
 
-    AdjacencyListGraphNode* node = (AdjacencyListGraphNode*)node_obj;
+    AdjacencyListGraphNode* node = reinterpret_cast<AdjacencyListGraphNode*>(node_obj);
 
     if (self->node_map.find(node->name) != self->node_map.end()) {
         PyErr_SetString(PyExc_ValueError, "Node with this name already exists");
@@ -228,7 +238,7 @@ static PyObject* AdjacencyListGraph_get_edge(AdjacencyListGraph* self, PyObject*
     auto it = self->edges.find(key);
     if (it != self->edges.end()) {
         Py_INCREF(it->second);
-        return (PyObject*)it->second;
+        return reinterpret_cast<PyObject*>(it->second);
     }
 
     Py_RETURN_NONE;
@@ -293,10 +303,10 @@ static PyObject* AdjacencyListGraph_add_edge(AdjacencyListGraph* self, PyObject*
     AdjacencyListGraphNode* source_node = self->node_map[source];
     AdjacencyListGraphNode* target_node = self->node_map[target];
 
-    PyObject* edge_args = PyTuple_Pack(3, (PyObject*)source_node, (PyObject*)target_node, value);
+    PyObject* edge_args = PyTuple_Pack(3, reinterpret_cast<PyObject*>(source_node), reinterpret_cast<PyObject*>(target_node), value);
     if (!edge_args) return NULL;
 
-    PyObject* edge_obj = PyObject_CallObject((PyObject*)&GraphEdgeType, edge_args);
+    PyObject* edge_obj = PyObject_CallObject(reinterpret_cast<PyObject*>(&GraphEdgeType), edge_args);
     Py_DECREF(edge_args);
 
     if (!edge_obj)
@@ -307,15 +317,15 @@ static PyObject* AdjacencyListGraph_add_edge(AdjacencyListGraph* self, PyObject*
     auto it = self->edges.find(key);
     if (it != self->edges.end()) {
         Py_XDECREF(it->second);
-        it->second = (GraphEdge*)edge_obj;
+        it->second = reinterpret_cast<GraphEdge*>(edge_obj);
     } else {
-        self->edges[key] = (GraphEdge*)edge_obj;
+        self->edges[key] = reinterpret_cast<GraphEdge*>(edge_obj);
     }
 
     auto adj_it = source_node->adjacent.find(target);
     if (adj_it == source_node->adjacent.end()) {
         Py_INCREF(target_node);
-        source_node->adjacent[target] = (PyObject*)target_node;
+        source_node->adjacent[target] = reinterpret_cast<PyObject*>(target_node);
     }
 
     Py_RETURN_NONE;
@@ -349,7 +359,7 @@ PyTypeObject AdjacencyListGraphType = {
     .tp_doc = "Adjacency List Graph data structure",
     .tp_methods = AdjacencyListGraph_methods,
     .tp_new = AdjacencyListGraph_new,
+    .tp_dictoffset = offsetof(AdjacencyListGraph, dict)
 };
 
 #endif
-

@@ -82,8 +82,7 @@ class Graph(object):
             return obj
         elif implementation == 'adjacency_matrix':
             from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
-            obj = AdjacencyMatrix(*args)
-            obj._impl = implementation
+            obj = AdjacencyMatrix(*args, **kwargs)
             return obj
         else:
             raise NotImplementedError("%s implementation is not a part "

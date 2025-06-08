@@ -1,7 +1,9 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include "AdjacencyList.hpp"
+#include "AdjacencyMatrix.hpp"
 #include "AdjacencyListGraphNode.hpp"
+#include "AdjacencyMatrixGraphNode.hpp"
 #include "graph_bindings.hpp"
 
 
@@ -23,6 +25,12 @@ PyMODINIT_FUNC PyInit__graph(void) {
     if (PyType_Ready(&AdjacencyListGraphNodeType) < 0)
         return NULL;
 
+    if (PyType_Ready(&AdjacencyMatrixGraphType) < 0)
+        return NULL;
+
+    if (PyType_Ready(&AdjacencyMatrixGraphNodeType) < 0)
+        return NULL;
+
     m = PyModule_Create(&graph_module);
     if (m == NULL)
         return NULL;
@@ -37,6 +45,13 @@ PyMODINIT_FUNC PyInit__graph(void) {
     Py_INCREF(&AdjacencyListGraphNodeType);
     if (PyModule_AddObject(m, "AdjacencyListGraphNode", (PyObject*)&AdjacencyListGraphNodeType) < 0) {
         Py_DECREF(&AdjacencyListGraphNodeType);
+        Py_DECREF(m);
+        return NULL;
+    }
+
+    Py_INCREF(&AdjacencyMatrixGraphType);
+    if (PyModule_AddObject(m, "AdjacencyMatrixGraph", (PyObject*)&AdjacencyMatrixGraphType) < 0) {
+        Py_DECREF(&AdjacencyMatrixGraphType);
         Py_DECREF(m);
         return NULL;
     }

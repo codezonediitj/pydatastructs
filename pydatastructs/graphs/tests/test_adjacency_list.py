@@ -81,5 +81,3 @@ def test_adjacency_list():
     assert g2.is_adjacent('v_4', 'v') is False
     g2.remove_vertex('v')
     assert raises(ValueError, lambda: g2.add_edge('v_4', 'v'))
-
-

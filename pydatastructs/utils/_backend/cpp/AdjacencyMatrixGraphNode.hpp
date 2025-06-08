@@ -6,6 +6,8 @@
 #include <string>
 #include "GraphNode.hpp"
 
+extern PyTypeObject AdjacencyMatrixGraphNodeType;
+
 typedef struct {
     GraphNode super;
 } AdjacencyMatrixGraphNode;

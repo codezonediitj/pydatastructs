@@ -5,5 +5,7 @@
 
 extern PyTypeObject AdjacencyListGraphType;
 extern PyTypeObject AdjacencyListGraphNodeType;
+extern PyTypeObject AdjacencyMatrixGraphType;
+extern PyTypeObject AdjacencyMatrixGraphNodeType;
 
 #endif

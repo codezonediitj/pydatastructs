@@ -17,7 +17,7 @@ class AdjacencyList(Graph):
     pydatastructs.graphs.graph.Graph
     """
     def __new__(cls, *vertices, **kwargs):
-        
+
         backend = kwargs.get('backend', Backend.PYTHON)
         if backend == Backend.PYTHON:
             obj = object.__new__(cls)
@@ -25,6 +25,7 @@ class AdjacencyList(Graph):
                 obj.__setattr__(vertex.name, vertex)
             obj.vertices = [vertex.name for vertex in vertices]
             obj.edge_weights = {}
+            obj._impl = 'adjacency_list'
             return obj
         else:
             graph = _graph.AdjacencyListGraph()
