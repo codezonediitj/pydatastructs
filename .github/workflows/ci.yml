@@ -190,8 +190,9 @@ jobs:
           python -m pip install -r docs/requirements.txt
 
       - name: Build package
+        env:
+          CL: "/std:c++17"
         run: |
-          set CL=/std:c++17
           python scripts/build/install.py
 
       - name: Run tests
