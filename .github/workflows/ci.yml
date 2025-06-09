@@ -41,7 +41,7 @@ jobs:
 
       - name: Build package
         run: |
-          CXXFLAGS=--coverage CFLAGS=--coverage python scripts/build/install.py
+          CXXFLAGS="-std=c++17 --coverage" CFLAGS="--coverage" python scripts/build/install.py
       # coverage tests
       - name: Run tests
         run: |
@@ -102,7 +102,7 @@ jobs:
 
       - name: Build package
         run: |
-          CXXFLAGS="-std=c++17 python scripts/build/install.py
+          CXXFLAGS="-std=c++17" python scripts/build/install.py
 
       - name: Run tests
         run: |
@@ -143,7 +143,7 @@ jobs:
 
       - name: Build package
         run: |
-          CXXFLAGS="-std=c++17 python scripts/build/install.py
+          CXXFLAGS="-std=c++17" python scripts/build/install.py
 
       - name: Run tests
         run: |
