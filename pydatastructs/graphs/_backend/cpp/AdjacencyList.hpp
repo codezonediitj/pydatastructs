@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <algorithm>
 #include "AdjacencyListGraphNode.hpp"
 #include "GraphEdge.hpp"
 
@@ -349,17 +350,44 @@ static PyMethodDef AdjacencyListGraph_methods[] = {
 
 
 PyTypeObject AdjacencyListGraphType = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    .tp_init= 0,
-    .tp_name = "_graph.AdjacencyListGraph",
-    .tp_basicsize = sizeof(AdjacencyListGraph),
-    .tp_itemsize = 0,
-    .tp_dealloc = (destructor)AdjacencyListGraph_dealloc,
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
-    .tp_doc = "Adjacency List Graph data structure",
-    .tp_methods = AdjacencyListGraph_methods,
-    .tp_new = AdjacencyListGraph_new,
-    .tp_dictoffset = offsetof(AdjacencyListGraph, dict)
+    PyVarObject_HEAD_INIT(NULL, 0)                 // ob_base
+    "_graph.AdjacencyListGraph",                   // tp_name
+    sizeof(AdjacencyListGraph),                    // tp_basicsize
+    0,                                              // tp_itemsize
+    (destructor)AdjacencyListGraph_dealloc,        // tp_dealloc
+    0,                                              // tp_vectorcall_offset or tp_print (depends on Python version)
+    0,                                              // tp_getattr
+    0,                                              // tp_setattr
+    0,                                              // tp_as_async / tp_reserved
+    0,                                              // tp_repr
+    0,                                              // tp_as_number
+    0,                                              // tp_as_sequence
+    0,                                              // tp_as_mapping
+    0,                                              // tp_hash
+    0,                                              // tp_call
+    0,                                              // tp_str
+    0,                                              // tp_getattro
+    0,                                              // tp_setattro
+    0,                                              // tp_as_buffer
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,       // tp_flags
+    "Adjacency List Graph data structure",         // tp_doc
+    0,                                              // tp_traverse
+    0,                                              // tp_clear
+    0,                                              // tp_richcompare
+    0,                                              // tp_weaklistoffset
+    0,                                              // tp_iter
+    0,                                              // tp_iternext
+    AdjacencyListGraph_methods,                    // tp_methods
+    0,                                              // tp_members
+    0,                                              // tp_getset
+    0,                                              // tp_base
+    0,                                              // tp_dict
+    0,                                              // tp_descr_get
+    0,                                              // tp_descr_set
+    offsetof(AdjacencyListGraph, dict),            // tp_dictoffset
+    0,                                              // tp_init
+    0,                                              // tp_alloc
+    AdjacencyListGraph_new                         // tp_new
 };
 
 #endif
