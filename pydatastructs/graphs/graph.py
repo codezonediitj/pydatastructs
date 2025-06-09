@@ -70,19 +70,19 @@ class Graph(object):
     __slots__ = ['_impl']
 
     def __new__(cls, *args, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
-        default_impl = args[0]._impl if args else 'adjacency_list'
+        backend = kwargs.get('backend', Backend.PYTHON)
+        try:
+            default_impl = args[0]._impl if args else 'adjacency_list'
+        except:
+            default_impl = 'adjacency_list'
         implementation = kwargs.get('implementation', default_impl)
         if implementation == 'adjacency_list':
             from pydatastructs.graphs.adjacency_list import AdjacencyList
-            obj = AdjacencyList(*args)
-            obj._impl = implementation
+            obj = AdjacencyList(*args, **kwargs)
             return obj
         elif implementation == 'adjacency_matrix':
             from pydatastructs.graphs.adjacency_matrix import AdjacencyMatrix
-            obj = AdjacencyMatrix(*args)
-            obj._impl = implementation
+            obj = AdjacencyMatrix(*args, **kwargs)
             return obj
         else:
             raise NotImplementedError("%s implementation is not a part "

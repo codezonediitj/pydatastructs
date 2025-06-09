@@ -31,9 +31,9 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install -r requirements.txt
-          pip install -r docs/requirements.txt
-      
+          python -m pip install -r requirements.txt
+          python -m pip install -r docs/requirements.txt
+
       - name: Install lcov
         run: |
           sudo apt-get update
@@ -41,8 +41,8 @@ jobs:
 
       - name: Build package
         run: |
-          CXXFLAGS=--coverage CFLAGS=--coverage python scripts/build/install.py
-# coverage tests     
+          CXXFLAGS="-std=c++17 --coverage" CFLAGS="--coverage" python scripts/build/install.py
+      # coverage tests
       - name: Run tests
         run: |
           python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
@@ -50,7 +50,7 @@ jobs:
       - name: Capture Coverage Data with lcov
         run: |
           lcov --capture --directory . --output-file coverage.info --no-external
-  
+
       - name: Generate HTML Coverage Report with genhtml
         run: |
           genhtml coverage.info --output-directory coverage_report
@@ -97,12 +97,12 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install -r requirements.txt
-          pip install -r docs/requirements.txt
+          python -m pip install -r requirements.txt
+          python -m pip install -r docs/requirements.txt
 
       - name: Build package
         run: |
-          python scripts/build/install.py
+          CXXFLAGS="-std=c++17" python scripts/build/install.py
 
       - name: Run tests
         run: |
@@ -138,12 +138,12 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install -r requirements.txt
-          pip install -r docs/requirements.txt
+          python -m pip install -r requirements.txt
+          python -m pip install -r docs/requirements.txt
 
       - name: Build package
         run: |
-          python scripts/build/install.py
+          CXXFLAGS="-std=c++17" python scripts/build/install.py
 
       - name: Run tests
         run: |
@@ -186,10 +186,12 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install -r requirements.txt
-          pip install -r docs/requirements.txt
+          python -m pip install -r requirements.txt
+          python -m pip install -r docs/requirements.txt
 
       - name: Build package
+        env:
+          CL: "/std:c++17"
         run: |
           python scripts/build/install.py
 

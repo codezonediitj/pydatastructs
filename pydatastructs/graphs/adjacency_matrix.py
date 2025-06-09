@@ -1,4 +1,5 @@
 from pydatastructs.graphs.graph import Graph
+from pydatastructs.graphs._backend.cpp import _graph
 from pydatastructs.utils.misc_util import (
     GraphEdge, raise_if_backend_is_not_python,
     Backend)
@@ -17,17 +18,20 @@ class AdjacencyMatrix(Graph):
     pydatastructs.graphs.graph.Graph
     """
     def __new__(cls, *vertices, **kwargs):
-        raise_if_backend_is_not_python(
-            cls, kwargs.get('backend', Backend.PYTHON))
-        obj = object.__new__(cls)
-        obj.vertices = [vertex.name for vertex in vertices]
-        for vertex in vertices:
-            obj.__setattr__(vertex.name, vertex)
-        obj.matrix = {}
-        for vertex in vertices:
-            obj.matrix[vertex.name] = {}
-        obj.edge_weights = {}
-        return obj
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.PYTHON:
+            obj = object.__new__(cls)
+            obj.vertices = [vertex.name for vertex in vertices]
+            for vertex in vertices:
+                obj.__setattr__(vertex.name, vertex)
+            obj.matrix = {}
+            for vertex in vertices:
+                obj.matrix[vertex.name] = {}
+            obj.edge_weights = {}
+            obj._impl = 'adjacency_matrix'
+            return obj
+        else:
+            return _graph.AdjacencyMatrixGraph(vertices)
 
     @classmethod
     def methods(self):
