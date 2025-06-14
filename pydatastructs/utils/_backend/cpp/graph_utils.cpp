@@ -3,6 +3,7 @@
 #include "AdjacencyListGraphNode.hpp"
 #include "AdjacencyMatrixGraphNode.hpp"
 #include "GraphEdge.hpp"
+#include "graph_bindings.hpp"
 
 static struct PyModuleDef graph_utils_struct = {
     PyModuleDef_HEAD_INIT,

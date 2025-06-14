@@ -49,22 +49,20 @@ static PyObject* GraphEdge_new(PyTypeObject* type, PyObject* args, PyObject* kwd
 }
 
 static PyObject* GraphEdge_str(GraphEdge* self) {
-    PyObject* source_name = PyObject_GetAttrString(self->source, "name");
-    PyObject* target_name = PyObject_GetAttrString(self->target, "name");
+    std::string source_name = (reinterpret_cast<GraphNode*>(self->source))->name;
+    std::string target_name = (reinterpret_cast<GraphNode*>(self->target))->name;
 
-    if (!source_name || !target_name) {
+    if (source_name.empty() || target_name.empty()) {
         PyErr_SetString(PyExc_AttributeError, "Both nodes must have a 'name' attribute.");
         return NULL;
     }
 
-    PyObject* str_repr = PyUnicode_FromFormat("('%U', '%U')", source_name, target_name);
+    PyObject* str_repr = PyUnicode_FromFormat("('%s', '%s')", source_name.c_str(), target_name.c_str());
 
-    Py_XDECREF(source_name);
-    Py_XDECREF(target_name);
     return str_repr;
 }
 
-PyTypeObject GraphEdgeType = {
+inline PyTypeObject GraphEdgeType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "GraphEdge",
     /* tp_basicsize */ sizeof(GraphEdge),
     /* tp_itemsize */ 0,
