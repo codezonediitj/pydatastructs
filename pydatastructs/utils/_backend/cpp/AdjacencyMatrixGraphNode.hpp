@@ -11,7 +11,6 @@ typedef struct {
 } AdjacencyMatrixGraphNode;
 
 static void AdjacencyMatrixGraphNode_dealloc(AdjacencyMatrixGraphNode* self){
-    Py_XDECREF(self->super.data);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyTypeObject*>(self));
 }
 

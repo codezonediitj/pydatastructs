@@ -6,18 +6,19 @@
 #include <string>
 #include <unordered_map>
 #include "GraphNode.hpp"
+#include <variant>
 
 extern PyTypeObject AdjacencyListGraphNodeType;
 
 typedef struct {
     PyObject_HEAD
     std::string name;
-    PyObject* data;
+    std::variant<std::monostate, int64_t, double, std::string> data;
+    DataType data_type;
     std::unordered_map<std::string, PyObject*> adjacent;
 } AdjacencyListGraphNode;
 
 static void AdjacencyListGraphNode_dealloc(AdjacencyListGraphNode* self) {
-    Py_XDECREF(self->data);
     for (auto& pair : self->adjacent) {
         Py_XDECREF(pair.second);
     }
@@ -30,6 +31,9 @@ static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, 
     if (!self) return NULL;
     new (&self->adjacent) std::unordered_map<std::string, PyObject*>();
     new (&self->name) std::string();
+    new (&self->data) std::variant<std::monostate, int64_t, double, std::string>();
+    self->data_type = DataType::None;
+    self->data = std::monostate{};
 
     static char* kwlist[] = { "name", "data", "adjacency_list", NULL };
     const char* name;
@@ -42,8 +46,24 @@ static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, 
     }
 
     self->name = std::string(name);
-    Py_INCREF(data);
-    self->data = data;
+
+    if (data == Py_None) {
+        self->data_type = DataType::None;
+        self->data = std::monostate{};
+    } else if (PyLong_Check(data)) {
+        self->data_type = DataType::Int;
+        self->data = static_cast<int64_t>(PyLong_AsLongLong(data));
+    } else if (PyFloat_Check(data)) {
+        self->data_type = DataType::Double;
+        self->data = PyFloat_AsDouble(data);
+    } else if (PyUnicode_Check(data)) {
+        const char* str = PyUnicode_AsUTF8(data);
+        self->data_type = DataType::String;
+        self->data = std::string(str);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Unsupported data type. Must be int, float, str, or None.");
+        return NULL;
+    }
 
     if (PyList_Check(adjacency_list)) {
         Py_ssize_t size = PyList_Size(adjacency_list);
@@ -127,14 +147,41 @@ static int AdjacencyListGraphNode_set_name(AdjacencyListGraphNode* self, PyObjec
 }
 
 static PyObject* AdjacencyListGraphNode_get_data(AdjacencyListGraphNode* self, void* closure) {
-    Py_INCREF(self->data);
-    return self->data;
+    switch (self->data_type) {
+        case DataType::Int:
+            return PyLong_FromLongLong(std::get<int64_t>(self->data));
+        case DataType::Double:
+            return PyFloat_FromDouble(std::get<double>(self->data));
+        case DataType::String:
+            return PyUnicode_FromString(std::get<std::string>(self->data).c_str());
+        case DataType::None:
+        default:
+            Py_RETURN_NONE;
+    }
 }
 
 static int AdjacencyListGraphNode_set_data(AdjacencyListGraphNode* self, PyObject* value, void* closure) {
-    Py_XDECREF(self->data);
-    Py_INCREF(value);
-    self->data = value;
+    if (value == Py_None) {
+        self->data_type = DataType::None;
+        self->data = std::monostate{};
+    } else if (PyLong_Check(value)) {
+        self->data_type = DataType::Int;
+        self->data = static_cast<int64_t>(PyLong_AsLongLong(value));
+    } else if (PyFloat_Check(value)) {
+        self->data_type = DataType::Double;
+        self->data = PyFloat_AsDouble(value);
+    } else if (PyUnicode_Check(value)) {
+        const char* str = PyUnicode_AsUTF8(value);
+        if (!str) {
+            PyErr_SetString(PyExc_ValueError, "Invalid UTF-8 string.");
+            return -1;
+        }
+        self->data_type = DataType::String;
+        self->data = std::string(str);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Unsupported data type. Must be int, float, str, or None.");
+        return -1;
+    }
     return 0;
 }
 

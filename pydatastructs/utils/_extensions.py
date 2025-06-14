@@ -16,6 +16,6 @@ graph_utils_sources = ['/'.join([project, module, backend, cpp,
                             'graph_utils.cpp'])]
 
 extensions = [
-    Extension(nodes, sources=nodes_sources),
-    Extension(graph_utils, sources = graph_utils_sources)
+    Extension(nodes, sources=nodes_sources, language="c++", extra_compile_args=["-std=c++17", "-stdlib=libc++"]),
+    Extension(graph_utils, sources = graph_utils_sources, language="c++", extra_compile_args=["-std=c++17", "-stdlib=libc++"])
 ]
