@@ -143,7 +143,7 @@ jobs:
 
       - name: Build package
         env:
-          MACOSX_DEPLOYMENT_TARGET: 10.13
+          MACOSX_DEPLOYMENT_TARGET: 11.0
         run: |
           CXXFLAGS="-std=c++17" python scripts/build/install.py
 
