@@ -4,6 +4,9 @@ minimum_spanning_tree_parallel, strongly_connected_components,
 depth_first_search, shortest_paths,all_pair_shortest_paths, topological_sort,
 topological_sort_parallel, max_flow, find_bridges)
 from pydatastructs.utils.raises_util import raises
+from pydatastructs.utils.misc_util import AdjacencyListGraphNode, AdjacencyMatrixGraphNode
+from pydatastructs.graphs._backend.cpp import _graph
+from pydatastructs.utils.misc_util import Backend
 
 def test_breadth_first_search():
 
@@ -39,6 +42,18 @@ def test_breadth_first_search():
         breadth_first_search(G1, V1.name, bfs_tree, parent)
         assert (parent[V3.name] == V1.name and parent[V2.name] == V1.name) or \
             (parent[V3.name] == V2.name and parent[V2.name] == V1.name)
+        
+        if (ds=='List'):
+            V9 = AdjacencyListGraphNode("9",0,backend = Backend.CPP)
+            V10 = AdjacencyListGraphNode("10",0,backend = Backend.CPP)
+            V11 = AdjacencyListGraphNode("11",0,backend = Backend.CPP)
+            G2 = Graph(V9, V10, V11,implementation = 'adjacency_list', backend = Backend.CPP)
+            assert G2.num_vertices()==3
+            G2.add_edge("9", "10")
+            G2.add_edge("10", "11")
+            breadth_first_search(G2, V1.name, bfs_tree, parent, backend = Backend.CPP)
+
+            
 
         V4 = GraphNode(0)
         V5 = GraphNode(1)
@@ -130,6 +145,8 @@ def test_breadth_first_search_parallel():
 
     _test_breadth_first_search_parallel("List")
     _test_breadth_first_search_parallel("Matrix")
+
+test_breadth_first_search()
 
 def test_minimum_spanning_tree():
 
