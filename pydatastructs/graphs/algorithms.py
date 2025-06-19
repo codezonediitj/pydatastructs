@@ -11,7 +11,7 @@ from pydatastructs.miscellaneous_data_structures import (
 from pydatastructs.graphs.graph import Graph
 from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
-from pydatastructs.graphs._backend.cpp import _algorithms
+from pydatastructs.graphs._backend.cpp._algorithms import bfs_adjacency_list, bfs_adjacency_matrix
 
 __all__ = [
     'breadth_first_search',
@@ -95,10 +95,10 @@ def breadth_first_search(
     else:
         if (graph._impl == "adjacency_list"):
             extra_args = args if args else ()
-            return _algorithms.bfs_adjacency_list(graph, source_node, operation, extra_args)
+            return bfs_adjacency_list(graph, source_node, operation, extra_args)
         if (graph._impl == "adjacency_matrix"):
             extra_args = args if args else ()
-            return _algorithms.bfs_adjacency_matrix(graph, source_node, operation, extra_args)
+            return bfs_adjacency_matrix(graph, source_node, operation, extra_args)
 
 def _breadth_first_search_adjacency_list(
     graph, source_node, operation, *args, **kwargs):
