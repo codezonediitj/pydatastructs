@@ -19,4 +19,5 @@ algorithms_sources = ['/'.join([project, module, backend, cpp,
 include_dir = os.path.abspath(os.path.join(project, 'utils', '_backend', 'cpp'))
 
 extensions = [Extension(graph, sources=graph_sources,include_dirs=[include_dir], language="c++", extra_compile_args=["-std=c++17"]),
-              Extension(algorithms, sources=algorithms_sources,include_dirs=[include_dir], language="c++", extra_compile_args=["-std=c++17"])]
+              Extension(algorithms, sources=algorithms_sources,include_dirs=[include_dir], language="c++", extra_compile_args=["-std=c++17"]),
+              ]

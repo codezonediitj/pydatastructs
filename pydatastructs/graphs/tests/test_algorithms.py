@@ -6,6 +6,7 @@ topological_sort_parallel, max_flow, find_bridges)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import AdjacencyListGraphNode, AdjacencyMatrixGraphNode
 from pydatastructs.graphs._backend.cpp import _graph
+from pydatastructs.graphs._backend.cpp import _algorithms
 from pydatastructs.utils.misc_util import Backend
 
 def test_breadth_first_search():
