@@ -42,8 +42,9 @@ def test_breadth_first_search():
         breadth_first_search(G1, V1.name, bfs_tree, parent)
         assert (parent[V3.name] == V1.name and parent[V2.name] == V1.name) or \
             (parent[V3.name] == V2.name and parent[V2.name] == V1.name)
-        
+
         if (ds=='List'):
+            parent2 = {}
             V9 = AdjacencyListGraphNode("9",0,backend = Backend.CPP)
             V10 = AdjacencyListGraphNode("10",0,backend = Backend.CPP)
             V11 = AdjacencyListGraphNode("11",0,backend = Backend.CPP)
@@ -51,9 +52,22 @@ def test_breadth_first_search():
             assert G2.num_vertices()==3
             G2.add_edge("9", "10")
             G2.add_edge("10", "11")
-            breadth_first_search(G2, V1.name, bfs_tree, parent, backend = Backend.CPP)
+            breadth_first_search(G2, "9", bfs_tree, parent2, backend = Backend.CPP)
+            assert parent2[V10] == V9
+            assert parent2[V11] == V10
 
-            
+        if (ds == 'Matrix'):
+            parent3 = {}
+            V12 = AdjacencyMatrixGraphNode("12", 0, backend = Backend.CPP)
+            V13 = AdjacencyMatrixGraphNode("13", 0, backend = Backend.CPP)
+            V14 = AdjacencyMatrixGraphNode("14", 0, backend = Backend.CPP)
+            G3 = Graph(V12, V13, V14, implementation = 'adjacency_matrix', backend = Backend.CPP)
+            assert G3.num_vertices() == 3
+            G3.add_edge("12", "13")
+            G3.add_edge("13", "14")
+            breadth_first_search(G3, "12", bfs_tree, parent3, backend = Backend.CPP)
+            assert parent3[V13] == V12
+            assert parent3[V14] == V13
 
         V4 = GraphNode(0)
         V5 = GraphNode(1)
@@ -145,8 +159,6 @@ def test_breadth_first_search_parallel():
 
     _test_breadth_first_search_parallel("List")
     _test_breadth_first_search_parallel("Matrix")
-
-test_breadth_first_search()
 
 def test_minimum_spanning_tree():
 

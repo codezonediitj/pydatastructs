@@ -6,7 +6,15 @@
 #include "AdjacencyMatrixGraphNode.hpp"
 #include "graph_bindings.hpp"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+PyMODINIT_FUNC PyInit__graph(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 static struct PyModuleDef graph_module = {
     PyModuleDef_HEAD_INIT,

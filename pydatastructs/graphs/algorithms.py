@@ -94,8 +94,11 @@ def breadth_first_search(
             graph, source_node, operation, *args, **kwargs)
     else:
         if (graph._impl == "adjacency_list"):
-            extra_arg = args[0] if args else None
-            return _algorithms.bfs_adjacency_list(graph,source_node, operation, extra_arg)
+            extra_args = args if args else ()
+            return _algorithms.bfs_adjacency_list(graph, source_node, operation, extra_args)
+        if (graph._impl == "adjacency_matrix"):
+            extra_args = args if args else ()
+            return _algorithms.bfs_adjacency_matrix(graph, source_node, operation, extra_args)
 
 def _breadth_first_search_adjacency_list(
     graph, source_node, operation, *args, **kwargs):

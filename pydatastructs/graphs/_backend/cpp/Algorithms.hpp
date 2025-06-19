@@ -2,153 +2,154 @@
 #include <unordered_map>
 #include <queue>
 #include <string>
+#include <unordered_set>
 #include "AdjacencyList.hpp"
+#include "AdjacencyMatrix.hpp"
 
-static inline AdjacencyListGraphNode* get_node(AdjacencyListGraph* graph, const std::string& name) {
-    auto it = graph->node_map.find(name);
-    return (it != graph->node_map.end()) ? it->second : nullptr;
-}
 
-static PyObject* bfs_adjacency_list(PyObject* self, PyObject* args, PyObject* kwds) {
-    static char* kwlist[] = {(char*)"graph", (char*)"source_node", (char*)"operation", (char*)"extra_arg", NULL};
+static PyObject* breadth_first_search_adjacency_list(PyObject* self, PyObject* args, PyObject* kwargs) {
+    PyObject* graph_obj;
+    const char* source_name;
+    PyObject* operation;
+    PyObject* varargs = nullptr;
+    PyObject* kwargs_dict = nullptr;
 
-    PyObject* py_graph = nullptr;
-    const char* source_node = nullptr;
-    PyObject* operation = nullptr;
-    PyObject* extra_arg = nullptr;
-
-    fprintf(stderr, "[bfs] Parsing arguments...\n");
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "OsO|O", kwlist,
-                                     &py_graph, &source_node, &operation, &extra_arg)) {
-        fprintf(stderr, "[bfs] Failed to parse arguments\n");
-        return NULL;
+    static const char* kwlist[] = {"graph", "source_node", "operation", "args", "kwargs", nullptr};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!sO|OO", const_cast<char**>(kwlist),
+                                     &AdjacencyListGraphType, &graph_obj,
+                                     &source_name, &operation,
+                                     &varargs, &kwargs_dict)) {
+        return nullptr;
     }
 
-    fprintf(stderr, "[bfs] Arguments parsed:\n");
-    fprintf(stderr, "  - source_node: %s\n", source_node);
-    fprintf(stderr, "  - extra_arg: %s\n", (extra_arg ? Py_TYPE(extra_arg)->tp_name : "NULL"));
-    fprintf(stderr, "[bfs] Checking type of py_graph...\n");
-    fprintf(stderr, "        - Expected: %s\n", AdjacencyListGraphType.tp_name);
-    fprintf(stderr, "        - Actual:   %s\n", Py_TYPE(py_graph)->tp_name);
-    fprintf(stderr, "        - Expected address: %p\n", &AdjacencyListGraphType);
-    fprintf(stderr, "        - Actual type addr: %p\n", (void*)Py_TYPE(py_graph));
+    AdjacencyListGraph* cpp_graph = reinterpret_cast<AdjacencyListGraph*>(graph_obj);
 
-    fprintf(stderr, "[bfs] Attempting to import _graph...\n");
-    PyObject* graph_module = PyImport_ImportModule("_graph");
-    if (!graph_module) {
-    PyErr_Print();
-    PyErr_SetString(PyExc_ImportError, "Could not import _graph module");
-    return NULL;
-    }
+    auto it = cpp_graph->node_map.find(source_name);
+    AdjacencyListGraphNode* start_node = it->second;
 
-    PyObject* expected_type = PyObject_GetAttrString(graph_module, "AdjacencyListGraph");
-    Py_DECREF(graph_module);
+    std::unordered_set<std::string> visited;
+    std::queue<AdjacencyListGraphNode*> q;
 
-    if (!expected_type || !PyType_Check(expected_type)) {
-        Py_XDECREF(expected_type);
-        PyErr_SetString(PyExc_TypeError, "Could not retrieve AdjacencyListGraph type");
-        return NULL;
-    }
-
-    if (!PyObject_IsInstance(py_graph, expected_type)) {
-        Py_DECREF(expected_type);
-        PyErr_SetString(PyExc_TypeError, "Expected an AdjacencyListGraph instance");
-        return NULL;
-    }
-
-    if (!PyCallable_Check(operation)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a callable for operation");
-        fprintf(stderr, "[bfs] operation is not callable\n");
-        return NULL;
-    }
-
-    AdjacencyListGraph* graph = (AdjacencyListGraph*)py_graph;
-
-    if (!get_node(graph, source_node)) {
-        PyErr_SetString(PyExc_ValueError, "Source node does not exist in the graph");
-        fprintf(stderr, "[bfs] source_node not found in graph\n");
-        return NULL;
-    }
-
-    fprintf(stderr, "[bfs] Starting BFS from node: %s\n", source_node);
-
-    std::unordered_map<std::string, bool> visited;
-    std::queue<std::string> q;
-
-    q.push(source_node);
-    visited[source_node] = true;
+    q.push(start_node);
+    visited.insert(start_node->name);
 
     while (!q.empty()) {
-        std::string curr = q.front();
-        q.pop();
+    AdjacencyListGraphNode* node = q.front();
+    q.pop();
 
-        fprintf(stderr, "[bfs] Visiting node: %s\n", curr.c_str());
+    for (const auto& [adj_name, adj_obj] : node->adjacent) {
+        if (visited.count(adj_name)) continue;
+        if (!PyObject_IsInstance(adj_obj, (PyObject*)&AdjacencyListGraphNodeType)) continue;
 
-        auto* curr_node = get_node(graph, curr);
-        if (!curr_node) {
-            fprintf(stderr, "[bfs] Warning: node %s not found in node_map\n", curr.c_str());
-            continue;
+        AdjacencyListGraphNode* adj_node = reinterpret_cast<AdjacencyListGraphNode*>(adj_obj);
+
+        PyObject* base_args = PyTuple_Pack(2,
+                                           reinterpret_cast<PyObject*>(node),
+                                           reinterpret_cast<PyObject*>(adj_node));
+        if (!base_args)
+            return nullptr;
+
+        PyObject* final_args;
+        if (varargs && PyTuple_Check(varargs)) {
+            final_args = PySequence_Concat(base_args, varargs);
+            Py_DECREF(base_args);
+            if (!final_args)
+                return nullptr;
+        } else {
+            final_args = base_args;
         }
 
-        const auto& neighbors = curr_node->adjacent;
+        PyObject* result = PyObject_Call(operation, final_args, kwargs_dict);
+        Py_DECREF(final_args);
 
-        if (!neighbors.empty()) {
-            for (const auto& [next_name, _] : neighbors) {
-                if (!visited[next_name]) {
-                    fprintf(stderr, "[bfs] Considering neighbor: %s\n", next_name.c_str());
+        if (!result)
+            return nullptr;
 
-                    PyObject* result = nullptr;
+        Py_DECREF(result);
 
-                    if (extra_arg)
-                        result = PyObject_CallFunction(operation, "ssO", curr.c_str(), next_name.c_str(), extra_arg);
-                    else
-                        result = PyObject_CallFunction(operation, "ss", curr.c_str(), next_name.c_str());
+        visited.insert(adj_name);
+        q.push(adj_node);
+    }
+    }
+    if (PyErr_Occurred()) {
+        return nullptr;
+    }
 
-                    if (!result) {
-                        fprintf(stderr, "[bfs] PyObject_CallFunction failed on (%s, %s)\n", curr.c_str(), next_name.c_str());
-                        PyErr_Print();
-                        return NULL;
-                    }
+    Py_RETURN_NONE;
+}
 
-                    int keep_going = PyObject_IsTrue(result);
-                    Py_DECREF(result);
+static PyObject* breadth_first_search_adjacency_matrix(PyObject* self, PyObject* args, PyObject* kwargs) {
+    PyObject* graph_obj;
+    const char* source_name;
+    PyObject* operation;
+    PyObject* varargs = nullptr;
+    PyObject* kwargs_dict = nullptr;
 
-                    if (!keep_going) {
-                        fprintf(stderr, "[bfs] Operation requested to stop traversal at edge (%s -> %s)\n", curr.c_str(), next_name.c_str());
-                        Py_RETURN_NONE;
-                    }
+    static const char* kwlist[] = {"graph", "source_node", "operation", "args", "kwargs", nullptr};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!sO|OO", const_cast<char**>(kwlist),
+                                     &AdjacencyMatrixGraphType, &graph_obj,
+                                     &source_name, &operation,
+                                     &varargs, &kwargs_dict)) {
+        return nullptr;
+    }
 
-                    visited[next_name] = true;
-                    q.push(next_name);
-                }
+    AdjacencyMatrixGraph* cpp_graph = reinterpret_cast<AdjacencyMatrixGraph*>(graph_obj);
+
+    auto it = cpp_graph->node_map.find(source_name);
+    if (it == cpp_graph->node_map.end()) {
+        PyErr_SetString(PyExc_KeyError, "Source node not found in graph");
+        return nullptr;
+    }
+    AdjacencyMatrixGraphNode* start_node = it->second;
+
+    std::unordered_set<std::string> visited;
+    std::queue<AdjacencyMatrixGraphNode*> q;
+
+    q.push(start_node);
+    visited.insert(source_name);
+
+    while (!q.empty()) {
+        AdjacencyMatrixGraphNode* node = q.front();
+        q.pop();
+
+        std::string node_name = reinterpret_cast<GraphNode*>(node)->name;
+        auto& neighbors = cpp_graph->matrix[node_name];
+
+        for (const auto& [adj_name, connected] : neighbors) {
+            if (!connected || visited.count(adj_name)) continue;
+
+            auto adj_it = cpp_graph->node_map.find(adj_name);
+            if (adj_it == cpp_graph->node_map.end()) continue;
+
+            AdjacencyMatrixGraphNode* adj_node = adj_it->second;
+
+            PyObject* base_args = PyTuple_Pack(2,
+                                               reinterpret_cast<PyObject*>(node),
+                                               reinterpret_cast<PyObject*>(adj_node));
+            if (!base_args) return nullptr;
+
+            PyObject* final_args;
+            if (varargs && PyTuple_Check(varargs)) {
+                final_args = PySequence_Concat(base_args, varargs);
+                Py_DECREF(base_args);
+                if (!final_args) return nullptr;
+            } else {
+                final_args = base_args;
             }
-        } else {
-            fprintf(stderr, "[bfs] Leaf node reached: %s\n", curr.c_str());
 
-            PyObject* result = nullptr;
-
-            if (extra_arg)
-                result = PyObject_CallFunction(operation, "sO", curr.c_str(), extra_arg);
-            else
-                result = PyObject_CallFunction(operation, "s", curr.c_str());
-
-            if (!result) {
-                fprintf(stderr, "[bfs] PyObject_CallFunction failed at leaf node (%s)\n", curr.c_str());
-                PyErr_Print();
-                return NULL;
-            }
-
-            int keep_going = PyObject_IsTrue(result);
+            PyObject* result = PyObject_Call(operation, final_args, kwargs_dict);
+            Py_DECREF(final_args);
+            if (!result) return nullptr;
             Py_DECREF(result);
 
-            if (!keep_going) {
-                fprintf(stderr, "[bfs] Operation requested to stop traversal at leaf node %s\n", curr.c_str());
-                Py_RETURN_NONE;
-            }
+            visited.insert(adj_name);
+            q.push(adj_node);
         }
     }
 
-    fprintf(stderr, "[bfs] BFS traversal complete\n");
+    if (PyErr_Occurred()) {
+        return nullptr;
+    }
+
     Py_RETURN_NONE;
 }

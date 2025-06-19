@@ -349,7 +349,7 @@ static PyMethodDef AdjacencyListGraph_methods[] = {
 };
 
 
-PyTypeObject AdjacencyListGraphType = {
+inline PyTypeObject AdjacencyListGraphType = {
     PyVarObject_HEAD_INIT(NULL, 0)                 // ob_base
     "_graph.AdjacencyListGraph",                   // tp_name
     sizeof(AdjacencyListGraph),                    // tp_basicsize
