@@ -146,7 +146,9 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: 11.0
         run: |
           CXXFLAGS="-std=c++17" python scripts/build/install.py
-
+      - name: List installed package files
+        run: |
+          pip show -f pydatastructs
       - name: Run tests
         run: |
           python -c "import pydatastructs; pydatastructs.test()"
