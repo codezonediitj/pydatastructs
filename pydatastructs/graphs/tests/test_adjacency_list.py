@@ -67,16 +67,16 @@ def test_adjacency_list():
     g2.add_vertex(v)
     g2.add_edge('v_4', 'v', 0)
     g2.add_edge('v_5', 'v', 0)
-    g2.add_edge('v_6', 'v', 0)
+    g2.add_edge('v_6', 'v', "h")
     assert g2.is_adjacent('v_4', 'v') is True
     assert g2.is_adjacent('v_5', 'v') is True
     assert g2.is_adjacent('v_6', 'v') is True
     e1 = g2.get_edge('v_4', 'v')
     e2 = g2.get_edge('v_5', 'v')
     e3 = g2.get_edge('v_6', 'v')
-    assert (str(e1)) == "('v_4', 'v')"
-    assert (str(e2)) == "('v_5', 'v')"
-    assert (str(e3)) == "('v_6', 'v')"
+    assert (str(e1)) == "('v_4', 'v', 0)"
+    assert (str(e2)) == "('v_5', 'v', 0)"
+    assert (str(e3)) == "('v_6', 'v', h)"
     g2.remove_edge('v_4', 'v')
     assert g2.is_adjacent('v_4', 'v') is False
     g2.remove_vertex('v')

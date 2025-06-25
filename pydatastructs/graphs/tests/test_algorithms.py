@@ -185,6 +185,33 @@ def test_minimum_spanning_tree():
         for k, v in mst.edge_weights.items():
             assert (k, v.value) in expected_mst
 
+    def _test_minimum_spanning_tree_cpp(ds, algorithm, *args):
+        if (ds == 'List' and algorithm == "prim"):
+            a1 = AdjacencyListGraphNode('a',0, backend = Backend.CPP)
+            b1 = AdjacencyListGraphNode('b',0, backend = Backend.CPP)
+            c1 = AdjacencyListGraphNode('c',0, backend = Backend.CPP)
+            d1 = AdjacencyListGraphNode('d',0, backend = Backend.CPP)
+            e1 = AdjacencyListGraphNode('e',0, backend = Backend.CPP)
+            g = Graph(a1, b1, c1, d1, e1, backend = Backend.CPP)
+            g.add_edge(a1.name, c1.name, 10)
+            g.add_edge(c1.name, a1.name, 10)
+            g.add_edge(a1.name, d1.name, 7)
+            g.add_edge(d1.name, a1.name, 7)
+            g.add_edge(c1.name, d1.name, 9)
+            g.add_edge(d1.name, c1.name, 9)
+            g.add_edge(d1.name, b1.name, 32)
+            g.add_edge(b1.name, d1.name, 32)
+            g.add_edge(d1.name, e1.name, 23)
+            g.add_edge(e1.name, d1.name, 23)
+            mst = minimum_spanning_tree(g, "prim", backend = Backend.CPP)
+            expected_mst = ["('a', 'd', 7)", "('d', 'c', 9)", "('e', 'd', 23)", "('b', 'd', 32)",
+                        "('d', 'a', 7)", "('c', 'd', 9)", "('d', 'e', 23)", "('d', 'b', 32)"]
+            assert str(mst.get_edge('a','d')) in expected_mst
+            assert str(mst.get_edge('e','d')) in expected_mst
+            assert str(mst.get_edge('d','c')) in expected_mst
+            assert str(mst.get_edge('b','d')) in expected_mst
+            assert mst.num_edges() == 8
+
     fmst = minimum_spanning_tree
     fmstp = minimum_spanning_tree_parallel
     _test_minimum_spanning_tree(fmst, "List", "kruskal")
@@ -193,6 +220,7 @@ def test_minimum_spanning_tree():
     _test_minimum_spanning_tree(fmstp, "List", "kruskal", 3)
     _test_minimum_spanning_tree(fmstp, "Matrix", "kruskal", 3)
     _test_minimum_spanning_tree(fmstp, "List", "prim", 3)
+    _test_minimum_spanning_tree_cpp("List", "prim")
 
 def test_strongly_connected_components():
 

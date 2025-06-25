@@ -53,7 +53,7 @@ def test_GraphEdge():
     h_1 = AdjacencyListGraphNode('h_1', 1, backend = Backend.CPP)
     h_2 = AdjacencyListGraphNode('h_2', 2, backend = Backend.CPP)
     e2 = GraphEdge(h_1, h_2, value = 2, backend = Backend.CPP)
-    assert str(e2) == "('h_1', 'h_2')"
+    assert str(e2) == "('h_1', 'h_2', 2)"
 
 def test_BinomialTreeNode():
     b = BinomialTreeNode(1,1)
