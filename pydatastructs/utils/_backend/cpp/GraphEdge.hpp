@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <string>
 #include <variant>
+#include <cstdint>
 #include "GraphNode.hpp"
 
 extern PyTypeObject GraphEdgeType;

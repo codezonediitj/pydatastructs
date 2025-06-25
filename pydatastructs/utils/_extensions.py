@@ -21,6 +21,14 @@ elif sys.platform == "win32":
     extra_compile_args = ["/std:c++17"]
 
 extensions = [
-    Extension(nodes, sources=nodes_sources, language="c++", extra_compile_args=extra_compile_args),
-    Extension(graph_utils, sources=graph_utils_sources, language="c++", extra_compile_args=extra_compile_args),
+    Extension(
+        nodes,
+        sources=nodes_sources,
+        extra_compile_args=["-std=c++17"]
+    ),
+    Extension(
+        graph_utils,
+        sources=graph_utils_sources,
+        extra_compile_args=["-std=c++17"]
+    )
 ]
