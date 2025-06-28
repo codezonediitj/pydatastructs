@@ -236,7 +236,7 @@ static PyMethodDef AdjacencyMatrixGraph_methods[] = {
     {NULL}
 };
 
-PyTypeObject AdjacencyMatrixGraphType = {
+inline PyTypeObject AdjacencyMatrixGraphType = {
     PyVarObject_HEAD_INIT(NULL, 0)                  // ob_base
     "_graph.AdjacencyMatrixGraph",                  // tp_name
     sizeof(AdjacencyMatrixGraph),                   // tp_basicsize

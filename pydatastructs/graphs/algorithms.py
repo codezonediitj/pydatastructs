@@ -81,16 +81,24 @@ def breadth_first_search(
     >>> G.add_edge(V2.name, V3.name)
     >>> breadth_first_search(G, V1.name, f, V3.name)
     """
-    raise_if_backend_is_not_python(
-        breadth_first_search, kwargs.get('backend', Backend.PYTHON))
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_breadth_first_search_" + graph._impl
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently breadth first search isn't implemented for "
-        "%s graphs."%(graph._impl))
-    return getattr(algorithms, func)(
-           graph, source_node, operation, *args, **kwargs)
+    backend = kwargs.get('backend', Backend.PYTHON)
+    if backend == Backend.PYTHON:
+        import pydatastructs.graphs.algorithms as algorithms
+        func = "_breadth_first_search_" + graph._impl
+        if not hasattr(algorithms, func):
+            raise NotImplementedError(
+            "Currently breadth first search isn't implemented for "
+            "%s graphs."%(graph._impl))
+        return getattr(algorithms, func)(
+            graph, source_node, operation, *args, **kwargs)
+    else:
+        from pydatastructs.graphs._backend.cpp._algorithms import bfs_adjacency_list, bfs_adjacency_matrix
+        if (graph._impl == "adjacency_list"):
+            extra_args = args if args else ()
+            return bfs_adjacency_list(graph, source_node, operation, extra_args)
+        if (graph._impl == "adjacency_matrix"):
+            extra_args = args if args else ()
+            return bfs_adjacency_matrix(graph, source_node, operation, extra_args)
 
 def _breadth_first_search_adjacency_list(
     graph, source_node, operation, *args, **kwargs):
