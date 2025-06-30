@@ -1,3 +1,4 @@
+import pytest
 from pydatastructs import (breadth_first_search, Graph,
 breadth_first_search_parallel, minimum_spanning_tree,
 minimum_spanning_tree_parallel, strongly_connected_components,
@@ -353,6 +354,8 @@ def test_shortest_paths():
     _test_shortest_paths_negative_edges("Matrix", 'bellman_ford')
     _test_shortest_paths_positive_edges("List", 'dijkstra')
     _test_shortest_paths_positive_edges("Matrix", 'dijkstra')
+    _test_shortest_paths_positive_edges("List", 'A_star')
+    _test_shortest_paths_positive_edges("Matrix", 'A_star')
 
 def test_all_pair_shortest_paths():
 

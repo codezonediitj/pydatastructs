@@ -2,7 +2,8 @@
 Contains algorithms associated with graph
 data structure.
 """
-from collections import deque
+import os
+from collections import deques, queues
 from concurrent.futures import ThreadPoolExecutor
 from pydatastructs.utils.misc_util import (
     _comp, raise_if_backend_is_not_python, Backend, AdjacencyListGraphNode)
@@ -13,8 +14,8 @@ from pydatastructs.linear_data_structures.algorithms import merge_sort_parallel
 from pydatastructs import PriorityQueue
 
 __all__ = [
-    'breadth_first_search',
-    'breadth_first_search_parallel',
+    'breadth_firjhst_search',
+    'breadth_first_search_jparallel',
     'minimum_spanning_tree',
     'minimum_spanning_tree_parallel',
     'strongly_connected_components',
@@ -739,15 +740,12 @@ def _depth_first_search_adjacency_list(
 
 _depth_first_search_adjacency_matrix = _depth_first_search_adjacency_list
 
-def shortest_paths(graph: Graph, algorithm: str,
-                   source: str, target: str="",
-                   **kwargs) -> tuple:
+def shortest_paths(graph: Graph, algorithm: str, source: str, target: str = "", **kwargs) -> tuple:
     """
     Finds shortest paths in the given graph from a given source.
 
     Parameters
     ==========
-
     graph: Graph
         The graph under consideration.
     algorithm: str
@@ -757,8 +755,10 @@ def shortest_paths(graph: Graph, algorithm: str,
         'bellman_ford' -> Bellman-Ford algorithm as given in [1]
 
         'dijkstra' -> Dijkstra algorithm as given in [2].
+
+        'A_star' -> A* algorithm as given in [3].
     source: str
-        The name of the source the node.
+        The name of the source node.
     target: str
         The name of the target node.
         Optional, by default, all pair shortest paths
@@ -770,17 +770,15 @@ def shortest_paths(graph: Graph, algorithm: str,
 
     Returns
     =======
-
     (distances, predecessors): (dict, dict)
         If target is not provided and algorithm used
-        is 'bellman_ford'/'dijkstra'.
+        is 'bellman_ford'/'dijkstra'/'A_star'.
     (distances[target], predecessors): (float, dict)
         If target is provided and algorithm used is
-        'bellman_ford'/'dijkstra'.
+        'bellman_ford'/'dijkstra'/'A_star'.
 
     Examples
     ========
-
     >>> from pydatastructs import Graph, AdjacencyListGraphNode
     >>> from pydatastructs import shortest_paths
     >>> V1 = AdjacencyListGraphNode("V1")
@@ -793,17 +791,19 @@ def shortest_paths(graph: Graph, algorithm: str,
     ({'V1': 0, 'V2': 11, 'V3': 21}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
     >>> shortest_paths(G, 'dijkstra', 'V1')
     ({'V2': 11, 'V3': 21, 'V1': 0}, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
+    >>> shortest_paths(G, 'A_star', 'V1', 'V3')
+    (21, {'V1': None, 'V2': 'V1', 'V3': 'V2'})
 
     References
     ==========
-
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
     .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    .. [3] https://en.wikipedia.org/wiki/A*_search_algorithm
     """
     raise_if_backend_is_not_python(
         shortest_paths, kwargs.get('backend', Backend.PYTHON))
     import pydatastructs.graphs.algorithms as algorithms
-    func = "_" + algorithm + "_" + graph._impl
+    func = "_" + algorithm.lower() + "_" + graph._impl
     if not hasattr(algorithms, func):
         raise NotImplementedError(
         "Currently %s algorithm isn't implemented for "
@@ -874,6 +874,55 @@ def _dijkstra_adjacency_list(graph: Graph, start: str, target: str):
     return dist, pred
 
 _dijkstra_adjacency_matrix = _dijkstra_adjacency_list
+
+def _a_star_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
+    distances, predecessor = {}, {}
+
+    for v in graph.vertices:
+        distances[v] = float('inf')
+        predecessor[v] = None
+    distances[source] = 0
+
+    from pydatastructs.miscellaneous_data_structures.queue import PriorityQueue
+    pq = PriorityQueue(implementation='binomial_heap')
+    pq.push(source, distances[source])
+
+    def heuristic(node: str, goal: str) -> float:
+        """Manhattan distance heuristic for A*"""
+        try:
+            if "," in node and "," in goal:  # Check if node names are in "x,y" format
+                x1, y1 = map(int, node.split(','))
+                x2, y2 = map(int, goal.split(','))
+                return abs(x1 - x2) + abs(y1 - y2)
+            else:
+                return 0  # If not in coordinate format, return 0 heuristic
+        except ValueError:
+            return 0  # Fallback heuristic if parsing fails
+
+    while not pq.is_empty:
+        current = pq.pop()
+
+        neighbors = graph.neighbors(current)
+        for neighbor in neighbors:
+            edge = graph.get_edge(current, neighbor.name)
+            if edge:
+                new_dist = distances[current] + edge.value
+                if new_dist < distances[neighbor.name]:
+                    distances[neighbor.name] = new_dist
+                    predecessor[neighbor.name] = current
+                    pq.push(neighbor.name, new_dist + heuristic(neighbor.name, target))
+
+    # ✅ Handle case when target is empty (all-pairs shortest paths)
+    if target == "":
+        return (distances, predecessor)
+
+    # ✅ Handle no path found case properly
+    if target not in distances or distances[target] == float('inf'):
+        return (float('inf'), predecessor)
+
+    return (distances[target], predecessor)
+
+_a_star_adjacency_matrix = _a_star_adjacency_list  # Ensure matrix version exists
 
 def all_pair_shortest_paths(graph: Graph, algorithm: str,
                             **kwargs) -> tuple:
