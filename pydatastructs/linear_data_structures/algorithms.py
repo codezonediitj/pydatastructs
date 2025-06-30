@@ -181,6 +181,10 @@ def brick_sort(array, **kwargs):
     ==========
     .. [1] https://www.geeksforgeeks.org/odd-even-sort-brick-sort/
     """
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.brick_sort(array, **kwargs)
+
     raise_if_backend_is_not_python(
         brick_sort, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
@@ -257,6 +261,10 @@ def brick_sort_parallel(array, num_threads, **kwargs):
 
     .. [1] https://en.wikipedia.org/wiki/Odd%E2%80%93even_sort
     """
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.brick_sort_parallel(array, num_threads, **kwargs)
+
     raise_if_backend_is_not_python(
         brick_sort_parallel, kwargs.get('backend', Backend.PYTHON))
     start = kwargs.get('start', 0)
