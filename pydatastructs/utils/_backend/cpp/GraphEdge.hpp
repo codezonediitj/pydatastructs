@@ -19,6 +19,7 @@ typedef struct {
 } GraphEdge;
 
 static void GraphEdge_dealloc(GraphEdge* self) {
+    self->value.~decltype(self->value)();
     Py_XDECREF(self->source);
     Py_XDECREF(self->target);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
@@ -160,7 +161,7 @@ inline PyTypeObject GraphEdgeType = {
     /* tp_iternext */ 0,
     /* tp_methods */ 0,
     /* tp_members */ 0,
-    /* tp_getset */ 0,
+    /* tp_getset */ GraphEdge_getsetters,
     /* tp_base */ 0,
     /* tp_dict */ 0,
     /* tp_descr_get */ 0,

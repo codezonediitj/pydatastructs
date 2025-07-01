@@ -211,6 +211,19 @@ def test_minimum_spanning_tree():
             assert str(mst.get_edge('d','c')) in expected_mst
             assert str(mst.get_edge('b','d')) in expected_mst
             assert mst.num_edges() == 8
+            a=AdjacencyListGraphNode('0', 0, backend = Backend.CPP)
+            b=AdjacencyListGraphNode('1', 0, backend = Backend.CPP)
+            c=AdjacencyListGraphNode('2', 0, backend = Backend.CPP)
+            d=AdjacencyListGraphNode('3', 0, backend = Backend.CPP)
+            g2 = Graph(a,b,c,d,backend = Backend.CPP)
+            g2.add_edge('0', '1', 74)
+            g2.add_edge('1', '0', 74)
+            g2.add_edge('0', '3', 55)
+            g2.add_edge('3', '0', 55)
+            g2.add_edge('1', '2', 74)
+            g2.add_edge('2', '1', 74)
+            mst2=minimum_spanning_tree(g2, "prim", backend = Backend.CPP)
+            assert mst2.num_edges()==6
 
     fmst = minimum_spanning_tree
     fmstp = minimum_spanning_tree_parallel

@@ -204,7 +204,26 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
     for (const auto& [adj_name, _] : start_node->adjacent) {
         std::string key = make_edge_key(start, adj_name);
         GraphEdge* edge = graph->edges[key];
-        pq.push({start, adj_name, edge->value, edge->value_type});
+        EdgeTuple et;
+        et.source = start;
+        et.target = adj_name;
+        et.value_type = edge->value_type;
+
+        switch (edge->value_type) {
+            case DataType::Int:
+                et.value = std::get<int64_t>(edge->value);
+                break;
+            case DataType::Double:
+                et.value = std::get<double>(edge->value);
+                break;
+            case DataType::String:
+                et.value = std::get<std::string>(edge->value);
+                break;
+            default:
+                et.value = std::monostate{};
+        }
+
+        pq.push(et);
     }
 
     while (!pq.empty()) {
@@ -233,20 +252,24 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
 
         std::string key_uv = make_edge_key(edge.source, edge.target);
         GraphEdge* new_edge = PyObject_New(GraphEdge, &GraphEdgeType);
+        PyObject_Init(reinterpret_cast<PyObject*>(new_edge), &GraphEdgeType);
+        new (&new_edge->value) std::variant<std::monostate, int64_t, double, std::string>(edge.value);
+        new_edge->value_type = edge.value_type;
         Py_INCREF(u);
         Py_INCREF(v);
         new_edge->source = reinterpret_cast<PyObject*>(u);
         new_edge->target = reinterpret_cast<PyObject*>(v);
-        new (&new_edge->value) std::variant<std::monostate, int64_t, double, std::string>(edge.value);
-        new_edge->value_type = edge.value_type;
         mst->edges[key_uv] = new_edge;
 
         std::string key_vu = make_edge_key(edge.target, edge.source);
         GraphEdge* new_edge_rev = PyObject_New(GraphEdge, &GraphEdgeType);
-        new_edge_rev->source = reinterpret_cast<PyObject*>(v);
-        new_edge_rev->target = reinterpret_cast<PyObject*>(u);
+        PyObject_Init(reinterpret_cast<PyObject*>(new_edge_rev), &GraphEdgeType);
         new (&new_edge_rev->value) std::variant<std::monostate, int64_t, double, std::string>(edge.value);
         new_edge_rev->value_type = edge.value_type;
+        Py_INCREF(u);
+        Py_INCREF(v);
+        new_edge_rev->source = reinterpret_cast<PyObject *>(v);
+        new_edge_rev->target = reinterpret_cast<PyObject*>(u);
         mst->edges[key_vu] = new_edge_rev;
 
         AdjacencyListGraphNode* next_node = graph->node_map[edge.target];
@@ -255,10 +278,27 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
             if (visited.count(adj_name)) continue;
             std::string key = make_edge_key(edge.target, adj_name);
             GraphEdge* adj_edge = graph->edges[key];
-            pq.push({edge.target, adj_name, adj_edge->value, adj_edge->value_type});
+            EdgeTuple adj_et;
+            adj_et.source = edge.target;
+            adj_et.target = adj_name;
+            adj_et.value_type = adj_edge->value_type;
+
+            switch (adj_edge->value_type) {
+                case DataType::Int:
+                    adj_et.value = std::get<int64_t>(adj_edge->value);
+                    break;
+                case DataType::Double:
+                    adj_et.value = std::get<double>(adj_edge->value);
+                    break;
+                case DataType::String:
+                    adj_et.value = std::get<std::string>(adj_edge->value);
+                    break;
+                default:
+                    adj_et.value = std::monostate{};
+            }
+
+            pq.push(adj_et);
         }
     }
-
-    Py_INCREF(mst);
     return reinterpret_cast<PyObject*>(mst);
 }

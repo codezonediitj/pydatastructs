@@ -21,6 +21,8 @@ typedef struct {
 } GraphNode;
 
 static void GraphNode_dealloc(GraphNode* self){
+    self->name.~basic_string();
+    self->data.~decltype(self->data)();
     Py_TYPE(self)->tp_free(reinterpret_cast<PyTypeObject*>(self));
 }
 
