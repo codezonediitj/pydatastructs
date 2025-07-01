@@ -19,7 +19,6 @@ typedef struct {
 } GraphEdge;
 
 static void GraphEdge_dealloc(GraphEdge* self) {
-    self->value.~decltype(self->value)();
     Py_XDECREF(self->source);
     Py_XDECREF(self->target);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
