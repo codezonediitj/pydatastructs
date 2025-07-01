@@ -187,11 +187,11 @@ def test_minimum_spanning_tree():
 
     def _test_minimum_spanning_tree_cpp(ds, algorithm, *args):
         if (ds == 'List' and algorithm == "prim"):
-            a1 = AdjacencyListGraphNode('a',0, backend = Backend.CPP)
-            b1 = AdjacencyListGraphNode('b',0, backend = Backend.CPP)
-            c1 = AdjacencyListGraphNode('c',0, backend = Backend.CPP)
-            d1 = AdjacencyListGraphNode('d',0, backend = Backend.CPP)
-            e1 = AdjacencyListGraphNode('e',0, backend = Backend.CPP)
+            a1 = AdjacencyListGraphNode('a', 0, backend = Backend.CPP)
+            b1 = AdjacencyListGraphNode('b', 0, backend = Backend.CPP)
+            c1 = AdjacencyListGraphNode('c', 0, backend = Backend.CPP)
+            d1 = AdjacencyListGraphNode('d', 0, backend = Backend.CPP)
+            e1 = AdjacencyListGraphNode('e', 0, backend = Backend.CPP)
             g = Graph(a1, b1, c1, d1, e1, backend = Backend.CPP)
             g.add_edge(a1.name, c1.name, 10)
             g.add_edge(c1.name, a1.name, 10)
@@ -206,10 +206,10 @@ def test_minimum_spanning_tree():
             mst = minimum_spanning_tree(g, "prim", backend = Backend.CPP)
             expected_mst = ["('a', 'd', 7)", "('d', 'c', 9)", "('e', 'd', 23)", "('b', 'd', 32)",
                         "('d', 'a', 7)", "('c', 'd', 9)", "('d', 'e', 23)", "('d', 'b', 32)"]
-            assert str(mst.get_edge('a','d')) in expected_mst
-            assert str(mst.get_edge('e','d')) in expected_mst
-            assert str(mst.get_edge('d','c')) in expected_mst
-            assert str(mst.get_edge('b','d')) in expected_mst
+            assert str(mst.get_edge('a', 'd')) in expected_mst
+            assert str(mst.get_edge('e', 'd')) in expected_mst
+            assert str(mst.get_edge('d', 'c')) in expected_mst
+            assert str(mst.get_edge('b', 'd')) in expected_mst
             assert mst.num_edges() == 8
             a=AdjacencyListGraphNode('0', 0, backend = Backend.CPP)
             b=AdjacencyListGraphNode('1', 0, backend = Backend.CPP)
@@ -223,7 +223,7 @@ def test_minimum_spanning_tree():
             g2.add_edge('1', '2', 74)
             g2.add_edge('2', '1', 74)
             mst2=minimum_spanning_tree(g2, "prim", backend = Backend.CPP)
-            assert mst2.num_edges()==6
+            assert mst2.num_edges() == 6
 
     fmst = minimum_spanning_tree
     fmstp = minimum_spanning_tree_parallel
