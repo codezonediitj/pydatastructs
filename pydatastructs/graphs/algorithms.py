@@ -338,16 +338,20 @@ def minimum_spanning_tree(graph, algorithm, **kwargs):
     should be used only for such graphs. Using with other
     types of graphs may lead to unwanted results.
     """
-    raise_if_backend_is_not_python(
-        minimum_spanning_tree, kwargs.get('backend', Backend.PYTHON))
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_minimum_spanning_tree_" + algorithm + "_" + graph._impl
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently %s algoithm for %s implementation of graphs "
-        "isn't implemented for finding minimum spanning trees."
-        %(algorithm, graph._impl))
-    return getattr(algorithms, func)(graph)
+    backend = kwargs.get('backend', Backend.PYTHON)
+    if backend == Backend.PYTHON:
+        import pydatastructs.graphs.algorithms as algorithms
+        func = "_minimum_spanning_tree_" + algorithm + "_" + graph._impl
+        if not hasattr(algorithms, func):
+            raise NotImplementedError(
+            "Currently %s algoithm for %s implementation of graphs "
+            "isn't implemented for finding minimum spanning trees."
+            %(algorithm, graph._impl))
+        return getattr(algorithms, func)(graph)
+    else:
+        from pydatastructs.graphs._backend.cpp._algorithms import minimum_spanning_tree_prim_adjacency_list
+        if graph._impl == "adjacency_list" and algorithm == 'prim':
+            return minimum_spanning_tree_prim_adjacency_list(graph)
 
 def _minimum_spanning_tree_parallel_kruskal_adjacency_list(graph, num_threads):
     mst = _generate_mst_object(graph)
