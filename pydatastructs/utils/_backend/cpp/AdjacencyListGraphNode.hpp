@@ -13,17 +13,21 @@ extern PyTypeObject AdjacencyListGraphNodeType;
 typedef struct {
     PyObject_HEAD
     std::string name;
-    std::variant<std::monostate, int64_t, double, std::string> data;
+    std::variant<std::monostate, int64_t, double, std::string, PyObject*> data;
     DataType data_type;
     std::unordered_map<std::string, PyObject*> adjacent;
 } AdjacencyListGraphNode;
 
 static void AdjacencyListGraphNode_dealloc(AdjacencyListGraphNode* self) {
+    if (self->data_type == DataType::PyObject) {
+        Py_XDECREF(std::get<PyObject*>(self->data));
+    }
+
     for (auto& pair : self->adjacent) {
         Py_XDECREF(pair.second);
     }
     self->adjacent.clear();
-    Py_TYPE(self)->tp_free(reinterpret_cast<PyTypeObject*>(self));
+    Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
 static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
@@ -31,7 +35,7 @@ static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, 
     if (!self) return NULL;
     new (&self->adjacent) std::unordered_map<std::string, PyObject*>();
     new (&self->name) std::string();
-    new (&self->data) std::variant<std::monostate, int64_t, double, std::string>();
+    new (&self->data) std::variant<std::monostate, int64_t, double, std::string, PyObject*>();
     self->data_type = DataType::None;
     self->data = std::monostate{};
 
@@ -61,15 +65,15 @@ static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, 
         self->data_type = DataType::String;
         self->data = std::string(str);
     } else {
-        PyErr_SetString(PyExc_TypeError, "Unsupported data type. Must be int, float, str, or None.");
-        return NULL;
+        self->data_type = DataType::PyObject;
+        Py_INCREF(data);
+        self->data = data;
     }
 
     if (PyList_Check(adjacency_list)) {
         Py_ssize_t size = PyList_Size(adjacency_list);
         for (Py_ssize_t i = 0; i < size; i++) {
             PyObject* node = PyList_GetItem(adjacency_list, i);
-
 
             if (PyType_Ready(&AdjacencyListGraphNodeType) < 0) {
                 PyErr_SetString(PyExc_RuntimeError, "Failed to initialize AdjacencyListGraphNodeType");
@@ -85,7 +89,7 @@ static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, 
             std::string str = std::string(adj_name);
             Py_INCREF(node);
             self->adjacent[str] = node;
-                }
+        }
     }
 
     return reinterpret_cast<PyObject*>(self);
@@ -154,6 +158,9 @@ static PyObject* AdjacencyListGraphNode_get_data(AdjacencyListGraphNode* self, v
             return PyFloat_FromDouble(std::get<double>(self->data));
         case DataType::String:
             return PyUnicode_FromString(std::get<std::string>(self->data).c_str());
+        case DataType::PyObject:
+            Py_INCREF(std::get<PyObject*>(self->data));
+            return std::get<PyObject*>(self->data);
         case DataType::None:
         default:
             Py_RETURN_NONE;
@@ -161,6 +168,10 @@ static PyObject* AdjacencyListGraphNode_get_data(AdjacencyListGraphNode* self, v
 }
 
 static int AdjacencyListGraphNode_set_data(AdjacencyListGraphNode* self, PyObject* value, void* closure) {
+    if (self->data_type == DataType::PyObject) {
+        Py_XDECREF(std::get<PyObject*>(self->data));
+    }
+
     if (value == Py_None) {
         self->data_type = DataType::None;
         self->data = std::monostate{};
@@ -179,8 +190,9 @@ static int AdjacencyListGraphNode_set_data(AdjacencyListGraphNode* self, PyObjec
         self->data_type = DataType::String;
         self->data = std::string(str);
     } else {
-        PyErr_SetString(PyExc_TypeError, "Unsupported data type. Must be int, float, str, or None.");
-        return -1;
+        self->data_type = DataType::PyObject;
+        Py_INCREF(value);
+        self->data = value;
     }
     return 0;
 }
@@ -226,7 +238,6 @@ static PyGetSetDef AdjacencyListGraphNode_getsetters[] = {
     {"adjacent", (getter)AdjacencyListGraphNode_get_adjacent, (setter)AdjacencyListGraphNode_set_adjacent, "Get or set adjacent nodes", NULL},
     {NULL}
 };
-
 
 static PyMethodDef AdjacencyListGraphNode_methods[] = {
     {"add_adjacent_node", (PyCFunction)AdjacencyListGraphNode_add_adjacent_node, METH_VARARGS, "Add adjacent node"},

@@ -36,12 +36,16 @@ def test_AdjacencyListGraphNode():
     h.add_adjacent_node('h_1', 4)
     assert h.adjacent['h_1'] == 4
     assert str(h) == "('h', 0)"
+    h_5 = AdjacencyListGraphNode('h_5', h_1, backend = Backend.CPP)
+    assert h_5.data == h_1
 
 def test_AdjacencyMatrixGraphNode():
     g = AdjacencyMatrixGraphNode("1", 3)
     g2 =  AdjacencyMatrixGraphNode("1", 3, backend = Backend.CPP)
     assert str(g) == "('1', 3)"
     assert str(g2) == "('1', 3)"
+    g3 = AdjacencyListGraphNode("3", g2, backend = Backend.CPP)
+    assert g3.data == g2
 
 
 def test_GraphEdge():

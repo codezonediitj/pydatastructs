@@ -10,29 +10,31 @@ enum class DataType {
     None,
     Int,
     Double,
-    String
+    String,
+    PyObject
 };
 
 typedef struct {
     PyObject_HEAD
     std::string name;
-    std::variant<std::monostate, int64_t, double, std::string> data;
+    std::variant<std::monostate, int64_t, double, std::string, PyObject*> data;
     DataType data_type;
 } GraphNode;
 
-static void GraphNode_dealloc(GraphNode* self){
-    self->name.~basic_string();
-    self->data.~decltype(self->data)();
-    Py_TYPE(self)->tp_free(reinterpret_cast<PyTypeObject*>(self));
+static void GraphNode_dealloc(GraphNode* self) {
+    if (self->data_type == DataType::PyObject) {
+        Py_XDECREF(std::get<PyObject*>(self->data));
+    }
+    Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
-static PyObject* GraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds){
-    GraphNode* self;
-    self = reinterpret_cast<GraphNode*>(type->tp_alloc(type,0));
-    new (&self->name) std::string();
-    new (&self->data) std::variant<std::monostate, int64_t, double, std::string>();
-    self->data_type = DataType::None;
+static PyObject* GraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
+    GraphNode* self = reinterpret_cast<GraphNode*>(type->tp_alloc(type, 0));
     if (!self) return NULL;
+
+    new (&self->name) std::string();
+    new (&self->data) std::variant<std::monostate, int64_t, double, std::string, PyObject*>();
+    self->data_type = DataType::None;
 
     static char* kwlist[] = { "name", "data", NULL };
     const char* name;
@@ -59,8 +61,9 @@ static PyObject* GraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwd
         self->data = std::string(s);
         self->data_type = DataType::String;
     } else {
-        PyErr_SetString(PyExc_TypeError, "data must be int, float, str, or None");
-        return NULL;
+        self->data = data;
+        self->data_type = DataType::PyObject;
+        Py_INCREF(data);
     }
 
     return reinterpret_cast<PyObject*>(self);
@@ -82,15 +85,28 @@ static PyObject* GraphNode_str(GraphNode* self) {
         case DataType::String:
             repr += "'" + std::get<std::string>(self->data) + "'";
             break;
+        case DataType::PyObject: {
+            PyObject* repr_obj = PyObject_Repr(std::get<PyObject*>(self->data));
+            if (repr_obj) {
+                const char* repr_cstr = PyUnicode_AsUTF8(repr_obj);
+                repr += repr_cstr ? repr_cstr : "<unprintable>";
+                Py_DECREF(repr_obj);
+            } else {
+                repr += "<error in repr>";
+            }
+            break;
+        }
     }
+
     repr += ")";
     return PyUnicode_FromString(repr.c_str());
 }
 
 static PyObject* GraphNode_get(GraphNode* self, void *closure) {
-    if (closure == (void*)"name") {
+    const char* attr = reinterpret_cast<const char*>(closure);
+    if (strcmp(attr, "name") == 0) {
         return PyUnicode_FromString(self->name.c_str());
-    } else if (closure == (void*)"data") {
+    } else if (strcmp(attr, "data") == 0) {
         switch (self->data_type) {
             case DataType::None:
                 Py_RETURN_NONE;
@@ -100,25 +116,32 @@ static PyObject* GraphNode_get(GraphNode* self, void *closure) {
                 return PyFloat_FromDouble(std::get<double>(self->data));
             case DataType::String:
                 return PyUnicode_FromString(std::get<std::string>(self->data).c_str());
+            case DataType::PyObject:
+                Py_INCREF(std::get<PyObject*>(self->data));
+                return std::get<PyObject*>(self->data);
         }
     }
     Py_RETURN_NONE;
 }
 
 static int GraphNode_set(GraphNode* self, PyObject *value, void *closure) {
+    const char* attr = reinterpret_cast<const char*>(closure);
     if (!value) {
         PyErr_SetString(PyExc_ValueError, "Cannot delete attributes");
         return -1;
     }
 
-    if (closure == (void*)"name") {
+    if (strcmp(attr, "name") == 0) {
         if (!PyUnicode_Check(value)) {
             PyErr_SetString(PyExc_TypeError, "name must be a string");
             return -1;
         }
         self->name = PyUnicode_AsUTF8(value);
-    }
-    else if (closure == (void*)"data") {
+    } else if (strcmp(attr, "data") == 0) {
+        if (self->data_type == DataType::PyObject) {
+            Py_XDECREF(std::get<PyObject*>(self->data));
+        }
+
         if (value == Py_None) {
             self->data = std::monostate{};
             self->data_type = DataType::None;
@@ -132,8 +155,9 @@ static int GraphNode_set(GraphNode* self, PyObject *value, void *closure) {
             self->data = std::string(PyUnicode_AsUTF8(value));
             self->data_type = DataType::String;
         } else {
-            PyErr_SetString(PyExc_TypeError, "data must be int, float, str, or None");
-            return -1;
+            Py_INCREF(value);
+            self->data = value;
+            self->data_type = DataType::PyObject;
         }
     } else {
         PyErr_SetString(PyExc_AttributeError, "Unknown attribute");
