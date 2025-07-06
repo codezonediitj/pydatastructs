@@ -302,3 +302,135 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
     }
     return reinterpret_cast<PyObject*>(mst);
 }
+
+static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject* args, PyObject* kwargs) {
+    PyObject* graph_obj;
+    const char* source_name;
+    const char* target_name = "";
+
+    static const char* kwlist[] = {"graph", "source_node", "target_node", nullptr};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!s|s", const_cast<char**>(kwlist),
+                                     &AdjacencyListGraphType, &graph_obj,
+                                     &source_name, &target_name)) {
+        return nullptr;
+    }
+
+    AdjacencyListGraph* graph = reinterpret_cast<AdjacencyListGraph*>(graph_obj);
+
+    const size_t V = graph->node_map.size();
+
+    std::unordered_map<std::string, double> dist;
+    std::unordered_map<std::string, std::string> pred;
+
+    for (const auto& [name, node] : graph->node_map) {
+        dist[name] = std::numeric_limits<double>::infinity();
+        pred[name] = "";
+    }
+    dist[source_name] = 0.0;
+
+    using PQEntry = std::pair<double, std::string>;
+    std::priority_queue<PQEntry, std::vector<PQEntry>, std::greater<>> pq;
+    pq.push({0.0, source_name});
+
+    while (!pq.empty()) {
+        auto [u_dist, u_name] = pq.top(); pq.pop();
+
+        if (u_dist > dist[u_name]) continue;
+
+        AdjacencyListGraphNode* u = graph->node_map[u_name];
+        for (const auto& [v_name, _] : u->adjacent) {
+            std::string edge_key = make_edge_key(u_name, v_name);
+            auto edge_it = graph->edges.find(edge_key);
+            if (edge_it == graph->edges.end()) continue;
+
+            GraphEdge* edge = edge_it->second;
+            double weight = 0.0;
+            if (edge->value_type == DataType::Int)
+                weight = static_cast<double>(std::get<int64_t>(edge->value));
+            else if (edge->value_type == DataType::Double)
+                weight = std::get<double>(edge->value);
+            else
+                continue;
+
+            if (weight < 0) continue;
+
+            double new_dist = dist[u_name] + weight;
+            if (new_dist < dist[v_name]) {
+                dist[v_name] = new_dist;
+                pred[v_name] = u_name;
+                pq.push({new_dist, v_name});
+            }
+        }
+    }
+
+    PyObject* dist_dict = PyDict_New();
+    PyObject* pred_dict = PyDict_New();
+    if (!dist_dict || !pred_dict) return nullptr;
+
+    for (const auto& [v, d] : dist) {
+        PyObject* dval = PyFloat_FromDouble(d);
+        if (!dval || PyDict_SetItemString(dist_dict, v.c_str(), dval) < 0) {
+            Py_XDECREF(dval);
+            Py_DECREF(dist_dict);
+            Py_DECREF(pred_dict);
+            return nullptr;
+        }
+        Py_DECREF(dval);
+    }
+
+    for (const auto& [v, p] : pred) {
+        PyObject* py_pred;
+        if (p.empty()) {
+            Py_INCREF(Py_None);
+            py_pred = Py_None;
+        } else {
+            py_pred = PyUnicode_FromString(p.c_str());
+            if (!py_pred) {
+                Py_DECREF(dist_dict);
+                Py_DECREF(pred_dict);
+                return nullptr;
+            }
+        }
+
+        if (PyDict_SetItemString(pred_dict, v.c_str(), py_pred) < 0) {
+            Py_DECREF(py_pred);
+            Py_DECREF(dist_dict);
+            Py_DECREF(pred_dict);
+            return nullptr;
+        }
+        Py_DECREF(py_pred);
+    }
+
+    if (strlen(target_name) > 0) {
+        PyObject* out = PyTuple_New(2);
+        if (!out) {
+            Py_DECREF(dist_dict);
+            Py_DECREF(pred_dict);
+            return nullptr;
+        }
+
+        PyObject* dist_val = PyFloat_FromDouble(dist[target_name]);
+        if (!dist_val) {
+            Py_DECREF(out);
+            Py_DECREF(dist_dict);
+            Py_DECREF(pred_dict);
+            return nullptr;
+        }
+
+        PyTuple_SetItem(out, 0, dist_val);
+        PyTuple_SetItem(out, 1, pred_dict);
+        Py_DECREF(dist_dict);
+        return out;
+    }
+
+    PyObject* result = PyTuple_New(2);
+    if (!result) {
+        Py_DECREF(dist_dict);
+        Py_DECREF(pred_dict);
+        return nullptr;
+    }
+
+    PyTuple_SetItem(result, 0, dist_dict);
+    PyTuple_SetItem(result, 1, pred_dict);
+    return result;
+}
