@@ -367,6 +367,25 @@ def test_shortest_paths():
         graph.add_edge('D', 'SLC', -10)
         assert raises(ValueError, lambda: shortest_paths(graph, 'bellman_ford', 'SLC'))
 
+        if (ds == 'List' and algorithm == 'dijkstra'):
+            vertices2 = [AdjacencyListGraphNode('S', 0, backend = Backend.CPP), AdjacencyListGraphNode('C', 0, backend = Backend.CPP),
+                        AdjacencyListGraphNode('SLC', 0, backend = Backend.CPP), AdjacencyListGraphNode('SF', 0, backend = Backend.CPP),
+                        AdjacencyListGraphNode('D', 0, backend = Backend.CPP)]
+            graph2 = Graph(*vertices2, backend = Backend.CPP)
+            graph2.add_edge('S', 'SLC', 2)
+            graph2.add_edge('C', 'S', 4)
+            graph2.add_edge('C', 'D', 2)
+            graph2.add_edge('SLC', 'C', 2)
+            graph2.add_edge('SLC', 'D', 3)
+            graph2.add_edge('SF', 'SLC', 2)
+            graph2.add_edge('SF', 'S', 2)
+            graph2.add_edge('D', 'SF', 3)
+            (dist2, pred2) = shortest_paths(graph2, algorithm, 'SLC', backend = Backend.CPP)
+            assert dist2 == {'S': 6, 'C': 2, 'SLC': 0, 'SF': 6, 'D': 3}
+            assert pred2 == {'S': 'C', 'C': 'SLC', 'SLC': None, 'SF': 'D', 'D': 'SLC'}
+
+
+
     def _test_shortest_paths_negative_edges(ds, algorithm):
         import pydatastructs.utils.misc_util as utils
         GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
