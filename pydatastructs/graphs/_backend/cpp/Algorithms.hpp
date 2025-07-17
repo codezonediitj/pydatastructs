@@ -319,7 +319,6 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
     return reinterpret_cast<PyObject*>(mst);
 }
 
-
 static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject* args, PyObject* kwargs) {
     PyObject* graph_obj;
     const char* source_name;
@@ -374,6 +373,7 @@ static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject
                 dist[v_id] = new_dist;
                 pred[v_id] = u_id;
                 pq.push({new_dist, v_id});
+
             }
         }
     }
@@ -410,6 +410,7 @@ static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject
         }
 
         if (PyDict_SetItemString(pred_dict, name.c_str(), py_pred) < 0) {
+
             Py_DECREF(py_pred);
             Py_DECREF(dist_dict);
             Py_DECREF(pred_dict);

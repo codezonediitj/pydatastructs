@@ -804,15 +804,19 @@ def shortest_paths(graph: Graph, algorithm: str,
     .. [1] https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
     .. [2] https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
     """
-    raise_if_backend_is_not_python(
-        shortest_paths, kwargs.get('backend', Backend.PYTHON))
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_" + algorithm + "_" + graph._impl
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently %s algorithm isn't implemented for "
-        "finding shortest paths in graphs."%(algorithm))
-    return getattr(algorithms, func)(graph, source, target)
+    backend = kwargs.get('backend', Backend.PYTHON)
+    if (backend == Backend.PYTHON):
+        import pydatastructs.graphs.algorithms as algorithms
+        func = "_" + algorithm + "_" + graph._impl
+        if not hasattr(algorithms, func):
+            raise NotImplementedError(
+            "Currently %s algorithm isn't implemented for "
+            "finding shortest paths in graphs."%(algorithm))
+        return getattr(algorithms, func)(graph, source, target)
+    else:
+        from pydatastructs.graphs._backend.cpp._algorithms import shortest_paths_dijkstra_adjacency_list
+        if graph._impl == "adjacency_list" and algorithm == 'dijkstra':
+            return shortest_paths_dijkstra_adjacency_list(graph, source, target)
 
 def _bellman_ford_adjacency_list(graph: Graph, source: str, target: str) -> tuple:
     distances, predecessor, visited, cnts = {}, {}, {}, {}
