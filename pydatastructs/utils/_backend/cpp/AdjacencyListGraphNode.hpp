@@ -13,7 +13,8 @@ extern PyTypeObject AdjacencyListGraphNodeType;
 typedef struct {
     PyObject_HEAD
     std::string name;
-    std::variant<std::monostate, int64_t, double, std::string, PyObject*> data;
+    int internal_id;
+    std::variant<std::monostate, int64_t, double, std::string, PyObject *> data;
     DataType data_type;
     std::unordered_map<std::string, PyObject*> adjacent;
 } AdjacencyListGraphNode;
@@ -38,6 +39,7 @@ static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, 
     new (&self->data) std::variant<std::monostate, int64_t, double, std::string, PyObject*>();
     self->data_type = DataType::None;
     self->data = std::monostate{};
+    self->internal_id = -1;
 
     static char* kwlist[] = { "name", "data", "adjacency_list", NULL };
     const char* name;
@@ -260,7 +262,7 @@ inline PyTypeObject AdjacencyListGraphNodeType = {
     /* tp_as_mapping */ 0,
     /* tp_hash */ 0,
     /* tp_call */ 0,
-    /* tp_str */ 0,
+    /* tp_str */ (reprfunc)GraphNode_str,
     /* tp_getattro */ 0,
     /* tp_setattro */ 0,
     /* tp_as_buffer */ 0,

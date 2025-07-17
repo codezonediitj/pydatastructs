@@ -17,7 +17,8 @@ enum class DataType {
 typedef struct {
     PyObject_HEAD
     std::string name;
-    std::variant<std::monostate, int64_t, double, std::string, PyObject*> data;
+    int internal_id;
+    std::variant<std::monostate, int64_t, double, std::string, PyObject *> data;
     DataType data_type;
 } GraphNode;
 
@@ -46,21 +47,30 @@ static PyObject* GraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwd
     }
 
     self->name = std::string(name);
-
-    if (data == Py_None) {
+    self->internal_id = -1;
+    if (data == Py_None)
+    {
         self->data = std::monostate{};
         self->data_type = DataType::None;
-    } else if (PyLong_Check(data)) {
+    }
+    else if (PyLong_Check(data))
+    {
         self->data = static_cast<int64_t>(PyLong_AsLongLong(data));
         self->data_type = DataType::Int;
-    } else if (PyFloat_Check(data)) {
+    }
+    else if (PyFloat_Check(data))
+    {
         self->data = PyFloat_AsDouble(data);
         self->data_type = DataType::Double;
-    } else if (PyUnicode_Check(data)) {
+    }
+    else if (PyUnicode_Check(data))
+    {
         const char* s = PyUnicode_AsUTF8(data);
         self->data = std::string(s);
         self->data_type = DataType::String;
-    } else {
+    }
+    else
+    {
         self->data = data;
         self->data_type = DataType::PyObject;
         Py_INCREF(data);
