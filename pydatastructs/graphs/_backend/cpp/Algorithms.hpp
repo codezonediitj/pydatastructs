@@ -156,7 +156,6 @@ static PyObject* breadth_first_search_adjacency_matrix(PyObject* self, PyObject*
 }
 
 static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObject* args, PyObject* kwargs) {
-
     PyObject* graph_obj;
     static const char* kwlist[] = {"graph", nullptr};
 
@@ -168,8 +167,8 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
     AdjacencyListGraph* graph = reinterpret_cast<AdjacencyListGraph*>(graph_obj);
 
     struct EdgeTuple {
-        std::string source;
-        std::string target;
+        int source_id;
+        int target_id;
         std::variant<std::monostate, int64_t, double, std::string> value;
         DataType value_type;
 
@@ -187,26 +186,32 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
     };
 
     std::priority_queue<EdgeTuple, std::vector<EdgeTuple>, std::greater<>> pq;
-    std::unordered_set<std::string> visited;
+    std::unordered_set<int> visited;
 
     PyObject* mst_graph = PyObject_CallObject(reinterpret_cast<PyObject*>(&AdjacencyListGraphType), nullptr);
     AdjacencyListGraph* mst = reinterpret_cast<AdjacencyListGraph*>(mst_graph);
 
-    std::string start = graph->node_map.begin()->first;
-    visited.insert(start);
+    int start_id = graph->nodes[0]->internal_id;
+    visited.insert(start_id);
 
-    AdjacencyListGraphNode* start_node = graph->node_map[start];
+    AdjacencyListGraphNode* start_node = graph->id_map[start_id];
+    std::string start_name = graph->id_to_name[start_id];
 
     Py_INCREF(start_node);
     mst->nodes.push_back(start_node);
-    mst->node_map[start] = start_node;
+    mst->node_map[start_name] = start_node;
+    mst->id_map[start_id] = start_node;
+    mst->id_to_name[start_id] = start_name;
+    mst->name_to_id[start_name] = start_id;
 
     for (const auto& [adj_name, _] : start_node->adjacent) {
-        std::string key = make_edge_key(start, adj_name);
+        int adj_id = graph->name_to_id[adj_name];
+        std::string key = make_edge_key(start_name, adj_name);
         GraphEdge* edge = graph->edges[key];
+
         EdgeTuple et;
-        et.source = start;
-        et.target = adj_name;
+        et.source_id = start_id;
+        et.target_id = adj_id;
         et.value_type = edge->value_type;
 
         switch (edge->value_type) {
@@ -230,27 +235,35 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
         EdgeTuple edge = pq.top();
         pq.pop();
 
-        if (visited.count(edge.target)) continue;
-        visited.insert(edge.target);
+        if (visited.count(edge.target_id)) continue;
+        visited.insert(edge.target_id);
 
-        for (const std::string& name : {edge.source, edge.target}) {
-            if (!mst->node_map.count(name)) {
-                AdjacencyListGraphNode* node = graph->node_map[name];
+        int u_id = edge.source_id;
+        int v_id = edge.target_id;
+        std::string u_name = graph->id_to_name[u_id];
+        std::string v_name = graph->id_to_name[v_id];
+
+        for (auto [id, name] : std::vector<std::pair<int, std::string>>{{u_id, u_name}, {v_id, v_name}}) {
+            if (!mst->id_map.count(id)) {
+                AdjacencyListGraphNode* node = graph->id_map[id];
                 Py_INCREF(node);
                 mst->nodes.push_back(node);
                 mst->node_map[name] = node;
+                mst->id_map[id] = node;
+                mst->id_to_name[id] = name;
+                mst->name_to_id[name] = id;
             }
         }
 
-        AdjacencyListGraphNode* u = mst->node_map[edge.source];
-        AdjacencyListGraphNode* v = mst->node_map[edge.target];
+        AdjacencyListGraphNode* u = mst->id_map[u_id];
+        AdjacencyListGraphNode* v = mst->id_map[v_id];
 
         Py_INCREF(v);
         Py_INCREF(u);
-        u->adjacent[edge.target] = reinterpret_cast<PyObject*>(v);
-        v->adjacent[edge.source] = reinterpret_cast<PyObject*>(u);
+        u->adjacent[v_name] = reinterpret_cast<PyObject*>(v);
+        v->adjacent[u_name] = reinterpret_cast<PyObject*>(u);
 
-        std::string key_uv = make_edge_key(edge.source, edge.target);
+        std::string key_uv = make_edge_key(u_name, v_name);
         GraphEdge* new_edge = PyObject_New(GraphEdge, &GraphEdgeType);
         PyObject_Init(reinterpret_cast<PyObject*>(new_edge), &GraphEdgeType);
         new (&new_edge->value) std::variant<std::monostate, int64_t, double, std::string>(edge.value);
@@ -261,26 +274,28 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
         new_edge->target = reinterpret_cast<PyObject*>(v);
         mst->edges[key_uv] = new_edge;
 
-        std::string key_vu = make_edge_key(edge.target, edge.source);
+        std::string key_vu = make_edge_key(v_name, u_name);
         GraphEdge* new_edge_rev = PyObject_New(GraphEdge, &GraphEdgeType);
         PyObject_Init(reinterpret_cast<PyObject*>(new_edge_rev), &GraphEdgeType);
         new (&new_edge_rev->value) std::variant<std::monostate, int64_t, double, std::string>(edge.value);
         new_edge_rev->value_type = edge.value_type;
         Py_INCREF(u);
         Py_INCREF(v);
-        new_edge_rev->source = reinterpret_cast<PyObject *>(v);
+        new_edge_rev->source = reinterpret_cast<PyObject*>(v);
         new_edge_rev->target = reinterpret_cast<PyObject*>(u);
         mst->edges[key_vu] = new_edge_rev;
 
-        AdjacencyListGraphNode* next_node = graph->node_map[edge.target];
-
+        AdjacencyListGraphNode* next_node = graph->id_map[v_id];
         for (const auto& [adj_name, _] : next_node->adjacent) {
-            if (visited.count(adj_name)) continue;
-            std::string key = make_edge_key(edge.target, adj_name);
+            int adj_id = graph->name_to_id[adj_name];
+            if (visited.count(adj_id)) continue;
+
+            std::string key = make_edge_key(v_name, adj_name);
             GraphEdge* adj_edge = graph->edges[key];
+
             EdgeTuple adj_et;
-            adj_et.source = edge.target;
-            adj_et.target = adj_name;
+            adj_et.source_id = v_id;
+            adj_et.target_id = adj_id;
             adj_et.value_type = adj_edge->value_type;
 
             switch (adj_edge->value_type) {
@@ -300,6 +315,7 @@ static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObj
             pq.push(adj_et);
         }
     }
+
     return reinterpret_cast<PyObject*>(mst);
 }
 
@@ -316,49 +332,48 @@ static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject
     }
 
     AdjacencyListGraph* graph = reinterpret_cast<AdjacencyListGraph*>(graph_obj);
-
     const size_t V = graph->node_map.size();
 
-    std::unordered_map<std::string, double> dist;
-    std::unordered_map<std::string, std::string> pred;
+    std::vector<std::vector<std::pair<int, double>>> adj(V);
+    for (const auto& [edge_key, edge] : graph->edges) {
+        size_t delim = edge_key.find('_');
+        std::string u_name = edge_key.substr(0, delim);
+        std::string v_name = edge_key.substr(delim + 1);
+        int u = graph->name_to_id[u_name];
+        int v = graph->name_to_id[v_name];
 
-    for (const auto& [name, node] : graph->node_map) {
-        dist[name] = std::numeric_limits<double>::infinity();
-        pred[name] = "";
+        double weight = 0.0;
+        if (edge->value_type == DataType::Int)
+            weight = static_cast<double>(std::get<int64_t>(edge->value));
+        else if (edge->value_type == DataType::Double)
+            weight = std::get<double>(edge->value);
+        else
+            continue;
+
+        if (weight < 0) continue;
+        adj[u].emplace_back(v, weight);
     }
-    dist[source_name] = 0.0;
 
-    using PQEntry = std::pair<double, std::string>;
+    std::vector<double> dist(V, std::numeric_limits<double>::infinity());
+    std::vector<int> pred(V, -1);
+    using PQEntry = std::pair<double, int>;
     std::priority_queue<PQEntry, std::vector<PQEntry>, std::greater<>> pq;
-    pq.push({0.0, source_name});
+
+    int source_id = graph->name_to_id[source_name];
+    dist[source_id] = 0.0;
+    pq.push({0.0, source_id});
 
     while (!pq.empty()) {
-        auto [u_dist, u_name] = pq.top(); pq.pop();
+        auto [u_dist, u_id] = pq.top(); pq.pop();
+        if (u_dist > dist[u_id]) continue;
 
-        if (u_dist > dist[u_name]) continue;
+        for (const auto& [v_id, weight] : adj[u_id]) {
+            double new_dist = dist[u_id] + weight;
+            if (new_dist < dist[v_id]) {
+                dist[v_id] = new_dist;
+                pred[v_id] = u_id;
+                pq.push({new_dist, v_id});
 
-        AdjacencyListGraphNode* u = graph->node_map[u_name];
-        for (const auto& [v_name, _] : u->adjacent) {
-            std::string edge_key = make_edge_key(u_name, v_name);
-            auto edge_it = graph->edges.find(edge_key);
-            if (edge_it == graph->edges.end()) continue;
-
-            GraphEdge* edge = edge_it->second;
-            double weight = 0.0;
-            if (edge->value_type == DataType::Int)
-                weight = static_cast<double>(std::get<int64_t>(edge->value));
-            else if (edge->value_type == DataType::Double)
-                weight = std::get<double>(edge->value);
-            else
-                continue;
-
-            if (weight < 0) continue;
-
-            double new_dist = dist[u_name] + weight;
-            if (new_dist < dist[v_name]) {
-                dist[v_name] = new_dist;
-                pred[v_name] = u_name;
-                pq.push({new_dist, v_name});
             }
         }
     }
@@ -367,9 +382,10 @@ static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject
     PyObject* pred_dict = PyDict_New();
     if (!dist_dict || !pred_dict) return nullptr;
 
-    for (const auto& [v, d] : dist) {
-        PyObject* dval = PyFloat_FromDouble(d);
-        if (!dval || PyDict_SetItemString(dist_dict, v.c_str(), dval) < 0) {
+    for (int id = 0; id < static_cast<int>(V); ++id) {
+        const std::string& name = graph->id_to_name[id];
+        PyObject* dval = PyFloat_FromDouble(dist[id]);
+        if (!dval || PyDict_SetItemString(dist_dict, name.c_str(), dval) < 0) {
             Py_XDECREF(dval);
             Py_DECREF(dist_dict);
             Py_DECREF(pred_dict);
@@ -378,13 +394,14 @@ static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject
         Py_DECREF(dval);
     }
 
-    for (const auto& [v, p] : pred) {
+    for (int id = 0; id < static_cast<int>(V); ++id) {
+        const std::string& name = graph->id_to_name[id];
         PyObject* py_pred;
-        if (p.empty()) {
+        if (pred[id] == -1) {
             Py_INCREF(Py_None);
             py_pred = Py_None;
         } else {
-            py_pred = PyUnicode_FromString(p.c_str());
+            py_pred = PyUnicode_FromString(graph->id_to_name[pred[id]].c_str());
             if (!py_pred) {
                 Py_DECREF(dist_dict);
                 Py_DECREF(pred_dict);
@@ -392,7 +409,8 @@ static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject
             }
         }
 
-        if (PyDict_SetItemString(pred_dict, v.c_str(), py_pred) < 0) {
+        if (PyDict_SetItemString(pred_dict, name.c_str(), py_pred) < 0) {
+
             Py_DECREF(py_pred);
             Py_DECREF(dist_dict);
             Py_DECREF(pred_dict);
@@ -402,6 +420,7 @@ static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject
     }
 
     if (strlen(target_name) > 0) {
+        int target_id = graph->name_to_id[target_name];
         PyObject* out = PyTuple_New(2);
         if (!out) {
             Py_DECREF(dist_dict);
@@ -409,7 +428,7 @@ static PyObject* shortest_paths_dijkstra_adjacency_list(PyObject* self, PyObject
             return nullptr;
         }
 
-        PyObject* dist_val = PyFloat_FromDouble(dist[target_name]);
+        PyObject* dist_val = PyFloat_FromDouble(dist[target_id]);
         if (!dist_val) {
             Py_DECREF(out);
             Py_DECREF(dist_dict);

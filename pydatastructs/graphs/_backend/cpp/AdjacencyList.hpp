@@ -19,6 +19,10 @@ typedef struct {
     std::vector<AdjacencyListGraphNode *> nodes;
     std::unordered_map<std::string, GraphEdge*> edges;
     std::unordered_map<std::string, AdjacencyListGraphNode*> node_map;
+    std::unordered_map<int, AdjacencyListGraphNode*> id_map;
+    std::unordered_map<int, std::string> id_to_name;
+    std::unordered_map<std::string, int> name_to_id;
+    int next_id;
 
 } AdjacencyListGraph;
 
@@ -34,6 +38,9 @@ static void AdjacencyListGraph_dealloc(AdjacencyListGraph* self) {
     self->edges.clear();
 
     self->node_map.clear();
+    self->id_map.clear();
+    self->id_to_name.clear();
+    self->name_to_id.clear();
 
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
@@ -46,17 +53,17 @@ static PyObject* AdjacencyListGraph_new(PyTypeObject* type, PyObject* args, PyOb
     new (&self->nodes) std::vector<AdjacencyListGraphNode*>();
     new (&self->edges) std::unordered_map<std::string, GraphEdge*>();
     new (&self->node_map) std::unordered_map<std::string, AdjacencyListGraphNode*>();
+    new (&self->id_map) std::unordered_map<int, AdjacencyListGraphNode*>();
+    new (&self->id_to_name) std::unordered_map<int, std::string>();
+    new (&self->name_to_id) std::unordered_map<std::string, int>();
+
+    self->next_id = 0;
 
     Py_ssize_t num_args = PyTuple_Size(args);
     for (Py_ssize_t i = 0; i < num_args; ++i) {
         PyObject* node_obj = PyTuple_GetItem(args, i);
         if (!PyObject_IsInstance(node_obj, (PyObject*)&AdjacencyListGraphNodeType)) {
             PyErr_SetString(PyExc_TypeError, "All arguments must be AdjacencyListGraphNode instances");
-
-            self->nodes.~vector();
-            self->edges.~unordered_map();
-            self->node_map.~unordered_map();
-            Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
             return NULL;
         }
 
@@ -64,20 +71,20 @@ static PyObject* AdjacencyListGraph_new(PyTypeObject* type, PyObject* args, PyOb
 
         if (self->node_map.find(node->name) != self->node_map.end()) {
             PyErr_Format(PyExc_ValueError, "Duplicate node with name '%s'", node->name.c_str());
-
-            self->nodes.~vector();
-            self->edges.~unordered_map();
-            self->node_map.~unordered_map();
-            Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
             return NULL;
         }
+
+        node->internal_id = self->next_id++;
 
         Py_INCREF(node);
         self->nodes.push_back(node);
         self->node_map[node->name] = node;
+        self->id_map[node->internal_id] = node;
+        self->id_to_name[node->internal_id] = node->name;
+        self->name_to_id[node->name] = node->internal_id;
     }
-    PyObject* impl_str = PyUnicode_FromString("adjacency_list");
 
+    PyObject* impl_str = PyUnicode_FromString("adjacency_list");
     if (PyObject_SetAttrString(reinterpret_cast<PyObject*>(self), "_impl", impl_str) < 0) {
         Py_DECREF(impl_str);
         PyErr_SetString(PyExc_RuntimeError, "Failed to set _impl attribute");
@@ -112,9 +119,14 @@ static PyObject* AdjacencyListGraph_add_vertex(AdjacencyListGraph* self, PyObjec
         return NULL;
     }
 
+    node->internal_id = self->next_id++;
+
     Py_INCREF(node);
     self->nodes.push_back(node);
     self->node_map[node->name] = node;
+    self->id_map[node->internal_id] = node;
+    self->id_to_name[node->internal_id] = node->name;
+    self->name_to_id[node->name] = node->internal_id;
 
     Py_RETURN_NONE;
 }
@@ -126,17 +138,15 @@ static PyObject* AdjacencyListGraph_is_adjacent(AdjacencyListGraph* self, PyObje
     if (!PyArg_ParseTuple(args, "ss", &node1_name_c, &node2_name_c))
         return NULL;
 
-    std::string node1_name(node1_name_c);
-    std::string node2_name(node2_name_c);
-
-    auto it1 = self->node_map.find(node1_name);
-    if (it1 == self->node_map.end()) {
+    auto it1 = self->name_to_id.find(node1_name_c);
+    if (it1 == self->name_to_id.end()) {
         PyErr_SetString(PyExc_KeyError, "node1 not found");
         return NULL;
     }
-    AdjacencyListGraphNode* node1 = it1->second;
+    int id1 = it1->second;
+    AdjacencyListGraphNode* node1 = self->id_map[id1];
 
-    if (node1->adjacent.find(node2_name) != node1->adjacent.end()) {
+    if (node1->adjacent.find(node2_name_c) != node1->adjacent.end()) {
         Py_RETURN_TRUE;
     } else {
         Py_RETURN_FALSE;
@@ -156,13 +166,13 @@ static PyObject* AdjacencyListGraph_neighbors(AdjacencyListGraph* self, PyObject
     if (!PyArg_ParseTuple(args, "s", &node_name_c))
         return NULL;
 
-    std::string node_name(node_name_c);
-    auto it = self->node_map.find(node_name);
-    if (it == self->node_map.end()) {
+    auto it = self->name_to_id.find(node_name_c);
+    if (it == self->name_to_id.end()) {
         PyErr_SetString(PyExc_KeyError, "Node not found");
         return NULL;
     }
-    AdjacencyListGraphNode* node = it->second;
+    int id = it->second;
+    AdjacencyListGraphNode* node = self->id_map[id];
 
     PyObject* neighbors_list = PyList_New(0);
     if (!neighbors_list) return NULL;
@@ -180,23 +190,27 @@ static PyObject* AdjacencyListGraph_remove_vertex(AdjacencyListGraph* self, PyOb
     if (!PyArg_ParseTuple(args, "s", &name_c))
         return NULL;
 
-    std::string name(name_c);
-    auto it = self->node_map.find(name);
-    if (it == self->node_map.end()) {
+    auto it = self->name_to_id.find(name_c);
+    if (it == self->name_to_id.end()) {
         PyErr_SetString(PyExc_KeyError, "Node not found");
         return NULL;
     }
 
-    AdjacencyListGraphNode* node_to_remove = it->second;
+    int id = it->second;
+    AdjacencyListGraphNode* node_to_remove = self->id_map[id];
+    std::string name = node_to_remove->name;
 
     auto& nodes_vec = self->nodes;
     nodes_vec.erase(std::remove(nodes_vec.begin(), nodes_vec.end(), node_to_remove), nodes_vec.end());
 
-    self->node_map.erase(it);
+    self->node_map.erase(name);
+    self->id_map.erase(id);
+    self->name_to_id.erase(name);
+    self->id_to_name.erase(id);
 
     Py_XDECREF(node_to_remove);
 
-    for (auto& node_pair : self->node_map) {
+    for (auto& node_pair : self->id_map) {
         AdjacencyListGraphNode* node = node_pair.second;
         auto adj_it = node->adjacent.find(name);
         if (adj_it != node->adjacent.end()) {
@@ -207,17 +221,11 @@ static PyObject* AdjacencyListGraph_remove_vertex(AdjacencyListGraph* self, PyOb
 
     for (auto it = self->edges.begin(); it != self->edges.end(); ) {
         const std::string& key = it->first;
-
-        bool involves_node = false;
         size_t underscore = key.find('_');
-        if (underscore != std::string::npos) {
-            std::string source = key.substr(0, underscore);
-            std::string target = key.substr(underscore + 1);
-            if (source == name || target == name)
-                involves_node = true;
-        }
+        std::string src = key.substr(0, underscore);
+        std::string dst = key.substr(underscore + 1);
 
-        if (involves_node) {
+        if (src == name || dst == name) {
             Py_XDECREF(it->second);
             it = self->edges.erase(it);
         } else {
