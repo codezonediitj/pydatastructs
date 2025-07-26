@@ -1,17 +1,28 @@
-import os, argparse
+import argparse
+import subprocess
+import sys
 
-parser = argparse.ArgumentParser(description='Process build options.')
-parser.add_argument('--clean', type=bool, default=False,
-                    help='Execute `git clean -fdx` (default 0)')
+def run_cmd(cmd):
+    print(f"➡️  Running: {cmd}")
+    result = subprocess.run(cmd, shell=True)
+    if result.returncode != 0:
+        print(f"❌ Command failed: {cmd}", file=sys.stderr)
+        sys.exit(result.returncode)
 
-build_options = parser.parse_args()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process build options.')
+    parser.add_argument('--clean', action='store_true',
+                        help='Execute `git clean -fdx`')
+    args = parser.parse_args()
 
-if build_options.clean:
-    response = input("Warning: Executing `git clean -fdx` [Y/N]: ")
-    if response.lower() in ("y", "yes"):
-        os.system("git clean -fdx")
+    if args.clean:
+        response = input("⚠️  Warning: Executing `git clean -fdx` [Y/N]: ")
+        if response.lower() in ("y", "yes"):
+            run_cmd("git clean -fdx")
+        else:
+            print("ℹ️  Skipping clean step.")
 
-os.system("python scripts/build/add_dummy_submodules.py")
-os.system("pip install -e . --verbose")
-os.system("python scripts/build/delete_dummy_submodules.py")
-os.system("pip install -e . --verbose --force-reinstall")
+    run_cmd("python scripts/build/add_dummy_submodules.py")
+    run_cmd("pip install -e . --verbose")
+    run_cmd("python scripts/build/delete_dummy_submodules.py")
+    run_cmd("pip install -e . --verbose --force-reinstall")
