@@ -1,3 +1,10 @@
 [build-system]
 requires = ["meson-python"]
 build-backend = "mesonpy"
+
+[tool.spin]
+package = "pydatastructs"
+
+[tool.spin.commands]
+Build = ["spin.cmds.meson.build"]
+Test = ["spin.cmds.meson.test"]
