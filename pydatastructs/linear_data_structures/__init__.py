@@ -4,7 +4,6 @@ from . import (
     arrays,
     linked_lists,
     algorithms,
-    _extensions
 )
 
 from .arrays import (

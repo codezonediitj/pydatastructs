@@ -40,12 +40,15 @@ jobs:
           sudo apt-get install -y lcov
 
       - name: Build package
+        env:
+          CXXFLAGS: "-std=c++17 --coverage"
+          CFLAGS: "--coverage"
         run: |
-          CXXFLAGS="-std=c++17 --coverage" CFLAGS="--coverage" python scripts/build/install.py
+          spin build -v
       # coverage tests
       - name: Run tests
         run: |
-          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+          spin test -v
 
       - name: Capture Coverage Data with lcov
         run: |
@@ -101,12 +104,14 @@ jobs:
           python -m pip install -r docs/requirements.txt
 
       - name: Build package
+        env:
+          CXXFLAGS: "-std=c++17"
         run: |
-          CXXFLAGS="-std=c++17" python scripts/build/install.py
+          spin build -v
 
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test(only_benchmarks=True)"
+          spin test -v
 
       - name: Build Documentation
         run: |
@@ -144,11 +149,12 @@ jobs:
       - name: Build package
         env:
           MACOSX_DEPLOYMENT_TARGET: 11.0
+          CXXFLAGS: "-std=c++17"
         run: |
-          CXXFLAGS="-std=c++17" python scripts/build/install.py
+          spin build -v
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test()"
+          spin test -v
 
       - name: Build Documentation
         run: |
@@ -194,11 +200,11 @@ jobs:
         env:
           CL: "/std:c++17"
         run: |
-          python scripts/build/install.py
+          spin build -v
 
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test()"
+          spin test -v
 
       - name: Build Documentation
         run: |
