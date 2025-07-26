@@ -3,7 +3,6 @@ python = import('python').find_installation(pure: false)
 python.install_sources(
     [
         '__init__.py',
-        '_extensions.py',
         'binary_trees.py',
         'heaps.py',
         'm_ary_trees.py',

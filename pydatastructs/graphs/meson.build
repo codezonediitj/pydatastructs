@@ -3,7 +3,6 @@ python = import('python').find_installation(pure: false)
 python.install_sources(
     [
         '__init__.py',
-        '_extensions.py',
         'adjacency_list.py',
         'adjacency_matrix.py',
         'algorithms.py',
