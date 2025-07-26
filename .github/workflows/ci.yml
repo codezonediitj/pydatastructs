@@ -40,12 +40,15 @@ jobs:
           sudo apt-get install -y lcov
 
       - name: Build package
+        env:
+          CXXFLAGS: "-std=c++17 --coverage"
+          CFLAGS: "--coverage"
         run: |
-          CXXFLAGS="-std=c++17 --coverage" CFLAGS="--coverage" python scripts/build/install.py
+          spin build -v
       # coverage tests
       - name: Run tests
         run: |
-          python -m pytest --doctest-modules --cov=./ --cov-report=xml -s
+          spin test -v
 
       - name: Capture Coverage Data with lcov
         run: |
@@ -101,12 +104,14 @@ jobs:
           python -m pip install -r docs/requirements.txt
 
       - name: Build package
+        env:
+          CXXFLAGS: "-std=c++17"
         run: |
-          CXXFLAGS="-std=c++17" python scripts/build/install.py
+          spin build -v
 
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test(only_benchmarks=True)"
+          spin test -v
 
       - name: Build Documentation
         run: |
@@ -144,61 +149,62 @@ jobs:
       - name: Build package
         env:
           MACOSX_DEPLOYMENT_TARGET: 11.0
+          CXXFLAGS: "-std=c++17"
         run: |
-          CXXFLAGS="-std=c++17" python scripts/build/install.py
+          spin build -v
       - name: Run tests
         run: |
-          python -c "import pydatastructs; pydatastructs.test()"
+          spin test -v
 
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
 
-  # test-windows:
-  #   runs-on: ${{matrix.os}}
-  #   timeout-minutes: 20
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       os: [windows-latest]
-  #       python-version:
-  #         - "3.8"
+      # test-windows:
+      #   runs-on: ${{matrix.os}}
+      #   timeout-minutes: 20
+      #   strategy:
+      #     fail-fast: false
+      #     matrix:
+      #       os: [windows-latest]
+      #       python-version:
+      #         - "3.8"
 
-  #   steps:
-  #     - uses: actions/checkout@v3
+      #   steps:
+      #     - uses: actions/checkout@v3
 
-  #     - name: Set up Python ${{ matrix.python-version }}
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
+      #     - name: Set up Python ${{ matrix.python-version }}
+      #       uses: actions/setup-python@v4
+      #       with:
+      #         python-version: ${{ matrix.python-version }}
 
-  #     - name: Setup conda
-  #       uses: s-weigand/setup-conda@v1
-  #       with:
-  #         update-conda: true
-  #         python-version: ${{ matrix.python-version }}
-  #         conda-channels: anaconda, conda-forge
-  #     # - run: conda --version  # This fails due to unknown reasons
-  #     - run: which python
+      #     - name: Setup conda
+      #       uses: s-weigand/setup-conda@v1
+      #       with:
+      #         update-conda: true
+      #         python-version: ${{ matrix.python-version }}
+      #         conda-channels: anaconda, conda-forge
+      #     # - run: conda --version  # This fails due to unknown reasons
+      #     - run: which python
 
-  #     - name: Upgrade pip version
-  #       run: |
-  #         python -m pip install --upgrade pip
+      #     - name: Upgrade pip version
+      #       run: |
+      #         python -m pip install --upgrade pip
 
-  #     - name: Install requirements
-  #       run: |
-  #         python -m pip install -r requirements.txt
-  #         python -m pip install -r docs/requirements.txt
+      #     - name: Install requirements
+      #       run: |
+      #         python -m pip install -r requirements.txt
+      #         python -m pip install -r docs/requirements.txt
 
-  #     - name: Build package
-  #       env:
-  #         CL: "/std:c++17"
-  #       run: |
-  #         python scripts/build/install.py
+      - name: Build package
+        env:
+          CL: "/std:c++17"
+        run: |
+          spin build -v
 
-  #     - name: Run tests
-  #       run: |
-  #         python -c "import pydatastructs; pydatastructs.test()"
+      - name: Run tests
+        run: |
+          spin test -v
 
   #     - name: Build Documentation
   #       run: |

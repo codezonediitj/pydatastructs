@@ -17,17 +17,17 @@ python.install_sources(
 )
 
 python.extension_module(
-    'pydatastructs.linear_data_structures._backend.cpp._arrays',
+    '_arrays',
     '_backend/cpp/arrays/arrays.cpp',
     install: true,
-    subdir: 'pydatastructs/linear_data_structures'
+    subdir: 'pydatastructs/linear_data_structures/_backend/cpp'
 )
 
 python.extension_module(
-    'pydatastructs.linear_data_structures._backend.cpp._algorithms',
+    '_algorithms',
     '_backend/cpp/algorithms/algorithms.cpp',
     install: true,
-    subdir: 'pydatastructs/linear_data_structures'
+    subdir: 'pydatastructs/linear_data_structures/_backend/cpp'
 )
 
 subdir('tests')

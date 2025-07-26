@@ -2,6 +2,13 @@
 requires = ["meson-python"]
 build-backend = "mesonpy"
 
+[project]
+name = "pydatastructs"
+version = "1.0.1.dev0"
+description = "Data structures and algorithms implemented using Python and C++"
+readme = "README.md"
+requires-python = ">=3.8"
+
 [tool.spin]
 package = "pydatastructs"
 
