@@ -3,7 +3,6 @@ python = import('python').find_installation(pure: false)
 python.install_sources(
     [
         '__init__.py',
-        '_extensions.py',
         'algorithms.py',
         'multiset.py',
         'sparse_table.py',

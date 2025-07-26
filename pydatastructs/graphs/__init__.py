@@ -9,7 +9,6 @@ __all__.extend(graph.__all__)
 from . import algorithms
 from . import adjacency_list
 from . import adjacency_matrix
-from . import _extensions
 
 from .algorithms import (
     breadth_first_search,

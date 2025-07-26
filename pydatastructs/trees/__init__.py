@@ -5,7 +5,6 @@ from . import (
     m_ary_trees,
     space_partitioning_trees,
     heaps,
-    _extensions
 )
 
 from .binary_trees import (

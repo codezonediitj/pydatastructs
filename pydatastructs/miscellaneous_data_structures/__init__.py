@@ -6,7 +6,6 @@ from . import (
     queue,
     disjoint_set,
     sparse_table,
-    _extensions,
 )
 
 from .binomial_trees import (
