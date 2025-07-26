@@ -12,11 +12,16 @@ python.install_sources(
     subdir: 'pydatastructs/trees'
 )
 
+python.install_sources(
+    ['_backend/__init__.py', '_backend/cpp/__init__.py'],
+    subdir: 'pydatastructs/trees/_backend'
+)
+
 python.extension_module(
-    'pydatastructs.trees._backend.cpp._trees',
+    '_trees',
     '_backend/cpp/trees.cpp',
     install: true,
-    subdir: 'pydatastructs/trees'
+    subdir: 'pydatastructs/trees/_backend/cpp'
 )
 
 subdir('tests')

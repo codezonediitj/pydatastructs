@@ -22,10 +22,10 @@ python.install_sources(
 )
 
 python.extension_module(
-    'pydatastructs.miscellaneous_data_structures._backend.cpp._stack',
+    '_stack',
     '_backend/cpp/stack/stack.cpp',
     install: true,
-    subdir: 'pydatastructs/miscellaneous_data_structures'
+    subdir: 'pydatastructs/miscellaneous_data_structures/_backend/cpp'
 )
 
 subdir('tests')
