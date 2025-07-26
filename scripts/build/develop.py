@@ -3,10 +3,10 @@ import subprocess
 import sys
 
 def run_cmd(cmd):
-    print(f"➡️  Running: {cmd}")
+    print(f"Running: {cmd}")
     result = subprocess.run(cmd, shell=True)
     if result.returncode != 0:
-        print(f"❌ Command failed: {cmd}", file=sys.stderr)
+        print(f"Command failed: {cmd}", file=sys.stderr)
         sys.exit(result.returncode)
 
 if __name__ == "__main__":
@@ -16,11 +16,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.clean:
-        response = input("⚠️  Warning: Executing `git clean -fdx` [Y/N]: ")
+        response = input("Warning: Executing `git clean -fdx` [Y/N]: ")
         if response.lower() in ("y", "yes"):
             run_cmd("git clean -fdx")
         else:
-            print("ℹ️  Skipping clean step.")
+            print("Skipping clean step.")
 
     run_cmd("python scripts/build/add_dummy_submodules.py")
     run_cmd("pip install -e . --verbose")
