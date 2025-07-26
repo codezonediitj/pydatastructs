@@ -1,9 +1,3 @@
-try:
-    import pytest
-except ImportError:
-    raise Exception("pytest must be installed. Use `pip install pytest` "
-                    "to install it.")
-
 import os
 import pathlib
 import glob
@@ -30,6 +24,12 @@ def test(submodules=None, only_benchmarks=False,
         List of submodules test to run. By default runs
         all the tests
     """
+    try:
+        import pytest
+    except ImportError:
+        raise Exception("pytest must be installed. Use `pip install pytest` "
+                        "to install it.")
+
     # set benchmarks size
     os.environ["PYDATASTRUCTS_BENCHMARK_SIZE"] = str(benchmarks_size)
     test_files = []
@@ -53,7 +53,7 @@ def test(submodules=None, only_benchmarks=False,
                     raise Exception("Submodule should be of type: str or module")
                 if sub in path:
                     if not only_benchmarks:
-                        if not 'benchmarks' in path:
+                        if 'benchmarks' not in path:
                             test_files.append(path)
                     else:
                         if 'benchmarks' in path:
@@ -69,14 +69,14 @@ def test(submodules=None, only_benchmarks=False,
             if skip_test:
                 continue
             if not only_benchmarks:
-                if not 'benchmarks' in path:
+                if 'benchmarks' not in path:
                     test_files.append(path)
             else:
                 if 'benchmarks' in path:
                     test_files.append(path)
 
     extra_args = []
-    if not kwargs.get("n", False) is False:
+    if kwargs.get("n", False) is not False:
         extra_args.append("-n")
         extra_args.append(str(kwargs["n"]))
 
