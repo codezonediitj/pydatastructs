@@ -193,6 +193,7 @@ jobs:
       - name: Install clang
         run: |
           choco install llvm -y --force
+          clang-cl --version
 
       - name: Build package
         run: |
