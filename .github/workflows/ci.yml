@@ -196,7 +196,9 @@ jobs:
 
       - name: Build package
         run: |
-          CC="clang-cl" CXX="clang-cl" python scripts/build/install.py
+          set CC=clang-cl
+          set CXX=clang-cl
+          python scripts/build/install.py
 
       - name: Run tests
         run: |
