@@ -192,16 +192,11 @@ jobs:
 
       - name: Install clang
         run: |
-          choco install llvm -y
-          echo "C:\\Program Files\\LLVM\\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          choco install llvm -y --force
 
       - name: Build package
-        env:
-          CC: clang-cl
-          CXX: clang-cl
-          CL: "/std:c++17"
         run: |
-          python scripts/build/install.py
+          CC="clang-cl" CXX="clang-cl" python scripts/build/install.py
 
       - name: Run tests
         run: |
