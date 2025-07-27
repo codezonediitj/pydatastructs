@@ -196,6 +196,7 @@ jobs:
           clang-cl --version
 
       - name: Build package
+        shell: cmd /C call {0}
         run: |
           set CC=clang-cl
           set CXX=clang-cl
