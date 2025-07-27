@@ -190,9 +190,15 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install -r docs/requirements.txt
 
+      - name: Install clang
+        run: |
+          choco install llvm -y
+
       - name: Build package
         env:
-          CL: "/std:c++17"
+          CC: clang-cl
+          CXX: clang-cl
+          CXXFLAGS: "-std=c++17"
         run: |
           python scripts/build/install.py
 
