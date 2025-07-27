@@ -9,6 +9,7 @@
 #include <algorithm>
 #include "AdjacencyListGraphNode.hpp"
 #include "GraphEdge.hpp"
+#include "../../../utils/_backend/cpp/utils.hpp"
 
 extern PyTypeObject AdjacencyListGraphType;
 
@@ -62,12 +63,11 @@ static PyObject* AdjacencyListGraph_new(PyTypeObject* type, PyObject* args, PyOb
     Py_ssize_t num_args = PyTuple_Size(args);
     for (Py_ssize_t i = 0; i < num_args; ++i) {
         PyObject* node_obj = PyTuple_GetItem(args, i);
-        if (!PyObject_IsInstance(node_obj, (PyObject*)&AdjacencyListGraphNodeType)) {
+        AdjacencyListGraphNode* node = reinterpret_cast<AdjacencyListGraphNode*>(node_obj);
+        if (get_type_tag(node_obj) != NodeType_::AdjacencyListGraphNode) {
             PyErr_SetString(PyExc_TypeError, "All arguments must be AdjacencyListGraphNode instances");
             return NULL;
         }
-
-        AdjacencyListGraphNode* node = reinterpret_cast<AdjacencyListGraphNode*>(node_obj);
 
         if (self->node_map.find(node->name) != self->node_map.end()) {
             PyErr_Format(PyExc_ValueError, "Duplicate node with name '%s'", node->name.c_str());
@@ -107,7 +107,7 @@ static PyObject* AdjacencyListGraph_add_vertex(AdjacencyListGraph* self, PyObjec
         return NULL;
     }
 
-    if (!PyObject_IsInstance(node_obj, (PyObject*)&AdjacencyListGraphNodeType)) {
+    if (get_type_tag(node_obj) != NodeType_::AdjacencyListGraphNode) {
         PyErr_SetString(PyExc_TypeError, "Object is not an AdjacencyListGraphNode");
         return NULL;
     }

@@ -23,6 +23,7 @@ static PyObject* AdjacencyMatrixGraphNode_new(PyTypeObject* type, PyObject* args
     }
 
     AdjacencyMatrixGraphNode* self = reinterpret_cast<AdjacencyMatrixGraphNode*>(base_obj);
+    self->super.type_tag = NodeType_::AdjacencyMatrixGraphNode;
 
     return reinterpret_cast<PyObject*>(self);
 }

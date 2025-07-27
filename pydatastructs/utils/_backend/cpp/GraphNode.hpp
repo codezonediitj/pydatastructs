@@ -5,6 +5,7 @@
 #include <Python.h>
 #include <string>
 #include <variant>
+#include "Node.hpp"
 
 enum class DataType {
     None,
@@ -16,6 +17,7 @@ enum class DataType {
 
 typedef struct {
     PyObject_HEAD
+    NodeType_ type_tag;
     std::string name;
     int internal_id;
     std::variant<std::monostate, int64_t, double, std::string, PyObject *> data;
@@ -32,6 +34,7 @@ static void GraphNode_dealloc(GraphNode* self) {
 static PyObject* GraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     GraphNode* self = reinterpret_cast<GraphNode*>(type->tp_alloc(type, 0));
     if (!self) return NULL;
+    self->type_tag = NodeType_::GraphNode;
 
     new (&self->name) std::string();
     new (&self->data) std::variant<std::monostate, int64_t, double, std::string, PyObject*>();
@@ -195,6 +198,12 @@ static PyGetSetDef GraphNode_getsetters[] = {
     {nullptr}
 };
 
+static struct PyMemberDef GraphNode_PyMemberDef[] = {
+    {"type_tag", T_INT, offsetof(GraphNode, type_tag), 0, "GraphNode type_tag"},
+    {NULL},
+};
+
+
 static PyTypeObject GraphNodeType = {
         /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "GraphNode",
         /* tp_basicsize */ sizeof(GraphNode),
@@ -223,7 +232,7 @@ static PyTypeObject GraphNodeType = {
         /* tp_iter */ 0,
         /* tp_iternext */ 0,
         /* tp_methods */ 0,
-        /* tp_members */ 0,
+        /* tp_members */ GraphNode_PyMemberDef,
         /* tp_getset */ GraphNode_getsetters,
         /* tp_base */ &PyBaseObject_Type,
         /* tp_dict */ 0,

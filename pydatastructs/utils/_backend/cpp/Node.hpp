@@ -8,12 +8,18 @@
 
 typedef struct {
     PyObject_HEAD
+    NodeType_ type_tag;
 } Node;
 // Node is an abstract class representing a Node
 
 static void Node_dealloc(Node *self) {
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
+
+static struct PyMemberDef Node_PyMemberDef[] = {
+    {"type_tag", T_INT, offsetof(Node, type_tag), 0, "Node type_tag"},
+    {NULL},
+};
 
 
 static PyTypeObject NodeType = {
@@ -44,7 +50,7 @@ static PyTypeObject NodeType = {
     /* tp_iter */ 0,
     /* tp_iternext */ 0,
     /* tp_methods */ 0,
-    /* tp_members */ 0,
+    /* tp_members */ Node_PyMemberDef,
     /* tp_getset */ 0,
     /* tp_base */ &PyBaseObject_Type,
     /* tp_dict */ 0,

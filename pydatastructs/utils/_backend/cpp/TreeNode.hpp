@@ -9,6 +9,7 @@
 
 typedef struct {
     PyObject_HEAD
+    NodeType_ type_tag;
     PyObject* key;
     PyObject* data; // can store None or a number
     PyObject* left; // can store None or a number
@@ -29,6 +30,7 @@ static void TreeNode_dealloc(TreeNode *self) {
 static PyObject* TreeNode___new__(PyTypeObject* type, PyObject *args, PyObject *kwds) {
     TreeNode *self;
     self = reinterpret_cast<TreeNode*>(type->tp_alloc(type, 0));
+    self->type_tag = NodeType_::TreeNode;
 
     // Assume that arguments are in the order below. Python code is such that this is true.
     self->key = PyObject_GetItem(args, PyZero);
@@ -56,6 +58,7 @@ static PyObject* TreeNode___str__(TreeNode *self) {
 }
 
 static struct PyMemberDef TreeNode_PyMemberDef[] = {
+    {"type_tag", T_INT, offsetof(TreeNode, type_tag), 0, "TreeNode type_tag"},
     {"key", T_OBJECT, offsetof(TreeNode, key), 0, "TreeNode key"},
     {"data", T_OBJECT, offsetof(TreeNode, data), 0, "TreeNode data"},
     {"height", T_LONG, offsetof(TreeNode, height), 0, "TreeNode height"},

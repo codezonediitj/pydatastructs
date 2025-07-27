@@ -6,12 +6,12 @@
 #include <cstring>
 #include <string>
 
-PyObject *PyZero = PyLong_FromLong(0);
-PyObject *PyOne = PyLong_FromLong(1);
-PyObject *PyTwo = PyLong_FromLong(2);
-PyObject *PyThree = PyLong_FromLong(3);
-const char* _encoding = "utf-8";
-const char* _invalid_char = "<invalid-character>";
+static PyObject *PyZero = PyLong_FromLong(0);
+static PyObject *PyOne = PyLong_FromLong(1);
+static PyObject *PyTwo = PyLong_FromLong(2);
+static PyObject *PyThree = PyLong_FromLong(3);
+static const char* _encoding = "utf-8";
+static const char* _invalid_char = "<invalid-character>";
 
 static char* PyObject_AsString(PyObject* obj) {
     return PyBytes_AS_STRING(PyUnicode_AsEncodedString(obj, _encoding, _invalid_char));
@@ -106,5 +106,41 @@ static int _comp(PyObject* u, PyObject* v, PyObject* tcomp) {
     }
     return result;
 }
+
+enum class NodeType_ {
+    InvalidType,
+    Node,
+    TreeNode,
+    GraphNode,
+    AdjacencyListGraphNode,
+    AdjacencyMatrixGraphNode,
+    GraphEdge
+};
+
+static NodeType_ get_type_tag(PyObject *node_obj) {
+    if (!PyObject_HasAttrString(node_obj, "type_tag")) {
+        return NodeType_::InvalidType;  // attribute missing
+    }
+
+    PyObject *attr = PyObject_GetAttrString(node_obj, "type_tag");
+    if (!attr) {
+        return NodeType_::InvalidType;  // getattr failed
+    }
+
+    if (!PyLong_Check(attr)) {
+        Py_DECREF(attr);
+        return NodeType_::InvalidType;  // not an int
+    }
+
+    int tag = (int)PyLong_AsLong(attr);
+    Py_DECREF(attr);
+
+    if (PyErr_Occurred()) {
+        return NodeType_::InvalidType;  // overflow or error in cast
+    }
+
+    return static_cast<NodeType_>(tag);
+}
+
 
 #endif

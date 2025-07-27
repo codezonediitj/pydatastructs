@@ -12,6 +12,7 @@ extern PyTypeObject AdjacencyListGraphNodeType;
 
 typedef struct {
     PyObject_HEAD
+    NodeType_ type_tag;
     std::string name;
     int internal_id;
     std::variant<std::monostate, int64_t, double, std::string, PyObject *> data;
@@ -34,6 +35,7 @@ static void AdjacencyListGraphNode_dealloc(AdjacencyListGraphNode* self) {
 static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     AdjacencyListGraphNode* self = PyObject_New(AdjacencyListGraphNode, &AdjacencyListGraphNodeType);
     if (!self) return NULL;
+    self->type_tag = NodeType_::AdjacencyListGraphNode;
     new (&self->adjacent) std::unordered_map<std::string, PyObject*>();
     new (&self->name) std::string();
     new (&self->data) std::variant<std::monostate, int64_t, double, std::string, PyObject*>();
@@ -234,6 +236,11 @@ static int AdjacencyListGraphNode_set_adjacent(AdjacencyListGraphNode* self, PyO
     return 0;
 }
 
+static struct PyMemberDef AdjacencyListGraphNode_PyMemberDef[] = {
+    {"type_tag", T_INT, offsetof(AdjacencyListGraphNode, type_tag), 0, "AdjacencyListGraphNode type_tag"},
+    {NULL},
+};
+
 static PyGetSetDef AdjacencyListGraphNode_getsetters[] = {
     {"name", (getter)AdjacencyListGraphNode_get_name, (setter)AdjacencyListGraphNode_set_name, "Get or set node name", NULL},
     {"data", (getter)AdjacencyListGraphNode_get_data, (setter)AdjacencyListGraphNode_set_data, "Get or set node data", NULL},
@@ -275,7 +282,7 @@ inline PyTypeObject AdjacencyListGraphNodeType = {
     /* tp_iter */ 0,
     /* tp_iternext */ 0,
     /* tp_methods */ AdjacencyListGraphNode_methods,
-    /* tp_members */ 0,
+    /* tp_members */ AdjacencyListGraphNode_PyMemberDef,
     /* tp_getset */ AdjacencyListGraphNode_getsetters,
     /* tp_base */ &GraphNodeType,
     /* tp_dict */ 0,
