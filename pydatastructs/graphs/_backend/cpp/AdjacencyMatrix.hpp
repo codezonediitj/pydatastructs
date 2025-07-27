@@ -66,7 +66,7 @@ static PyObject* AdjacencyMatrixGraph_new(PyTypeObject* type, PyObject* args, Py
         Py_ssize_t len = PyTuple_Size(vertices);
         for (Py_ssize_t i = 0; i < len; ++i) {
             PyObject* item = PyTuple_GetItem(vertices, i);
-            if (!PyObject_TypeCheck(item, &AdjacencyMatrixGraphNodeType)) {
+            if (get_type_tag(item) != NodeType_::AdjacencyMatrixGraphNode) {
                 PyErr_SetString(PyExc_TypeError, "All elements must be AdjacencyMatrixGraphNode instances");
                 Py_DECREF(self);
                 return NULL;

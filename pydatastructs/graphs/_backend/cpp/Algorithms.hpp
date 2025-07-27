@@ -40,7 +40,7 @@ static PyObject* breadth_first_search_adjacency_list(PyObject* self, PyObject* a
 
     for (const auto& [adj_name, adj_obj] : node->adjacent) {
         if (visited.count(adj_name)) continue;
-        if (!PyObject_IsInstance(adj_obj, (PyObject*)&AdjacencyListGraphNodeType)) continue;
+        if (get_type_tag(adj_obj) != NodeType_::AdjacencyListGraphNode) continue;
 
         AdjacencyListGraphNode* adj_node = reinterpret_cast<AdjacencyListGraphNode*>(adj_obj);
 
