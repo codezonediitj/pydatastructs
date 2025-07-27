@@ -199,7 +199,11 @@ jobs:
         run: |
           set CC=clang-cl
           set CXX=clang-cl
-          python scripts/build/install.py
+          python scripts/build/add_dummy_submodules.py
+          python setup.py build_ext --inplace
+          python -m pip install .
+          python scripts/build/delete_dummy_submodules.py
+          python -m pip install . --force-reinstall
 
       - name: Run tests
         run: |
