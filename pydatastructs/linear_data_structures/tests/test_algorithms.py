@@ -121,6 +121,7 @@ def test_intro_sort():
 def test_bubble_sort():
     _test_common_sort(bubble_sort)
     _test_common_sort(bubble_sort, backend=Backend.CPP)
+    _test_common_sort(bubble_sort, backend=Backend.LLVM)
 
 def test_selection_sort():
     _test_common_sort(selection_sort)
