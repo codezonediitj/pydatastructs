@@ -27,6 +27,15 @@ static void OneDimensionalArray_dealloc(OneDimensionalArray *self) {
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
+static void cleanup_partial_data(PyObject** data, size_t count) {
+    if (data) {
+        for (size_t i = 0; i < count; i++) {
+            Py_XDECREF(data[i]);
+        }
+        std::free(data);
+    }
+}
+
 static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                                              PyObject *kwds) {
     OneDimensionalArray *self;
@@ -49,7 +58,6 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         return NULL;
     }
 
-    Py_INCREF(dtype);
     self->_dtype = dtype;
 
     if (len_args != 2 && len_args != 3) {
@@ -63,8 +71,11 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
     if (len_args == 3) {
         PyObject *args0 = PyObject_GetItem(args, PyOne);
         PyObject *args1 = PyObject_GetItem(args, PyTwo);
-        if (!args0 || !args1) return NULL;
-
+        if (!args0 || !args1) {
+            Py_XDECREF(args0);
+            Py_XDECREF(args1);
+            return NULL;
+        }
         size_t size;
         PyObject *data = NULL;
         if ((PyList_Check(args0) || PyTuple_Check(args0)) && PyLong_Check(args1)) {
@@ -81,7 +92,6 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                             "expected type of data is list/tuple.");
             return NULL;
         }
-
         if (PyErr_Occurred()) {
             Py_DECREF(args0);
             Py_DECREF(args1);
@@ -112,6 +122,8 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
         for (size_t i = 0; i < size; i++) {
             PyObject* idx = PyLong_FromSize_t(i);
             if (!idx) {
+                cleanup_partial_data(self->_data, i);
+                self->_data = nullptr;
                 Py_DECREF(args0);
                 Py_DECREF(args1);
                 return NULL;
@@ -121,6 +133,8 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
             Py_DECREF(idx);
 
             if (!value) {
+                cleanup_partial_data(self->_data, i);
+                self->_data = nullptr;
                 Py_DECREF(args0);
                 Py_DECREF(args1);
                 return NULL;
@@ -128,13 +142,13 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
 
             if (raise_exception_if_dtype_mismatch(value, self->_dtype)) {
                 Py_DECREF(value);
+                cleanup_partial_data(self->_data, i);
+                self->_data = nullptr;
                 Py_DECREF(args0);
                 Py_DECREF(args1);
                 return NULL;
             }
-            Py_INCREF(value);
             self->_data[i] = value;
-            Py_DECREF(value);
         }
         Py_DECREF(args0);
         Py_DECREF(args1);
@@ -157,33 +171,33 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                     if (!init) {
                         PyErr_Clear();
                         init = Py_None;
+                        Py_INCREF(init);
                     }
                 }
             }
             if (!init) {
                 init = Py_None;
+                Py_INCREF(init);
             }
             if (init != Py_None && raise_exception_if_dtype_mismatch(init, self->_dtype)) {
-                if (init != Py_None) Py_DECREF(init);
+                Py_DECREF(init);
                 Py_DECREF(args0);
                 return NULL;
             }
             self->_data = reinterpret_cast<PyObject**>(std::calloc(self->_size, sizeof(PyObject*)));
             if (!self->_data) {
-                if (init != Py_None) Py_DECREF(init);
+                Py_DECREF(init);
                 Py_DECREF(args0);
                 PyErr_NoMemory();
                 return NULL;
             }
 
-            Py_INCREF(init);
             for (size_t i = 0; i < self->_size; i++) {
                 Py_INCREF(init);
                 self->_data[i] = init;
             }
             Py_DECREF(init);
-            if (init != Py_None)
-                Py_DECREF(init);
+
         } else if (PyList_Check(args0) || PyTuple_Check(args0)) {
             Py_ssize_t size_ssize = PyObject_Length(args0);
             if (size_ssize < 0) {
@@ -201,6 +215,8 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
             for (size_t i = 0; i < self->_size; i++) {
                 PyObject* idx = PyLong_FromSize_t(i);
                 if (!idx) {
+                    cleanup_partial_data(self->_data, i);
+                    self->_data = nullptr;
                     Py_DECREF(args0);
                     return NULL;
                 }
@@ -209,18 +225,21 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                 Py_DECREF(idx);
 
                 if (!value) {
+                    cleanup_partial_data(self->_data, i);
+                    self->_data = nullptr;
                     Py_DECREF(args0);
                     return NULL;
                 }
 
                 if (raise_exception_if_dtype_mismatch(value, self->_dtype)) {
                     Py_DECREF(value);
+                    cleanup_partial_data(self->_data, i);
+                    self->_data = nullptr;
                     Py_DECREF(args0);
                     return NULL;
                 }
-                Py_INCREF(value);
+
                 self->_data[i] = value;
-                Py_DECREF(value);
             }
         } else {
             Py_DECREF(args0);
@@ -301,21 +320,19 @@ static PyObject* OneDimensionalArray_fill(OneDimensionalArray *self, PyObject *a
         return NULL;
     }
 
-    PyObject* value = PyTuple_GetItem(args, 0);
+    PyObject* value = PyTuple_GetItem(args, 0);  // Borrowed reference
     if (!value) return NULL;
 
     if (value != Py_None && raise_exception_if_dtype_mismatch(value, self->_dtype)) {
         return NULL;
     }
 
-    Py_INCREF(value);
     for (size_t i = 0; i < self->_size; i++) {
         PyObject* old_value = self->_data[i];
         Py_INCREF(value);
         self->_data[i] = value;
         Py_XDECREF(old_value);
     }
-    Py_DECREF(value);
 
     Py_RETURN_NONE;
 }
