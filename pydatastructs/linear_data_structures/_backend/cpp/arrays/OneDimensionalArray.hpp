@@ -16,14 +16,7 @@ typedef struct {
 } OneDimensionalArray;
 
 static void OneDimensionalArray_dealloc(OneDimensionalArray *self) {
-    if (self->_data) {
-        for (size_t i = 0; i < self->_size; i++) {
-            Py_XDECREF(self->_data[i]);
-        }
-        std::free(self->_data);
-        self->_data = nullptr;
-    }
-    Py_XDECREF(self->_dtype);
+    std::free(self->_data);
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -112,7 +105,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
             return NULL;
         }
         self->_size = size;
-        self->_data = reinterpret_cast<PyObject**>(std::calloc(size, sizeof(PyObject*)));
+        self->_data = reinterpret_cast<PyObject**>(std::malloc(size * sizeof(PyObject*)));
         if (!self->_data) {
             Py_DECREF(args0);
             Py_DECREF(args1);
@@ -171,32 +164,26 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                     if (!init) {
                         PyErr_Clear();
                         init = Py_None;
-                        Py_INCREF(init);
                     }
                 }
             }
             if (!init) {
                 init = Py_None;
-                Py_INCREF(init);
             }
             if (init != Py_None && raise_exception_if_dtype_mismatch(init, self->_dtype)) {
-                Py_DECREF(init);
                 Py_DECREF(args0);
                 return NULL;
             }
-            self->_data = reinterpret_cast<PyObject**>(std::calloc(self->_size, sizeof(PyObject*)));
+            self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));
             if (!self->_data) {
-                Py_DECREF(init);
                 Py_DECREF(args0);
                 PyErr_NoMemory();
                 return NULL;
             }
 
             for (size_t i = 0; i < self->_size; i++) {
-                Py_INCREF(init);
                 self->_data[i] = init;
             }
-            Py_DECREF(init);
 
         } else if (PyList_Check(args0) || PyTuple_Check(args0)) {
             Py_ssize_t size_ssize = PyObject_Length(args0);
@@ -205,7 +192,7 @@ static PyObject* OneDimensionalArray___new__(PyTypeObject* type, PyObject *args,
                 return NULL;
             }
             self->_size = (size_t)size_ssize;
-            self->_data = reinterpret_cast<PyObject**>(std::calloc(self->_size, sizeof(PyObject*)));
+            self->_data = reinterpret_cast<PyObject**>(std::malloc(self->_size * sizeof(PyObject*)));
             if (!self->_data) {
                 Py_DECREF(args0);
                 PyErr_NoMemory();
@@ -320,7 +307,7 @@ static PyObject* OneDimensionalArray_fill(OneDimensionalArray *self, PyObject *a
         return NULL;
     }
 
-    PyObject* value = PyTuple_GetItem(args, 0);  // Borrowed reference
+    PyObject* value = PyTuple_GetItem(args, 0);
     if (!value) return NULL;
 
     if (value != Py_None && raise_exception_if_dtype_mismatch(value, self->_dtype)) {
