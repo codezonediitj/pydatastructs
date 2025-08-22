@@ -6,6 +6,7 @@
 #include "../arrays/OneDimensionalArray.hpp"
 #include "../arrays/DynamicOneDimensionalArray.hpp"
 #include "../../../../utils/_backend/cpp/utils.hpp"
+#include <vector>
 
 // Bubble Sort
 static PyObject* bubble_sort_impl(PyObject* array, size_t lower, size_t upper,
