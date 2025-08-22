@@ -346,6 +346,7 @@ static PyObject* bubble_sort_llvm(PyObject* self, PyObject* args, PyObject* kwds
                     return NULL;
                 }
 
+                Py_INCREF(Py_None);
                 int result = PyObject_SetItem(arr_obj, index_obj, new_value);
                 Py_DECREF(index_obj);
                 Py_DECREF(new_value);
@@ -359,6 +360,7 @@ static PyObject* bubble_sort_llvm(PyObject* self, PyObject* args, PyObject* kwds
                     return NULL;
                 }
 
+                Py_INCREF(Py_None);
                 int result = PyObject_SetItem(arr_obj, index_obj, Py_None);
                 Py_DECREF(index_obj);
             }
@@ -425,6 +427,7 @@ static PyObject* bubble_sort_llvm(PyObject* self, PyObject* args, PyObject* kwds
                 if (!index_obj) {
                     return NULL;
                 }
+                Py_INCREF(Py_None);
                 int result = PyObject_SetItem(arr_obj, index_obj, Py_None);
                 Py_DECREF(index_obj);
             }
@@ -509,7 +512,7 @@ static PyObject* bubble_sort_llvm(PyObject* self, PyObject* args, PyObject* kwds
                 if (!index_obj) {
                     return NULL;
                 }
-
+                Py_INCREF(Py_None);
                 int result = PyObject_SetItem(arr_obj, index_obj, Py_None);
                 Py_DECREF(index_obj);
             }
@@ -575,7 +578,7 @@ static PyObject* bubble_sort_llvm(PyObject* self, PyObject* args, PyObject* kwds
                 if (!index_obj) {
                     return NULL;
                 }
-
+                Py_INCREF(Py_None);
                 int result = PyObject_SetItem(arr_obj, index_obj, Py_None);
                 Py_DECREF(index_obj);
             }
