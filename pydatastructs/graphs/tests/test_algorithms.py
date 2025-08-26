@@ -45,7 +45,7 @@ def test_breadth_first_search():
             (parent[V3.name] == V2.name and parent[V2.name] == V1.name)
 
         if (ds=='List'):
-            parent2 = {}
+            parent = {}
             V9 = AdjacencyListGraphNode("9",0,backend = Backend.CPP)
             V10 = AdjacencyListGraphNode("10",0,backend = Backend.CPP)
             V11 = AdjacencyListGraphNode("11",0,backend = Backend.CPP)
@@ -53,9 +53,9 @@ def test_breadth_first_search():
             assert G2.num_vertices()==3
             G2.add_edge("9", "10")
             G2.add_edge("10", "11")
-            breadth_first_search(G2, "9", bfs_tree, parent2, backend = Backend.CPP)
-            assert parent2[V10] == V9
-            assert parent2[V11] == V10
+            breadth_first_search(G2, "9", bfs_tree, parent, backend = Backend.CPP)
+            assert parent[V10] == V9
+            assert parent[V11] == V10
 
         if (ds == 'Matrix'):
             parent3 = {}

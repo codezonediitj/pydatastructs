@@ -14,8 +14,8 @@ static PyObject* breadth_first_search_adjacency_list(PyObject* self, PyObject* a
     PyObject* operation;
     PyObject* varargs = nullptr;
     PyObject* kwargs_dict = nullptr;
-
     static const char* kwlist[] = {"graph", "source_node", "operation", "args", "kwargs", nullptr};
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!sO|OO", const_cast<char**>(kwlist),
                                      &AdjacencyListGraphType, &graph_obj,
                                      &source_name, &operation,
@@ -24,54 +24,58 @@ static PyObject* breadth_first_search_adjacency_list(PyObject* self, PyObject* a
     }
 
     AdjacencyListGraph* cpp_graph = reinterpret_cast<AdjacencyListGraph*>(graph_obj);
-
     auto it = cpp_graph->node_map.find(source_name);
     AdjacencyListGraphNode* start_node = it->second;
-
     std::unordered_set<std::string> visited;
     std::queue<AdjacencyListGraphNode*> q;
-
     q.push(start_node);
     visited.insert(start_node->name);
 
     while (!q.empty()) {
-    AdjacencyListGraphNode* node = q.front();
-    q.pop();
+        AdjacencyListGraphNode* node = q.front();
+        q.pop();
 
-    for (const auto& [adj_name, adj_obj] : node->adjacent) {
-        if (visited.count(adj_name)) continue;
-        if (get_type_tag(adj_obj) != NodeType_::AdjacencyListGraphNode) continue;
+        for (const auto& [adj_name, adj_obj] : node->adjacent) {
+            if (visited.count(adj_name)) continue;
+            if (get_type_tag(adj_obj) != NodeType_::AdjacencyListGraphNode) continue;
 
-        AdjacencyListGraphNode* adj_node = reinterpret_cast<AdjacencyListGraphNode*>(adj_obj);
+            AdjacencyListGraphNode* adj_node = reinterpret_cast<AdjacencyListGraphNode*>(adj_obj);
 
-        PyObject* base_args = PyTuple_Pack(2,
-                                           reinterpret_cast<PyObject*>(node),
-                                           reinterpret_cast<PyObject*>(adj_node));
-        if (!base_args)
-            return nullptr;
+            PyObject* node_pyobj = reinterpret_cast<PyObject*>(node);
+            PyObject* adj_node_pyobj = reinterpret_cast<PyObject*>(adj_node);
 
-        PyObject* final_args;
-        if (varargs && PyTuple_Check(varargs)) {
-            final_args = PySequence_Concat(base_args, varargs);
-            Py_DECREF(base_args);
+            PyObject* final_args;
+
+            if (varargs && PyTuple_Check(varargs)) {
+                Py_ssize_t varargs_size = PyTuple_Size(varargs);
+                if (varargs_size == 1) {
+                    PyObject* extra_arg = PyTuple_GetItem(varargs, 0);
+                    final_args = PyTuple_Pack(3, node_pyobj, adj_node_pyobj, extra_arg);
+                } else {
+                    PyObject* base_args = PyTuple_Pack(2, node_pyobj, adj_node_pyobj);
+                    if (!base_args)
+                        return nullptr;
+                    final_args = PySequence_Concat(base_args, varargs);
+                    Py_DECREF(base_args);
+                }
+            } else {
+                final_args = PyTuple_Pack(2, node_pyobj, adj_node_pyobj);
+            }
             if (!final_args)
                 return nullptr;
-        } else {
-            final_args = base_args;
+
+            PyObject* result = PyObject_Call(operation, final_args, kwargs_dict);
+            Py_DECREF(final_args);
+
+            if (!result)
+                return nullptr;
+
+            Py_DECREF(result);
+            visited.insert(adj_name);
+            q.push(adj_node);
         }
-
-        PyObject* result = PyObject_Call(operation, final_args, kwargs_dict);
-        Py_DECREF(final_args);
-
-        if (!result)
-            return nullptr;
-
-        Py_DECREF(result);
-
-        visited.insert(adj_name);
-        q.push(adj_node);
     }
-    }
+
     if (PyErr_Occurred()) {
         return nullptr;
     }

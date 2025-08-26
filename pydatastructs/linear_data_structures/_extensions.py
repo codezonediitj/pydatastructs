@@ -17,6 +17,6 @@ algorithms_sources = ['/'.join([project, module, backend, cpp,
                                 'algorithms', 'algorithms.cpp'])]
 
 extensions = [
-    Extension(arrays, sources=arrays_sources),
-    Extension(algorithms, sources=algorithms_sources)
+    Extension(arrays, sources=arrays_sources, language="c++", extra_compile_args=["-std=c++17"]),
+    Extension(algorithms, sources=algorithms_sources, language="c++", extra_compile_args=["-std=c++17"])
 ]

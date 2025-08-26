@@ -26,6 +26,7 @@ class Backend(Enum):
 
     PYTHON = 'Python'
     CPP = 'Cpp'
+    LLVM = 'Llvm'
 
     def __str__(self):
         return self.value
