@@ -32,7 +32,10 @@ def _ensure_target_machine():
         binding.initialize_native_asmprinter()
 
         target = binding.Target.from_default_triple()
-        _target_machine = target.create_target_machine()
+        _target_machine = target.create_target_machine(
+            opt=3,
+            features="+sse,+sse2,+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+avx2"
+        )
     except Exception as e:
         raise RuntimeError(f"Failed to initialize LLVM target machine: {e}")
 
@@ -110,7 +113,7 @@ def _build_bubble_sort_ir(dtype: str) -> str:
     if isinstance(T, ir.IntType):
         should_swap = b.icmp_signed(">", val_j, val_jp1)
     else:
-        should_swap = b.fcmp_ordered(">", val_j, val_jp1)
+        should_swap = b.fcmp_ordered(">", val_j, val_jp1, fastmath=True)
 
     b.cbranch(should_swap, b_swap, b_inner_latch)
 
@@ -144,6 +147,32 @@ def _materialize(dtype: str) -> int:
         llvm_ir = _build_bubble_sort_ir(dtype)
         mod = binding.parse_assembly(llvm_ir)
         mod.verify()
+
+        pmb = binding.PassManagerBuilder()
+        pmb.opt_level = 3
+        pmb.loop_vectorize = True
+        pmb.slp_vectorize = True
+
+        fpm = binding.create_function_pass_manager(mod)
+        pm = binding.create_module_pass_manager()
+
+        pm.add_basic_alias_analysis_pass()
+        pm.add_type_based_alias_analysis_pass()
+        pm.add_instruction_combining_pass()
+        pm.add_gvn_pass()
+        pm.add_cfg_simplification_pass()
+        pm.add_loop_unroll_pass()
+        pm.add_loop_unswitch_pass()
+
+        pmb.populate(fpm)
+        pmb.populate(pm)
+
+        fpm.initialize()
+        for func in mod.functions:
+            fpm.run(func)
+        fpm.finalize()
+
+        pm.run(mod)
 
         engine = binding.create_mcjit_compiler(mod, _target_machine)
         engine.finalize_object()
