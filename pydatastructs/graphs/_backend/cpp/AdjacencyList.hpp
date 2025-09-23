@@ -340,9 +340,6 @@ static PyObject* AdjacencyListGraph_add_edge(AdjacencyListGraph* self, PyObject*
     Py_RETURN_NONE;
 }
 
-
-
-
 static PyMethodDef AdjacencyListGraph_methods[] = {
     {"add_vertex", (PyCFunction)AdjacencyListGraph_add_vertex, METH_VARARGS, "Add a vertex to the graph"},
     {"add_edge", (PyCFunction)AdjacencyListGraph_add_edge, METH_VARARGS, "Add an edge to the graph"},

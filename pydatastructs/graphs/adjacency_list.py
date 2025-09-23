@@ -7,6 +7,8 @@ __all__ = [
     'AdjacencyList'
 ]
 
+_llvm_backend = None
+
 class AdjacencyList(Graph):
     """
     Adjacency list implementation of graphs.
@@ -27,10 +29,36 @@ class AdjacencyList(Graph):
             obj.edge_weights = {}
             obj._impl = 'adjacency_list'
             return obj
-        else:
+        elif backend == Backend.CPP:
             graph = _graph.AdjacencyListGraph()
             for vertice in vertices:
                 graph.add_vertex(vertice)
+            return graph
+        elif backend == Backend.LLVM:
+            def initialize_llvm_graph_backend():
+                global _llvm_backend
+                if _llvm_backend is not None:
+                    return _llvm_backend
+
+                from pydatastructs.graphs._backend.cpp.llvm_adjacency_list import LLVMAdjacencyListGraph  # Import your LLVM IR class
+
+                llvm_graph = LLVMAdjacencyListGraph()
+
+                functions, execution_engine = llvm_graph.compile_to_machine_code()
+
+                _graph.initialize_llvm_backend(functions, id(execution_engine))
+
+                _llvm_backend = {
+                    'llvm_graph': llvm_graph,
+                    'functions': functions,
+                    'execution_engine': execution_engine
+                }
+
+                return _llvm_backend
+            initialize_llvm_graph_backend()
+            graph = _graph.AdjacencyListGraphLLVM()
+            for vertex in vertices:
+                graph.add_vertex(vertex)
             return graph
 
     @classmethod
