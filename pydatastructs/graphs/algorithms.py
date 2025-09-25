@@ -24,7 +24,8 @@ __all__ = [
     'topological_sort',
     'topological_sort_parallel',
     'max_flow',
-    'find_bridges'
+    'find_bridges',
+    'find_maximal_cliques'
 ]
 
 Stack = Queue = deque
@@ -1185,7 +1186,6 @@ def _kahn_adjacency_list_parallel(graph: Graph, num_threads: int) -> list:
         raise ValueError("Graph is not acyclic.")
     return L
 
-
 def _breadth_first_search_max_flow(graph: Graph, source_node, sink_node, flow_passed, for_dinic=False):
     bfs_queue = Queue()
     parent, currentPathC = {}, {}
@@ -1207,7 +1207,6 @@ def _breadth_first_search_max_flow(graph: Graph, source_node, sink_node, flow_pa
                     bfs_queue.append(next_node.name)
     return (0, parent)
 
-
 def _max_flow_edmonds_karp_(graph: Graph, source, sink):
     m_flow = 0
     flow_passed = {}
@@ -1224,7 +1223,6 @@ def _max_flow_edmonds_karp_(graph: Graph, source, sink):
             current = prev
         new_flow, parent = _breadth_first_search_max_flow(graph, source, sink, flow_passed)
     return m_flow
-
 
 def _depth_first_search_max_flow_dinic(graph: Graph, u, parent, sink_node, flow, flow_passed):
     if u == sink_node:
@@ -1249,7 +1247,6 @@ def _depth_first_search_max_flow_dinic(graph: Graph, u, parent, sink_node, flow,
                     return path_flow
     return 0
 
-
 def _max_flow_dinic_(graph: Graph, source, sink):
     max_flow = 0
     flow_passed = {}
@@ -1269,7 +1266,6 @@ def _max_flow_dinic_(graph: Graph, source, sink):
 
     return max_flow
 
-
 def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
     raise_if_backend_is_not_python(
         max_flow, kwargs.get('backend', Backend.PYTHON))
@@ -1281,7 +1277,6 @@ def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
         f"Currently {algorithm} algorithm isn't implemented for "
         "performing max flow on graphs.")
     return getattr(algorithms, func)(graph, source, sink)
-
 
 def find_bridges(graph):
     """
@@ -1384,3 +1379,87 @@ def find_bridges(graph):
             bridges.append((b, a))
     bridges.sort()
     return bridges
+
+def _bron_kerbosc(graph: Graph, set_r: set, set_p: set, set_x: set, cliques: list):
+    if not set_p and not set_x:
+        cliques.append(sorted(list(set_r)))
+        return
+
+    for v in list(set_p):
+        neighbor_nodes = graph.neighbors(v)
+        neighbors = set(n.name for n in neighbor_nodes)
+        _bron_kerbosc(graph, set_r.union({v}), set_p.intersection(neighbors),
+                      set_x.intersection(neighbors), cliques)
+        set_p.remove(v)
+        set_x.add(v)
+
+def _find_maximal_cliques_bron_kerbosc_adjacency_list(graph: Graph) -> list:
+    cliques = []
+    vertices = set(graph.vertices)
+    _bron_kerbosc(graph, set(), vertices, set(), cliques)
+    return sorted(cliques)
+
+_find_maximal_cliques_bron_kerbosc_adjacency_matrix = \
+    _find_maximal_cliques_bron_kerbosc_adjacency_list
+
+def find_maximal_cliques(graph: Graph, algorithm: str, **kwargs) -> list:
+    """
+    Finds maximal cliques for an undirected graph.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The graph under consideration.
+    algorithm: str
+        The algorithm to be used. Currently, the following algorithms
+        are implemented,
+
+        'bron_kerbosc' -> Bron Kerbosc algorithm as given in [1].
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Returns
+    =======
+
+    cliques: list
+        Python list with each element as list of vertices.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, AdjacencyListGraphNode
+    >>> from pydatastructs import find_maximal_cliques
+    >>> V1 = AdjacencyListGraphNode('V1')
+    >>> V2 = AdjacencyListGraphNode('V2')
+    >>> V3 = AdjacencyListGraphNode('V3')
+    >>> V4 = AdjacencyListGraphNode('V4')
+    >>> G = Graph(V1, V2, V3, V4)
+    >>> G.add_edge('V1', 'V2')
+    >>> G.add_edge('V2', 'V1')
+    >>> G.add_edge('V2', 'V3')
+    >>> G.add_edge('V3', 'V2')
+    >>> G.add_edge('V1', 'V3')
+    >>> G.add_edge('V3', 'V1')
+    >>> G.add_edge('V1', 'V4')
+    >>> G.add_edge('V4', 'V1')
+    >>> find_maximal_cliques(G, 'bron_kerbosc')
+    [['V1', 'V2', 'V3'], ['V1', 'V4']]
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
+    """
+    raise_if_backend_is_not_python(
+        find_maximal_cliques, kwargs.get('backend', Backend.PYTHON))
+
+    import pydatastructs.graphs.algorithms as algorithms
+    func = "_find_maximal_cliques_" + algorithm + "_" + graph._impl
+    if not hasattr(algorithms, func):
+        raise NotImplementedError(
+        f"Currently {algorithm} algorithm isn't implemented for "
+        "finding maximal cliques on graphs.")
+    return getattr(algorithms, func)(graph)
