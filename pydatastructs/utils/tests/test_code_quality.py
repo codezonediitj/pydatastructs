@@ -2,11 +2,11 @@ import os, re, sys, pydatastructs, inspect
 from typing import Type
 import pytest
 
-def _list_files(checker):
+def _list_files(checker, root_path=None):
     root_path = os.path.abspath(
                 os.path.join(
                 os.path.split(__file__)[0],
-                os.pardir, os.pardir))
+                os.pardir, os.pardir)) if root_path is None else root_path
     code_files = []
     for (dirpath, _, filenames) in os.walk(root_path):
         for _file in filenames:
