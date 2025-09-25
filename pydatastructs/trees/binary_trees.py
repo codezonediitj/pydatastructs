@@ -1760,6 +1760,50 @@ class BinaryTreeTraversal(object):
                 q.append(tree[node].right)
         return visit
 
+    def morris_in_order_traversal(self, node=None):
+        """
+        Perform in-order traversal using Morris Traversal.
+
+        Parameters
+        ==========
+
+        node : int
+            The index of the node from where the traversal has to be instantiated.
+            By default, set to, root index.
+
+        Returns
+        =======
+
+        list
+            Each element of the list is of type `TreeNode`.
+        """
+        if node is None:
+            node = self.tree.root_idx
+
+        traversal = []
+        current = node
+
+        while current is not None:
+            if self.tree.tree[current].left is None:
+                traversal.append(self.tree.tree[current])
+                current = self.tree.tree[current].right
+            else:
+                predecessor = self.tree.tree[current].left
+                while (
+                    self.tree.tree[predecessor].right is not None
+                    and self.tree.tree[predecessor].right != current
+                ):
+                    predecessor = self.tree.tree[predecessor].right
+
+                if self.tree.tree[predecessor].right is None:
+                    self.tree.tree[predecessor].right = current
+                    current = self.tree.tree[current].left
+                else:
+                    self.tree.tree[predecessor].right = None
+                    traversal.append(self.tree.tree[current])
+                    current = self.tree.tree[current].right
+        return traversal
+
 class BinaryIndexedTree(object):
     """
     Represents binary indexed trees

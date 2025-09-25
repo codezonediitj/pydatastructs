@@ -171,6 +171,47 @@ static PyObject* BinaryTreeTraversal__out_order(BinaryTreeTraversal* self, PyObj
     return visit;
 }
 
+static PyObject* BinaryTreeTraversal_morris_in_order_traversal(BinaryTreeTraversal* self, PyObject *args) {
+    PyObject* node = PyObject_GetItem(args, PyZero);
+    if (node == Py_None) {
+        node = self->tree->root_idx;
+    }
+
+    PyObject* traversal = PyList_New(0);
+    ArrayForTrees* tree = self->tree->tree;
+    long current = PyLong_AsLong(node);
+
+    while (current != Py_None) {
+        TreeNode* current_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[current]);
+        if (current_node->left == Py_None) {
+            // If there's no left child, visit the current node
+            PyList_Append(traversal, reinterpret_cast<PyObject*>(current_node));
+            current = PyLong_AsLong(current_node->right);
+        } else {
+            // Find the in-order predecessor (rightmost node in the left subtree)
+            long predecessor = PyLong_AsLong(current_node->left);
+            TreeNode* predecessor_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[predecessor]);
+            while (predecessor_node->right != Py_None && predecessor_node->right != node) {
+                predecessor = PyLong_AsLong(predecessor_node->right);
+                predecessor_node = reinterpret_cast<TreeNode*>(tree->_one_dimensional_array->_data[predecessor]);
+            }
+
+            if (predecessor_node->right == Py_None) {
+                // Make the current node the right child of the predecessor
+                predecessor_node->right = node;
+                current = PyLong_AsLong(current_node->left);
+            } else {
+                // Revert the changes made to the tree
+                predecessor_node->right = Py_None;
+                PyList_Append(traversal, reinterpret_cast<PyObject*>(current_node));
+                current = PyLong_AsLong(current_node->right);
+            }
+        }
+    }
+
+    return traversal;
+}
+
 static PyObject* BinaryTreeTraversal_depth_first_search(BinaryTreeTraversal* self, PyObject *args, PyObject *kwds) {
     Py_INCREF(Py_None);
     PyObject* node = Py_None;
@@ -242,11 +283,11 @@ static struct PyMethodDef BinaryTreeTraversal_PyMethodDef[] = {
     {"_in_order", (PyCFunction) BinaryTreeTraversal__in_order, METH_VARARGS, NULL},
     {"_out_order", (PyCFunction) BinaryTreeTraversal__out_order, METH_VARARGS, NULL},
     {"_post_order", (PyCFunction) BinaryTreeTraversal__post_order, METH_VARARGS, NULL},
+    {"morris_in_order_traversal", (PyCFunction) BinaryTreeTraversal_morris_in_order_traversal, METH_VARARGS, NULL},
     {"depth_first_search", (PyCFunction) BinaryTreeTraversal_depth_first_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {"breadth_first_search", (PyCFunction) BinaryTreeTraversal_breadth_first_search, METH_VARARGS | METH_KEYWORDS, NULL},
     {NULL}
 };
-
 
 static PyTypeObject BinaryTreeTraversalType = {
     /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "BinaryTreeTraversal",
