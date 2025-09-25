@@ -145,31 +145,15 @@ def _materialize(dtype: str) -> int:
         mod = binding.parse_assembly(llvm_ir)
         mod.verify()
 
-        pmb = binding.PassManagerBuilder()
-        pmb.opt_level = 3
-        pmb.loop_vectorize = True
-        pmb.slp_vectorize = True
-
-        fpm = binding.create_function_pass_manager(mod)
-        pm = binding.create_module_pass_manager()
-
-        pm.add_basic_alias_analysis_pass()
-        pm.add_type_based_alias_analysis_pass()
-        pm.add_instruction_combining_pass()
-        pm.add_gvn_pass()
-        pm.add_cfg_simplification_pass()
-        pm.add_loop_unroll_pass()
-        pm.add_loop_unswitch_pass()
-
-        pmb.populate(fpm)
-        pmb.populate(pm)
-
-        fpm.initialize()
-        for func in mod.functions:
-            fpm.run(func)
-        fpm.finalize()
-
-        pm.run(mod)
+        try:
+            pm = binding.ModulePassManager()
+            pm.add_instruction_combining_pass()
+            pm.add_reassociate_pass()
+            pm.add_gvn_pass()
+            pm.add_cfg_simplification_pass()
+            pm.run(mod)
+        except AttributeError:
+            pass
 
         engine = binding.create_mcjit_compiler(mod, _target_machine)
         engine.finalize_object()

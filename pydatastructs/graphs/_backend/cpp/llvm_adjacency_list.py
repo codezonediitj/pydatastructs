@@ -528,10 +528,12 @@ class LLVMAdjacencyListGraph:
             self.builder.mul(current_capacity, ir.Constant(self.int_type, 2))
         )
 
-        ptr_size = ir.Constant(self.int64_type, 8)
-        new_adj_size_64 = self.builder.mul(self.builder.zext(new_capacity, self.int64_type), ptr_size)
-        new_adj_mem = self.builder.call(self.malloc_func, [new_adj_size_64])
-        new_adj_array = self.builder.bitcast(new_adj_mem, self.void_ptr)
+        node_ptr_type = self.node_type.as_pointer()
+        ptr_size_bytes = ir.Constant(self.int64_type, 8)
+        new_size_bytes = self.builder.mul(self.builder.zext(new_capacity, self.int64_type), ptr_size_bytes)
+
+        new_array_mem = self.builder.call(self.malloc_func, [new_size_bytes])
+        new_array = self.builder.bitcast(new_array_mem, node_ptr_type.as_pointer())
 
         copy_adj_block = self.builder.block.parent.append_basic_block(name="copy_adj")
         no_copy_adj_block = self.builder.block.parent.append_basic_block(name="no_copy_adj")
@@ -540,26 +542,31 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(has_existing_adj, copy_adj_block, no_copy_adj_block)
 
         self.builder.position_at_end(copy_adj_block)
-        old_adj_array = self.builder.load(adj_list_ptr)
-        old_adj_size_64 = self.builder.mul(self.builder.zext(current_count, self.int64_type), ptr_size)
-        self.builder.call(self.memcpy_func, [new_adj_array, old_adj_array, old_adj_size_64])
+        old_adj_array_void = self.builder.load(adj_list_ptr)
+        old_size_bytes = self.builder.mul(self.builder.zext(current_count, self.int64_type), ptr_size_bytes)
 
-        self.builder.call(self.free_func, [old_adj_array])
+        new_array_void = self.builder.bitcast(new_array, self.void_ptr)
+        self.builder.call(self.memcpy_func, [new_array_void, old_adj_array_void, old_size_bytes])
+
+        self.builder.call(self.free_func, [old_adj_array_void])
         self.builder.branch(no_copy_adj_block)
 
         self.builder.position_at_end(no_copy_adj_block)
-        self.builder.store(new_adj_array, adj_list_ptr)
+        new_array_void = self.builder.bitcast(new_array, self.void_ptr)
+        self.builder.store(new_array_void, adj_list_ptr)
         self.builder.store(new_capacity, adj_cap_ptr)
         self.builder.branch(add_adj_block)
 
         self.builder.position_at_end(add_adj_block)
-        adj_array = self.builder.load(adj_list_ptr)
+
+        adj_array_void = self.builder.load(adj_list_ptr)
+        adj_array_typed = self.builder.bitcast(adj_array_void, node_ptr_type.as_pointer())
+
         current_count_final = self.builder.load(adj_count_ptr)
 
-        offset_64 = self.builder.mul(self.builder.zext(current_count_final, self.int64_type), ptr_size)
-        tgt_slot_ptr = self.builder.gep(adj_array, [offset_64])
-        tgt_slot_typed = self.builder.bitcast(tgt_slot_ptr, self.node_type.as_pointer().as_pointer())
-        self.builder.store(tgt_node_ptr, tgt_slot_typed)
+        tgt_slot_ptr = self.builder.gep(adj_array_typed, [current_count_final])
+
+        self.builder.store(tgt_node_ptr, tgt_slot_ptr)
 
         new_adj_count = self.builder.add(current_count_final, ir.Constant(self.int_type, 1))
         self.builder.store(new_adj_count, adj_count_ptr)
@@ -922,12 +929,14 @@ class LLVMAdjacencyListGraph:
         self.builder.position_at_end(done_adj_cleanup)
 
     def _remove_from_adjacency_list(self, src_node_ptr, tgt_node_ptr):
-
         adj_list_ptr = self.builder.gep(src_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 3)])
         adj_count_ptr = self.builder.gep(src_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 4)])
 
-        adj_list = self.builder.load(adj_list_ptr)
+        adj_list_void = self.builder.load(adj_list_ptr)
         adj_count = self.builder.load(adj_count_ptr)
+
+        node_ptr_type = self.node_type.as_pointer()
+        adj_list_typed = self.builder.bitcast(adj_list_void, node_ptr_type.as_pointer())
 
         i = self.builder.alloca(self.int_type, name="adj_i")
         self.builder.store(ir.Constant(self.int_type, 0), i)
@@ -947,11 +956,9 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(loop_condition, adj_check_block, adj_done_block)
 
         self.builder.position_at_end(adj_check_block)
-        ptr_size = ir.Constant(self.int64_type, 8)
-        offset_64 = self.builder.mul(self.builder.zext(i_val, self.int64_type), ptr_size)
-        adj_entry_ptr = self.builder.gep(adj_list, [offset_64])
-        adj_entry_typed = self.builder.bitcast(adj_entry_ptr, self.node_type.as_pointer().as_pointer())
-        adj_node = self.builder.load(adj_entry_typed)
+
+        adj_entry_ptr = self.builder.gep(adj_list_typed, [i_val])
+        adj_node = self.builder.load(adj_entry_ptr)
 
         is_target = self.builder.icmp_signed('==', adj_node, tgt_node_ptr)
         self.builder.cbranch(is_target, adj_found_block, adj_next_block)
@@ -972,17 +979,12 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(shift_condition, do_adj_shift_block, finish_adj_shift_block)
 
         self.builder.position_at_end(do_adj_shift_block)
-        src_offset_64 = self.builder.mul(self.builder.zext(next_shift_idx, self.int64_type), ptr_size)
-        dst_offset_64 = self.builder.mul(self.builder.zext(shift_i_val, self.int64_type), ptr_size)
 
-        src_adj_ptr = self.builder.gep(adj_list, [src_offset_64])
-        dst_adj_ptr = self.builder.gep(adj_list, [dst_offset_64])
+        src_adj_ptr = self.builder.gep(adj_list_typed, [next_shift_idx])
+        dst_adj_ptr = self.builder.gep(adj_list_typed, [shift_i_val])
 
-        src_adj_typed = self.builder.bitcast(src_adj_ptr, self.node_type.as_pointer().as_pointer())
-        dst_adj_typed = self.builder.bitcast(dst_adj_ptr, self.node_type.as_pointer().as_pointer())
-
-        node_to_shift = self.builder.load(src_adj_typed)
-        self.builder.store(node_to_shift, dst_adj_typed)
+        node_to_shift = self.builder.load(src_adj_ptr)
+        self.builder.store(node_to_shift, dst_adj_ptr)
 
         self.builder.store(next_shift_idx, shift_i)
         self.builder.branch(adj_shift_block)

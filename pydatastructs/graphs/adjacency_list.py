@@ -40,7 +40,7 @@ class AdjacencyList(Graph):
                 if _llvm_backend is not None:
                     return _llvm_backend
 
-                from pydatastructs.graphs._backend.cpp.llvm_adjacency_list import LLVMAdjacencyListGraph  # Import your LLVM IR class
+                from pydatastructs.graphs._backend.cpp.llvm_adjacency_list import LLVMAdjacencyListGraph
 
                 llvm_graph = LLVMAdjacencyListGraph()
 
