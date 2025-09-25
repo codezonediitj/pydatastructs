@@ -62,6 +62,14 @@ class LLVMAdjacencyListGraph:
             self.int_type
         ])
 
+        self.target_machine = None
+
+    def _get_target_data(self):
+        if self.target_machine is None:
+            target = llvm.Target.from_default_triple()
+            self.target_machine = target.create_target_machine()
+        return self.target_machine.target_data
+
     def _create_function_declarations(self):
 
         malloc_type = ir.FunctionType(self.void_ptr, [self.int64_type])
@@ -255,7 +263,7 @@ class LLVMAdjacencyListGraph:
 
         name_ptr, name_len, node_id = self.create_node.args
 
-        node_size = ir.Constant(self.int64_type, self.node_type.get_abi_size(llvm.create_target_data("")))
+        node_size = ir.Constant(self.int64_type, self.node_type.get_abi_size(self._get_target_data()))
         node_mem = self.builder.call(self.malloc_func, [node_size])
         node_ptr = self.builder.bitcast(node_mem, self.node_type.as_pointer())
 
@@ -285,7 +293,7 @@ class LLVMAdjacencyListGraph:
         block = self.graph_init.append_basic_block(name="entry")
         self.builder = ir.IRBuilder(block)
 
-        graph_size = ir.Constant(self.int64_type, self.graph_type.get_abi_size(llvm.create_target_data("")))
+        graph_size = ir.Constant(self.int64_type, self.graph_type.get_abi_size(self._get_target_data()))
         graph_mem = self.builder.call(self.malloc_func, [graph_size])
         graph_ptr = self.builder.bitcast(graph_mem, self.graph_type.as_pointer())
 
@@ -491,7 +499,7 @@ class LLVMAdjacencyListGraph:
 
         self.builder.position_at_end(create_edge_block)
 
-        edge_size = ir.Constant(self.int64_type, self.edge_type.get_abi_size(llvm.create_target_data("")))
+        edge_size = ir.Constant(self.int64_type, self.edge_type.get_abi_size(self._get_target_data()))
         edge_mem = self.builder.call(self.malloc_func, [edge_size])
         edge_ptr = self.builder.bitcast(edge_mem, self.edge_type.as_pointer())
 
@@ -533,8 +541,9 @@ class LLVMAdjacencyListGraph:
         )
 
         node_ptr_type = self.node_type.as_pointer()
+        ptr_size = ir.Constant(self.int64_type, node_ptr_type.get_abi_size(self._get_target_data()))
         new_size_elements = self.builder.zext(new_capacity, self.int64_type)
-        new_array_mem = self.builder.call(self.malloc_func, [self.builder.mul(new_size_elements, ir.Constant(self.int64_type, node_ptr_type.get_abi_size(llvm.create_target_data(""))))])
+        new_array_mem = self.builder.call(self.malloc_func, [self.builder.mul(new_size_elements, ptr_size)])
         new_array = self.builder.bitcast(new_array_mem, node_ptr_type.as_pointer())
 
         copy_adj_block = self.builder.block.parent.append_basic_block(name="copy_adj")
@@ -546,7 +555,7 @@ class LLVMAdjacencyListGraph:
         self.builder.position_at_end(copy_adj_block)
         old_adj_array_void = self.builder.load(adj_list_ptr)
         old_size_elements = self.builder.zext(current_count, self.int64_type)
-        old_size_bytes = self.builder.mul(old_size_elements, ir.Constant(self.int64_type, node_ptr_type.get_abi_size(llvm.create_target_data(""))))
+        old_size_bytes = self.builder.mul(old_size_elements, ptr_size)
 
         new_array_void = self.builder.bitcast(new_array, self.void_ptr)
         self.builder.call(self.memcpy_func, [new_array_void, old_adj_array_void, old_size_bytes])
@@ -582,7 +591,7 @@ class LLVMAdjacencyListGraph:
 
         table_ptr, key, key_len, value = self.hash_insert.args
 
-        entry_size = ir.Constant(self.int64_type, self.hash_entry_type.get_abi_size(llvm.create_target_data("")))
+        entry_size = ir.Constant(self.int64_type, self.hash_entry_type.get_abi_size(self._get_target_data()))
         entry_mem = self.builder.call(self.malloc_func, [entry_size])
         entry_ptr = self.builder.bitcast(entry_mem, self.hash_entry_type.as_pointer())
 
@@ -1225,11 +1234,9 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(loop_condition, check_vertex_block, update_count_block)
 
         self.builder.position_at_end(check_vertex_block)
-        ptr_size = ir.Constant(self.int64_type, 8)
-        read_offset_64 = self.builder.mul(self.builder.zext(i_val, self.int64_type), ptr_size)
-        read_entry_ptr = self.builder.gep(adj_list, [read_offset_64])
-        read_entry_typed = self.builder.bitcast(read_entry_ptr, self.node_type.as_pointer().as_pointer())
-        adj_node = self.builder.load(read_entry_typed)
+        adj_list_typed = self.builder.bitcast(adj_list, self.node_type.as_pointer().as_pointer())
+        read_entry_ptr = self.builder.gep(adj_list_typed, [i_val])
+        adj_node = self.builder.load(read_entry_ptr)
 
         adj_node_name_ptr = self.builder.gep(adj_node, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 1)])
         adj_node_name = self.builder.load(adj_node_name_ptr)
@@ -1258,10 +1265,8 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(indices_different, do_copy_block, advance_write_block)
 
         self.builder.position_at_end(do_copy_block)
-        write_offset_64 = self.builder.mul(self.builder.zext(write_idx_val, self.int64_type), ptr_size)
-        write_entry_ptr = self.builder.gep(adj_list, [write_offset_64])
-        write_entry_typed = self.builder.bitcast(write_entry_ptr, self.node_type.as_pointer().as_pointer())
-        self.builder.store(adj_node, write_entry_typed)
+        write_entry_ptr = self.builder.gep(adj_list_typed, [write_idx_val])
+        self.builder.store(adj_node, write_entry_ptr)
         self.builder.branch(advance_write_block)
 
         self.builder.position_at_end(advance_write_block)
@@ -1386,6 +1391,7 @@ class LLVMAdjacencyListGraph:
 
         target = llvm.Target.from_default_triple()
         target_machine = target.create_target_machine()
+        self.target_machine = target_machine
 
         mod = llvm.parse_assembly(str(self.module))
         mod.verify()
