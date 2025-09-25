@@ -564,8 +564,8 @@ class LLVMAdjacencyListGraph:
         self.builder.branch(no_copy_adj_block)
 
         self.builder.position_at_end(no_copy_adj_block)
-        new_array_void = self.builder.bitcast(new_array, self.void_ptr)
-        self.builder.store(new_array_void, adj_list_ptr)
+        new_array_as_void = self.builder.bitcast(new_array, self.void_ptr)
+        self.builder.store(new_array_as_void, adj_list_ptr)
         self.builder.store(new_capacity, adj_cap_ptr)
         self.builder.branch(add_adj_block)
 
@@ -647,13 +647,15 @@ class LLVMAdjacencyListGraph:
         adj_list_ptr = self.builder.gep(node1_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 3)])
         adj_count_ptr = self.builder.gep(node1_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 4)])
 
-        adj_list = self.builder.load(adj_list_ptr)
+        adj_list_void = self.builder.load(adj_list_ptr)
         adj_count = self.builder.load(adj_count_ptr)
 
-        adj_exists = self.builder.icmp_signed('!=', adj_list, ir.Constant(self.void_ptr, None))
+        adj_exists = self.builder.icmp_signed('!=', adj_list_void, ir.Constant(self.void_ptr, None))
+        count_positive = self.builder.icmp_signed('>', adj_count, ir.Constant(self.int_type, 0))
+        should_search = self.builder.and_(adj_exists, count_positive)
 
         search_adj_block = self.is_adjacent.append_basic_block(name="search_adjacency")
-        self.builder.cbranch(adj_exists, search_adj_block, false_block)
+        self.builder.cbranch(should_search, search_adj_block, false_block)
 
         self.builder.position_at_end(search_adj_block)
         i = self.builder.alloca(self.int_type, name="adj_search_i")
@@ -672,7 +674,7 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(loop_condition, adj_check_block, false_block)
 
         self.builder.position_at_end(adj_check_block)
-        adj_list_typed = self.builder.bitcast(adj_list, self.node_type.as_pointer().as_pointer())
+        adj_list_typed = self.builder.bitcast(adj_list_void, self.node_type.as_pointer().as_pointer())
         adj_entry_ptr = self.builder.gep(adj_list_typed, [i_val])
         adj_node = self.builder.load(adj_entry_ptr)
 
