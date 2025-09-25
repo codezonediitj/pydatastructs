@@ -379,7 +379,7 @@ class LLVMAdjacencyListGraph:
             self.builder.mul(current_capacity, ir.Constant(self.int_type, 2))
         )
 
-        ptr_size = ir.Constant(self.int64_type, 8)
+        ptr_size = ir.Constant(self.int64_type, self.node_type.as_pointer().get_abi_size(self._get_target_data()))
         new_size_64 = self.builder.mul(self.builder.zext(new_capacity, self.int64_type), ptr_size)
         new_array_mem = self.builder.call(self.malloc_func, [new_size_64])
         new_array = self.builder.bitcast(new_array_mem, self.node_type.as_pointer().as_pointer())
