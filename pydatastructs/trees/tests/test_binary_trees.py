@@ -1,5 +1,5 @@
 from pydatastructs.trees.binary_trees import (
-    BinaryTree, BinarySearchTree, BinaryTreeTraversal, AVLTree,
+    BinarySearchTree, BinaryTreeTraversal, AVLTree,
     ArrayForTrees, BinaryIndexedTree, SelfBalancingBinaryTree, SplayTree, CartesianTree, Treap, RedBlackTree)
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils.misc_util import TreeNode
