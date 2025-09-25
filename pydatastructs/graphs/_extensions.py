@@ -1,5 +1,6 @@
 from setuptools import Extension
 import os
+import sys
 
 project = 'pydatastructs'
 
@@ -18,19 +19,23 @@ algorithms_sources = ['/'.join([project, module, backend, cpp,
 
 include_dir = os.path.abspath(os.path.join(project, 'utils', '_backend', 'cpp'))
 
+extra_compile_args = ["-std=c++17"]
+if sys.platform == "darwin":
+    extra_compile_args.append("-mmacosx-version-min=10.13")
+
 extensions = [
     Extension(
         graph,
         sources=graph_sources,
         include_dirs=[include_dir],
         language="c++",
-        extra_compile_args=["-std=c++17", "-mmacosx-version-min=10.13"],
+        extra_compile_args=extra_compile_args,
     ),
     Extension(
         algorithms,
         sources=algorithms_sources,
         include_dirs=[include_dir],
         language="c++",
-        extra_compile_args=["-std=c++17", "-mmacosx-version-min=10.13"],
+        extra_compile_args=extra_compile_args,
     ),
 ]
