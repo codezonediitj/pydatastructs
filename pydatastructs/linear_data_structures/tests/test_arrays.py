@@ -1,6 +1,6 @@
 from pydatastructs.linear_data_structures import (
     OneDimensionalArray, DynamicOneDimensionalArray,
-    MultiDimensionalArray, ArrayForTrees)
+    MultiDimensionalArray, ArrayForTrees, OneDimensionalImplicitArray)
 from pydatastructs.utils.misc_util import Backend
 from pydatastructs.utils.raises_util import raises
 from pydatastructs.utils import TreeNode
@@ -155,3 +155,36 @@ def test_ArrayForTrees():
 
 def test_cpp_ArrayForTrees():
     _test_ArrayForTrees(Backend.CPP)
+
+def _test_OneDimensionalImplicitArray(backend: Backend):
+    ODIA = OneDimensionalImplicitArray
+    A = ODIA(int, lambda x: x + 1, 5, backend=backend)
+    assert A[0] == 1
+    assert A[1] == 2
+    assert A[2] == 3
+    assert A[3] == 4
+    assert A[4] == 5
+    assert raises(IndexError, lambda: A[5])
+    assert raises(IndexError, lambda: A[-1])
+    assert str(A) == "[1, 2, 3, 4, 5]"
+
+    A = ODIA(int, lambda x: (x + 2) ** 2, 10, backend=backend)
+    assert A[0] == 4
+    assert A[1] == 9
+    assert A[2] == 16
+    assert A[3] == 25
+    assert A[4] == 36
+    assert A[5] == 49
+    assert A[6] == 64
+    assert A[7] == 81
+    assert A[8] == 100
+    assert A[9] == 121
+    assert raises(IndexError, lambda: A[10])
+    assert raises(IndexError, lambda: A[-1])
+    assert str(A) == "[4, 9, 16, 25, 36, 49, 64, 81, 100, 121]"
+
+def test_OneDimensionalImplicitArray():
+    _test_OneDimensionalImplicitArray(Backend.PYTHON)
+
+def test_cpp_OneDimensionalImplicitArray():
+    _test_OneDimensionalImplicitArray(Backend.CPP)
