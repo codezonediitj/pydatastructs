@@ -527,16 +527,19 @@ class LLVMAdjacencyListGraph:
         current_count = self.builder.load(adj_count_ptr)
         current_capacity = self.builder.load(adj_cap_ptr)
 
+        needs_allocation = self.builder.icmp_signed('==', current_capacity, ir.Constant(self.int_type, 0))
+        needs_resize = self.builder.icmp_signed('>=', current_count, current_capacity)
+        needs_realloc = self.builder.or_(needs_allocation, needs_resize)
+
         resize_adj_block = self.builder.block.parent.append_basic_block(name="resize_adj")
         add_adj_block = self.builder.block.parent.append_basic_block(name="add_adj")
 
-        needs_resize = self.builder.icmp_signed('>=', current_count, current_capacity)
-        self.builder.cbranch(needs_resize, resize_adj_block, add_adj_block)
+        self.builder.cbranch(needs_realloc, resize_adj_block, add_adj_block)
 
         self.builder.position_at_end(resize_adj_block)
         new_capacity = self.builder.select(
-            self.builder.icmp_signed('==', current_capacity, ir.Constant(self.int_type, 0)),
-            ir.Constant(self.int_type, 4),
+            needs_allocation,
+            ir.Constant(self.int_type, 1),
             self.builder.mul(current_capacity, ir.Constant(self.int_type, 2))
         )
 
@@ -547,10 +550,10 @@ class LLVMAdjacencyListGraph:
         new_array = self.builder.bitcast(new_array_mem, node_ptr_type.as_pointer())
 
         copy_adj_block = self.builder.block.parent.append_basic_block(name="copy_adj")
-        no_copy_adj_block = self.builder.block.parent.append_basic_block(name="no_copy_adj")
+        store_new_block = self.builder.block.parent.append_basic_block(name="store_new")
 
-        has_existing_adj = self.builder.icmp_signed('>', current_count, ir.Constant(self.int_type, 0))
-        self.builder.cbranch(has_existing_adj, copy_adj_block, no_copy_adj_block)
+        has_existing_data = self.builder.icmp_signed('>', current_count, ir.Constant(self.int_type, 0))
+        self.builder.cbranch(has_existing_data, copy_adj_block, store_new_block)
 
         self.builder.position_at_end(copy_adj_block)
         old_adj_array_void = self.builder.load(adj_list_ptr)
@@ -559,11 +562,10 @@ class LLVMAdjacencyListGraph:
 
         new_array_void = self.builder.bitcast(new_array, self.void_ptr)
         self.builder.call(self.memcpy_func, [new_array_void, old_adj_array_void, old_size_bytes])
-
         self.builder.call(self.free_func, [old_adj_array_void])
-        self.builder.branch(no_copy_adj_block)
+        self.builder.branch(store_new_block)
 
-        self.builder.position_at_end(no_copy_adj_block)
+        self.builder.position_at_end(store_new_block)
         new_array_as_void = self.builder.bitcast(new_array, self.void_ptr)
         self.builder.store(new_array_as_void, adj_list_ptr)
         self.builder.store(new_capacity, adj_cap_ptr)
@@ -575,7 +577,6 @@ class LLVMAdjacencyListGraph:
 
         current_count_final = self.builder.load(adj_count_ptr)
         tgt_slot_ptr = self.builder.gep(adj_array_typed, [current_count_final])
-
         self.builder.store(tgt_node_ptr, tgt_slot_ptr)
 
         new_adj_count = self.builder.add(current_count_final, ir.Constant(self.int_type, 1))
