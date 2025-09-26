@@ -554,13 +554,62 @@ class LLVMAdjacencyListGraph:
         adj_cap_ptr = self.builder.gep(src_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 5)])
 
         current_count = self.builder.load(adj_count_ptr)
-        current_capacity = self.builder.load(adj_cap_ptr)
+        tgt_node_name_ptr = self.builder.gep(tgt_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 1)])
+        tgt_node_name = self.builder.load(tgt_node_name_ptr)
+        tgt_node_name_len_ptr = self.builder.gep(tgt_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 2)])
+        tgt_node_name_len = self.builder.load(tgt_node_name_len_ptr)
 
-        needs_resize = self.builder.icmp_signed('>=', current_count, current_capacity)
+        adj_list_void = self.builder.load(adj_list_ptr)
+        adj_list_exists = self.builder.icmp_signed('!=', adj_list_void, ir.Constant(self.void_ptr, None))
+
+        check_duplicates_block = self.builder.block.parent.append_basic_block(name="check_duplicates")
+        proceed_add_block = self.builder.block.parent.append_basic_block(name="proceed_add")
+        self.builder.cbranch(adj_list_exists, check_duplicates_block, proceed_add_block)
+
+        self.builder.position_at_end(check_duplicates_block)
+        adj_list_typed = self.builder.bitcast(adj_list_void, self.node_type.as_pointer().as_pointer())
+        dup_i = self.builder.alloca(self.int_type, name="dup_check_i")
+        self.builder.store(ir.Constant(self.int_type, 0), dup_i)
+
+        dup_loop_block = self.builder.block.parent.append_basic_block(name="dup_check_loop")
+        dup_check_block = self.builder.block.parent.append_basic_block(name="dup_check_node")
+        dup_next_block = self.builder.block.parent.append_basic_block(name="dup_next")
+        self.builder.branch(dup_loop_block)
+
+        self.builder.position_at_end(dup_loop_block)
+        dup_i_val = self.builder.load(dup_i)
+        current_count_loop = self.builder.load(adj_count_ptr)
+        dup_loop_condition = self.builder.icmp_signed('<', dup_i_val, current_count_loop)
+        self.builder.cbranch(dup_loop_condition, dup_check_block, proceed_add_block)
+
+        self.builder.position_at_end(dup_check_block)
+        existing_node_ptr = self.builder.gep(adj_list_typed, [dup_i_val])
+        existing_node = self.builder.load(existing_node_ptr)
+        existing_name_ptr = self.builder.gep(existing_node, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 1)])
+        existing_name = self.builder.load(existing_name_ptr)
+        existing_name_len_ptr = self.builder.gep(existing_node, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 2)])
+        existing_name_len = self.builder.load(existing_name_len_ptr)
+
+        len_match = self.builder.icmp_signed('==', existing_name_len, tgt_node_name_len)
+        dup_content_check_block = self.builder.block.parent.append_basic_block(name="dup_content_check")
+        self.builder.cbranch(len_match, dup_content_check_block, dup_next_block)
+
+        self.builder.position_at_end(dup_content_check_block)
+        names_match = self._compare_strings(existing_name, tgt_node_name, tgt_node_name_len)
+        self.builder.cbranch(names_match, proceed_add_block, dup_next_block)
+
+        self.builder.position_at_end(dup_next_block)
+        next_dup_i = self.builder.add(dup_i_val, ir.Constant(self.int_type, 1))
+        self.builder.store(next_dup_i, dup_i)
+        self.builder.branch(dup_loop_block)
+
+        self.builder.position_at_end(proceed_add_block)
+        current_capacity = self.builder.load(adj_cap_ptr)
+        current_count_final = self.builder.load(adj_count_ptr)
+        needs_resize = self.builder.icmp_signed('>=', current_count_final, current_capacity)
 
         resize_adj_block = self.builder.block.parent.append_basic_block(name="resize_adj")
         add_adj_block = self.builder.block.parent.append_basic_block(name="add_adj")
-
         self.builder.cbranch(needs_resize, resize_adj_block, add_adj_block)
 
         self.builder.position_at_end(resize_adj_block)
@@ -569,24 +618,18 @@ class LLVMAdjacencyListGraph:
             ir.Constant(self.int_type, 1),
             self.builder.mul(current_capacity, ir.Constant(self.int_type, 2))
         )
-
-        target_data = self._get_target_data()
-        ptr_type = self.node_type.as_pointer()
         ptr_size = ir.Constant(self.int64_type, self._get_pointer_size())
-
         new_size_bytes = self.builder.mul(self.builder.zext(new_capacity, self.int64_type), ptr_size)
         new_array_mem = self.builder.call(self.malloc_func, [new_size_bytes])
 
         old_adj_list = self.builder.load(adj_list_ptr)
-        copy_needed = self.builder.icmp_signed('>', current_count, ir.Constant(self.int_type, 0))
-
+        copy_needed = self.builder.icmp_signed('>', current_count_final, ir.Constant(self.int_type, 0))
         copy_block = self.builder.block.parent.append_basic_block(name="copy_existing")
         store_block = self.builder.block.parent.append_basic_block(name="store_new_array")
-
         self.builder.cbranch(copy_needed, copy_block, store_block)
 
         self.builder.position_at_end(copy_block)
-        old_size_bytes = self.builder.mul(self.builder.zext(current_count, self.int64_type), ptr_size)
+        old_size_bytes = self.builder.mul(self.builder.zext(current_count_final, self.int64_type), ptr_size)
         self.builder.call(self.memcpy_func, [new_array_mem, old_adj_list, old_size_bytes])
         self.builder.call(self.free_func, [old_adj_list])
         self.builder.branch(store_block)
@@ -599,11 +642,8 @@ class LLVMAdjacencyListGraph:
         self.builder.position_at_end(add_adj_block)
         adj_array = self.builder.load(adj_list_ptr)
         adj_array_typed = self.builder.bitcast(adj_array, self.node_type.as_pointer().as_pointer())
-
-        current_count_final = self.builder.load(adj_count_ptr)
         target_addr = self.builder.gep(adj_array_typed, [current_count_final])
         self.builder.store(tgt_node_ptr, target_addr)
-
         new_count = self.builder.add(current_count_final, ir.Constant(self.int_type, 1))
         self.builder.store(new_count, adj_count_ptr)
 
@@ -640,29 +680,32 @@ class LLVMAdjacencyListGraph:
         self.builder.ret(ir.Constant(self.int_type, 0))
 
     def _create_is_adjacent(self):
-        is_adj_type = ir.FunctionType(self.bool_type,
-            [self.graph_type.as_pointer(), self.char_ptr, self.int_type, self.char_ptr, self.int_type])
+        is_adj_type = ir.FunctionType(
+            self.bool_type,
+            [self.graph_type.as_pointer(), self.char_ptr, self.int_type,
+            self.char_ptr, self.int_type]
+        )
         self.is_adjacent = ir.Function(self.module, is_adj_type, name="is_adjacent")
 
-        entry_block = self.is_adjacent.append_basic_block(name="entry")
-        node1_found_block = self.is_adjacent.append_basic_block(name="node1_found")
-        check_adjacency_block = self.is_adjacent.append_basic_block(name="check_adjacency")
-        search_adj_block = self.is_adjacent.append_basic_block(name="search_adjacency")
-        adj_loop_block = self.is_adjacent.append_basic_block(name="adj_search_loop")
-        adj_check_block = self.is_adjacent.append_basic_block(name="adj_check_node")
-        adj_next_block = self.is_adjacent.append_basic_block(name="adj_next")
-        adj_loop_end_block = self.is_adjacent.append_basic_block(name="adj_loop_end")
-        true_block = self.is_adjacent.append_basic_block(name="return_true")
-        false_block = self.is_adjacent.append_basic_block(name="return_false")
+        entry_block = self.is_adjacent.append_basic_block("entry")
+        node1_found_block = self.is_adjacent.append_basic_block("node1_found")
+        check_adjacency_block = self.is_adjacent.append_basic_block("check_adjacency")
+        search_adj_block = self.is_adjacent.append_basic_block("search_adj")
+        adj_loop_block = self.is_adjacent.append_basic_block("adj_loop")
+        adj_check_block = self.is_adjacent.append_basic_block("adj_check")
+        adj_next_block = self.is_adjacent.append_basic_block("adj_next")
+        content_check_block = self.is_adjacent.append_basic_block("content_check")
+        adj_loop_end_block = self.is_adjacent.append_basic_block("adj_loop_end")
+        true_block = self.is_adjacent.append_basic_block("return_true")
+        false_block = self.is_adjacent.append_basic_block("return_false")
 
         self.builder.position_at_end(entry_block)
-
         graph_ptr, node1_name, node1_name_len, node2_name, node2_name_len = self.is_adjacent.args
 
         node_map_ptr = self.builder.gep(graph_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 3)])
         node_map = self.builder.load(node_map_ptr)
-        node1_void = self.builder.call(self.hash_lookup, [node_map, node1_name, node1_name_len])
 
+        node1_void = self.builder.call(self.hash_lookup, [node_map, node1_name, node1_name_len])
         node1_exists = self.builder.icmp_signed('!=', node1_void, ir.Constant(self.void_ptr, None))
         self.builder.cbranch(node1_exists, node1_found_block, false_block)
 
@@ -684,39 +727,49 @@ class LLVMAdjacencyListGraph:
         adj_exists = self.builder.icmp_signed('!=', adj_list_void, ir.Constant(self.void_ptr, None))
         count_positive = self.builder.icmp_signed('>', adj_count, ir.Constant(self.int_type, 0))
         should_search = self.builder.and_(adj_exists, count_positive)
-
         self.builder.cbranch(should_search, search_adj_block, false_block)
 
         self.builder.position_at_end(search_adj_block)
         adj_array_typed = self.builder.bitcast(adj_list_void, self.node_type.as_pointer().as_pointer())
-        i = self.builder.alloca(self.int_type, name="adj_search_i")
+        i = self.builder.alloca(self.int_type, name="i")
         self.builder.store(ir.Constant(self.int_type, 0), i)
         self.builder.branch(adj_loop_block)
 
         self.builder.position_at_end(adj_loop_block)
         i_val = self.builder.load(i)
-        loop_condition = self.builder.icmp_signed('<', i_val, adj_count)
-        self.builder.cbranch(loop_condition, adj_check_block, adj_loop_end_block)
+        loop_cond = self.builder.icmp_signed('<', i_val, adj_count)
+        self.builder.cbranch(loop_cond, adj_check_block, adj_loop_end_block)
 
         self.builder.position_at_end(adj_check_block)
         entry_ptr = self.builder.gep(adj_array_typed, [i_val])
         adj_node = self.builder.load(entry_ptr)
-        nodes_match = self.builder.icmp_signed('==', adj_node, node2_ptr)
-        self.builder.cbranch(nodes_match, true_block, adj_next_block)
+
+        adj_node_name_ptr = self.builder.gep(adj_node, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 1)])
+        adj_node_name = self.builder.load(adj_node_name_ptr)
+        adj_node_name_len_ptr = self.builder.gep(adj_node, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 2)])
+        adj_node_name_len = self.builder.load(adj_node_name_len_ptr)
+
+        len_match = self.builder.icmp_signed('==', adj_node_name_len, node2_name_len)
+        self.builder.cbranch(len_match, content_check_block, adj_next_block)
+
+        self.builder.position_at_end(content_check_block)
+        names_match = self._compare_strings(adj_node_name, node2_name, node2_name_len)
+        self.builder.cbranch(names_match, true_block, adj_next_block)
 
         self.builder.position_at_end(adj_next_block)
         next_i = self.builder.add(i_val, ir.Constant(self.int_type, 1))
         self.builder.store(next_i, i)
         self.builder.branch(adj_loop_block)
 
-        self.builder.position_at_end(true_block)
-        self.builder.ret(ir.Constant(self.bool_type, 1))
-
         self.builder.position_at_end(adj_loop_end_block)
         self.builder.ret(ir.Constant(self.bool_type, 0))
 
+        self.builder.position_at_end(true_block)
+        self.builder.ret(ir.Constant(self.bool_type, 1))
+
         self.builder.position_at_end(false_block)
         self.builder.ret(ir.Constant(self.bool_type, 0))
+
 
     def _create_remove_vertex(self):
 
@@ -964,6 +1017,11 @@ class LLVMAdjacencyListGraph:
         self.builder.position_at_end(done_adj_cleanup)
 
     def _remove_from_adjacency_list(self, src_node_ptr, tgt_node_ptr):
+        tgt_node_name_ptr = self.builder.gep(tgt_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 1)])
+        tgt_node_name = self.builder.load(tgt_node_name_ptr)
+        tgt_node_name_len_ptr = self.builder.gep(tgt_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 2)])
+        tgt_node_name_len = self.builder.load(tgt_node_name_len_ptr)
+
         adj_list_ptr = self.builder.gep(src_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 3)])
         adj_count_ptr = self.builder.gep(src_node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 4)])
 
@@ -993,8 +1051,20 @@ class LLVMAdjacencyListGraph:
         adj_entry_ptr = self.builder.gep(adj_list_typed, [i_val])
         adj_node = self.builder.load(adj_entry_ptr)
 
-        is_target = self.builder.icmp_signed('==', adj_node, tgt_node_ptr)
-        self.builder.cbranch(is_target, adj_found_block, adj_next_block)
+        adj_node_name_ptr = self.builder.gep(adj_node, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 1)])
+        adj_node_name = self.builder.load(adj_node_name_ptr)
+        adj_node_name_len_ptr = self.builder.gep(adj_node, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 2)])
+        adj_node_name_len = self.builder.load(adj_node_name_len_ptr)
+
+        len_match = self.builder.icmp_signed('==', adj_node_name_len, tgt_node_name_len)
+
+        content_check_block = self.builder.block.parent.append_basic_block(name="adj_content_check")
+
+        self.builder.cbranch(len_match, content_check_block, adj_next_block)
+
+        self.builder.position_at_end(content_check_block)
+        names_match = self._compare_strings(adj_node_name, tgt_node_name, tgt_node_name_len)
+        self.builder.cbranch(names_match, adj_found_block, adj_next_block)
 
         self.builder.position_at_end(adj_found_block)
         shift_i = self.builder.alloca(self.int_type, name="adj_shift_i")
