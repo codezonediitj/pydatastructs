@@ -528,7 +528,7 @@ class LLVMAdjacencyListGraph:
         current_capacity = self.builder.load(adj_cap_ptr)
 
         needs_resize = self.builder.icmp_signed('>=', current_count, current_capacity)
-        
+
         resize_adj_block = self.builder.block.parent.append_basic_block(name="resize_adj")
         add_adj_block = self.builder.block.parent.append_basic_block(name="add_adj")
 
@@ -547,18 +547,18 @@ class LLVMAdjacencyListGraph:
 
         old_adj_list = self.builder.load(adj_list_ptr)
         copy_needed = self.builder.icmp_signed('>', current_count, ir.Constant(self.int_type, 0))
-        
+
         copy_block = self.builder.block.parent.append_basic_block(name="copy_existing")
         store_block = self.builder.block.parent.append_basic_block(name="store_new_array")
-        
+
         self.builder.cbranch(copy_needed, copy_block, store_block)
-        
+
         self.builder.position_at_end(copy_block)
         old_size_bytes = self.builder.mul(self.builder.zext(current_count, self.int64_type), ptr_size)
         self.builder.call(self.memcpy_func, [new_array_mem, old_adj_list, old_size_bytes])
         self.builder.call(self.free_func, [old_adj_list])
         self.builder.branch(store_block)
-        
+
         self.builder.position_at_end(store_block)
         self.builder.store(new_array_mem, adj_list_ptr)
         self.builder.store(new_capacity, adj_cap_ptr)
@@ -566,14 +566,11 @@ class LLVMAdjacencyListGraph:
 
         self.builder.position_at_end(add_adj_block)
         adj_array = self.builder.load(adj_list_ptr)
+        adj_array_typed = self.builder.bitcast(adj_array, self.node_type.as_pointer().as_pointer())
 
         current_count_final = self.builder.load(adj_count_ptr)
-        offset_bytes = self.builder.mul(self.builder.zext(current_count_final, self.int64_type), ptr_size)
-        target_addr = self.builder.gep(adj_array, [offset_bytes])
-
-        node_as_int = self.builder.ptrtoint(tgt_node_ptr, self.int64_type)
-        node_bytes = self.builder.bitcast(target_addr, self.int64_type.as_pointer())
-        self.builder.store(node_as_int, node_bytes)
+        target_addr = self.builder.gep(adj_array_typed, [current_count_final])
+        self.builder.store(tgt_node_ptr, target_addr)
 
         new_count = self.builder.add(current_count_final, ir.Constant(self.int_type, 1))
         self.builder.store(new_count, adj_count_ptr)
@@ -655,6 +652,8 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(should_search, search_adj_block, false_block)
 
         self.builder.position_at_end(search_adj_block)
+        adj_array_typed = self.builder.bitcast(adj_list_void, self.node_type.as_pointer().as_pointer())
+
         i = self.builder.alloca(self.int_type, name="adj_search_i")
         self.builder.store(ir.Constant(self.int_type, 0), i)
 
@@ -671,15 +670,8 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(loop_condition, adj_check_block, false_block)
 
         self.builder.position_at_end(adj_check_block)
-        adj_array = self.builder.load(adj_list_ptr)
-        
-        ptr_size = ir.Constant(self.int64_type, 8)
-        offset_bytes = self.builder.mul(self.builder.zext(i_val, self.int64_type), ptr_size)
-        entry_addr = self.builder.gep(adj_array, [offset_bytes])
-        
-        entry_as_int_ptr = self.builder.bitcast(entry_addr, self.int64_type.as_pointer())
-        entry_as_int = self.builder.load(entry_as_int_ptr)
-        adj_node = self.builder.inttoptr(entry_as_int, self.node_type.as_pointer())
+        entry_ptr = self.builder.gep(adj_array_typed, [i_val])
+        adj_node = self.builder.load(entry_ptr)
 
         nodes_match = self.builder.icmp_signed('==', adj_node, node2_ptr)
         self.builder.cbranch(nodes_match, true_block, adj_next_block)
@@ -967,7 +959,6 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(loop_condition, adj_check_block, adj_done_block)
 
         self.builder.position_at_end(adj_check_block)
-
         adj_entry_ptr = self.builder.gep(adj_list_typed, [i_val])
         adj_node = self.builder.load(adj_entry_ptr)
 
@@ -990,7 +981,6 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(shift_condition, do_adj_shift_block, finish_adj_shift_block)
 
         self.builder.position_at_end(do_adj_shift_block)
-
         src_adj_ptr = self.builder.gep(adj_list_typed, [next_shift_idx])
         dst_adj_ptr = self.builder.gep(adj_list_typed, [shift_i_val])
 
@@ -1217,6 +1207,7 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(adj_exists, process_adj_block, skip_adj_block)
 
         self.builder.position_at_end(process_adj_block)
+        adj_list_typed = self.builder.bitcast(adj_list, self.node_type.as_pointer().as_pointer())
 
         write_index = self.builder.alloca(self.int_type, name="write_idx")
         self.builder.store(ir.Constant(self.int_type, 0), write_index)
@@ -1238,7 +1229,6 @@ class LLVMAdjacencyListGraph:
         self.builder.cbranch(loop_condition, check_vertex_block, update_count_block)
 
         self.builder.position_at_end(check_vertex_block)
-        adj_list_typed = self.builder.bitcast(adj_list, self.node_type.as_pointer().as_pointer())
         read_entry_ptr = self.builder.gep(adj_list_typed, [i_val])
         adj_node = self.builder.load(read_entry_ptr)
 
