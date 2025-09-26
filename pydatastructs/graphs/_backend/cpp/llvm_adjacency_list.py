@@ -23,15 +23,41 @@ class LLVMAdjacencyListGraph:
         self.char_ptr = self.int8_type.as_pointer()
         self.void_ptr = self.int8_type.as_pointer()
 
+        triple = self._get_target_triple()
         target = llvm.Target.from_default_triple()
         self.target_machine = target.create_target_machine()
         self.target_data = self.target_machine.target_data
+        self.module.triple = triple
+        self.module.data_layout = str(self.target_data)
 
         self._create_structures()
 
         self._create_function_declarations()
 
         self._create_graph_functions()
+
+    def _get_target_triple(self):
+        import platform
+        system = platform.system().lower()
+        machine = platform.machine().lower()
+
+        if system == "darwin":  # macOS
+            if machine in ["arm64", "aarch64"]:
+                return "arm64-apple-darwin"
+            else:  # x86_64
+                return "x86_64-apple-darwin"
+        elif system == "linux":
+            if machine in ["arm64", "aarch64"]:
+                return "aarch64-unknown-linux-gnu"
+            else:  # x86_64
+                return "x86_64-unknown-linux-gnu"
+        elif system == "windows":
+            if machine in ["arm64", "aarch64"]:
+                return "aarch64-pc-windows-msvc"
+            else:
+                return "x86_64-pc-windows-msvc"
+        else:
+            return llvm.get_default_triple()
 
     def _create_structures(self):
 
@@ -42,20 +68,20 @@ class LLVMAdjacencyListGraph:
             self.void_ptr,
             self.int_type,
             self.int_type
-        ], packed=True)
+        ])
 
         self.edge_type = ir.LiteralStructType([
             self.node_type.as_pointer(),
             self.node_type.as_pointer(),
             self.double_type
-        ], packed=True)
+        ])
 
         self.hash_entry_type = ir.LiteralStructType([
             self.char_ptr,
             self.int_type,
             self.void_ptr,
             self.void_ptr
-        ], packed=True)
+        ])
 
         self.graph_type = ir.LiteralStructType([
             self.node_type.as_pointer().as_pointer(),
@@ -64,7 +90,7 @@ class LLVMAdjacencyListGraph:
             self.void_ptr,
             self.void_ptr,
             self.int_type
-        ], packed=True)
+        ])
 
     def _get_target_data(self):
         return self.target_machine.target_data

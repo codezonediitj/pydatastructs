@@ -36,11 +36,11 @@ extensions = [
     Extension(
         nodes,
         sources=nodes_sources,
-        extra_compile_args=["-std=c++17"],
+        extra_compile_args=extra_compile_args,
     ),
     Extension(
         graph_utils,
         sources=graph_utils_sources,
-        extra_compile_args=["-std=c++17"],
+        extra_compile_args=extra_compile_args,
     ),
 ]

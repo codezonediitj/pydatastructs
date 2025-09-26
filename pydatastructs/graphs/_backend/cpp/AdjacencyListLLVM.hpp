@@ -69,25 +69,33 @@ static PyObject* initialize_llvm_backend(PyObject* self, PyObject* args) {
         return nullptr;
     }
 
-    llvm_graph_init = (GraphInitFunc)PyLong_AsVoidPtr(init_ptr);
-    llvm_add_vertex = (AddVertexFunc)PyLong_AsVoidPtr(add_vertex_ptr);
-    llvm_add_edge = (AddEdgeFunc)PyLong_AsVoidPtr(add_edge_ptr);
-    llvm_is_adjacent = (IsAdjacentFunc)PyLong_AsVoidPtr(is_adjacent_ptr);
-    llvm_remove_vertex = (RemoveVertexFunc)PyLong_AsVoidPtr(remove_vertex_ptr);
-    llvm_remove_edge = (RemoveEdgeFunc)PyLong_AsVoidPtr(remove_edge_ptr);
-    llvm_graph_cleanup = (GraphCleanupFunc)PyLong_AsVoidPtr(cleanup_ptr);
+    void* raw_init = PyLong_AsVoidPtr(init_ptr);
+    void* raw_add_vertex = PyLong_AsVoidPtr(add_vertex_ptr);
+    void* raw_add_edge = PyLong_AsVoidPtr(add_edge_ptr);
+    void* raw_is_adjacent = PyLong_AsVoidPtr(is_adjacent_ptr);
+    void* raw_remove_vertex = PyLong_AsVoidPtr(remove_vertex_ptr);
+    void* raw_remove_edge = PyLong_AsVoidPtr(remove_edge_ptr);
+    void* raw_cleanup = PyLong_AsVoidPtr(cleanup_ptr);
 
     if (PyErr_Occurred()) {
         PyErr_SetString(PyExc_ValueError, "Failed to convert function pointers");
         return nullptr;
     }
 
-    if (!llvm_graph_init || !llvm_add_vertex || !llvm_add_edge ||
-        !llvm_is_adjacent || !llvm_remove_vertex || !llvm_remove_edge ||
-        !llvm_graph_cleanup) {
+    if (!raw_init || !raw_add_vertex || !raw_add_edge ||
+        !raw_is_adjacent || !raw_remove_vertex || !raw_remove_edge ||
+        !raw_cleanup) {
         PyErr_SetString(PyExc_ValueError, "One or more function pointers are null");
         return nullptr;
     }
+
+    llvm_graph_init = (GraphInitFunc)raw_init;
+    llvm_add_vertex = (AddVertexFunc)raw_add_vertex;
+    llvm_add_edge = (AddEdgeFunc)raw_add_edge;
+    llvm_is_adjacent = (IsAdjacentFunc)raw_is_adjacent;
+    llvm_remove_vertex = (RemoveVertexFunc)raw_remove_vertex;
+    llvm_remove_edge = (RemoveEdgeFunc)raw_remove_edge;
+    llvm_graph_cleanup = (GraphCleanupFunc)raw_cleanup;
 
     llvm_backend_initialized = true;
 
