@@ -130,35 +130,27 @@ class LLVMAdjacencyListGraph:
         self._create_graph_cleanup()
 
     def _compare_strings(self, str1, str2, length):
-        same_ptr = self.builder.icmp_signed('==', str1, str2)
-
-        true_block = self.builder.block.parent.append_basic_block(name="strings_equal")
-        false_block = self.builder.block.parent.append_basic_block(name="strings_not_equal")
-        compare_block = self.builder.block.parent.append_basic_block(name="compare_bytes")
-        merge_block = self.builder.block.parent.append_basic_block(name="string_cmp_merge")
-
-        self.builder.cbranch(same_ptr, true_block, compare_block)
-
-        self.builder.position_at_end(compare_block)
-        i = self.builder.alloca(self.int_type, name="str_cmp_i")
-        self.builder.store(ir.Constant(self.int_type, 0), i)
-
+        entry_block = self.builder.block
         loop_block = self.builder.block.parent.append_basic_block(name="str_cmp_loop")
         check_block = self.builder.block.parent.append_basic_block(name="str_cmp_check")
+        true_block = self.builder.block.parent.append_basic_block(name="strings_equal")
+        false_block = self.builder.block.parent.append_basic_block(name="strings_not_equal")
+        merge_block = self.builder.block.parent.append_basic_block(name="string_cmp_merge")
 
+        i = self.builder.alloca(self.int_type, name="str_cmp_i")
+        self.builder.store(ir.Constant(self.int_type, 0), i)
         self.builder.branch(loop_block)
 
         self.builder.position_at_end(loop_block)
         i_val = self.builder.load(i)
-        loop_condition = self.builder.icmp_signed('<', i_val, length)
-        self.builder.cbranch(loop_condition, check_block, true_block)
+        loop_cond = self.builder.icmp_signed('<', i_val, length)
+        self.builder.cbranch(loop_cond, check_block, true_block)
 
         self.builder.position_at_end(check_block)
         char1_ptr = self.builder.gep(str1, [i_val])
         char2_ptr = self.builder.gep(str2, [i_val])
         char1 = self.builder.load(char1_ptr)
         char2 = self.builder.load(char2_ptr)
-
         chars_equal = self.builder.icmp_signed('==', char1, char2)
 
         next_char_block = self.builder.block.parent.append_basic_block(name="next_char")
@@ -247,7 +239,7 @@ class LLVMAdjacencyListGraph:
         self.builder.position_at_end(loop_block)
 
         current_val = self.builder.load(current)
-        is_null = self.builder.icmp_signed('==', current_val, ir.Constant(self.void_ptr, None))
+        is_null = self.builder.icmp_unsigned('==', current_val, ir.Constant(self.void_ptr, None))
         self.builder.cbranch(is_null, not_found_block, check_block)
 
         self.builder.position_at_end(check_block)
@@ -257,7 +249,7 @@ class LLVMAdjacencyListGraph:
         entry_key_len_ptr = self.builder.gep(entry_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 1)])
         entry_key_len = self.builder.load(entry_key_len_ptr)
 
-        len_match = self.builder.icmp_signed('==', entry_key_len, key_len)
+        len_match = self.builder.icmp_unsigned('==', entry_key_len, key_len)
 
         content_check_block = self.hash_lookup.append_basic_block(name="content_check")
         next_block = self.hash_lookup.append_basic_block(name="next_entry")
@@ -298,8 +290,14 @@ class LLVMAdjacencyListGraph:
         id_ptr = self.builder.gep(node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 0)])
         self.builder.store(node_id, id_ptr)
 
+        name_buf_size = self.builder.zext(name_len, self.int64_type)
+        name_buf = self.builder.call(self.malloc_func, [name_buf_size])
+        name_dest = self.builder.bitcast(name_buf, self.char_ptr)
+        name_len_64 = self.builder.zext(name_len, self.int64_type)
+        self.builder.call(self.memcpy_func, [name_dest, name_ptr, name_len_64])
+
         name_field_ptr = self.builder.gep(node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 1)])
-        self.builder.store(name_ptr, name_field_ptr)
+        self.builder.store(name_dest, name_field_ptr)
 
         name_len_ptr = self.builder.gep(node_ptr, [ir.Constant(self.int_type, 0), ir.Constant(self.int_type, 2)])
         self.builder.store(name_len, name_len_ptr)
@@ -703,7 +701,6 @@ class LLVMAdjacencyListGraph:
         self.builder.position_at_end(adj_check_block)
         entry_ptr = self.builder.gep(adj_array_typed, [i_val])
         adj_node = self.builder.load(entry_ptr)
-
         nodes_match = self.builder.icmp_signed('==', adj_node, node2_ptr)
         self.builder.cbranch(nodes_match, true_block, adj_next_block)
 
@@ -1319,7 +1316,6 @@ class LLVMAdjacencyListGraph:
 
     def _string_contains_substring(self, haystack, haystack_len, needle, needle_len):
 
-        # Define all basic blocks upfront
         entry_block = self.builder.block
         false_block = self.builder.block.parent.append_basic_block(name="substr_false")
         search_block = self.builder.block.parent.append_basic_block(name="substr_search")
