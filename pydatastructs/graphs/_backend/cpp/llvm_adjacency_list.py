@@ -130,8 +130,6 @@ class LLVMAdjacencyListGraph:
         self._create_graph_cleanup()
 
     def _compare_strings(self, str1, str2, length):
-        """Compare two strings byte by byte"""
-
         same_ptr = self.builder.icmp_signed('==', str1, str2)
 
         true_block = self.builder.block.parent.append_basic_block(name="strings_equal")
@@ -172,17 +170,15 @@ class LLVMAdjacencyListGraph:
         self.builder.branch(loop_block)
 
         self.builder.position_at_end(true_block)
-        result_true = ir.Constant(self.bool_type, 1)
         self.builder.branch(merge_block)
 
         self.builder.position_at_end(false_block)
-        result_false = ir.Constant(self.bool_type, 0)
         self.builder.branch(merge_block)
 
         self.builder.position_at_end(merge_block)
         phi = self.builder.phi(self.bool_type, name="string_cmp_result")
-        phi.add_incoming(result_true, true_block)
-        phi.add_incoming(result_false, false_block)
+        phi.add_incoming(ir.Constant(self.bool_type, 1), true_block)
+        phi.add_incoming(ir.Constant(self.bool_type, 0), false_block)
 
         return phi
 
@@ -650,8 +646,18 @@ class LLVMAdjacencyListGraph:
             [self.graph_type.as_pointer(), self.char_ptr, self.int_type, self.char_ptr, self.int_type])
         self.is_adjacent = ir.Function(self.module, is_adj_type, name="is_adjacent")
 
-        block = self.is_adjacent.append_basic_block(name="entry")
-        self.builder = ir.IRBuilder(block)
+        entry_block = self.is_adjacent.append_basic_block(name="entry")
+        node1_found_block = self.is_adjacent.append_basic_block(name="node1_found")
+        check_adjacency_block = self.is_adjacent.append_basic_block(name="check_adjacency")
+        search_adj_block = self.is_adjacent.append_basic_block(name="search_adjacency")
+        adj_loop_block = self.is_adjacent.append_basic_block(name="adj_search_loop")
+        adj_check_block = self.is_adjacent.append_basic_block(name="adj_check_node")
+        adj_next_block = self.is_adjacent.append_basic_block(name="adj_next")
+        adj_loop_end_block = self.is_adjacent.append_basic_block(name="adj_loop_end")
+        true_block = self.is_adjacent.append_basic_block(name="return_true")
+        false_block = self.is_adjacent.append_basic_block(name="return_false")
+
+        self.builder.position_at_end(entry_block)
 
         graph_ptr, node1_name, node1_name_len, node2_name, node2_name_len = self.is_adjacent.args
 
@@ -659,17 +665,12 @@ class LLVMAdjacencyListGraph:
         node_map = self.builder.load(node_map_ptr)
         node1_void = self.builder.call(self.hash_lookup, [node_map, node1_name, node1_name_len])
 
-        node1_found_block = self.is_adjacent.append_basic_block(name="node1_found")
-        false_block = self.is_adjacent.append_basic_block(name="return_false")
-
         node1_exists = self.builder.icmp_signed('!=', node1_void, ir.Constant(self.void_ptr, None))
         self.builder.cbranch(node1_exists, node1_found_block, false_block)
 
         self.builder.position_at_end(node1_found_block)
         node2_void = self.builder.call(self.hash_lookup, [node_map, node2_name, node2_name_len])
         node2_exists = self.builder.icmp_signed('!=', node2_void, ir.Constant(self.void_ptr, None))
-
-        check_adjacency_block = self.is_adjacent.append_basic_block(name="check_adjacency")
         self.builder.cbranch(node2_exists, check_adjacency_block, false_block)
 
         self.builder.position_at_end(check_adjacency_block)
@@ -686,26 +687,18 @@ class LLVMAdjacencyListGraph:
         count_positive = self.builder.icmp_signed('>', adj_count, ir.Constant(self.int_type, 0))
         should_search = self.builder.and_(adj_exists, count_positive)
 
-        search_adj_block = self.is_adjacent.append_basic_block(name="search_adjacency")
         self.builder.cbranch(should_search, search_adj_block, false_block)
 
         self.builder.position_at_end(search_adj_block)
         adj_array_typed = self.builder.bitcast(adj_list_void, self.node_type.as_pointer().as_pointer())
-
         i = self.builder.alloca(self.int_type, name="adj_search_i")
         self.builder.store(ir.Constant(self.int_type, 0), i)
-
-        adj_loop_block = self.is_adjacent.append_basic_block(name="adj_search_loop")
-        adj_check_block = self.is_adjacent.append_basic_block(name="adj_check_node")
-        true_block = self.is_adjacent.append_basic_block(name="return_true")
-        adj_next_block = self.is_adjacent.append_basic_block(name="adj_next")
-
         self.builder.branch(adj_loop_block)
 
         self.builder.position_at_end(adj_loop_block)
         i_val = self.builder.load(i)
         loop_condition = self.builder.icmp_signed('<', i_val, adj_count)
-        self.builder.cbranch(loop_condition, adj_check_block, false_block)
+        self.builder.cbranch(loop_condition, adj_check_block, adj_loop_end_block)
 
         self.builder.position_at_end(adj_check_block)
         entry_ptr = self.builder.gep(adj_array_typed, [i_val])
@@ -721,6 +714,9 @@ class LLVMAdjacencyListGraph:
 
         self.builder.position_at_end(true_block)
         self.builder.ret(ir.Constant(self.bool_type, 1))
+
+        self.builder.position_at_end(adj_loop_end_block)
+        self.builder.ret(ir.Constant(self.bool_type, 0))
 
         self.builder.position_at_end(false_block)
         self.builder.ret(ir.Constant(self.bool_type, 0))
@@ -1323,12 +1319,20 @@ class LLVMAdjacencyListGraph:
 
     def _string_contains_substring(self, haystack, haystack_len, needle, needle_len):
 
-        too_long = self.builder.icmp_signed('>', needle_len, haystack_len)
-
+        # Define all basic blocks upfront
+        entry_block = self.builder.block
         false_block = self.builder.block.parent.append_basic_block(name="substr_false")
         search_block = self.builder.block.parent.append_basic_block(name="substr_search")
+        outer_loop_block = self.builder.block.parent.append_basic_block(name="outer_search_loop")
+        inner_loop_start = self.builder.block.parent.append_basic_block(name="inner_loop_start")
+        check_char_block = self.builder.block.parent.append_basic_block(name="check_char")
+        char_match_block = self.builder.block.parent.append_basic_block(name="char_match")
+        continue_outer_block = self.builder.block.parent.append_basic_block(name="continue_outer")
         true_block = self.builder.block.parent.append_basic_block(name="substr_true")
+        merge_block = self.builder.block.parent.append_basic_block(name="merge")
 
+        self.builder.position_at_end(entry_block)
+        too_long = self.builder.icmp_signed('>', needle_len, haystack_len)
         self.builder.cbranch(too_long, false_block, search_block)
 
         self.builder.position_at_end(search_block)
@@ -1337,22 +1341,14 @@ class LLVMAdjacencyListGraph:
 
         i = self.builder.alloca(self.int_type, name="search_i")
         self.builder.store(ir.Constant(self.int_type, 0), i)
-
-        outer_loop_block = self.builder.block.parent.append_basic_block(name="outer_search_loop")
-        inner_loop_block = self.builder.block.parent.append_basic_block(name="inner_search_loop")
-        check_char_block = self.builder.block.parent.append_basic_block(name="check_char")
-        match_found_block = self.builder.block.parent.append_basic_block(name="match_found")
-        no_match_block = self.builder.block.parent.append_basic_block(name="no_match")
-        continue_outer_block = self.builder.block.parent.append_basic_block(name="continue_outer")
-
         self.builder.branch(outer_loop_block)
 
         self.builder.position_at_end(outer_loop_block)
         i_val = self.builder.load(i)
         outer_condition = self.builder.icmp_signed('<', i_val, max_start)
-        self.builder.cbranch(outer_condition, inner_loop_block, false_block)
+        self.builder.cbranch(outer_condition, inner_loop_start, false_block)
 
-        self.builder.position_at_end(inner_loop_block)
+        self.builder.position_at_end(inner_loop_start)
         j = self.builder.alloca(self.int_type, name="search_j")
         self.builder.store(ir.Constant(self.int_type, 0), j)
         self.builder.branch(check_char_block)
@@ -1360,19 +1356,18 @@ class LLVMAdjacencyListGraph:
         self.builder.position_at_end(check_char_block)
         j_val = self.builder.load(j)
         inner_condition = self.builder.icmp_signed('<', j_val, needle_len)
-        self.builder.cbranch(inner_condition, no_match_block, match_found_block)
 
-        self.builder.position_at_end(no_match_block)
+        match_or_mismatch = self.builder.block.parent.append_basic_block(name="match_or_mismatch")
+        self.builder.cbranch(inner_condition, match_or_mismatch, true_block)
+
+        self.builder.position_at_end(match_or_mismatch)
         haystack_idx = self.builder.add(i_val, j_val)
         haystack_char_ptr = self.builder.gep(haystack, [haystack_idx])
         needle_char_ptr = self.builder.gep(needle, [j_val])
-
         haystack_char = self.builder.load(haystack_char_ptr)
         needle_char = self.builder.load(needle_char_ptr)
-
         chars_match = self.builder.icmp_signed('==', haystack_char, needle_char)
 
-        char_match_block = self.builder.block.parent.append_basic_block(name="char_match")
         self.builder.cbranch(chars_match, char_match_block, continue_outer_block)
 
         self.builder.position_at_end(char_match_block)
@@ -1380,27 +1375,21 @@ class LLVMAdjacencyListGraph:
         self.builder.store(next_j, j)
         self.builder.branch(check_char_block)
 
-        self.builder.position_at_end(match_found_block)
-        self.builder.branch(true_block)
-
         self.builder.position_at_end(continue_outer_block)
         next_i = self.builder.add(i_val, ir.Constant(self.int_type, 1))
         self.builder.store(next_i, i)
         self.builder.branch(outer_loop_block)
 
         self.builder.position_at_end(true_block)
-        result_true = ir.Constant(self.bool_type, 1)
-        merge_block = self.builder.block.parent.append_basic_block(name="merge")
         self.builder.branch(merge_block)
 
         self.builder.position_at_end(false_block)
-        result_false = ir.Constant(self.bool_type, 0)
         self.builder.branch(merge_block)
 
         self.builder.position_at_end(merge_block)
         phi = self.builder.phi(self.bool_type, name="substr_result")
-        phi.add_incoming(result_true, true_block)
-        phi.add_incoming(result_false, false_block)
+        phi.add_incoming(ir.Constant(self.bool_type, 1), true_block)
+        phi.add_incoming(ir.Constant(self.bool_type, 0), false_block)
 
         return phi
 
