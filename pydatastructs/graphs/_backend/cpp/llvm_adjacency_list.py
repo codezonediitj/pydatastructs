@@ -23,6 +23,9 @@ class LLVMAdjacencyListGraph:
         self.char_ptr = self.int8_type.as_pointer()
         self.void_ptr = self.int8_type.as_pointer()
 
+        target = llvm.Target.from_default_triple()
+        self.target_machine = target.create_target_machine()
+
         self._create_structures()
 
         self._create_function_declarations()
@@ -62,13 +65,15 @@ class LLVMAdjacencyListGraph:
             self.int_type
         ])
 
-        self.target_machine = None
-
     def _get_target_data(self):
-        if self.target_machine is None:
-            target = llvm.Target.from_default_triple()
-            self.target_machine = target.create_target_machine()
         return self.target_machine.target_data
+
+    def _get_struct_size(self, struct_type):
+        return struct_type.get_abi_size(self._get_target_data())
+
+    def _get_pointer_size(self):
+        import struct
+        return struct.calcsize("P")
 
     def _create_function_declarations(self):
 
@@ -263,7 +268,7 @@ class LLVMAdjacencyListGraph:
 
         name_ptr, name_len, node_id = self.create_node.args
 
-        node_size = ir.Constant(self.int64_type, self.node_type.get_abi_size(self._get_target_data()))
+        node_size = ir.Constant(self.int64_type, self._get_struct_size(self.node_type))
         node_mem = self.builder.call(self.malloc_func, [node_size])
         node_ptr = self.builder.bitcast(node_mem, self.node_type.as_pointer())
 
@@ -293,7 +298,7 @@ class LLVMAdjacencyListGraph:
         block = self.graph_init.append_basic_block(name="entry")
         self.builder = ir.IRBuilder(block)
 
-        graph_size = ir.Constant(self.int64_type, self.graph_type.get_abi_size(self._get_target_data()))
+        graph_size = ir.Constant(self.int64_type, self._get_struct_size(self.graph_type))
         graph_mem = self.builder.call(self.malloc_func, [graph_size])
         graph_ptr = self.builder.bitcast(graph_mem, self.graph_type.as_pointer())
 
@@ -379,7 +384,10 @@ class LLVMAdjacencyListGraph:
             self.builder.mul(current_capacity, ir.Constant(self.int_type, 2))
         )
 
-        ptr_size = ir.Constant(self.int64_type, 8)
+        target_data = self._get_target_data()
+        ptr_type = self.node_type.as_pointer()
+        ptr_size = ir.Constant(self.int64_type, self._get_pointer_size())
+
         new_size_64 = self.builder.mul(self.builder.zext(new_capacity, self.int64_type), ptr_size)
         new_array_mem = self.builder.call(self.malloc_func, [new_size_64])
         new_array = self.builder.bitcast(new_array_mem, self.node_type.as_pointer().as_pointer())
@@ -499,7 +507,7 @@ class LLVMAdjacencyListGraph:
 
         self.builder.position_at_end(create_edge_block)
 
-        edge_size = ir.Constant(self.int64_type, self.edge_type.get_abi_size(self._get_target_data()))
+        edge_size = ir.Constant(self.int64_type, self._get_struct_size(self.edge_type))
         edge_mem = self.builder.call(self.malloc_func, [edge_size])
         edge_ptr = self.builder.bitcast(edge_mem, self.edge_type.as_pointer())
 
@@ -541,7 +549,10 @@ class LLVMAdjacencyListGraph:
             self.builder.mul(current_capacity, ir.Constant(self.int_type, 2))
         )
 
-        ptr_size = ir.Constant(self.int64_type, 8)
+        target_data = self._get_target_data()
+        ptr_type = self.node_type.as_pointer()
+        ptr_size = ir.Constant(self.int64_type, self._get_pointer_size())
+
         new_size_bytes = self.builder.mul(self.builder.zext(new_capacity, self.int64_type), ptr_size)
         new_array_mem = self.builder.call(self.malloc_func, [new_size_bytes])
 
@@ -585,7 +596,7 @@ class LLVMAdjacencyListGraph:
 
         table_ptr, key, key_len, value = self.hash_insert.args
 
-        entry_size = ir.Constant(self.int64_type, self.hash_entry_type.get_abi_size(self._get_target_data()))
+        entry_size = ir.Constant(self.int64_type, self._get_struct_size(self.hash_entry_type))
         entry_mem = self.builder.call(self.malloc_func, [entry_size])
         entry_ptr = self.builder.bitcast(entry_mem, self.hash_entry_type.as_pointer())
 
@@ -1383,14 +1394,10 @@ class LLVMAdjacencyListGraph:
 
     def compile_to_machine_code(self):
 
-        target = llvm.Target.from_default_triple()
-        target_machine = target.create_target_machine()
-        self.target_machine = target_machine
-
         mod = llvm.parse_assembly(str(self.module))
         mod.verify()
 
-        ee = llvm.create_mcjit_compiler(mod, target_machine)
+        ee = llvm.create_mcjit_compiler(mod, self.target_machine)
         ee.finalize_object()
 
         functions = {}
