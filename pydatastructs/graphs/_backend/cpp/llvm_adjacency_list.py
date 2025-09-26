@@ -25,6 +25,7 @@ class LLVMAdjacencyListGraph:
 
         target = llvm.Target.from_default_triple()
         self.target_machine = target.create_target_machine()
+        self.target_data = self.target_machine.target_data
 
         self._create_structures()
 
@@ -41,20 +42,20 @@ class LLVMAdjacencyListGraph:
             self.void_ptr,
             self.int_type,
             self.int_type
-        ])
+        ], packed=True)
 
         self.edge_type = ir.LiteralStructType([
             self.node_type.as_pointer(),
             self.node_type.as_pointer(),
             self.double_type
-        ])
+        ], packed=True)
 
         self.hash_entry_type = ir.LiteralStructType([
             self.char_ptr,
             self.int_type,
             self.void_ptr,
             self.void_ptr
-        ])
+        ], packed=True)
 
         self.graph_type = ir.LiteralStructType([
             self.node_type.as_pointer().as_pointer(),
@@ -63,7 +64,7 @@ class LLVMAdjacencyListGraph:
             self.void_ptr,
             self.void_ptr,
             self.int_type
-        ])
+        ], packed=True)
 
     def _get_target_data(self):
         return self.target_machine.target_data
