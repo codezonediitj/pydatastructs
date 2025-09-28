@@ -1,6 +1,7 @@
 import llvmlite.binding as llvm
 import llvmlite.ir as ir
 from llvmlite import ir
+import platform
 import ctypes
 from ctypes import Structure, POINTER, c_void_p, c_int, c_char_p, c_double
 
@@ -35,6 +36,10 @@ class LLVMAdjacencyListGraph:
         self._create_function_declarations()
 
         self._create_graph_functions()
+        if platform.system().lower() == "linux":
+            self.module.data_layout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+        else:
+            self.module.data_layout = str(self.target_data)
 
     def _get_target_triple(self):
         import platform
