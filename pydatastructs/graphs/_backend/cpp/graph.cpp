@@ -4,6 +4,7 @@
 #include "AdjacencyMatrix.hpp"
 #include "AdjacencyListGraphNode.hpp"
 #include "AdjacencyMatrixGraphNode.hpp"
+#include "AdjacencyListLLVM.hpp"
 #include "graph_bindings.hpp"
 
 #ifdef __cplusplus
@@ -16,12 +17,18 @@ PyMODINIT_FUNC PyInit__graph(void);
 }
 #endif
 
+static PyMethodDef module_methods[] = {
+    {"initialize_llvm_backend", initialize_llvm_backend, METH_VARARGS,
+     "Initialize LLVM backend with compiled function pointers"},
+    {nullptr, nullptr, 0, nullptr}
+};
+
 static struct PyModuleDef graph_module = {
     PyModuleDef_HEAD_INIT,
     "_graph",
     "C++ module for graphs",
     -1,
-    NULL,
+    module_methods,
 };
 
 PyMODINIT_FUNC PyInit__graph(void) {
@@ -39,6 +46,9 @@ PyMODINIT_FUNC PyInit__graph(void) {
     if (PyType_Ready(&AdjacencyMatrixGraphNodeType) < 0)
         return NULL;
 
+    if (PyType_Ready(&AdjacencyListGraphLLVMType) < 0) {
+        return nullptr;
+    }
     m = PyModule_Create(&graph_module);
     if (m == NULL)
         return NULL;
@@ -62,6 +72,13 @@ PyMODINIT_FUNC PyInit__graph(void) {
         Py_DECREF(&AdjacencyMatrixGraphType);
         Py_DECREF(m);
         return NULL;
+    }
+
+    Py_INCREF(&AdjacencyListGraphLLVMType);
+    if (PyModule_AddObject(m, "AdjacencyListGraphLLVM", (PyObject*)&AdjacencyListGraphLLVMType) < 0) {
+        Py_DECREF(&AdjacencyListGraphLLVMType);
+        Py_DECREF(m);
+        return nullptr;
     }
 
     return m;

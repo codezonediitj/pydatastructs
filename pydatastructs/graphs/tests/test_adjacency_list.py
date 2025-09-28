@@ -81,3 +81,15 @@ def test_adjacency_list():
     assert g2.is_adjacent('v_4', 'v') is False
     g2.remove_vertex('v')
     assert raises(ValueError, lambda: g2.add_edge('v_4', 'v'))
+
+    g3 = Graph('a','b',implementation = 'adjacency_list', backend = Backend.LLVM)
+    g3.add_edge('a', 'b')
+    assert g3.is_adjacent('a','b') is True
+    g3.add_vertex('c')
+    g3.add_edge('a','c')
+    assert g3.is_adjacent('a','c') is True
+    assert g3.is_adjacent('b','c') is False
+    g3.remove_edge('a','b')
+    assert g3.is_adjacent('a','b') is False
+    g3.remove_vertex('a')
+    assert g3.is_adjacent('a','c') is False
