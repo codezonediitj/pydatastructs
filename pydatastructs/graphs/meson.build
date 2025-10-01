@@ -3,6 +3,7 @@ python = import('python').find_installation(pure: false)
 python.install_sources(
     [
         '__init__.py',
+        '_extensions.py',
         'adjacency_list.py',
         'adjacency_matrix.py',
         'algorithms.py',
@@ -19,17 +20,19 @@ python.install_sources(
 py_include = include_directories('../utils/_backend/cpp')
 
 python.extension_module(
-    '_nodes',
-    '_backend/cpp/nodes.cpp',
+    'pydatastructs.graphs._backend.cpp._graph',
+    '_backend/cpp/graph.cpp',
+    include_directories: py_include,
     install: true,
-    subdir: 'pydatastructs/utils/_backend/cpp'
+    subdir: 'pydatastructs/graphs'
 )
 
 python.extension_module(
-    '_graph_utils',
-    '_backend/cpp/graph_utils.cpp',
+    'pydatastructs.graphs._backend.cpp._algorithms',
+    '_backend/cpp/algorithms.cpp',
+    include_directories: py_include,
     install: true,
-    subdir: 'pydatastructs/utils/_backend/cpp'
+    subdir: 'pydatastructs/graphs'
 )
 
 subdir('tests')

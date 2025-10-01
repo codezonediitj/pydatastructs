@@ -19,14 +19,14 @@ python.extension_module(
     'pydatastructs.utils._backend.cpp._nodes',
     '_backend/cpp/nodes.cpp',
     install: true,
-    subdir: 'pydatastructs/utils/_backend/cpp'
+    subdir: 'pydatastructs/utils'
 )
 
 python.extension_module(
     'pydatastructs.utils._backend.cpp._graph_utils',
     '_backend/cpp/graph_utils.cpp',
     install: true,
-    subdir: 'pydatastructs/utils/_backend/cpp'
+    subdir: 'pydatastructs/utils'
 )
 
 subdir('tests')
