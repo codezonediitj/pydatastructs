@@ -19,19 +19,17 @@ python.install_sources(
 py_include = include_directories('../utils/_backend/cpp')
 
 python.extension_module(
-    '_graph',
-    '_backend/cpp/graph.cpp',
-    include_directories: py_include,
+    '_nodes',
+    '_backend/cpp/nodes.cpp',
     install: true,
-    subdir: 'pydatastructs/graphs/_backend/cpp'
+    subdir: 'pydatastructs/utils/_backend/cpp'
 )
 
 python.extension_module(
-    '_algorithms',
-    '_backend/cpp/algorithms.cpp',
-    include_directories: py_include,
+    '_graph_utils',
+    '_backend/cpp/graph_utils.cpp',
     install: true,
-    subdir: 'pydatastructs/graphs/_backend/cpp'
+    subdir: 'pydatastructs/utils/_backend/cpp'
 )
 
 subdir('tests')
