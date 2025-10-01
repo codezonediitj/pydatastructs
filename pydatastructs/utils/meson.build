@@ -3,6 +3,7 @@ python = import('python').find_installation(pure: false)
 python.install_sources(
     [
         '__init__.py',
+        '_extensions.py',
         'misc_util.py',
         'raises_util.py',
         'testing_util.py'
@@ -16,17 +17,17 @@ python.install_sources(
 )
 
 python.extension_module(
-    'pydatastructs.utils._backend.cpp._nodes',
+    '_nodes',
     '_backend/cpp/nodes.cpp',
     install: true,
-    subdir: 'pydatastructs/utils'
+    subdir: 'pydatastructs/utils/_backend/cpp'
 )
 
 python.extension_module(
-    'pydatastructs.utils._backend.cpp._graph_utils',
+    '_graph_utils',
     '_backend/cpp/graph_utils.cpp',
     install: true,
-    subdir: 'pydatastructs/utils'
+    subdir: 'pydatastructs/utils/_backend/cpp'
 )
 
 subdir('tests')
