@@ -114,8 +114,8 @@ jobs:
 
       - name: Run tests
         run: |
-          cd /tmp
-          PYTHONPATH=$GITHUB_WORKSPACE/install/lib/python${{ matrix.python-version }}/site-packages pytest --import-mode=importlib pydatastructs
+          export PYTHONPATH=$PWD/install/lib/python${{ matrix.python-version }}/site-packages:$PWD:$PYTHONPATH
+          pytest --import-mode=importlib
 
       - name: Build Documentation
         run: |
@@ -162,8 +162,8 @@ jobs:
 
       - name: Run tests
         run: |
-          cd /tmp
-          PYTHONPATH=$GITHUB_WORKSPACE/install/lib/python${{ matrix.python-version }}/site-packages pytest --import-mode=importlib pydatastructs
+          export PYTHONPATH=$PWD/install/lib/python${{ matrix.python-version }}/site-packages:$PWD:$PYTHONPATH
+          pytest --import-mode=importlib
 
       - name: Build Documentation
         run: |
