@@ -109,7 +109,6 @@ jobs:
           CXXFLAGS: "-std=c++17"
         run: |
           spin build -v
-          python -m pip install . --no-deps --no-build-isolation -v
 
       - name: Run tests
         run: |
@@ -155,7 +154,6 @@ jobs:
           CXXFLAGS: "-std=c++17"
         run: |
           spin build -v
-          python -m pip install . --no-deps --no-build-isolation -v
       - name: Run tests
         run: |
           cd $HOME
