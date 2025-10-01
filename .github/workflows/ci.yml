@@ -108,14 +108,16 @@ jobs:
         env:
           CXXFLAGS: "-std=c++17"
         run: |
-          PREFIX=$(python -c "import sysconfig; print(sysconfig.get_paths()['purelib'])")
-          meson setup build --prefix=$PREFIX --wipe
+          meson setup build --wipe
           meson compile -C build
-          meson install -C build
+          meson install -C build --destdir=$PWD/install
 
       - name: Run tests
         run: |
-          python -m pytest --import-mode=importlib pydatastructs
+          export PYTHONPATH=$PWD/install/usr/local/lib/python${{ matrix.python-version }}/site-packages:$PYTHONPATH
+          cd /tmp
+          python -c "import pydatastructs; print(pydatastructs.__file__)"
+          python -m pytest --pyargs pydatastructs -v
 
       - name: Build Documentation
         run: |
@@ -156,14 +158,16 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: 11.0
           CXXFLAGS: "-std=c++17"
         run: |
-          PREFIX=$(python -c "import sysconfig; print(sysconfig.get_paths()['purelib'])")
-          meson setup build --prefix=$PREFIX --wipe
+          meson setup build --wipe
           meson compile -C build
-          meson install -C build
+          meson install -C build --destdir=$PWD/install
 
       - name: Run tests
         run: |
-          python -m pytest --import-mode=importlib pydatastructs
+          export PYTHONPATH=$PWD/install/usr/local/lib/python${{ matrix.python-version }}/site-packages:$PYTHONPATH
+          cd /tmp
+          python -c "import pydatastructs; print(pydatastructs.__file__)"
+          python -m pytest --pyargs pydatastructs -v
 
       - name: Build Documentation
         run: |
