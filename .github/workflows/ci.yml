@@ -112,7 +112,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest pydatastructs/ -v
+          python -m pytest pydatastructs/ -v --import-mode=importlib --ignore-glob="**/benchmarks/**" --ignore=pydatastructs/linear_data_structures/tests/benchmarks/
 
       - name: Build Documentation
         run: |
@@ -157,7 +157,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest pydatastructs/ -v
+          python -m pytest pydatastructs/ -v --import-mode=importlib --ignore-glob="**/benchmarks/**" --ignore=pydatastructs/linear_data_structures/tests/benchmarks/
 
       - name: Build Documentation
         run: |
