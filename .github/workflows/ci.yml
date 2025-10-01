@@ -112,8 +112,7 @@ jobs:
 
       - name: Run tests
         run: |
-          cd $HOME
-          python -m pytest --pyargs pydatastructs -v --ignore-glob="**/benchmarks/**"
+          spin test -v
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
@@ -156,8 +155,7 @@ jobs:
           spin build -v
       - name: Run tests
         run: |
-          cd $HOME
-          python -m pytest --pyargs pydatastructs -v --ignore-glob="**/benchmarks/**"
+          spin test -v
 
       - name: Build Documentation
         run: |
