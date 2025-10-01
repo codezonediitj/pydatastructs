@@ -108,14 +108,14 @@ jobs:
         env:
           CXXFLAGS: "-std=c++17"
         run: |
-          meson setup build --prefix=$PWD/install
+          meson setup build --prefix=$PWD/install --wipe
           meson compile -C build
           meson install -C build
-          export PYTHONPATH=$PWD/install/lib/python${{ matrix.python-version }}/site-packages:$PYTHONPATH
 
       - name: Run tests
         run: |
-          pytest --import-mode=importlib
+          cd /tmp
+          PYTHONPATH=$GITHUB_WORKSPACE/install/lib/python${{ matrix.python-version }}/site-packages pytest --import-mode=importlib pydatastructs
 
       - name: Build Documentation
         run: |
@@ -156,14 +156,14 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: 11.0
           CXXFLAGS: "-std=c++17"
         run: |
-          meson setup build --prefix=$PWD/install
+          meson setup build --prefix=$PWD/install --wipe
           meson compile -C build
           meson install -C build
-          export PYTHONPATH=$PWD/install/lib/python${{ matrix.python-version }}/site-packages:$PYTHONPATH
 
       - name: Run tests
         run: |
-          pytest --import-mode=importlib
+          cd /tmp
+          PYTHONPATH=$GITHUB_WORKSPACE/install/lib/python${{ matrix.python-version }}/site-packages pytest --import-mode=importlib pydatastructs
 
       - name: Build Documentation
         run: |
