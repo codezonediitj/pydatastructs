@@ -76,7 +76,7 @@ jobs:
   #         sphinx-build -b html docs/source/ docs/build/html
 
   test-ubuntu-py39-py310:
-    runs-on: ${{matrix.os}}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -102,30 +102,33 @@ jobs:
         run: |
           python -m pip install -r requirements.txt
           python -m pip install -r docs/requirements.txt
+          python -m pip install meson ninja pytest
 
-      - name: Build package
+      - name: Build package (Meson)
         env:
           CXXFLAGS: "-std=c++17"
         run: |
-          spin build -v
+          meson setup build
+          meson compile -C build
+          meson install -C build
 
       - name: Run tests
         run: |
-          spin test -v
+          pytest --import-mode=importlib
 
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
 
   test-macos:
-    runs-on: ${{matrix.os}}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         os: [macos-latest]
         python-version:
-          # - "3.8"
+          #  - "3.8"
           - "3.9"
           - "3.10"
 
@@ -145,16 +148,20 @@ jobs:
         run: |
           python -m pip install -r requirements.txt
           python -m pip install -r docs/requirements.txt
+          python -m pip install meson ninja pytest
 
-      - name: Build package
+      - name: Build package (Meson)
         env:
           MACOSX_DEPLOYMENT_TARGET: 11.0
           CXXFLAGS: "-std=c++17"
         run: |
-          spin build -v
+          meson setup build
+          meson compile -C build
+          meson install -C build
+
       - name: Run tests
         run: |
-          spin test -v
+          pytest --import-mode=importlib
 
       - name: Build Documentation
         run: |
