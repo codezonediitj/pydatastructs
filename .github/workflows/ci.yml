@@ -108,16 +108,13 @@ jobs:
         env:
           CXXFLAGS: "-std=c++17"
         run: |
-          python -m mesonbuild.mesonmain setup builddir
-          python -m mesonbuild.mesonmain compile -C builddir
+          spin build -v
+          python -m pip install . --no-deps --no-build-isolation -v
 
       - name: Run tests
         run: |
-          BUILDDIR=$(find builddir -type d -name "*.cpython-*" | head -1)
-          export PYTHONPATH="${BUILDDIR}:${PWD}:${PYTHONPATH}"
-          echo "PYTHONPATH: $PYTHONPATH"
-          python -c "import pydatastructs; print('Loaded from:', pydatastructs.__file__)"
-          python -m pytest pydatastructs/ -v --ignore-glob="**/benchmarks/**"
+          cd $HOME
+          python -m pytest --pyargs pydatastructs -v --ignore-glob="**/benchmarks/**"
       - name: Build Documentation
         run: |
           sphinx-build -b html docs/source/ docs/build/html
@@ -157,15 +154,12 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: 11.0
           CXXFLAGS: "-std=c++17"
         run: |
-          python -m mesonbuild.mesonmain setup builddir
-          python -m mesonbuild.mesonmain compile -C builddir
+          spin build -v
+          python -m pip install . --no-deps --no-build-isolation -v
       - name: Run tests
         run: |
-          BUILDDIR=$(find builddir -type d -name "*.cpython-*" | head -1)
-          export PYTHONPATH="${BUILDDIR}:${PWD}:${PYTHONPATH}"
-          echo "PYTHONPATH: $PYTHONPATH"
-          python -c "import pydatastructs; print('Loaded from:', pydatastructs.__file__)"
-          python -m pytest pydatastructs/ -v --ignore-glob="**/benchmarks/**"
+          cd $HOME
+          python -m pytest --pyargs pydatastructs -v --ignore-glob="**/benchmarks/**"
 
       - name: Build Documentation
         run: |
