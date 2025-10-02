@@ -44,11 +44,14 @@ jobs:
           CXXFLAGS: "-std=c++17 --coverage"
           CFLAGS: "--coverage"
         run: |
-          spin build -v
+          meson setup build --prefix=$PWD
+          meson compile -C build
+          meson install -C build --skip-subprojects
+
       # coverage tests
       - name: Run tests
         run: |
-          spin test -v
+          python -m pytest pydatastructs/ -v --ignore-glob="**/benchmarks/**"
 
       - name: Capture Coverage Data with lcov
         run: |
@@ -107,11 +110,13 @@ jobs:
         env:
           CXXFLAGS: "-std=c++17"
         run: |
-          spin build -v
+          meson setup build --prefix=$PWD
+          meson compile -C build
+          meson install -C build --skip-subprojects
 
       - name: Run tests
         run: |
-          spin test -v
+          python -m pytest pydatastructs/ -v --ignore-glob="**/benchmarks/**"
 
       - name: Build Documentation
         run: |
@@ -151,10 +156,12 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: 11.0
           CXXFLAGS: "-std=c++17"
         run: |
-          spin build -v
+          meson setup build --prefix=$PWD
+          meson compile -C build
+          meson install -C build --skip-subprojects
       - name: Run tests
         run: |
-          spin test -v
+          python -m pytest pydatastructs/ -v --ignore-glob="**/benchmarks/**"
 
       - name: Build Documentation
         run: |

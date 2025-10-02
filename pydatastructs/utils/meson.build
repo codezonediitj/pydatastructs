@@ -3,7 +3,6 @@ python = import('python').find_installation(pure: false)
 python.install_sources(
     [
         '__init__.py',
-        '_extensions.py',
         'misc_util.py',
         'raises_util.py',
         'testing_util.py'
