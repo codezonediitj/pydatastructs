@@ -19,7 +19,6 @@ python.extension_module(
     '_nodes',
     [
         '_backend/cpp/nodes.cpp',
-        '_backend/cpp/graph_utils.cpp',  # ADD THIS LINE
     ],
     install: true,
     subdir: 'pydatastructs/utils/_backend/cpp'
