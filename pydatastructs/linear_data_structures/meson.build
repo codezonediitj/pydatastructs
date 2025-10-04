@@ -26,7 +26,9 @@ python.extension_module(
     '_algorithms',
     '_backend/cpp/algorithms/algorithms.cpp',
     install: true,
-    subdir: 'pydatastructs/linear_data_structures/_backend/cpp'
+    subdir: 'pydatastructs/linear_data_structures/_backend/cpp',
+    cpp_args: ['-std=c++17'],
+    override_options: ['cpp_std=c++17'],
 )
 
 subdir('tests')

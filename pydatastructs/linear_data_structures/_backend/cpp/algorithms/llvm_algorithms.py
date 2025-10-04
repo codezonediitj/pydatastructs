@@ -30,10 +30,7 @@ def _ensure_target_machine():
         binding.initialize_all_asmprinters()
 
         target = binding.Target.from_default_triple()
-        _target_machine = target.create_target_machine(
-            opt=3,
-            features="+sse,+sse2,+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+avx2"
-        )
+        _target_machine = target.create_target_machine(opt=3)
     except Exception as e:
         raise RuntimeError(f"Failed to initialize LLVM target machine: {e}")
 

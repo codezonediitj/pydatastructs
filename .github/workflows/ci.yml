@@ -154,7 +154,7 @@ jobs:
           spin build -v
       - name: Run tests
         run: |
-          spin test -v
+          python -m pytest --import-mode=importlib pydatastructs
 
       - name: Build Documentation
         run: |
