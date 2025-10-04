@@ -20,18 +20,15 @@ py_include = include_directories('../utils/_backend/cpp')
 
 python.extension_module(
     '_graph',
-    '_backend/cpp/graph.cpp',
+    [
+        '_backend/cpp/graph.cpp',
+        '_backend/cpp/algorithms.cpp',
+        '../utils/_backend/cpp/graph_utils.cpp',
+    ],
     include_directories: py_include,
     install: true,
     subdir: 'pydatastructs/graphs/_backend/cpp'
 )
 
-python.extension_module(
-    '_algorithms',
-    '_backend/cpp/algorithms.cpp',
-    include_directories: py_include,
-    install: true,
-    subdir: 'pydatastructs/graphs/_backend/cpp'
-)
 
 subdir('tests')

@@ -1,6 +1,7 @@
 import math, pydatastructs
 from enum import Enum
-from pydatastructs.utils._backend.cpp import _nodes, _graph_utils
+from pydatastructs.utils._backend.cpp import _nodes
+
 
 __all__ = [
     'TreeNode',
@@ -411,7 +412,8 @@ class AdjacencyListGraphNode(GraphNode):
                         else []
             return obj
         else:
-            return _graph_utils.AdjacencyListGraphNode(name, data, adjacency_list)
+            from pydatastructs.graphs._backend.cpp import _graph
+            return _graph.AdjacencyListGraphNode(name, data, adjacency_list)
 
     def add_adjacent_node(self, name, data=None):
         """
@@ -468,7 +470,8 @@ class AdjacencyMatrixGraphNode(GraphNode):
             obj._impl = 'adjacency_matrix'
             return obj
         else:
-            return _graph_utils.AdjacencyMatrixGraphNode(str(name), data)
+            from pydatastructs.graphs._backend.cpp import _graph
+            return _graph.AdjacencyMatrixGraphNode(str(name), data)
 
 class GraphEdge(object):
     """
@@ -499,7 +502,8 @@ class GraphEdge(object):
             obj.value = value
             return obj
         else:
-            return _graph_utils.GraphEdge(node1, node2, value)
+            from pydatastructs.graphs._backend.cpp import _graph
+            return _graph.GraphEdge(node1, node2, value)
 
     def __str__(self):
         return str((self.source.name, self.target.name))

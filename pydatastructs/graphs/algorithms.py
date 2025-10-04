@@ -92,7 +92,7 @@ def breadth_first_search(
         return getattr(algorithms, func)(
             graph, source_node, operation, *args, **kwargs)
     else:
-        from pydatastructs.graphs._backend.cpp._algorithms import bfs_adjacency_list, bfs_adjacency_matrix
+        from pydatastructs.graphs._backend.cpp._graph import bfs_adjacency_list, bfs_adjacency_matrix
         if (graph._impl == "adjacency_list"):
             extra_args = args if args else ()
             return bfs_adjacency_list(graph, source_node, operation, extra_args)
@@ -349,7 +349,7 @@ def minimum_spanning_tree(graph, algorithm, **kwargs):
             %(algorithm, graph._impl))
         return getattr(algorithms, func)(graph)
     else:
-        from pydatastructs.graphs._backend.cpp._algorithms import minimum_spanning_tree_prim_adjacency_list
+        from pydatastructs.graphs._backend.cpp._graph import minimum_spanning_tree_prim_adjacency_list
         if graph._impl == "adjacency_list" and algorithm == 'prim':
             return minimum_spanning_tree_prim_adjacency_list(graph)
 
@@ -814,7 +814,7 @@ def shortest_paths(graph: Graph, algorithm: str,
             "finding shortest paths in graphs."%(algorithm))
         return getattr(algorithms, func)(graph, source, target)
     else:
-        from pydatastructs.graphs._backend.cpp._algorithms import shortest_paths_dijkstra_adjacency_list
+        from pydatastructs.graphs._backend.cpp._graph import shortest_paths_dijkstra_adjacency_list
         if graph._impl == "adjacency_list" and algorithm == 'dijkstra':
             return shortest_paths_dijkstra_adjacency_list(graph, source, target)
 

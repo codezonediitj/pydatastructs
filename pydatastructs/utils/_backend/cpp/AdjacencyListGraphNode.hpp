@@ -79,11 +79,6 @@ static PyObject* AdjacencyListGraphNode_new(PyTypeObject* type, PyObject* args, 
         for (Py_ssize_t i = 0; i < size; i++) {
             PyObject* node = PyList_GetItem(adjacency_list, i);
 
-            if (PyType_Ready(&AdjacencyListGraphNodeType) < 0) {
-                PyErr_SetString(PyExc_RuntimeError, "Failed to initialize AdjacencyListGraphNodeType");
-                return NULL;
-            }
-
             if (!PyObject_IsInstance(node, (PyObject*)&AdjacencyListGraphNodeType)) {
                 PyErr_SetString(PyExc_TypeError, "Adjacency list must contain only AdjacencyListGraphNode instances");
                 return NULL;
@@ -252,46 +247,6 @@ static PyMethodDef AdjacencyListGraphNode_methods[] = {
     {"add_adjacent_node", (PyCFunction)AdjacencyListGraphNode_add_adjacent_node, METH_VARARGS, "Add adjacent node"},
     {"remove_adjacent_node", (PyCFunction)AdjacencyListGraphNode_remove_adjacent_node, METH_VARARGS, "Remove adjacent node"},
     {NULL}
-};
-
-inline PyTypeObject AdjacencyListGraphNodeType = {
-    /* tp_name */ PyVarObject_HEAD_INIT(NULL, 0) "AdjacencyListGraphNode",
-    /* tp_basicsize */ sizeof(AdjacencyListGraphNode),
-    /* tp_itemsize */ 0,
-    /* tp_dealloc */ (destructor)AdjacencyListGraphNode_dealloc,
-    /* tp_print */ 0,
-    /* tp_getattr */ 0,
-    /* tp_setattr */ 0,
-    /* tp_reserved */ 0,
-    /* tp_repr */ 0,
-    /* tp_as_number */ 0,
-    /* tp_as_sequence */ 0,
-    /* tp_as_mapping */ 0,
-    /* tp_hash */ 0,
-    /* tp_call */ 0,
-    /* tp_str */ (reprfunc)GraphNode_str,
-    /* tp_getattro */ 0,
-    /* tp_setattro */ 0,
-    /* tp_as_buffer */ 0,
-    /* tp_flags */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
-    /* tp_doc */ "Node Data Structure for an Adjacency List Graph",
-    /* tp_traverse */ 0,
-    /* tp_clear */ 0,
-    /* tp_richcompare */ 0,
-    /* tp_weaklistoffset */ 0,
-    /* tp_iter */ 0,
-    /* tp_iternext */ 0,
-    /* tp_methods */ AdjacencyListGraphNode_methods,
-    /* tp_members */ AdjacencyListGraphNode_PyMemberDef,
-    /* tp_getset */ AdjacencyListGraphNode_getsetters,
-    /* tp_base */ &GraphNodeType,
-    /* tp_dict */ 0,
-    /* tp_descr_get */ 0,
-    /* tp_descr_set */ 0,
-    /* tp_dictoffset */ 0,
-    /* tp_init */ 0,
-    /* tp_alloc */ 0,
-    /* tp_new */ AdjacencyListGraphNode_new,
 };
 
 
