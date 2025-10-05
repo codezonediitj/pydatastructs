@@ -15,6 +15,12 @@ python.install_sources(
     subdir: 'pydatastructs/linear_data_structures/_backend'
 )
 
+python.install_sources(
+    ['_backend/cpp/algorithms/llvm_algorithms.py'],
+    subdir: 'pydatastructs/linear_data_structures/_backend/cpp/algorithms'
+)
+
+
 python.extension_module(
     '_arrays',
     '_backend/cpp/arrays/arrays.cpp',
