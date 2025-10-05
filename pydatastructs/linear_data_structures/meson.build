@@ -20,7 +20,6 @@ python.install_sources(
     subdir: 'pydatastructs/linear_data_structures/_backend/cpp/algorithms'
 )
 
-
 python.extension_module(
     '_arrays',
     '_backend/cpp/arrays/arrays.cpp',
