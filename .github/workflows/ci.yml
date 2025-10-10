@@ -186,8 +186,9 @@ jobs:
 
       - name: Build package
         env:
-          CXXFLAGS: "/std:c++17 /Zc:strictStrings-"
-          CL: "/std:c++17 /Zc:strictStrings- /MD"
+          CFLAGS: "/MD"
+          CXXFLAGS: "/std:c++17 /MD /Zc:strictStrings-"
+          CL: "/std:c++17 /MD /Zc:strictStrings-"
         run: spin build -v
 
       - name: Run tests
