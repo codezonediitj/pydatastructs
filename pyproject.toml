@@ -7,7 +7,7 @@ name = "pydatastructs"
 version = "1.0.1.dev0"
 description = "Data structures and algorithms implemented using Python and C++"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 [tool.spin]
 package = "pydatastructs"
