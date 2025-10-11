@@ -15,11 +15,17 @@ python.install_sources(
     subdir: 'pydatastructs/utils/_backend'
 )
 
+cpp_args = []
+if host_machine.system() == 'windows'
+    cpp_args += ['/MD']
+endif
+
 python.extension_module(
     '_nodes',
     [
         '_backend/cpp/nodes.cpp',
     ],
+    cpp_args: cpp_args,
     install: true,
     subdir: 'pydatastructs/utils/_backend/cpp'
 )
