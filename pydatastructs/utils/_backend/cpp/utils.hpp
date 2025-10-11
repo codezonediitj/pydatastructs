@@ -6,10 +6,37 @@
 #include <cstring>
 #include <string>
 
-static PyObject *PyZero = PyLong_FromLong(0);
-static PyObject *PyOne = PyLong_FromLong(1);
-static PyObject *PyTwo = PyLong_FromLong(2);
-static PyObject *PyThree = PyLong_FromLong(3);
+static PyObject* get_PyZero() {
+    static PyObject* PyZero = nullptr;
+    if (PyZero == nullptr) {
+        PyZero = PyLong_FromLong(0);
+    }
+    return PyZero;
+}
+
+static PyObject* get_PyOne() {
+    static PyObject* PyOne = nullptr;
+    if (PyOne == nullptr) {
+        PyOne = PyLong_FromLong(1);
+    }
+    return PyOne;
+}
+
+static PyObject* get_PyTwo() {
+    static PyObject* PyTwo = nullptr;
+    if (PyTwo == nullptr) {
+        PyTwo = PyLong_FromLong(2);
+    }
+    return PyTwo;
+}
+
+static PyObject* get_PyThree() {
+    static PyObject* PyThree = nullptr;
+    if (PyThree == nullptr) {
+        PyThree = PyLong_FromLong(3);
+    }
+    return PyThree;
+}
 static const char* _encoding = "utf-8";
 static const char* _invalid_char = "<invalid-character>";
 
