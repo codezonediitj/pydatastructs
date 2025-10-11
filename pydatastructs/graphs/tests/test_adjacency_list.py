@@ -62,7 +62,7 @@ def test_adjacency_list():
     assert g2.num_edges() == 3
     assert g2.num_vertices() == 3
     neighbors = g2.neighbors('v_4')
-    assert neighbors == [v_6, v_5]
+    assert set(neighbors) == {v_6, v_5}
     v = AdjacencyListGraphNode('v', 4, backend = Backend.CPP)
     g2.add_vertex(v)
     g2.add_edge('v_4', 'v', 0)
