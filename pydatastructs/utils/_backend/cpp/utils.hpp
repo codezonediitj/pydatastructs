@@ -37,6 +37,10 @@ static PyObject* get_PyThree() {
     }
     return PyThree;
 }
+#define PyZero get_PyZero()
+#define PyOne get_PyOne()
+#define PyTwo get_PyTwo()
+#define PyThree get_PyThree()
 static const char* _encoding = "utf-8";
 static const char* _invalid_char = "<invalid-character>";
 
