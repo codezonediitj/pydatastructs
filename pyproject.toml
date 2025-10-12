@@ -1,0 +1,17 @@
+[build-system]
+requires = ["meson-python"]
+build-backend = "mesonpy"
+
+[project]
+name = "pydatastructs"
+version = "1.0.1.dev0"
+description = "Data structures and algorithms implemented using Python and C++"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.spin]
+package = "pydatastructs"
+
+[tool.spin.commands]
+Build = ["spin.cmds.meson.build"]
+Test = ["spin.cmds.meson.test"]

@@ -11,7 +11,6 @@ static struct PyModuleDef nodes_struct = {
 };
 
 PyMODINIT_FUNC PyInit__nodes(void) {
-    Py_Initialize();
     PyObject *nodes = PyModule_Create(&nodes_struct);
 
     if (PyType_Ready(&NodeType) < 0) {

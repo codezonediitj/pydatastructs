@@ -34,6 +34,6 @@ setuptools.setup(
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Software Development :: Libraries"
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.9',
     ext_modules=extensions
 )

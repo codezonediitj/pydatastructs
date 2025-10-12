@@ -2,3 +2,5 @@ codecov
 pytest
 pytest-cov
 llvmlite
+spin
+meson

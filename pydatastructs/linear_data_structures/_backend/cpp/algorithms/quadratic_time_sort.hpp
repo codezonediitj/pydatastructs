@@ -244,9 +244,15 @@ static PyObject* bubble_sort_llvm(PyObject* self, PyObject* args, PyObject* kwds
             PyErr_Clear();
         }
         Py_DECREF(sys_path);
+        if (!mod) {
+            return NULL;
+        }
 
         PyObject* fn = PyObject_GetAttrString(mod, "get_bubble_sort_ptr");
         Py_DECREF(mod);
+        if (!fn) {
+            return NULL;
+        }
 
         PyObject* arg = PyUnicode_FromString(dtype_str);
         if (!arg) {
@@ -257,6 +263,9 @@ static PyObject* bubble_sort_llvm(PyObject* self, PyObject* args, PyObject* kwds
         PyObject* addr_obj = PyObject_CallFunctionObjArgs(fn, arg, NULL);
         Py_DECREF(fn);
         Py_DECREF(arg);
+        if (!addr_obj) {
+            return NULL;
+        }
         return addr_obj;
     };
 
