@@ -1,7 +1,8 @@
 import random, timeit, functools, os, pytest
 from pydatastructs import (OneDimensionalArray, Backend,
     DynamicOneDimensionalArray, quick_sort, bubble_sort, selection_sort,
-    insertion_sort, is_ordered, linear_search, binary_search, jump_search)
+    insertion_sort, is_ordered, linear_search, binary_search, jump_search,
+      brick_sort, brick_sort_parallel)
 
 def _test_common_sort(sort, **kwargs):
     cpp = Backend.CPP
@@ -50,6 +51,16 @@ def test_selection_sort():
 @pytest.mark.xfail
 def test_insertion_sort():
     _test_common_sort(insertion_sort, size=2000)
+
+
+@pytest.mark.xfail
+def test_brick_sort():
+    _test_common_sort(brick_sort, size=500)
+
+
+@pytest.mark.xfail
+def test_brick_sort_parallel():
+    _test_common_sort(brick_sort_parallel, size=500, num_threads=4)
 
 
 @pytest.mark.xfail
