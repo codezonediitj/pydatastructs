@@ -12,7 +12,8 @@ from .trie import (
 __all__.extend(trie.__all__)
 
 from .algorithms import (
-    find
+    find,
+    Crypto
 )
 
 __all__.extend(algorithms.__all__)

@@ -2,9 +2,11 @@ from pydatastructs.linear_data_structures.arrays import (
     DynamicOneDimensionalArray, OneDimensionalArray)
 from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
+import struct
 
 __all__ = [
-    'find'
+    'find',
+    'Crypto'
 ]
 
 PRIME_NUMBER, MOD = 257, 1000000007
@@ -245,3 +247,188 @@ def _z_function(text, query):
             positions.append(pos)
 
     return positions
+
+class Crypto:
+
+    @staticmethod
+    def _right_rotate(value, shift, size=32):
+        return (value >> shift) | (value << (size - shift)) & (2**size - 1)
+
+    @staticmethod
+    def sha256_encrypt(text) -> str:
+        """
+        Finds the SHA256 ciphertext of the given plaintext
+
+        Parameters
+        ==========
+
+        text: str
+            The string on which SHA256 encryption is to be performed.
+
+        Returns
+        =======
+
+        text: str
+            The SHA256 encoded ciphertext
+
+        Examples
+        ========
+
+        >>> from pydatastructs import Crypto
+        >>> text = "PyDataStructs"
+        >>> ciphertext = Crypto.sha256_encrypt(text)
+        >>> print(ciphertext)
+        777a305fe4f1cfc7ce270891ec50651331e2ab6d09312b906740a5ea413bd057
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/SHA-2
+        .. [2] https://github.com/TheAlgorithms/Python/blob/master/hashes/sha256.py
+
+        """
+        # SHA-256 Constants
+        k = [
+            0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+            0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+            0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+            0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+            0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+            0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+            0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+            0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+        ]
+
+        h = [
+            0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+            0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+        ]
+
+        message = bytearray(text, 'utf-8')
+        length = len(message) * 8
+        message.append(0x80)
+        while (len(message) * 8) % 512 != 448:
+            message.append(0)
+        message += struct.pack('>Q', length)
+
+        for i in range(0, len(message), 64):
+            chunk = message[i:i+64]
+            w = list(struct.unpack('>16L', chunk)) + [0] * 48
+            for j in range(16, 64):
+                s0 = (Crypto._right_rotate(w[j-15], 7) ^ Crypto._right_rotate(w[j-15], 18) ^ (w[j-15] >> 3))
+                s1 = (Crypto._right_rotate(w[j-2], 17) ^ Crypto._right_rotate(w[j-2], 19) ^ (w[j-2] >> 10))
+                w[j] = (w[j-16] + s0 + w[j-7] + s1) & 0xFFFFFFFF
+
+            a, b, c, d, e, f, g, h0 = h
+
+            for j in range(64):
+                S1 = Crypto._right_rotate(e, 6) ^ Crypto._right_rotate(e, 11) ^ Crypto._right_rotate(e, 25)
+                ch = (e & f) ^ (~e & g)
+                temp1 = (h0 + S1 + ch + k[j] + w[j]) & 0xFFFFFFFF
+                S0 = Crypto._right_rotate(a, 2) ^ Crypto._right_rotate(a, 13) ^ Crypto._right_rotate(a, 22)
+                maj = (a & b) ^ (a & c) ^ (b & c)
+                temp2 = (S0 + maj) & 0xFFFFFFFF
+
+                h0, g, f, e, d, c, b, a = (g, f, e, (d + temp1) & 0xFFFFFFFF, c, b, a, (temp1 + temp2) & 0xFFFFFFFF)
+
+            h = [(x + y) & 0xFFFFFFFF for x, y in zip(h, [a, b, c, d, e, f, g, h0])]
+
+        return ''.join(f'{value:08x}' for value in h)
+
+    @staticmethod
+    def yield_chacha20_xor_stream(key, iv, position=0):
+        """Generate the xor stream with the ChaCha20 cipher."""
+        if not isinstance(position, int):
+            raise TypeError
+        if position & ~0xFFFFFFFF:
+            raise ValueError("Position is not uint32.")
+        if not isinstance(key, bytes):
+            raise TypeError
+        if not isinstance(iv, bytes):
+            raise TypeError
+        if len(key) != 32:
+            raise ValueError
+        if len(iv) != 8:
+            raise ValueError
+
+        def rotate(v, c):
+            return ((v << c) & 0xFFFFFFFF) | v >> (32 - c)
+
+        def quarter_round(x, a, b, c, d):
+            x[a] = (x[a] + x[b]) & 0xFFFFFFFF
+            x[d] = rotate(x[d] ^ x[a], 16)
+            x[c] = (x[c] + x[d]) & 0xFFFFFFFF
+            x[b] = rotate(x[b] ^ x[c], 12)
+            x[a] = (x[a] + x[b]) & 0xFFFFFFFF
+            x[d] = rotate(x[d] ^ x[a], 8)
+            x[c] = (x[c] + x[d]) & 0xFFFFFFFF
+            x[b] = rotate(x[b] ^ x[c], 7)
+
+        ctx = [0] * 16
+        ctx[:4] = (1634760805, 857760878, 2036477234, 1797285236)
+        ctx[4:12] = struct.unpack("<8L", key)
+        ctx[12] = ctx[13] = position
+        ctx[14:16] = struct.unpack("<LL", iv)
+        while 1:
+            x = list(ctx)
+            for i in range(10):
+                quarter_round(x, 0, 4, 8, 12)
+                quarter_round(x, 1, 5, 9, 13)
+                quarter_round(x, 2, 6, 10, 14)
+                quarter_round(x, 3, 7, 11, 15)
+                quarter_round(x, 0, 5, 10, 15)
+                quarter_round(x, 1, 6, 11, 12)
+                quarter_round(x, 2, 7, 8, 13)
+                quarter_round(x, 3, 4, 9, 14)
+            for c in struct.pack(
+                "<16L", *((x[i] + ctx[i]) & 0xFFFFFFFF for i in range(16))
+            ):
+                yield c
+            ctx[12] = (ctx[12] + 1) & 0xFFFFFFFF
+            if ctx[12] == 0:
+                ctx[13] = (ctx[13] + 1) & 0xFFFFFFFF
+
+    @staticmethod
+    def chacha20(data:bytes, key:bytes, nonce=None, position=0):
+        """
+        Encrypt (or decrypt) data using the ChaCha20 stream cipher.
+
+        Parameters
+        ==========
+        data : bytes
+            Input data to encrypt/decrypt
+        key : bytes
+            32-byte encryption key. Shorter keys will be padded by repetition.
+        nonce : bytes, optional
+            8-byte nonce
+
+        Returns
+        =======
+        bytes
+            Processed output
+
+        Notes
+        =====
+        Chacha20 is symmetric - same operation encrypts and decrypts.
+
+        References
+        ==========
+
+        .. [1] https://en.wikipedia.org/wiki/ChaCha20-Poly1305
+        .. [2] https://github.com/pts/chacha20/blob/master/chacha20_python3.py
+
+        """
+
+        if nonce is None:
+            nonce = b"\0" * 8
+
+        if not key:
+            raise ValueError("Key is empty.")
+        if len(key) < 32:
+            key = (key * (32 // len(key) + 1))[:32]
+        if len(key) > 32:
+            key = key[:32]
+
+        return bytes(
+            a ^ b for a, b in zip(data, Crypto.yield_chacha20_xor_stream(key, nonce, position))
+        )
