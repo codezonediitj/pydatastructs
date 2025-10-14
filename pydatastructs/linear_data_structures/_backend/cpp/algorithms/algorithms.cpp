@@ -14,6 +14,8 @@ static PyMethodDef algorithms_PyMethodDef[] = {
      METH_VARARGS | METH_KEYWORDS, ""},
     {"insertion_sort", (PyCFunction) insertion_sort,
      METH_VARARGS | METH_KEYWORDS, ""},
+    {"insertion_sort_llvm",  (PyCFunction)insertion_sort_llvm,
+     METH_VARARGS | METH_KEYWORDS, ""},
     {"is_ordered", (PyCFunction) is_ordered,
      METH_VARARGS | METH_KEYWORDS, ""},
     {"linear_search", (PyCFunction) linear_search,
