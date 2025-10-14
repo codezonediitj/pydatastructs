@@ -8,6 +8,8 @@ from . import (
     sparse_table,
 )
 
+from . import _extensions
+
 from .binomial_trees import (
     BinomialTree
 )

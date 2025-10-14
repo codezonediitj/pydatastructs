@@ -5,6 +5,8 @@ from . import (
     testing_util,
 )
 
+from . import _extensions
+
 from .misc_util import (
     TreeNode,
     MAryTreeNode,

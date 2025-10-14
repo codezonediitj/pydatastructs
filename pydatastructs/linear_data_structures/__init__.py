@@ -6,6 +6,8 @@ from . import (
     algorithms,
 )
 
+from . import _extensions
+
 from .arrays import (
     OneDimensionalArray,
     DynamicOneDimensionalArray,

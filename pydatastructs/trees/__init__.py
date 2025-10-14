@@ -7,6 +7,9 @@ from . import (
     heaps,
 )
 
+from . import _extensions
+
+
 from .binary_trees import (
     BinaryTree,
     BinarySearchTree,
