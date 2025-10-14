@@ -214,6 +214,8 @@ def test_is_ordered():
 
     _test_inner_ordered()
     _test_inner_ordered(backend=Backend.CPP)
+    # Also test LLVM backend (if available)
+    _test_inner_ordered(backend=Backend.LLVM)
 
 
 def test_upper_bound():

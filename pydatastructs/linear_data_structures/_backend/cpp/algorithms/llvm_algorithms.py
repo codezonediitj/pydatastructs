@@ -41,6 +41,119 @@ def get_bubble_sort_ptr(dtype: str) -> int:
 
     return _materialize(dtype)
 
+
+def get_is_ordered_ptr(dtype: str) -> int:
+    dtype = dtype.lower().strip()
+    if dtype not in _SUPPORTED:
+        raise ValueError(f"Unsupported dtype '{dtype}'. Supported: {list(_SUPPORTED)}")
+
+    return _materialize_is_ordered(dtype)
+
+
+def _build_is_ordered_ir(dtype: str) -> str:
+    if dtype not in _SUPPORTED:
+        raise ValueError(f"Unsupported dtype '{dtype}'. Supported: {list(_SUPPORTED)}")
+
+    T, _ = _SUPPORTED[dtype]
+    i32 = ir.IntType(32)
+    i64 = ir.IntType(64)
+
+    mod = ir.Module(name=f"is_ordered_{dtype}_module")
+    fn_name = f"is_ordered_{dtype}"
+
+    fn_ty = ir.FunctionType(i32, [T.as_pointer(), i32])
+    fn = ir.Function(mod, fn_ty, name=fn_name)
+
+    arr, n = fn.args
+    arr.name, n.name = "arr", "n"
+
+    b_entry = fn.append_basic_block("entry")
+    b_loop = fn.append_basic_block("loop")
+    b_check = fn.append_basic_block("check")
+    b_ret_true = fn.append_basic_block("ret_true")
+    b_ret_false = fn.append_basic_block("ret_false")
+    b_exit = fn.append_basic_block("exit")
+
+    b = ir.IRBuilder(b_entry)
+    cond_trivial = b.icmp_signed("<=", n, ir.Constant(i32, 1))
+    b.cbranch(cond_trivial, b_ret_true, b_loop)
+
+    b.position_at_end(b_loop)
+    i = b.phi(i32, name="i")
+    i.add_incoming(ir.Constant(i32, 1), b_entry)
+
+    cond_loop = b.icmp_signed("<", i, n)
+    b.cbranch(cond_loop, b_check, b_ret_true)
+
+    b.position_at_end(b_check)
+    i64_idx = b.sext(i, i64)
+    iprev = b.sub(i, ir.Constant(i32, 1))
+    iprev64 = b.sext(iprev, i64)
+
+    ptr_i = b.gep(arr, [i64_idx], inbounds=True)
+    ptr_iprev = b.gep(arr, [iprev64], inbounds=True)
+
+    val_i = b.load(ptr_i)
+    val_iprev = b.load(ptr_iprev)
+
+    if isinstance(T, ir.IntType):
+        cond = b.icmp_signed("<=", val_iprev, val_i)
+    else:
+        cond = b.fcmp_ordered("<=", val_iprev, val_i, fastmath=True)
+
+    b.cbranch(cond, b.loop, b_ret_false)
+
+    b.position_at_end(b_ret_false)
+    b.ret(ir.Constant(i32, 0))
+
+    b.position_at_end(b.loop)
+    i_next = b.add(i, ir.Constant(i32, 1))
+    i.add_incoming(i_next, b.loop)
+    b.branch(b_loop)
+
+    b.position_at_end(b_ret_true)
+    b.ret(ir.Constant(i32, 1))
+
+    return str(mod)
+
+
+def _materialize_is_ordered(dtype: str) -> int:
+    _ensure_target_machine()
+
+    if dtype in _fn_ptr_cache:
+        return _fn_ptr_cache[dtype]
+
+    try:
+        llvm_ir = _build_is_ordered_ir(dtype)
+        mod = binding.parse_assembly(llvm_ir)
+        mod.verify()
+
+        try:
+            pm = binding.ModulePassManager()
+            pm.add_instruction_combining_pass()
+            pm.add_reassociate_pass()
+            pm.add_gvn_pass()
+            pm.add_cfg_simplification_pass()
+            pm.run(mod)
+        except AttributeError:
+            pass
+
+        engine = binding.create_mcjit_compiler(mod, _target_machine)
+        engine.finalize_object()
+        engine.run_static_constructors()
+
+        addr = engine.get_function_address(f"is_ordered_{dtype}")
+        if not addr:
+            raise RuntimeError(f"Failed to get address for is_ordered_{dtype}")
+
+        _fn_ptr_cache[dtype] = addr
+        _engines[dtype] = engine
+
+        return addr
+
+    except Exception as e:
+        raise RuntimeError(f"Failed to materialize function for dtype {dtype}: {e}")
+
 def _build_bubble_sort_ir(dtype: str) -> str:
     if dtype not in _SUPPORTED:
         raise ValueError(f"Unsupported dtype '{dtype}'. Supported: {list(_SUPPORTED)}")
