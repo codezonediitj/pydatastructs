@@ -1,7 +1,7 @@
 name: pyds-env
 channels:
   - conda-forge
-  - defaults
+  - conda-forge
 dependencies:
   - python=3.8
   - pip
