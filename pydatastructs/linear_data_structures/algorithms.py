@@ -913,6 +913,8 @@ def is_ordered(array, **kwargs):
     backend = kwargs.pop("backend", Backend.PYTHON)
     if backend == Backend.CPP:
         return _algorithms.is_ordered(array, **kwargs)
+    if backend == Backend.LLVM:
+        return _algorithms.is_ordered_llvm(array, **kwargs)
     lower = kwargs.get('start', 0)
     upper = kwargs.get('end', len(array) - 1)
     comp = kwargs.get("comp", lambda u, v: u <= v)
