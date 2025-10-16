@@ -612,6 +612,7 @@ static PyObject* bubble_sort_llvm(PyObject* self, PyObject* args, PyObject* kwds
     Py_INCREF(arr_obj);
     return arr_obj;
 }
+
 // Selection Sort
 static PyObject* selection_sort_impl(PyObject* array, size_t lower, size_t upper,
     PyObject* comp) {

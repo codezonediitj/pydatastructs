@@ -114,6 +114,7 @@ def test_cocktail_shaker_sort():
 def test_quick_sort():
     _test_common_sort(quick_sort)
     _test_common_sort(quick_sort, backend=Backend.CPP)
+    _test_common_sort(quick_sort, backend=Backend.LLVM)
 
 def test_intro_sort():
     _test_common_sort(intro_sort)

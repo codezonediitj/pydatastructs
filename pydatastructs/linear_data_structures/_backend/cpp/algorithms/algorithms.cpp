@@ -6,6 +6,8 @@
 static PyMethodDef algorithms_PyMethodDef[] = {
     {"quick_sort", (PyCFunction) quick_sort,
      METH_VARARGS | METH_KEYWORDS, ""},
+    {"quick_sort_llvm",  (PyCFunction)quick_sort_llvm,
+     METH_VARARGS | METH_KEYWORDS, ""},
     {"bubble_sort", (PyCFunction) bubble_sort,
      METH_VARARGS | METH_KEYWORDS, ""},
     {"bubble_sort_llvm",  (PyCFunction)bubble_sort_llvm,
