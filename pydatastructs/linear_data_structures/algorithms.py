@@ -754,6 +754,8 @@ def quick_sort(array: Array, **kwargs) -> Array:
     backend = kwargs.pop("backend", Backend.PYTHON)
     if backend == Backend.CPP:
         return _algorithms.quick_sort(array, **kwargs)
+    if backend == Backend.LLVM:
+        return _algorithms.quick_sort_llvm(array, **kwargs)
     from pydatastructs import Stack
     comp = kwargs.get("comp", lambda u, v: u <= v)
     pick_pivot_element = kwargs.get("pick_pivot_element",
