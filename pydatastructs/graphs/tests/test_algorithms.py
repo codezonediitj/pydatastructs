@@ -433,11 +433,11 @@ def test_shortest_paths():
             (dist3, pred3) = shortest_paths(graph3, algorithm, 'SLC', backend = Backend.CPP)
             assert dist3 == {'S': 6, 'C': 2, 'SLC': 0, 'SF': 6, 'D': 3}
             assert pred3 == {'S': 'C', 'C': 'SLC', 'SLC': None, 'SF': 'D', 'D': 'SLC'}
-            
+
             (dist4, pred4) = shortest_paths(graph3, algorithm, 'SLC', 'SF', backend = Backend.CPP)
             assert dist4 == 6
             assert pred4 == {'S': 'C', 'C': 'SLC', 'SLC': None, 'SF': 'D', 'D': 'SLC'}
-            
+
             graph3.remove_edge('SLC', 'D')
             graph3.add_edge('D', 'SLC', -10)
             assert raises(ValueError, lambda: shortest_paths(graph3, 'bellman_ford', 'SLC', backend = Backend.CPP))
