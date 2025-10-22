@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_set>
 #include <variant>
+#include <stack>
 #include "GraphEdge.hpp"
 #include "AdjacencyList.hpp"
 #include "AdjacencyMatrix.hpp"
@@ -157,6 +158,305 @@ static PyObject* breadth_first_search_adjacency_matrix(PyObject* self, PyObject*
     }
 
     Py_RETURN_NONE;
+}
+
+static PyObject* depth_first_search_adjacency_list(PyObject* self, PyObject* args, PyObject* kwargs) {
+    PyObject* graph_obj;
+    const char* source_name;
+    PyObject* operation;
+    PyObject* varargs = nullptr;
+    PyObject* kwargs_dict = nullptr;
+    static const char* kwlist[] = {"graph", "source_node", "operation", "args", "kwargs", nullptr};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!sO|OO", const_cast<char**>(kwlist),
+                                     &AdjacencyListGraphType, &graph_obj,
+                                     &source_name, &operation,
+                                     &varargs, &kwargs_dict)) {
+        return nullptr;
+    }
+
+    AdjacencyListGraph* cpp_graph = reinterpret_cast<AdjacencyListGraph*>(graph_obj);
+    auto it = cpp_graph->node_map.find(source_name);
+    AdjacencyListGraphNode* start_node = it->second;
+    std::unordered_set<std::string> visited;
+    std::stack<AdjacencyListGraphNode*> dfs_stack;
+    dfs_stack.push(start_node);
+    visited.insert(start_node->name);
+
+    while (!dfs_stack.empty()) {
+        AdjacencyListGraphNode* node = dfs_stack.top();
+        dfs_stack.pop();
+
+        for (const auto& [adj_name, adj_obj] : node->adjacent) {
+            if (visited.count(adj_name)) continue;
+            if (get_type_tag(adj_obj) != NodeType_::AdjacencyListGraphNode) continue;
+
+            AdjacencyListGraphNode* adj_node = reinterpret_cast<AdjacencyListGraphNode*>(adj_obj);
+
+            PyObject* node_pyobj = reinterpret_cast<PyObject*>(node);
+            PyObject* adj_node_pyobj = reinterpret_cast<PyObject*>(adj_node);
+
+            PyObject* final_args;
+
+            if (varargs && PyTuple_Check(varargs)) {
+                Py_ssize_t varargs_size = PyTuple_Size(varargs);
+                if (varargs_size == 1) {
+                    PyObject* extra_arg = PyTuple_GetItem(varargs, 0);
+                    final_args = PyTuple_Pack(3, node_pyobj, adj_node_pyobj, extra_arg);
+                } else {
+                    PyObject* base_args = PyTuple_Pack(2, node_pyobj, adj_node_pyobj);
+                    if (!base_args)
+                        return nullptr;
+                    final_args = PySequence_Concat(base_args, varargs);
+                    Py_DECREF(base_args);
+                }
+            } else {
+                final_args = PyTuple_Pack(2, node_pyobj, adj_node_pyobj);
+            }
+            if (!final_args)
+                return nullptr;
+
+            PyObject* result = PyObject_Call(operation, final_args, kwargs_dict);
+            Py_DECREF(final_args);
+
+            if (!result)
+                return nullptr;
+
+            Py_DECREF(result);
+            visited.insert(adj_name);
+            dfs_stack.push(adj_node);
+        }
+    }
+
+    if (PyErr_Occurred()) {
+        return nullptr;
+    }
+
+    Py_RETURN_NONE;
+}
+
+static PyObject* depth_first_search_adjacency_matrix(PyObject* self, PyObject* args, PyObject* kwargs) {
+    PyObject* graph_obj;
+    const char* source_name;
+    PyObject* operation;
+    PyObject* varargs = nullptr;
+    PyObject* kwargs_dict = nullptr;
+
+    static const char* kwlist[] = {"graph", "source_node", "operation", "args", "kwargs", nullptr};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!sO|OO", const_cast<char**>(kwlist),
+                                     &AdjacencyMatrixGraphType, &graph_obj,
+                                     &source_name, &operation,
+                                     &varargs, &kwargs_dict)) {
+        return nullptr;
+    }
+
+    AdjacencyMatrixGraph* cpp_graph = reinterpret_cast<AdjacencyMatrixGraph*>(graph_obj);
+
+    auto it = cpp_graph->node_map.find(source_name);
+    if (it == cpp_graph->node_map.end()) {
+        PyErr_SetString(PyExc_KeyError, "Source node not found in graph");
+        return nullptr;
+    }
+    AdjacencyMatrixGraphNode* start_node = it->second;
+
+    std::unordered_set<std::string> visited;
+    std::stack<AdjacencyMatrixGraphNode*> dfs_stack;
+
+    dfs_stack.push(start_node);
+    visited.insert(source_name);
+
+    while (!dfs_stack.empty()) {
+        AdjacencyMatrixGraphNode* node = dfs_stack.top();
+        dfs_stack.pop();
+
+        std::string node_name = reinterpret_cast<GraphNode*>(node)->name;
+        auto& neighbors = cpp_graph->matrix[node_name];
+
+        for (const auto& [adj_name, connected] : neighbors) {
+            if (!connected || visited.count(adj_name)) continue;
+
+            auto adj_it = cpp_graph->node_map.find(adj_name);
+            if (adj_it == cpp_graph->node_map.end()) continue;
+
+            AdjacencyMatrixGraphNode* adj_node = adj_it->second;
+
+            PyObject* base_args = PyTuple_Pack(2,
+                                               reinterpret_cast<PyObject*>(node),
+                                               reinterpret_cast<PyObject*>(adj_node));
+            if (!base_args) return nullptr;
+
+            PyObject* final_args;
+            if (varargs && PyTuple_Check(varargs)) {
+                final_args = PySequence_Concat(base_args, varargs);
+                Py_DECREF(base_args);
+                if (!final_args) return nullptr;
+            } else {
+                final_args = base_args;
+            }
+
+            PyObject* result = PyObject_Call(operation, final_args, kwargs_dict);
+            Py_DECREF(final_args);
+            if (!result) return nullptr;
+            Py_DECREF(result);
+
+            visited.insert(adj_name);
+            dfs_stack.push(adj_node);
+        }
+    }
+
+    if (PyErr_Occurred()) {
+        return nullptr;
+    }
+
+    Py_RETURN_NONE;
+}
+
+static PyObject* shortest_paths_bellman_ford_adjacency_list(PyObject* self, PyObject* args, PyObject* kwargs) {
+    PyObject* graph_obj;
+    const char* source_name;
+    const char* target_name = "";
+
+    static const char* kwlist[] = {"graph", "source_node", "target_node", nullptr};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!s|s", const_cast<char**>(kwlist),
+                                     &AdjacencyListGraphType, &graph_obj,
+                                     &source_name, &target_name)) {
+        return nullptr;
+    }
+
+    AdjacencyListGraph* graph = reinterpret_cast<AdjacencyListGraph*>(graph_obj);
+    const size_t V = graph->node_map.size();
+
+    std::vector<std::vector<std::tuple<int, double>>> adj(V);
+    for (const auto& [edge_key, edge] : graph->edges) {
+        size_t delim = edge_key.find('_');
+        std::string u_name = edge_key.substr(0, delim);
+        std::string v_name = edge_key.substr(delim + 1);
+        int u = graph->name_to_id[u_name];
+        int v = graph->name_to_id[v_name];
+
+        double weight = 0.0;
+        if (edge->value_type == DataType::Int)
+            weight = static_cast<double>(std::get<int64_t>(edge->value));
+        else if (edge->value_type == DataType::Double)
+            weight = std::get<double>(edge->value);
+        else
+            continue;
+
+        adj[u].emplace_back(v, weight);
+    }
+
+    std::vector<double> dist(V, std::numeric_limits<double>::infinity());
+    std::vector<int> pred(V, -1);
+    std::vector<bool> visited(V, false);
+    std::vector<int> cnts(V, 0);
+
+    int source_id = graph->name_to_id[source_name];
+    dist[source_id] = 0.0;
+
+    std::queue<int> que;
+    que.push(source_id);
+    visited[source_id] = true;
+
+    while (!que.empty()) {
+        int u = que.front();
+        que.pop();
+        visited[u] = false;
+
+        for (const auto& [v, weight] : adj[u]) {
+            if (dist[u] != std::numeric_limits<double>::infinity() && 
+                dist[u] + weight < dist[v]) {
+                dist[v] = dist[u] + weight;
+                pred[v] = u;
+                cnts[v] = cnts[u] + 1;
+
+                if (cnts[v] >= static_cast<int>(V)) {
+                    PyErr_SetString(PyExc_ValueError, "Graph contains a negative weight cycle.");
+                    return nullptr;
+                }
+
+                if (!visited[v]) {
+                    que.push(v);
+                    visited[v] = true;
+                }
+            }
+        }
+    }
+
+    PyObject* dist_dict = PyDict_New();
+    PyObject* pred_dict = PyDict_New();
+    if (!dist_dict || !pred_dict) {
+        Py_XDECREF(dist_dict);
+        Py_XDECREF(pred_dict);
+        return nullptr;
+    }
+
+    for (int id = 0; id < static_cast<int>(V); ++id) {
+        const std::string& name = graph->id_to_name[id];
+
+        PyObject* dval = PyFloat_FromDouble(dist[id]);
+        if (!dval || PyDict_SetItemString(dist_dict, name.c_str(), dval) < 0) {
+            Py_XDECREF(dval);
+            Py_DECREF(dist_dict);
+            Py_DECREF(pred_dict);
+            return nullptr;
+        }
+        Py_DECREF(dval);
+
+        PyObject* py_pred;
+        if (pred[id] == -1) {
+            Py_INCREF(Py_None);
+            py_pred = Py_None;
+        } else {
+            py_pred = PyUnicode_FromString(graph->id_to_name[pred[id]].c_str());
+            if (!py_pred) {
+                Py_DECREF(dist_dict);
+                Py_DECREF(pred_dict);
+                return nullptr;
+            }
+        }
+
+        if (PyDict_SetItemString(pred_dict, name.c_str(), py_pred) < 0) {
+            Py_DECREF(py_pred);
+            Py_DECREF(dist_dict);
+            Py_DECREF(pred_dict);
+            return nullptr;
+        }
+        Py_DECREF(py_pred);
+    }
+
+    if (strlen(target_name) > 0) {
+        int target_id = graph->name_to_id[target_name];
+        PyObject* out = PyTuple_New(2);
+        if (!out) {
+            Py_DECREF(dist_dict);
+            Py_DECREF(pred_dict);
+            return nullptr;
+        }
+
+        PyObject* dist_val = PyFloat_FromDouble(dist[target_id]);
+        if (!dist_val) {
+            Py_DECREF(out);
+            Py_DECREF(dist_dict);
+            Py_DECREF(pred_dict);
+            return nullptr;
+        }
+
+        PyTuple_SetItem(out, 0, dist_val);
+        PyTuple_SetItem(out, 1, pred_dict);
+        Py_DECREF(dist_dict);
+        return out;
+    }
+
+    PyObject* result = PyTuple_New(2);
+    if (!result) {
+        Py_DECREF(dist_dict);
+        Py_DECREF(pred_dict);
+        return nullptr;
+    }
+
+    PyTuple_SetItem(result, 0, dist_dict);
+    PyTuple_SetItem(result, 1, pred_dict);
+    return result;
 }
 
 static PyObject* minimum_spanning_tree_prim_adjacency_list(PyObject* self, PyObject* args, PyObject* kwargs) {
