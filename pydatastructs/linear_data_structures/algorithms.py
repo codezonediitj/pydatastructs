@@ -1440,6 +1440,8 @@ def selection_sort(array, **kwargs):
     backend = kwargs.pop("backend", Backend.PYTHON)
     if backend == Backend.CPP:
         return _algorithms.selection_sort(array, **kwargs)
+    if backend == Backend.LLVM:
+        return _algorithms.selection_sort_llvm(array, **kwargs)
     start = kwargs.get('start', 0)
     end = kwargs.get('end', len(array) - 1)
     comp = kwargs.get('comp', lambda u, v: u <= v)
