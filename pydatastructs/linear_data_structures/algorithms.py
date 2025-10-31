@@ -658,6 +658,10 @@ def cocktail_shaker_sort(array: Array, **kwargs) -> Array:
 
     .. [1] https://en.wikipedia.org/wiki/Cocktail_shaker_sort
     """
+    backend = kwargs.pop("backend", Backend.PYTHON)
+    if backend == Backend.CPP:
+        return _algorithms.cocktail_shaker_sort(array, **kwargs)
+
     raise_if_backend_is_not_python(
         cocktail_shaker_sort, kwargs.get('backend', Backend.PYTHON))
     def swap(i, j):
