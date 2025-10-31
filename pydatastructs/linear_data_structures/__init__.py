@@ -6,6 +6,9 @@ from . import (
     algorithms,
 )
 
+from .circular_buffer import CircularBuffer  # Add the CircularBuffer class to the import list
+__all__.append('CircularBuffer')  # Add CircularBuffer to the __all__ list
+
 from .arrays import (
     OneDimensionalArray,
     DynamicOneDimensionalArray,
