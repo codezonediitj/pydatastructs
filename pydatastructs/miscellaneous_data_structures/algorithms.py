@@ -257,7 +257,7 @@ class RangeQueryDynamic:
 
     @classmethod
     def methods(cls):
-        return ['query', 'update']
+        return ['query', 'update', 'update_range']
 
     def query(start, end):
         """
@@ -277,6 +277,21 @@ class RangeQueryDynamic:
     def update(self, index, value):
         """
         Method to update index with a new value.
+
+        Parameters
+        ==========
+
+        index: int
+            The index to be update.
+        value: int
+            The new value.
+        """
+        raise NotImplementedError(
+            "This is an abstract method.")
+
+    def update_range(self, start, end, value):
+        """
+        Method to update [start, end] with a new value.
 
         Parameters
         ==========
@@ -312,24 +327,28 @@ class RangeQueryDynamicArray(RangeQueryDynamic):
 
 class RangeQueryDynamicSegmentTree(RangeQueryDynamic):
 
-    __slots__ = ["segment_tree", "bounds"]
+    __slots__ = ["segment_tree", "bounds", "is_lazy"]
 
     def __new__(cls, array, func, **kwargs):
         raise_if_backend_is_not_python(
             cls, kwargs.pop('backend', Backend.PYTHON))
         obj = object.__new__(cls)
-        obj.segment_tree = ArraySegmentTree(array, func, dimensions=1)
+        is_lazy = kwargs.pop('lazy', False)
+        obj.segment_tree = ArraySegmentTree(array, func, dimensions=1, is_lazy=is_lazy, **kwargs)
         obj.segment_tree.build()
         obj.bounds = (0, len(array))
         return obj
 
     @classmethod
     def methods(cls):
-        return ['query', 'update']
+        return ['query', 'update', 'update_range']
 
     def query(self, start, end):
         _check_range_query_inputs((start, end + 1), self.bounds)
         return self.segment_tree.query(start, end)
 
     def update(self, index, value):
-        self.segment_tree.update(index, value)
+        self.segment_tree[index] = value
+
+    def update_range(self, start, end, value):
+        self.segment_tree.update_range(start, end, value)
