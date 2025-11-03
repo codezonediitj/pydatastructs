@@ -1208,6 +1208,50 @@ def _breadth_first_search_max_flow(graph: Graph, source_node, sink_node, flow_pa
     return (0, parent)
 
 
+def _copy_graph_with_residual_edges(graph: Graph) -> Graph:
+    vertices = [graph.__getattribute__(v) for v in graph.vertices]
+    new_graph = type(graph)(*vertices)
+    for key, edge in graph.edge_weights.items():
+        new_graph.add_edge(edge.source.name, edge.target.name, edge.value)
+    for key, edge in list(new_graph.edge_weights.items()):
+        src = edge.source.name
+        tgt = edge.target.name
+        if new_graph.get_edge(tgt, src) is None:
+            new_graph.add_edge(tgt, src, 0)
+    return new_graph
+
+
+def _dfs_max_flow(graph: Graph, node, sink, flow_passed, visited, flow):
+    if node == sink:
+        return flow
+    visited[node] = True
+    for next_node in graph.neighbors(node):
+        capacity = graph.get_edge(node, next_node.name).value
+        fp = flow_passed.get((node, next_node.name), 0)
+        residual_capacity = capacity - fp
+        if residual_capacity > 0 and next_node.name not in visited:
+            bottleneck_flow = _dfs_max_flow(
+                graph, next_node.name, sink, flow_passed, visited, min(flow, residual_capacity)
+            )
+            if bottleneck_flow > 0:
+                flow_passed[(node, next_node.name)] = fp + bottleneck_flow
+                flow_passed[(next_node.name, node)] = flow_passed.get((next_node.name, node), 0) - bottleneck_flow
+                return bottleneck_flow
+    return 0
+
+def _max_flow_ford_fulkerson_(graph: Graph, source, sink):
+    graph_copy = _copy_graph_with_residual_edges(graph)
+    m_flow = 0
+    flow_passed = {}
+    while True:
+        visited = {}
+        new_flow = _dfs_max_flow(graph_copy, source, sink, flow_passed, visited, float('inf'))
+        if new_flow == 0:
+            break
+        m_flow += new_flow
+    return m_flow
+
+
 def _max_flow_edmonds_karp_(graph: Graph, source, sink):
     m_flow = 0
     flow_passed = {}
@@ -1271,6 +1315,61 @@ def _max_flow_dinic_(graph: Graph, source, sink):
 
 
 def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
+    """
+    Computes the maximum flow in a flow network using the specified algorithm.
+
+    Parameters
+    ==========
+
+    graph: Graph
+        The flow network represented as a graph.
+    source: str
+        The source node in the flow network.
+    sink: str
+        The sink node in the flow network.
+    algorithm: str, optional
+        The algorithm to be used for computing maximum flow.
+        Currently, the following is supported:
+
+        'edmonds_karp' -> Edmonds-Karp algorithm as described in [1].
+        'ford_fulkerson' -> Ford-Fulkerson algorithm as described in [2].
+        'dinic' -> Dinic's algorithm as described in [3].
+
+        Default is 'edmonds_karp'.
+    **kwargs:
+        Additional keyword arguments specific to the chosen algorithm.
+
+    Returns
+    =======
+
+    float
+        The maximum flow value from source to sink in the flow network.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import Graph, max_flow, AdjacencyListGraphNode
+    >>> a = AdjacencyListGraphNode("a")
+    >>> b = AdjacencyListGraphNode("b")
+    >>> c = AdjacencyListGraphNode("c")
+    >>> d = AdjacencyListGraphNode("d")
+    >>> e = AdjacencyListGraphNode("e")
+    >>> G = Graph(a, b, c, d, e)
+    >>> G.add_edge('a', 'b', 3)
+    >>> G.add_edge('a', 'c', 4)
+    >>> G.add_edge('b', 'c', 2)
+    >>> G.add_edge('b', 'd', 3)
+    >>> G.add_edge('c', 'd', 1)
+    >>> G.add_edge('d', 'e', 6)
+    4
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm
+    .. [2] https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm
+    .. [3] https://en.wikipedia.org/wiki/Dinic%27s_algorithm
+    """
     raise_if_backend_is_not_python(
         max_flow, kwargs.get('backend', Backend.PYTHON))
 
