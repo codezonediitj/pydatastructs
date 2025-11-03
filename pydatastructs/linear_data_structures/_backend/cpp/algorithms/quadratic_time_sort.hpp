@@ -1275,4 +1275,157 @@ static PyObject* insertion_sort(PyObject* self, PyObject* args, PyObject* kwds) 
 }
 
 
+static PyObject* brick_sort_impl(PyObject* array, size_t lower, size_t upper, PyObject* comp){
+    bool is_sorted = false;
+
+    while(!is_sorted){
+        is_sorted = true;
+
+        for (size_t i = lower + 1; i < upper; i += 2) {
+            PyObject* i_PyObject = PyLong_FromSize_t(i);
+            PyObject* i1_PyObject = PyLong_FromSize_t(i + 1);
+            if (_comp(PyObject_GetItem(array, i_PyObject), PyObject_GetItem(array, i1_PyObject), comp) != 1) {
+                PyObject* tmp = PyObject_GetItem(array, i1_PyObject);
+                PyObject_SetItem(array, i1_PyObject, PyObject_GetItem(array, i_PyObject));
+                PyObject_SetItem(array, i_PyObject, tmp);
+                is_sorted = false;
+            }
+        }
+
+        for (size_t i = lower; i < upper; i += 2) {
+            PyObject* i_PyObject = PyLong_FromSize_t(i);
+            PyObject* i1_PyObject = PyLong_FromSize_t(i + 1);
+            if (_comp(PyObject_GetItem(array, i_PyObject), PyObject_GetItem(array, i1_PyObject), comp) != 1) {
+                PyObject* tmp = PyObject_GetItem(array, i1_PyObject);
+                PyObject_SetItem(array, i1_PyObject, PyObject_GetItem(array, i_PyObject));
+                PyObject_SetItem(array, i_PyObject, tmp);
+                is_sorted = false;
+            }
+        }
+    }
+
+    return array;
+}
+
+static PyObject* brick_sort(PyObject* self, PyObject* args, PyObject* kwds){
+    PyObject *args0 = NULL, *start = NULL, *end = NULL;
+    PyObject *comp = NULL;
+    size_t lower, upper;
+
+    args0 = PyObject_GetItem(args, PyZero);
+    int is_DynamicOneDimensionalArray = _check_type(args0, &DynamicOneDimensionalArrayType);
+    int is_OneDimensionalArray = _check_type(args0, &OneDimensionalArrayType);
+    if (!is_DynamicOneDimensionalArray && !is_OneDimensionalArray) {
+        raise_exception_if_not_array(args0);
+        return NULL;
+    }
+
+    comp = PyObject_GetItem(kwds, PyUnicode_FromString("comp"));
+    if (comp == NULL) {
+        PyErr_Clear();
+    }
+
+    start = PyObject_GetItem(kwds, PyUnicode_FromString("start"));
+    if (start == NULL) {
+        PyErr_Clear();
+        lower = 0;
+    } else {
+        lower = PyLong_AsSize_t(start);
+    }
+
+    end = PyObject_GetItem(kwds, PyUnicode_FromString("end"));
+    if (end == NULL) {
+        PyErr_Clear();
+        upper = PyObject_Length(args0) - 1;
+    } else {
+        upper = PyLong_AsSize_t(end);
+    }
+
+    args0 = brick_sort_impl(args0, lower, upper, comp);
+    if (is_DynamicOneDimensionalArray) {
+        PyObject_CallMethod(args0, "_modify", "O", Py_True);
+    }
+
+    Py_INCREF(args0);
+    return args0;
+}
+
+
+static PyObject* brick_sort_parallel_impl(PyObject* array, size_t lower, size_t upper, PyObject* comp) {
+    bool is_sorted = false;
+
+    while (!is_sorted) {
+        is_sorted = true;
+
+        #pragma omp parallel for
+        for (size_t i = lower + 1; i < upper; i += 2) {
+            PyObject* i_PyObject = PyLong_FromSize_t(i);
+            PyObject* i1_PyObject = PyLong_FromSize_t(i + 1);
+            if (_comp(PyObject_GetItem(array, i_PyObject), PyObject_GetItem(array, i1_PyObject), comp) != 1) {
+                PyObject* tmp = PyObject_GetItem(array, i1_PyObject);
+                PyObject_SetItem(array, i1_PyObject, PyObject_GetItem(array, i_PyObject));
+                PyObject_SetItem(array, i_PyObject, tmp);
+                is_sorted = false;
+            }
+        }
+
+        #pragma omp parallel for
+        for (size_t i = lower; i < upper; i += 2) {
+            PyObject* i_PyObject = PyLong_FromSize_t(i);
+            PyObject* i1_PyObject = PyLong_FromSize_t(i + 1);
+            if (_comp(PyObject_GetItem(array, i_PyObject), PyObject_GetItem(array, i1_PyObject), comp) != 1) {
+                PyObject* tmp = PyObject_GetItem(array, i1_PyObject);
+                PyObject_SetItem(array, i1_PyObject, PyObject_GetItem(array, i_PyObject));
+                PyObject_SetItem(array, i_PyObject, tmp);
+                is_sorted = false;
+            }
+        }
+    }
+
+    return array;
+}
+
+static PyObject* brick_sort_parallel(PyObject* self, PyObject* args, PyObject* kwds) {
+    PyObject *args0 = NULL, *start = NULL, *end = NULL;
+    PyObject *comp = NULL;
+    size_t lower, upper;
+
+    args0 = PyObject_GetItem(args, PyZero);
+    int is_DynamicOneDimensionalArray = _check_type(args0, &DynamicOneDimensionalArrayType);
+    int is_OneDimensionalArray = _check_type(args0, &OneDimensionalArrayType);
+    if (!is_DynamicOneDimensionalArray && !is_OneDimensionalArray) {
+        raise_exception_if_not_array(args0);
+        return NULL;
+    }
+
+    comp = PyObject_GetItem(kwds, PyUnicode_FromString("comp"));
+    if (comp == NULL) {
+        PyErr_Clear();
+    }
+
+    start = PyObject_GetItem(kwds, PyUnicode_FromString("start"));
+    if (start == NULL) {
+        PyErr_Clear();
+        lower = 0;
+    } else {
+        lower = PyLong_AsSize_t(start);
+    }
+
+    end = PyObject_GetItem(kwds, PyUnicode_FromString("end"));
+    if (end == NULL) {
+        PyErr_Clear();
+        upper = PyObject_Length(args0) - 1;
+    } else {
+        upper = PyLong_AsSize_t(end);
+    }
+
+    args0 = brick_sort_parallel_impl(args0, lower, upper, comp);
+    if (is_DynamicOneDimensionalArray) {
+        PyObject_CallMethod(args0, "_modify", "O", Py_True);
+    }
+
+    Py_INCREF(args0);
+    return args0;
+}
+
 #endif

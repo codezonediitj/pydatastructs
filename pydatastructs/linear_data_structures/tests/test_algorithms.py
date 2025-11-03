@@ -84,9 +84,11 @@ def test_merge_sort_parallel():
 
 def test_brick_sort():
     _test_common_sort(brick_sort)
+    _test_common_sort(brick_sort, Backend = Backend.CPP)
 
 def test_brick_sort_parallel():
     _test_common_sort(brick_sort_parallel, num_threads=3)
+    _test_common_sort(brick_sort_parallel, num_threads=3, Backend = Backend.CPP)
 
 def test_heapsort():
     _test_common_sort(heapsort)

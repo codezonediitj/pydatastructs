@@ -4,6 +4,12 @@
 #include "misc_algorithms.hpp"
 
 static PyMethodDef algorithms_PyMethodDef[] = {
+    {"brick_sort_parallel_impl", (PyCFunction) brick_sort_parallel_impl,
+     METH_VARARGS | METH_KEYWORDS, ""},
+    {"brick_sort_impl", (PyCFunction) brick_sort_impl,
+     METH_VARARGS | METH_KEYWORDS, ""},
+    {"brick_sort", (PyCFunction) brick_sort,
+     METH_VARARGS | METH_KEYWORDS, ""},
     {"quick_sort", (PyCFunction) quick_sort,
      METH_VARARGS | METH_KEYWORDS, ""},
     {"bubble_sort", (PyCFunction) bubble_sort,
