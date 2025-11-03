@@ -43,6 +43,43 @@ python scripts/build/develop.py
 
 Make sure you change your working directory to `pydatastructs` before executing any of the above commands. Also, your python version should be at least `3.8`.
 
+## Installation using Docker
+
+Follow these steps to set up and use Pydatastructs with Docker.
+
+Ensure that Docker is installed and running on your system. You can download it from [Docker's official website](https://www.docker.com/).
+
+
+### Step 1: Build the Docker Image
+
+Run the following command to build the Docker image:
+
+```bash
+docker build -t pyds .
+```
+This will create a Docker image named pyds.
+
+### Step 2: Create and Start Container
+Use the following command to create and run a container from the pyds image:
+
+```bash
+docker run -d --name pyds-container pyds
+```
+
+### Step 3: Access the Container Terminal
+To open a terminal session inside the running container, execute:
+
+```bash
+docker exec -it pyds-container bash
+```
+
+### Step 4: Activate Environment inside the Container
+
+```bash
+conda activate pyds-env
+```
+
+
 Testing
 -------
 
@@ -67,6 +104,14 @@ Make sure you have activated the conda environment: `pyds-env` and your working 
 In the terminal, run: `python -c "from pydatastructs.utils.testing_util import test; test()"`.
 
 This will run all the test files, except benchmark tests. This should be used if benchmark tests are computationally too heavy to be run on your local machine.
+
+### testing specific module
+
+If you want to run tests for a specific module or file, you can use the following command:
+
+```python
+pytest <path_to_test_file>
+```
 
 Why do we use Python?
 ------------------
