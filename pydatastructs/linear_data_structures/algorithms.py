@@ -1857,6 +1857,77 @@ def intro_sort(array, **kwargs) -> Array:
 
         return array
 
+def _count_sort_for_radix(array, exp):
+    n = len(array)
+    output = [None] * n
+    count = [0] * 10
+
+    for i in range(n):
+        if array[i] is not None:
+            index = (array[i] // exp) % 10
+            count[index] += 1
+
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+
+    i = n - 1
+    while i >= 0:
+        if array[i] is not None:
+            index = (array[i] // exp) % 10
+            output[count[index] - 1] = array[i]
+            count[index] -= 1
+        i -= 1
+
+    for i in range(n):
+        array[i] = output[i]
+
+def radix_sort(array, **kwargs):
+    """
+    Implements Radix Sort.
+
+    Parameters
+    ==========
+    array: Array
+        The array which is to be sorted.
+    comp: lambda/function
+        The comparator which is to be used
+        for sorting. Optional, by default, less than or
+        equal to is used for comparing two
+        values.
+    """
+    # Raise error if not Python backend
+    raise_if_backend_is_not_python(radix_sort, kwargs.get('backend', Backend.PYTHON))
+
+    start = kwargs.get('start', 0)
+    end = kwargs.get('end', len(array) - 1)
+
+    # Create a sub_array excluding None values, and track positions of None values
+    sub_array = []
+    none_indices = []
+    max_val = 0
+
+    for i in range(start, end + 1):
+        if array[i] is not None:
+            sub_array.append(array[i])
+            max_val = max(max_val, array[i])
+        else:
+            none_indices.append(i)  # Track positions of None
+
+    # Perform counting sort on the sub_array (without None values)
+    exp = 1
+    while max_val // exp > 0:
+        _count_sort_for_radix(sub_array, exp)
+        exp *= 10
+
+    # Insert None values back at their respective positions
+    sorted_array = sub_array[:]
+    for idx in none_indices:
+        sorted_array.insert(end, None)  # Insert None back at the correct position
+
+    # Update the original array with the sorted values
+    for i in range(start, end + 1):
+        array[i] = sorted_array[i - start]
+
 def shell_sort(array, *args, **kwargs):
     """
     Implements shell sort algorithm.
