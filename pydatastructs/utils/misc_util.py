@@ -581,6 +581,113 @@ class TrieNode(Node):
     def remove_child(self, char: str) -> None:
         self._children.pop(char)
 
+
+class SuffixTreeNode(object):
+    """
+    Represents a suffix tree node.
+
+    Parameters
+    ==========
+    suffix_node
+        Required, an integer representing the suffix link of the node,
+        if not provided, it takes value -1
+    """
+
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self):
+        self.suffix_node = -1
+
+    def __repr__(self):
+        return "Node(suffix link: %d)" % self.suffix_node
+
+
+class SuffixTreeEdge(object):
+    """
+    Represents a suffix tree edge.
+
+    Parameters
+    ==========
+    first_char_index
+        Required, an integer representing the index
+        of the first character of the substring represented
+        by the edge.
+
+    last_char_index
+        Required, an integer representing the index
+        of the last character of the substring represented
+        by the edge.
+
+    source_node_index
+        Required, an integer representing the index
+        of the node at the source end of the edge.
+
+    dest_node_index
+        Required, an integer representing the index
+        of the node at the destination end of the edge.
+    """
+
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self, first_char_index, last_char_index, source_node_index, dest_node_index):
+        self.first_char_index = first_char_index
+        self.last_char_index = last_char_index
+        self.source_node_index = source_node_index
+        self.dest_node_index = dest_node_index
+
+    @property
+    def length(self):
+        return self.last_char_index - self.first_char_index
+
+    def __repr__(self):
+        return 'Edge(%d, %d, %d, %d)' % (self.source_node_index, self.dest_node_index, self.first_char_index, self.last_char_index)
+
+
+class Suffix(object):
+    """
+    Represents a suffix.
+
+    Parameters
+    ==========
+    source_node_index
+        Requested, an integer representing the index of the
+        source node for the suffix.
+
+    first_char_index
+        Requested, an integer representing the index of the
+        first character in the suffix.
+
+    last_char_index
+        Requested, an integer representing the index of the
+        last character in the suffix.
+    """
+    def __new__ (cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self, source_node_index, first_char_index, last_char_index):
+        self.source_node_index = source_node_index
+        self.first_char_index = first_char_index
+        self.last_char_index = last_char_index
+
+    @property
+    def length(self):
+        return self.last_char_index - self.first_char_index
+
+    def explicit(self):
+        """A suffix is explicit if it ends on a node. first_char_index
+        is set greater than last_char_index to indicate this.
+        """
+        return self.first_char_index > self.last_char_index
+
+    def implicit(self):
+        return self.last_char_index >= self.first_char_index
+
+
 def _comp(u, v, tcomp):
     """
     Overloaded comparator for comparing
