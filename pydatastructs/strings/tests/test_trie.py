@@ -47,3 +47,42 @@ def test_Trie():
         for j in range(i + 1):
             assert trie_1.is_inserted(prefix_strings_1[j])
             assert trie_1.is_present(prefix_strings_1[j])
+
+    assert trie_1.count_words() == 3
+
+    assert trie_1.longest_common_prefix() == "dict"
+
+    assert trie_1.autocomplete("dict") == ["dict", "dicts", "dicts_lists_tuples"]
+
+    trie_2 = Trie()
+    trie_2.insert("apple")
+    trie_2.insert("app")
+    trie_2.insert("apricot")
+    trie_2.insert("banana")
+    assert trie_2.count_words() == 4
+
+    trie_2.clear()
+    assert trie_2.count_words() == 0
+
+    assert trie_2.is_empty()
+
+    trie_3 = Trie()
+    trie_3.insert("hello")
+    trie_3.insert("world")
+    assert sorted(trie_3.all_words()) == ["hello", "world"]
+
+    trie_4 = Trie()
+    trie_4.insert("zebra")
+    trie_4.insert("dog")
+    trie_4.insert("duck")
+    trie_4.insert("dove")
+    assert trie_4.shortest_unique_prefix() == {
+        "zebra": "z",
+        "dog": "dog",
+        "duck": "du",
+        "dove": "dov"
+    }
+    assert trie_4.starts_with("do")
+    assert not trie_4.starts_with("cat")
+
+    assert trie_4.longest_word() == "zebra"
