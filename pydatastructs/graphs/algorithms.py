@@ -640,16 +640,26 @@ def strongly_connected_components(graph, algorithm, **kwargs):
     .. [2] https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 
     """
-    raise_if_backend_is_not_python(
-        strongly_connected_components, kwargs.get('backend', Backend.PYTHON))
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_strongly_connected_components_" + algorithm + "_" + graph._impl
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently %s algoithm for %s implementation of graphs "
-        "isn't implemented for finding strongly connected components."
-        %(algorithm, graph._impl))
-    return getattr(algorithms, func)(graph)
+    backend = kwargs.get('backend', Backend.PYTHON)
+    if backend == backend.PYTHON:
+        import pydatastructs.graphs.algorithms as algorithms
+        func = "_strongly_connected_components_" + algorithm + "_" + graph._impl
+        if not hasattr(algorithms, func):
+            raise NotImplementedError(
+            "Currently %s algoithm for %s implementation of graphs "
+            "isn't implemented for finding strongly connected components."
+            %(algorithm, graph._impl))
+        return getattr(algorithms, func)(graph)
+    elif backend == backend.CPP:
+        from pydatastructs.graphs._backend.cpp._graph import strongly_connected_components_kosaraju_adjacency_list, strongly_connected_components_kosaraju_adjacency_matrix, strongly_connected_components_tarjan_adjacency_list, strongly_connected_components_tarjan_adjacency_matrix
+        if (graph._impl == "adjacency_list") and algorithm == 'kosaraju':
+            return strongly_connected_components_kosaraju_adjacency_list(graph)
+        if (graph._impl == "adjacency_matrix") and algorithm == 'kosaraju':
+            return strongly_connected_components_kosaraju_adjacency_matrix(graph)
+        if (graph._impl == "adjacency_list") and algorithm == 'tarjan':
+            return strongly_connected_components_tarjan_adjacency_list(graph)
+        if (graph._impl == "adjacency_matrix") and algorithm == 'tarjan':
+            return strongly_connected_components_tarjan_adjacency_matrix(graph)
 
 def depth_first_search(
     graph, source_node, operation, *args, **kwargs):
@@ -933,15 +943,21 @@ def all_pair_shortest_paths(graph: Graph, algorithm: str,
     .. [1] https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
     .. [2] https://en.wikipedia.org/wiki/Johnson's_algorithm
     """
-    raise_if_backend_is_not_python(
-        all_pair_shortest_paths, kwargs.get('backend', Backend.PYTHON))
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_" + algorithm + "_" + graph._impl
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently %s algorithm isn't implemented for "
-        "finding shortest paths in graphs."%(algorithm))
-    return getattr(algorithms, func)(graph)
+    backend = kwargs.get('backend', Backend.PYTHON)
+    if (backend == Backend.PYTHON):
+        import pydatastructs.graphs.algorithms as algorithms
+        func = "_" + algorithm + "_" + graph._impl
+        if not hasattr(algorithms, func):
+            raise NotImplementedError(
+            "Currently %s algorithm isn't implemented for "
+            "finding shortest paths in graphs."%(algorithm))
+        return getattr(algorithms, func)(graph)
+    elif (backend == Backend.CPP):
+        from pydatastructs.graphs._backend.cpp._graph import all_pair_shortest_paths_floyd_warshall_adjacency_list, all_pair_shortest_paths_floyd_warshall_adjacency_matrix
+        if (graph._impl == 'adjacency_list' and algorithm == 'floyd_warshall'):
+            return all_pair_shortest_paths_floyd_warshall_adjacency_list(graph)
+        if (graph._impl == 'adjacency_matrix' and algorithm == 'floyd_warshall'):
+            return all_pair_shortest_paths_floyd_warshall_adjacency_matrix(graph)
 
 def _floyd_warshall_adjacency_list(graph: Graph):
     dist, next_vertex = {}, {}
@@ -1061,15 +1077,21 @@ def topological_sort(graph: Graph, algorithm: str,
 
     .. [1] https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
     """
-    raise_if_backend_is_not_python(
-        topological_sort, kwargs.get('backend', Backend.PYTHON))
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_" + algorithm + "_" + graph._impl
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        "Currently %s algorithm isn't implemented for "
-        "performing topological sort on %s graphs."%(algorithm, graph._impl))
-    return getattr(algorithms, func)(graph)
+    backend = kwargs.get('backend', Backend.PYTHON)
+    if backend == Backend.PYTHON:
+        import pydatastructs.graphs.algorithms as algorithms
+        func = "_" + algorithm + "_" + graph._impl
+        if not hasattr(algorithms, func):
+            raise NotImplementedError(
+            "Currently %s algorithm isn't implemented for "
+            "performing topological sort on %s graphs."%(algorithm, graph._impl))
+        return getattr(algorithms, func)(graph)
+    elif (backend == Backend.CPP):
+        from pydatastructs.graphs._backend.cpp._graph import topological_sort_kahn_adjacency_list, topological_sort_kahn_adjacency_matrix
+        if (graph._impl == 'adjacency_list'):
+            return topological_sort_kahn_adjacency_list(graph)
+        if (graph._impl == 'adjacency_matrix'):
+            return topological_sort_kahn_adjacency_matrix(graph)
 
 def _kahn_adjacency_list(graph: Graph) -> list:
     S = Queue()
@@ -1271,16 +1293,21 @@ def _max_flow_dinic_(graph: Graph, source, sink):
 
 
 def max_flow(graph, source, sink, algorithm='edmonds_karp', **kwargs):
-    raise_if_backend_is_not_python(
-        max_flow, kwargs.get('backend', Backend.PYTHON))
-
-    import pydatastructs.graphs.algorithms as algorithms
-    func = "_max_flow_" + algorithm + "_"
-    if not hasattr(algorithms, func):
-        raise NotImplementedError(
-        f"Currently {algorithm} algorithm isn't implemented for "
-        "performing max flow on graphs.")
-    return getattr(algorithms, func)(graph, source, sink)
+    backend = kwargs.get('backend', Backend.PYTHON)
+    if backend == Backend.PYTHON:
+        import pydatastructs.graphs.algorithms as algorithms
+        func = "_max_flow_" + algorithm + "_"
+        if not hasattr(algorithms, func):
+            raise NotImplementedError(
+            f"Currently {algorithm} algorithm isn't implemented for "
+            "performing max flow on graphs.")
+        return getattr(algorithms, func)(graph, source, sink)
+    elif (backend == Backend.CPP):
+        from pydatastructs.graphs._backend.cpp._graph import max_flow_edmonds_karp_adjacency_list, max_flow_dinic_adjacency_list
+        if (graph._impl == 'adjacency_list' and algorithm=='edmonds_karp'):
+            return max_flow_edmonds_karp_adjacency_list(graph, source, sink)
+        if (graph._impl == 'adjacency_list' and algorithm=='dinic'):
+            return max_flow_dinic_adjacency_list(graph, source, sink)
 
 
 def find_bridges(graph):

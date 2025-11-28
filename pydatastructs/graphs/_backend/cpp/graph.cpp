@@ -14,6 +14,16 @@ static PyMethodDef GraphMethods[] = {
     {"bfs_adjacency_matrix", (PyCFunction)breadth_first_search_adjacency_matrix, METH_VARARGS | METH_KEYWORDS, "Run BFS on adjacency matrix with callback"},
     {"minimum_spanning_tree_prim_adjacency_list", (PyCFunction)minimum_spanning_tree_prim_adjacency_list, METH_VARARGS | METH_KEYWORDS, "Run Prim's algorithm on adjacency list"},
     {"shortest_paths_dijkstra_adjacency_list", (PyCFunction)shortest_paths_dijkstra_adjacency_list, METH_VARARGS | METH_KEYWORDS, "Dijkstra's algorithm for adjacency list graphs"},
+    {"strongly_connected_components_kosaraju_adjacency_list", (PyCFunction)strongly_connected_components_kosaraju_adjacency_list, METH_VARARGS | METH_KEYWORDS, "Kosaraju's algorithm for adjacency list"},
+    {"strongly_connected_components_kosaraju_adjacency_matrix", (PyCFunction)strongly_connected_components_kosaraju_adjacency_matrix, METH_VARARGS | METH_KEYWORDS, "Kosaraju's algorithm for adjacency matrix"},
+    {"strongly_connected_components_tarjan_adjacency_list", (PyCFunction)strongly_connected_components_tarjan_adjacency_list, METH_VARARGS | METH_KEYWORDS, "Tarjan's algorithm for adjacency list"},
+    {"strongly_connected_components_tarjan_adjacency_matrix", (PyCFunction)strongly_connected_components_tarjan_adjacency_matrix, METH_VARARGS | METH_KEYWORDS, "Tarjan's algorithm for adjacency matrix"},
+    {"all_pair_shortest_paths_floyd_warshall_adjacency_list", (PyCFunction)all_pair_shortest_paths_floyd_warshall_adjacency_list, METH_VARARGS | METH_KEYWORDS, "Floyd Warshall for adjacency list"},
+    {"all_pair_shortest_paths_floyd_warshall_adjacency_matrix", (PyCFunction)all_pair_shortest_paths_floyd_warshall_adjacency_matrix, METH_VARARGS | METH_KEYWORDS, "Floyd Warshall for adjacency matrix"},
+    {"topological_sort_kahn_adjacency_list", (PyCFunction)topological_sort_kahn_adjacency_list, METH_VARARGS | METH_KEYWORDS, "Kahns for adjacency list"},
+    {"topological_sort_kahn_adjacency_matrix", (PyCFunction)topological_sort_kahn_adjacency_matrix, METH_VARARGS | METH_KEYWORDS, "Kahns for adjacency matrix"},
+    {"max_flow_edmonds_karp_adjacency_list", (PyCFunction)max_flow_edmonds_karp_adjacency_list, METH_VARARGS | METH_KEYWORDS, "Max Flow Edmonds Karp"},
+    {"max_flow_dinic_adjacency_list", (PyCFunction)max_flow_dinic_adjacency_list, METH_VARARGS | METH_KEYWORDS, "Max Flow Dinic"},
     {NULL, NULL, 0, NULL}
 };
 

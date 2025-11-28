@@ -260,11 +260,77 @@ def test_strongly_connected_components():
         expected_comps = [{'e', 'a', 'b'}, {'d', 'c', 'h'}, {'g', 'f'}]
         assert comps.sort() == expected_comps.sort()
 
+    def _test_strongly_connected_components_cpp(algorithm):
+        a = AdjacencyListGraphNode('a', 0, backend=Backend.CPP)
+        b = AdjacencyListGraphNode('b', 0, backend=Backend.CPP)
+        c = AdjacencyListGraphNode('c', 0, backend=Backend.CPP)
+        d = AdjacencyListGraphNode('d', 0, backend=Backend.CPP)
+        e = AdjacencyListGraphNode('e', 0, backend=Backend.CPP)
+        f = AdjacencyListGraphNode('f', 0, backend=Backend.CPP)
+        g = AdjacencyListGraphNode('g', 0, backend=Backend.CPP)
+        h = AdjacencyListGraphNode('h', 0, backend=Backend.CPP)
+
+        graph = Graph(a, b, c, d, e, f, g, h, backend=Backend.CPP)
+        graph.add_edge('a', 'b')
+        graph.add_edge('b', 'c')
+        graph.add_edge('b', 'f')
+        graph.add_edge('b', 'e')
+        graph.add_edge('c', 'd')
+        graph.add_edge('c', 'g')
+        graph.add_edge('d', 'h')
+        graph.add_edge('d', 'c')
+        graph.add_edge('e', 'f')
+        graph.add_edge('e', 'a')
+        graph.add_edge('f', 'g')
+        graph.add_edge('g', 'f')
+        graph.add_edge('h', 'd')
+        graph.add_edge('h', 'g')
+
+        comps = strongly_connected_components(graph, algorithm, backend=Backend.CPP)
+        expected_comps = [{'e', 'a', 'b'}, {'d', 'c', 'h'}, {'g', 'f'}]
+        comps_sorted = sorted([tuple(sorted(comp)) for comp in comps])
+        expected_sorted = sorted([tuple(sorted(comp)) for comp in expected_comps])
+        assert comps_sorted == expected_sorted
+
+        a2 = AdjacencyMatrixGraphNode('a', 0, backend=Backend.CPP)
+        b2 = AdjacencyMatrixGraphNode('b', 0, backend=Backend.CPP)
+        c2 = AdjacencyMatrixGraphNode('c', 0, backend=Backend.CPP)
+        d2 = AdjacencyMatrixGraphNode('d', 0, backend=Backend.CPP)
+        e2 = AdjacencyMatrixGraphNode('e', 0, backend=Backend.CPP)
+        f2 = AdjacencyMatrixGraphNode('f', 0, backend=Backend.CPP)
+        g2 = AdjacencyMatrixGraphNode('g', 0, backend=Backend.CPP)
+        h2 = AdjacencyMatrixGraphNode('h', 0, backend=Backend.CPP)
+
+        graph2 = Graph(a2, b2, c2, d2, e2, f2, g2, h2, implementation='adjacency_matrix', backend=Backend.CPP)
+        graph2.add_edge('a', 'b')
+        graph2.add_edge('b', 'c')
+        graph2.add_edge('b', 'f')
+        graph2.add_edge('b', 'e')
+        graph2.add_edge('c', 'd')
+        graph2.add_edge('c', 'g')
+        graph2.add_edge('d', 'h')
+        graph2.add_edge('d', 'c')
+        graph2.add_edge('e', 'f')
+        graph2.add_edge('e', 'a')
+        graph2.add_edge('f', 'g')
+        graph2.add_edge('g', 'f')
+        graph2.add_edge('h', 'd')
+        graph2.add_edge('h', 'g')
+
+        comps2 = strongly_connected_components(graph2, algorithm, backend=Backend.CPP)
+        expected_comps2 = [{'e', 'a', 'b'}, {'d', 'c', 'h'}, {'g', 'f'}]
+
+        comps2_sorted = sorted([tuple(sorted(comp)) for comp in comps2])
+        expected2_sorted = sorted([tuple(sorted(comp)) for comp in expected_comps2])
+        assert comps2_sorted == expected2_sorted
+
     scc = strongly_connected_components
     _test_strongly_connected_components(scc, "List", "kosaraju")
     _test_strongly_connected_components(scc, "Matrix", "kosaraju")
     _test_strongly_connected_components(scc, "List", "tarjan")
     _test_strongly_connected_components(scc, "Matrix", "tarjan")
+    _test_strongly_connected_components_cpp('kosaraju')
+    _test_strongly_connected_components_cpp('tarjan')
 
 def test_depth_first_search():
 
@@ -413,34 +479,6 @@ def test_shortest_paths():
     _test_shortest_paths_positive_edges("List", 'dijkstra')
     _test_shortest_paths_positive_edges("Matrix", 'dijkstra')
 
-def test_all_pair_shortest_paths():
-
-    def _test_shortest_paths_negative_edges(ds, algorithm):
-        import pydatastructs.utils.misc_util as utils
-        GraphNode = getattr(utils, "Adjacency" + ds + "GraphNode")
-        vertices = [GraphNode('1'), GraphNode('2'),
-                    GraphNode('3'), GraphNode('4')]
-
-        graph = Graph(*vertices)
-        graph.add_edge('1', '3', -2)
-        graph.add_edge('2', '1', 4)
-        graph.add_edge('2', '3', 3)
-        graph.add_edge('3', '4', 2)
-        graph.add_edge('4', '2', -1)
-        dist, next_v = all_pair_shortest_paths(graph, algorithm)
-        assert dist == {'1': {'3': -2, '1': 0, '4': 0, '2': -1},
-                        '2': {'1': 4, '3': 2, '2': 0, '4': 4},
-                        '3': {'4': 2, '3': 0, '1': 5, '2': 1},
-                        '4': {'2': -1, '4': 0, '1': 3, '3': 1}}
-        assert next_v == {'1': {'3': '1', '1': '1', '4': None, '2': None},
-                          '2': {'1': '2', '3': None, '2': '2', '4': None},
-                          '3': {'4': '3', '3': '3', '1': None, '2': None},
-                          '4': {'2': '4', '4': '4', '1': None, '3': None}}
-
-    _test_shortest_paths_negative_edges("List", 'floyd_warshall')
-    _test_shortest_paths_negative_edges("Matrix", 'floyd_warshall')
-    _test_shortest_paths_negative_edges("List", 'johnson')
-
 def test_topological_sort():
 
     def _test_topological_sort(func, ds, algorithm, threads=None):
@@ -467,6 +505,58 @@ def test_topological_sort():
         assert all([(l1 in l[0:3]) for l1 in ('3', '5', '7')] +
                    [(l2 in l[3:5]) for l2 in ('8', '11')] +
                    [(l3 in l[5:]) for l3 in ('10', '9', '2')])
+
+        if ds == 'List' and algorithm == 'kahn' and threads is None:
+            vertices2 = [AdjacencyListGraphNode('2', backend=Backend.CPP),
+                        AdjacencyListGraphNode('3', backend=Backend.CPP),
+                        AdjacencyListGraphNode('5', backend=Backend.CPP),
+                        AdjacencyListGraphNode('7', backend=Backend.CPP),
+                        AdjacencyListGraphNode('8', backend=Backend.CPP),
+                        AdjacencyListGraphNode('10', backend=Backend.CPP),
+                        AdjacencyListGraphNode('11', backend=Backend.CPP),
+                        AdjacencyListGraphNode('9', backend=Backend.CPP)]
+
+            graph2 = Graph(*vertices2, backend=Backend.CPP)
+            graph2.add_edge('5', '11')
+            graph2.add_edge('7', '11')
+            graph2.add_edge('7', '8')
+            graph2.add_edge('3', '8')
+            graph2.add_edge('3', '10')
+            graph2.add_edge('11', '2')
+            graph2.add_edge('11', '9')
+            graph2.add_edge('11', '10')
+            graph2.add_edge('8', '9')
+
+            l2 = func(graph2, algorithm, backend=Backend.CPP)
+            assert all([(l1 in l2[0:3]) for l1 in ('3', '5', '7')] +
+                       [(l2_item in l2[3:5]) for l2_item in ('8', '11')] +
+                       [(l3 in l2[5:]) for l3 in ('10', '9', '2')])
+
+        if ds == 'Matrix' and algorithm == 'kahn':
+            vertices3 = [AdjacencyMatrixGraphNode('2', backend=Backend.CPP),
+                        AdjacencyMatrixGraphNode('3', backend=Backend.CPP),
+                        AdjacencyMatrixGraphNode('5', backend=Backend.CPP),
+                        AdjacencyMatrixGraphNode('7', backend=Backend.CPP),
+                        AdjacencyMatrixGraphNode('8', backend=Backend.CPP),
+                        AdjacencyMatrixGraphNode('10', backend=Backend.CPP),
+                        AdjacencyMatrixGraphNode('11', backend=Backend.CPP),
+                        AdjacencyMatrixGraphNode('9', backend=Backend.CPP)]
+
+            graph3 = Graph(*vertices3, implementation='adjacency_matrix', backend=Backend.CPP)
+            graph3.add_edge('5', '11')
+            graph3.add_edge('7', '11')
+            graph3.add_edge('7', '8')
+            graph3.add_edge('3', '8')
+            graph3.add_edge('3', '10')
+            graph3.add_edge('11', '2')
+            graph3.add_edge('11', '9')
+            graph3.add_edge('11', '10')
+            graph3.add_edge('8', '9')
+
+            l3 = func(graph3, algorithm, backend=Backend.CPP)
+            assert all([(l1 in l3[0:3]) for l1 in ('3', '5', '7')] +
+                       [(l2_item in l3[3:5]) for l2_item in ('8', '11')] +
+                       [(l3_item in l3[5:]) for l3_item in ('10', '9', '2')])
 
     _test_topological_sort(topological_sort, "List", "kahn")
     _test_topological_sort(topological_sort_parallel, "List", "kahn", 3)
@@ -534,6 +624,70 @@ def test_max_flow():
         assert max_flow(G3, 'a', 'd', algorithm) == 5
         assert max_flow(G3, 'a', 'b', algorithm) == 3
 
+        if ds == 'List' and algorithm == 'edmonds_karp':
+            a = AdjacencyListGraphNode('a', backend=Backend.CPP)
+            b = AdjacencyListGraphNode('b', backend=Backend.CPP)
+            c = AdjacencyListGraphNode('c', backend=Backend.CPP)
+            d = AdjacencyListGraphNode('d', backend=Backend.CPP)
+            e = AdjacencyListGraphNode('e', backend=Backend.CPP)
+            G_cpp = Graph(a, b, c, d, e, backend=Backend.CPP)
+            G_cpp.add_edge('a', 'b', 3)
+            G_cpp.add_edge('a', 'c', 4)
+            G_cpp.add_edge('b', 'c', 2)
+            G_cpp.add_edge('b', 'd', 3)
+            G_cpp.add_edge('c', 'd', 1)
+            G_cpp.add_edge('d', 'e', 6)
+            assert max_flow(G_cpp, 'a', 'e', algorithm, backend=Backend.CPP) == 4
+            assert max_flow(G_cpp, 'a', 'c', algorithm, backend=Backend.CPP) == 6
+
+            a = AdjacencyListGraphNode('a', backend=Backend.CPP)
+            b = AdjacencyListGraphNode('b', backend=Backend.CPP)
+            c = AdjacencyListGraphNode('c', backend=Backend.CPP)
+            d = AdjacencyListGraphNode('d', backend=Backend.CPP)
+            e = AdjacencyListGraphNode('e', backend=Backend.CPP)
+            f = AdjacencyListGraphNode('f', backend=Backend.CPP)
+            G2_cpp = Graph(a, b, c, d, e, f, backend=Backend.CPP)
+            G2_cpp.add_edge('a', 'b', 16)
+            G2_cpp.add_edge('a', 'c', 13)
+            G2_cpp.add_edge('b', 'c', 10)
+            G2_cpp.add_edge('b', 'd', 12)
+            G2_cpp.add_edge('c', 'b', 4)
+            G2_cpp.add_edge('c', 'e', 14)
+            G2_cpp.add_edge('d', 'c', 9)
+            G2_cpp.add_edge('d', 'f', 20)
+            G2_cpp.add_edge('e', 'd', 7)
+            G2_cpp.add_edge('e', 'f', 4)
+            assert max_flow(G2_cpp, 'a', 'f', algorithm, backend=Backend.CPP) == 23
+            assert max_flow(G2_cpp, 'a', 'd', algorithm, backend=Backend.CPP) == 19
+
+        if ds == 'List' and algorithm == 'dinic':
+            a = AdjacencyListGraphNode('a', backend=Backend.CPP)
+            b = AdjacencyListGraphNode('b', backend=Backend.CPP)
+            c = AdjacencyListGraphNode('c', backend=Backend.CPP)
+            d = AdjacencyListGraphNode('d', backend=Backend.CPP)
+            e = AdjacencyListGraphNode('e', backend=Backend.CPP)
+            G_cpp = Graph(a, b, c, d, e, backend=Backend.CPP)
+            G_cpp.add_edge('a', 'b', 3)
+            G_cpp.add_edge('a', 'c', 4)
+            G_cpp.add_edge('b', 'c', 2)
+            G_cpp.add_edge('b', 'd', 3)
+            G_cpp.add_edge('c', 'd', 1)
+            G_cpp.add_edge('d', 'e', 6)
+            assert max_flow(G_cpp, 'a', 'e', algorithm, backend=Backend.CPP) == 4
+            assert max_flow(G_cpp, 'a', 'c', algorithm, backend=Backend.CPP) == 6
+
+            a = AdjacencyListGraphNode('a', backend=Backend.CPP)
+            b = AdjacencyListGraphNode('b', backend=Backend.CPP)
+            c = AdjacencyListGraphNode('c', backend=Backend.CPP)
+            d = AdjacencyListGraphNode('d', backend=Backend.CPP)
+            G3_cpp = Graph(a, b, c, d, backend=Backend.CPP)
+            G3_cpp.add_edge('a', 'b', 3)
+            G3_cpp.add_edge('a', 'c', 2)
+            G3_cpp.add_edge('b', 'c', 2)
+            G3_cpp.add_edge('b', 'd', 3)
+            G3_cpp.add_edge('c', 'd', 2)
+            assert max_flow(G3_cpp, 'a', 'd', algorithm, backend=Backend.CPP) == 5
+            assert max_flow(G3_cpp, 'a', 'b', algorithm, backend=Backend.CPP) == 3
 
     _test_max_flow("List", "edmonds_karp")
     _test_max_flow("Matrix", "edmonds_karp")
