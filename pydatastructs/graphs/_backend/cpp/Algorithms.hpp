@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <variant>
 #include <deque>
+#include <functional>
 #include "GraphEdge.hpp"
 #include "AdjacencyList.hpp"
 #include "AdjacencyMatrix.hpp"
@@ -791,8 +792,6 @@ static PyObject* strongly_connected_components_tarjan_adjacency_matrix(PyObject*
 
     return components;
 }
-
-#include <functional>
 
 static PyObject* all_pair_shortest_paths_floyd_warshall_adjacency_list(PyObject* self, PyObject* args, PyObject* kwargs) {
     PyObject* graph_obj;
