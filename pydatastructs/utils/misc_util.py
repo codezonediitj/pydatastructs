@@ -14,6 +14,7 @@ __all__ = [
     'Set',
     'CartesianTreeNode',
     'RedBlackTreeNode',
+    'ParentPointerTreeNode',
     'TrieNode',
     'SkipNode',
     'minimum',
@@ -277,6 +278,39 @@ class MAryTreeNode(TreeNode):
     def __str__(self):
         return str((self.key, self.data))
 
+class ParentPointerTreeNode(TreeNode):
+    """
+    Represents node in trees with parent pointers.
+
+    Parameters
+    ==========
+
+    key
+        Required for comparison operations.
+    data
+        Any valid data to be stored in the node.
+    parent
+        Reference to the parent node.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+    """
+    __slots__ = ['key', 'data', 'parent']
+
+    @classmethod
+    def methods(cls):
+        return ['__new__', '__str__']
+
+    def __new__(cls, key, data=None, parent: 'ParentPointerTreeNode' = None, **kwargs):
+        raise_if_backend_is_not_python(
+            cls, kwargs.get('backend', Backend.PYTHON))
+        obj = Node.__new__(cls)
+        obj.data, obj.key, obj.parent = data, key, parent
+        return obj
+
+    def __str__(self):
+        return str((self.key, self.data))
 
 class LinkedListNode(Node):
     """

@@ -12,6 +12,7 @@ from .misc_util import (
     BinomialTreeNode,
     AdjacencyListGraphNode,
     AdjacencyMatrixGraphNode,
+    ParentPointerTreeNode,
     GraphEdge,
     Set,
     CartesianTreeNode,
