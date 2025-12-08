@@ -191,3 +191,150 @@ def test_SkipList():
     li.insert(2)
     assert li.levels == 1
     assert li.size == 2
+
+def test_DoublyLinkedList_XOR():
+    """
+    Test XOR-based doubly linked list implementation.
+    Tests should produce the same results as standard mode.
+    """
+    random.seed(1000)
+
+    # Test basic operations
+    dll_xor = DoublyLinkedList(mode='xor')
+    assert raises(IndexError, lambda: dll_xor[2])
+
+    # Test append and appendleft
+    dll_xor.appendleft(5)
+    dll_xor.append(1)
+    dll_xor.appendleft(2)
+    dll_xor.append(3)
+
+    # Test insert_after
+    dll_xor.insert_after(dll_xor[-1], 4)
+    dll_xor.insert_after(dll_xor[2], 6)
+
+    # Test insert_before
+    dll_xor.insert_before(dll_xor[4], 1.1)
+    dll_xor.insert_before(dll_xor[0], 7)
+
+    # Test insert_at
+    dll_xor.insert_at(0, 2)
+    dll_xor.insert_at(-1, 9)
+
+    # Test extract
+    dll_xor.extract(2)
+
+    # Test popleft and popright
+    assert dll_xor.popleft().key == 2
+    assert dll_xor.popright().key == 4
+
+    # Test search
+    assert dll_xor.search(3) == dll_xor[-2]
+    assert dll_xor.search(-1) is None
+
+    # Test key modification
+    dll_xor[-2].key = 0
+
+    # Verify final state
+    assert str(dll_xor) == ("['(7, None)', '(5, None)', '(1, None)', "
+                            "'(6, None)', '(1.1, None)', '(0, None)', "
+                            "'(9, None)']")
+    assert len(dll_xor) == 7
+
+    # Test error cases
+    assert raises(IndexError, lambda: dll_xor.insert_at(8, None))
+    assert raises(IndexError, lambda: dll_xor.extract(20))
+
+    # Test complete extraction
+    for i in range(len(dll_xor)):
+        if i % 2 == 0:
+            dll_xor.popleft()
+        else:
+            dll_xor.popright()
+    assert str(dll_xor) == "[]"
+    assert raises(ValueError, lambda: dll_xor.extract(1))
+
+def test_DoublyLinkedList_XOR_vs_Standard():
+    """
+    Compare XOR mode behavior with standard mode to ensure consistency.
+    """
+    # Create both types
+    dll_std = DoublyLinkedList(mode='standard')
+    dll_xor = DoublyLinkedList(mode='xor')
+
+    # Perform identical operations
+    operations = [
+        ('append', 10),
+        ('append', 20),
+        ('append', 30),
+        ('appendleft', 5),
+        ('appendleft', 1),
+    ]
+
+    for op, val in operations:
+        getattr(dll_std, op)(val)
+        getattr(dll_xor, op)(val)
+
+    # Verify both produce same string representation
+    assert str(dll_std) == str(dll_xor)
+    assert len(dll_std) == len(dll_xor)
+
+    # Test element access
+    for i in range(len(dll_std)):
+        assert dll_std[i].key == dll_xor[i].key
+
+    # Test extraction
+    extracted_std = dll_std.extract(2)
+    extracted_xor = dll_xor.extract(2)
+    assert extracted_std.key == extracted_xor.key
+    assert str(dll_std) == str(dll_xor)
+
+def test_DoublyLinkedList_XOR_EdgeCases():
+    """
+    Test edge cases for XOR mode.
+    """
+    # Test single element
+    dll = DoublyLinkedList(mode='xor')
+    dll.append(42)
+    assert dll[0].key == 42
+    assert dll.head.key == 42
+    assert dll.tail.key == 42
+    assert len(dll) == 1
+
+    # Test extract single element
+    node = dll.extract(0)
+    assert node.key == 42
+    assert len(dll) == 0
+    assert dll.head is None
+    assert dll.tail is None
+
+    # Test two elements
+    dll.append(1)
+    dll.append(2)
+    assert dll[0].key == 1
+    assert dll[1].key == 2
+
+    # Test insert at beginning
+    dll.insert_at(0, 0)
+    assert dll[0].key == 0
+    assert dll[1].key == 1
+    assert dll[2].key == 2
+
+    # Test insert at end
+    dll.insert_at(3, 3)
+    assert dll[3].key == 3
+
+    # Test insert in middle
+    dll.insert_at(2, 1.5)
+    assert dll[2].key == 1.5
+
+    # Verify integrity
+    assert len(dll) == 5
+    keys = [dll[i].key for i in range(len(dll))]
+    assert keys == [0, 1, 1.5, 2, 3]
+
+def test_DoublyLinkedList_InvalidMode():
+    """
+    Test that invalid mode raises ValueError.
+    """
+    assert raises(ValueError, lambda: DoublyLinkedList(mode='invalid'))
