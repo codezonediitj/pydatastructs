@@ -31,14 +31,15 @@ conda activate pyds-env
 
 You can install the library by running the following command,
 
-```python
-python scripts/build/install.py
+```bash
+python -m build --wheel --no-isolation
+python -m installer dist/*.whl
 ```
 
-For development purposes i.e., if you intend to be a contributor,
-
-```python
-python scripts/build/develop.py
+For development purposes i.e., 
+If you intend to contribute to the project, you can install the library in editable mode using PEP 660-compatible tools. This allows changes to the source code to reflect immediately without needing to rebuild.
+```bash
+pip install --editable . --config-settings editable_mode=compat
 ```
 
 Make sure you change your working directory to `pydatastructs` before executing any of the above commands. Also, your python version should be at least `3.8`.
