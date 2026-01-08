@@ -6,7 +6,8 @@ from pydatastructs.linear_data_structures._backend.cpp import _arrays
 __all__ = [
     'OneDimensionalArray',
     'MultiDimensionalArray',
-    'DynamicOneDimensionalArray'
+    'DynamicOneDimensionalArray',
+    'OneDimensionalImplicitArray',
 ]
 
 class Array(object):
@@ -471,3 +472,113 @@ class ArrayForTrees(DynamicOneDimensionalArray):
             self._size = arr_new._size
             return new_indices
         return None
+
+
+class ImplicitArray(Array):
+    '''
+    Abstract class for implicit arrays
+    '''
+    pass
+
+
+class OneDimensionalImplicitArray(ImplicitArray):
+    """
+    Represents one dimensional implicit arrays of fixed size.
+
+    Parameters
+    ==========
+    dtype: type
+        A valid object type.
+    function: function
+        A function which takes an integer as input and returns
+        the value of the element at that index.
+    size: int
+        The number of elements in the array.
+    init: a python type
+        The initial value with which the element has
+        to be initialized. By default none, used only
+        when the data is not given.
+    backend: pydatastructs.Backend
+        The backend to be used.
+        Optional, by default, the best available
+        backend is used.
+
+    Raises
+    ======
+
+    ValueError
+        When the number of elements in the list do not
+        match with the size.
+        More than three parameters are passed as arguments.
+        Types of arguments is not as mentioned in the docstring.
+
+    Note
+    ====
+
+    At least two parameters should be passed as an argument along
+    with the dtype.
+
+    Examples
+    ========
+
+    >>> from pydatastructs import OneDimensionalImplicitArray
+    >>> arr = OneDimensionalImplicitArray(int, lambda i: i+1, 5)
+    >>> arr[0]
+    1
+    >>> arr[1]
+    2
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Array_data_structure#One-dimensional_arrays
+    """
+
+    __slots__ = ['_size', '_dtype', '_function', '_init']
+
+    def __new__(cls, dtype=NoneType, *args, **kwargs):
+        backend = kwargs.get('backend', Backend.PYTHON)
+        if backend == Backend.CPP:
+            return _arrays.OneDimensionalImplicitArray(dtype=dtype, *args, **kwargs)
+        if dtype is NoneType:
+            raise ValueError("Data type is not defined.")
+        elif not _check_type(dtype, type):
+            raise TypeError("Expected type of dtype is type")
+        if len(args) <= 1:
+            raise ValueError("Too many arguments to create a implicit 1D array, "
+                             "pass the function of the array "
+                             "and the size of the array")
+        if len(args) > 2:
+            raise ValueError("Too many arguments to create a implicit 1D array, "
+                             "pass the function of the array "
+                             "and the size of the array")
+
+        obj = Array.__new__(cls)
+        obj._dtype = dtype
+
+        if callable(args[0]) and \
+            _check_type(args[1], int):
+            obj._function = args[0]
+            obj._size = args[1]
+        elif _check_type(args[0], int) and \
+            callable(args[1]):
+            obj._function = args[1]
+            obj._size = args[0]
+        else:
+            raise TypeError("Expected type of function is function "
+                            "and expected type of size is int")
+
+        return obj
+
+    def __getitem__(self, i):
+        if i >= self._size or i < 0:
+            raise IndexError(("Index, {} out of range, "
+                              "[{}, {}).".format(i, 0, self._size)))
+        return self._function(i)
+
+    def __len__(self):
+        return self._size
+
+    @property
+    def _data(self):
+        return [self._function(i) for i in range(self._size)]

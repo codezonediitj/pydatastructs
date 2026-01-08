@@ -4,6 +4,7 @@
 #include "DynamicArray.hpp"
 #include "DynamicOneDimensionalArray.hpp"
 #include "ArrayForTrees.hpp"
+#include "OneDimensionalImplicitArray.hpp"
 
 static struct PyModuleDef arrays_struct = {
     PyModuleDef_HEAD_INIT,
@@ -46,6 +47,12 @@ PyMODINIT_FUNC PyInit__arrays(void) {
     }
     Py_INCREF(&ArrayForTreesType);
     PyModule_AddObject(arrays, "ArrayForTrees", reinterpret_cast<PyObject*>(&ArrayForTreesType));
+
+    if (PyType_Ready(&OneDimensionalImplicitArrayType) < 0) {
+        return NULL;
+    }
+    Py_INCREF(&OneDimensionalImplicitArrayType);
+    PyModule_AddObject(arrays, "OneDimensionalImplicitArray", reinterpret_cast<PyObject*>(&OneDimensionalImplicitArrayType));
 
     return arrays;
 }
