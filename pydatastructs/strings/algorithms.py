@@ -4,7 +4,8 @@ from pydatastructs.utils.misc_util import (
     Backend, raise_if_backend_is_not_python)
 
 __all__ = [
-    'find'
+    'find',
+    'bitap_search'
 ]
 
 PRIME_NUMBER, MOD = 257, 1000000007
@@ -83,6 +84,25 @@ def find(text, query, algorithm, **kwargs):
         %(algorithm))
     return getattr(algorithms, func)(text, query)
 
+def bitap_search(text, pattern):
+    """
+    Bitap Algorithm (Shift-Or Algorithm) for exact string matching.
+    Returns the starting index of the pattern in the text, or -1 if not found.
+    """
+    m = len(pattern)
+    R = ~1
+    pattern_mask = {}
+
+    for i in range(m):
+        pattern_mask[pattern[i]] = pattern_mask.get(pattern[i], ~0) & ~(1 << i)
+
+    for i in range(len(text)):
+        R |= pattern_mask.get(text[i], ~0)
+        R <<= 1
+        if (R & (1 << m)) == 0:
+            return i - m + 1
+
+    return -1
 
 def _knuth_morris_pratt(text, query):
     if len(text) == 0 or len(query) == 0:
